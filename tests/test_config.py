@@ -145,7 +145,7 @@ def test_unknown_keys() -> None:
     "test_spec",
     [
         ("type=bool", "testopt-bool", "testopt_bool", True, False, True),
-        ("store_true", "delete-gcov-files", "gcov_delete", True, False, True),
+        ("store_true", "delete-input-files", "delete_input_files", True, False, True),
         (
             "store_false",
             "html-absolute-paths",

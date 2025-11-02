@@ -65,7 +65,7 @@ def read_report(options: Options) -> CoverageContainer:
 
     find_files = find_datafiles
     process_file = process_datafile
-    if options.gcov_files:
+    if options.gcov_use_existing_files:
         find_files = find_existing_gcov_files
         process_file = process_existing_gcov_file
 
@@ -77,7 +77,7 @@ def read_report(options: Options) -> CoverageContainer:
             options.search_paths.append(options.gcov_objdir)
 
     for search_path in options.search_paths:
-        datafiles.update(find_files(search_path, options.gcov_exclude_directory))
+        datafiles.update(find_files(search_path, options.exclude_directory))
 
     # Get coverage data
     with Workers(
@@ -108,7 +108,7 @@ def read_report(options: Options) -> CoverageContainer:
 
 
 def find_existing_gcov_files(
-    search_path: str, gcov_exclude_directory: list[re.Pattern[str]]
+    search_path: str, exclude_directory: list[re.Pattern[str]]
 ) -> list[str]:
     """Find .gcov and .gcov.json.gz files under the given search path."""
     if os.path.isfile(search_path):
@@ -121,7 +121,7 @@ def find_existing_gcov_files(
                 lambda fname: re.compile(r".*\.gcov(?:\.json\.gz)?$").match(fname)
                 is not None,
                 search_path,
-                gcov_exclude_directory=gcov_exclude_directory,
+                exclude_directory=exclude_directory,
             )
         )
         LOGGER.debug(f"Found {len(gcov_files)} files (and will process all of them)")
@@ -129,7 +129,7 @@ def find_existing_gcov_files(
 
 
 def find_datafiles(
-    search_path: str, gcov_exclude_directory: list[re.Pattern[str]]
+    search_path: str, exclude_directory: list[re.Pattern[str]]
 ) -> list[str]:
     """Find .gcda and .gcno files under the given search path.
 
@@ -149,7 +149,7 @@ def find_datafiles(
             search_file(
                 lambda fname: re.compile(r".*\.gc(da|no)$").match(fname) is not None,
                 search_path,
-                gcov_exclude_directory=gcov_exclude_directory,
+                exclude_directory=exclude_directory,
             )
         )
     gcda_files = []
@@ -498,7 +498,7 @@ def process_datafile(
             chdir=wd,
         )
 
-        if options.gcov_delete:
+        if options.delete_input_files:
             if not abs_filename.endswith("gcno"):
                 to_erase.add(abs_filename)
 
@@ -757,8 +757,8 @@ class GcovProgram:
         ...
         GcovProgram.GcovExecutionError: GCOV returncode was 15.
         """
-        gcov_process = self.__get_gcov_process(args, cwd=cwd, trace=trace, **kwargs)
-        out, err = gcov_process.communicate()
+        process = self.__get_gcov_process(args, cwd=cwd, trace=trace, **kwargs)
+        out, err = process.communicate()
 
         def remove_generated_files() -> None:
             """Remove the generated files from gcov output."""
@@ -771,32 +771,26 @@ class GcovProgram:
                     if os.path.exists(fname):
                         os.remove(fname)
 
-        if gcov_process.returncode < 0:
+        if (
+            process.returncode < 0
+            or process.returncode not in GcovProgram.__exitcode_to_ignore
+        ):
             remove_generated_files()
             raise self.GcovExecutionError(
-                f"GCOV returncode was {gcov_process.returncode} (exited by signal).\n"
-                f"Stderr of gcov was >>{err}<< End of stderr\n"
-                f"Stdout of gcov was >>{out}<< End of stdout"
-            )
-
-        if gcov_process.returncode not in GcovProgram.__exitcode_to_ignore:
-            remove_generated_files()
-            raise self.GcovExecutionError(
-                f"GCOV returncode was {gcov_process.returncode}.\n"
-                f"Stderr of gcov was >>{err}<< End of stderr\n"
-                f"Stdout of gcov was >>{out}<< End of stdout"
+                f"GCOV returncode was {process.returncode}{' (exited by signal)' if process.returncode < 0 else ''}.\n"
+                f"STDERR >>{err}<< End of STDERR\n"
+                f"STDOUT >>{out}<< End of STDOUT"
             )
 
         if version_mismatch_re.search(err):
             # gcov tossed errors: throw exception
             raise self.GcovExecutionError(
-                f"Version mismatch gcc/gcov.\n"
-                f"Stderr of gcov was >>{err}<< End of stderr"
+                f"Version mismatch gcc/gcov.\nSTDERR >>{err}<< End of STDERR"
             )
 
         if trace:
-            LOGGER.trace(f"Stderr of gcov was >>{err}<< End of stderr")
-            LOGGER.trace(f"Stdout of gcov was >>{out}<< End of stdout")
+            LOGGER.trace(f"STDERR >>{err}<< End of STDERR")
+            LOGGER.trace(f"STDOUT >>{out}<< End of STDOUT")
 
         return (out, err)
 
@@ -921,21 +915,21 @@ def run_gcov_and_process_files(
             error(
                 f"With working directory {chdir!r}.\n"
                 f"{str(exc)}\n"
-                f"Stderr of gcov was >>{err}<< End of stderr\n"
-                f"Stdout of gcov was >>{out}<< End of stdout"
+                f"STDERR >>{err}<< End of STDERR\n"
+                f"STDOUT >>{out}<< End of STDOUT"
             )
         except GcovMessageOnStderr as exc:
             done = False
             error(
                 f"With working directory {chdir!r}.\n"
                 f"{str(exc)}\n"
-                f"Stderr of gcov was >>{err}<< End of stderr"
+                f"STDERR >>{err}<< End of STDERR"
             )
         except GcovProgram.GcovExecutionError as exc:
             done = False
             error(f"With working directory {chdir!r}.\n{str(exc)}")
         finally:
-            if options.gcov_keep and done:
+            if options.keep_intermediate_files and done:
                 # Keep the files with unique names
                 basename = os.path.basename(abs_filename)
                 for gcov_filename in active_gcov_files:
@@ -999,5 +993,5 @@ def process_existing_gcov_file(
     else:  # pragma: no cover
         raise RuntimeError(f"Unknown gcov output format {filename}.")
 
-    if not options.gcov_keep:
+    if not options.keep_intermediate_files:
         to_erase.add(filename)

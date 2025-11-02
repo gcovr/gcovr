@@ -75,6 +75,13 @@ Breaking changes:
 
 - Add excluded metrics to HTML report. The total numbers in the report contain now also
   the excluded elements. (:issue:`1153`)
+- Due to added support for LLVM source based code coverage format some configuration file
+  keys got changed. The options still exist with ``gcov`` in it but they also affect the
+  LLVM toolchain. (:issue:`xxxx``)
+
+  - ``gcov-exclude-directory`` is changed to ``exclude-directory``.
+  - ``keep-gcov-files`` is changed to ``keep-intermediate-files``.
+  - ``delete-gcov-files`` is changed to ``delete-input-files``.
 
 New features and notable changes:
 
@@ -93,6 +100,7 @@ New features and notable changes:
 - If the value for :option:`-j` is 0, the number of CPUs is used. If it is negative the it means "all but N CPUs". (:issue:`1148`)
 - Add :option:`--warn-excluded-lines-with-hits` to print a warning if a line which is excluded by comments has a hit counter != 0. (:issue:`1151`)
 - Add comment to exclude branches without hit in addition to exclude all. (:issue:`1152`)
+- Add support for LLVM source based code coverage format. (:issue:`xxxx`)
 
 Bug fixes and small improvements:
 

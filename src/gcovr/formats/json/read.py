@@ -40,11 +40,11 @@ def read_report(options: Options) -> CoverageContainer:
     if len(options.json_tracefile) != 0:
         datafiles = set()
 
-        for trace_files_pattern in options.json_tracefile:
-            trace_files = glob(trace_files_pattern, recursive=True)
+        for trace_file_pattern in options.json_tracefile:
+            trace_files = glob(trace_file_pattern, recursive=True)
             if not trace_files:
                 raise RuntimeError(
-                    f"Bad --json-add-tracefile={trace_files_pattern} option.\n"
+                    f"Bad --json-add-tracefile={trace_file_pattern} option.\n"
                     "\tThe specified file does not exist."
                 )
 
