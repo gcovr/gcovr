@@ -1,4 +1,3 @@
 # Do not add any file to the context
 *
 !admin/docker_entrypoint.sh
-!pyproject.toml
