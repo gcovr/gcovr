@@ -376,6 +376,22 @@ class _ParserState(NamedTuple):
     linecov_list: list[LineCoverage] = []
     block_id: Optional[int] = None
     is_recovering: bool = False
+    previous_state: Optional["_ParserState"] = None
+
+    def save_state(self) -> "_ParserState":
+        """Save the current state and."""
+        return _ParserState(
+            previous_state=self,
+            linecov_list=self.linecov_list,
+        )
+
+    def restore_state(self) -> "_ParserState":
+        """Save the current state and."""
+        if self.previous_state is None:
+            raise RuntimeError(
+                f"Sanity check failed, previous_state of {type(self).__name__} is None."
+            )
+        return self.previous_state._replace(linecov_list=self.linecov_list)
 
 
 def _gather_coverage_from_line(
@@ -471,18 +487,18 @@ def _gather_coverage_from_line(
             function_name=line.name,
         )
 
-    # currently, the parser just ignores specialization sections
     elif isinstance(line, _FunctionSpecializationNameLine):
-        return state
-
-    elif isinstance(line, _FunctionSpecializationSeparatorLine):
-        # Defer handling of the function tag until the next source line.
-        # This is important to get correct function name information.
-        return state._replace(
-            deferred_functions=[],
-            function_name=None,
+        # Now we know that we are in a specialization and not at the end of it.
+        return state.save_state()._replace(
             function_specialization=True,
         )
+
+    elif isinstance(line, _FunctionSpecializationSeparatorLine):
+        # If there was a specialization active we need to restore the previous state, else we do nothing.
+        if state.function_specialization:
+            state = state.restore_state()
+
+        return state
 
     elif isinstance(line, _BranchLine):
         branchno, hits, annotation = line

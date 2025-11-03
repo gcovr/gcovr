@@ -18887,27 +18887,7 @@
                         {
                             "callno": 0,
                             "source_block_id": 0,
-                            "returned": 2
-                        },
-                        {
-                            "callno": 1,
-                            "source_block_id": 0,
-                            "returned": 15
-                        },
-                        {
-                            "callno": 2,
-                            "source_block_id": 0,
-                            "returned": 1
-                        },
-                        {
-                            "callno": 3,
-                            "source_block_id": 0,
-                            "returned": 1
-                        },
-                        {
-                            "callno": 4,
-                            "source_block_id": 0,
-                            "returned": 16
+                            "returned": 0
                         }
                     ],
                     "gcovr/md5": "ea5a1cbe764918679997181a3ea281d3"
@@ -18965,6 +18945,13 @@
                     "line_number": 845,
                     "function_name": "catena::common::ParamWithValue<std::vector<int, std::allocator<int> > >::validateSetValueMap_::{lambda(st2138::Value const&, unsigned long, catena::common::IAuthorizer const&)#1}::operator()(st2138::Value const&, unsigned long, catena::common::IAuthorizer const&) const",
                     "count": 7,
+                    "branches": [],
+                    "gcovr/md5": "f803a510c104baf3222ba28d6d2adddc"
+                },
+                {
+                    "line_number": 846,
+                    "function_name": "std::unique_ptr<catena::common::IParam, std::default_delete<catena::common::IParam> > catena::common::ParamWithValue<std::vector<int, std::allocator<int> > >::getParam_<std::vector<int, std::allocator<int> > >(catena::common::Path&, std::vector<int, std::allocator<int> >&, catena::common::IAuthorizer const&, catena::exception_with_status&)",
+                    "count": 20,
                     "branches": [
                         {
                             "branchno": 1,
@@ -19030,39 +19017,14 @@
                             "returned": 3
                         },
                         {
-                            "callno": 0,
-                            "source_block_id": 7,
-                            "returned": 2
-                        },
-                        {
-                            "callno": 1,
-                            "source_block_id": 7,
-                            "returned": 15
-                        },
-                        {
-                            "callno": 2,
-                            "source_block_id": 7,
-                            "returned": 1
-                        },
-                        {
                             "callno": 3,
                             "source_block_id": 1,
                             "returned": 3
                         },
                         {
-                            "callno": 3,
-                            "source_block_id": 7,
-                            "returned": 1
-                        },
-                        {
                             "callno": 4,
                             "source_block_id": 1,
                             "returned": 3
-                        },
-                        {
-                            "callno": 4,
-                            "source_block_id": 7,
-                            "returned": 16
                         },
                         {
                             "callno": 7,
@@ -19080,7 +19042,7 @@
                             "returned": 7
                         }
                     ],
-                    "gcovr/md5": "f803a510c104baf3222ba28d6d2adddc"
+                    "gcovr/md5": "93f388ca75568a561ec21f9db76da324"
                 },
                 {
                     "line_number": 848,
@@ -19093,6 +19055,13 @@
                     "line_number": 848,
                     "function_name": "catena::common::ParamWithValue<std::vector<int, std::allocator<int> > >::validateSetValueMap_::{lambda(st2138::Value const&, unsigned long, catena::common::IAuthorizer const&)#2}::operator()(st2138::Value const&, unsigned long, catena::common::IAuthorizer const&) const",
                     "count": 0,
+                    "branches": [],
+                    "gcovr/md5": "812905d057608c9265ce0c83b7f8ad1d"
+                },
+                {
+                    "line_number": 849,
+                    "function_name": "std::unique_ptr<catena::common::IParam, std::default_delete<catena::common::IParam> > catena::common::ParamWithValue<std::vector<int, std::allocator<int> > >::getParam_<std::vector<int, std::allocator<int> > >(catena::common::Path&, std::vector<int, std::allocator<int> >&, catena::common::IAuthorizer const&, catena::exception_with_status&)",
+                    "count": 0,
                     "branches": [
                         {
                             "branchno": 1,
@@ -19158,39 +19127,14 @@
                             "returned": 0
                         },
                         {
-                            "callno": 0,
-                            "source_block_id": 7,
-                            "returned": 2
-                        },
-                        {
-                            "callno": 1,
-                            "source_block_id": 7,
-                            "returned": 15
-                        },
-                        {
-                            "callno": 2,
-                            "source_block_id": 7,
-                            "returned": 1
-                        },
-                        {
                             "callno": 3,
                             "source_block_id": 1,
                             "returned": 0
                         },
                         {
-                            "callno": 3,
-                            "source_block_id": 7,
-                            "returned": 1
-                        },
-                        {
                             "callno": 4,
                             "source_block_id": 1,
                             "returned": 0
-                        },
-                        {
-                            "callno": 4,
-                            "source_block_id": 7,
-                            "returned": 16
                         },
                         {
                             "callno": 7,
@@ -19208,7 +19152,7 @@
                             "returned": 0
                         }
                     ],
-                    "gcovr/md5": "812905d057608c9265ce0c83b7f8ad1d"
+                    "gcovr/md5": "c91d399c11e6decbd398e4a35acf63e9"
                 },
                 {
                     "line_number": 851,
@@ -19222,6 +19166,13 @@
                     "function_name": "catena::common::ParamWithValue<std::vector<int, std::allocator<int> > >::validateSetValueMap_::{lambda(st2138::Value const&, unsigned long, catena::common::IAuthorizer const&)#3}::operator()(st2138::Value const&, unsigned long, catena::common::IAuthorizer const&) const",
                     "count": 1,
                     "branches": [],
+                    "gcovr/md5": "b76e9cffd19b040ce208febf133a9786"
+                },
+                {
+                    "line_number": 852,
+                    "function_name": "std::unique_ptr<catena::common::IParam, std::default_delete<catena::common::IParam> > catena::common::ParamWithValue<std::vector<int, std::allocator<int> > >::getParam_<std::vector<int, std::allocator<int> > >(catena::common::Path&, std::vector<int, std::allocator<int> >&, catena::common::IAuthorizer const&, catena::exception_with_status&)",
+                    "count": 1,
+                    "branches": [],
                     "calls": [
                         {
                             "callno": 0,
@@ -19229,39 +19180,24 @@
                             "returned": 0
                         },
                         {
-                            "callno": 0,
-                            "source_block_id": 1,
-                            "returned": 2
-                        },
-                        {
                             "callno": 1,
                             "source_block_id": 0,
                             "returned": 0
                         },
                         {
-                            "callno": 1,
-                            "source_block_id": 1,
-                            "returned": 15
-                        },
-                        {
                             "callno": 2,
                             "source_block_id": 0,
                             "returned": 0
-                        },
-                        {
-                            "callno": 2,
-                            "source_block_id": 1,
-                            "returned": 1
                         },
                         {
                             "callno": 3,
                             "source_block_id": 1,
-                            "returned": 2
+                            "returned": 1
                         },
                         {
                             "callno": 4,
                             "source_block_id": 1,
-                            "returned": 17
+                            "returned": 1
                         },
                         {
                             "callno": 5,
@@ -19269,7 +19205,7 @@
                             "returned": 1
                         }
                     ],
-                    "gcovr/md5": "b76e9cffd19b040ce208febf133a9786"
+                    "gcovr/md5": "c6c17c5bc84b61357068c7a59018d10d"
                 },
                 {
                     "line_number": 854,
@@ -19283,6 +19219,13 @@
                     "function_name": "catena::common::ParamWithValue<std::vector<int, std::allocator<int> > >::validateSetValueMap_::{lambda(st2138::Value const&, unsigned long, catena::common::IAuthorizer const&)#4}::operator()(st2138::Value const&, unsigned long, catena::common::IAuthorizer const&) const",
                     "count": 0,
                     "branches": [],
+                    "gcovr/md5": "0243c9c78c7d7f6287b26a96c73036bb"
+                },
+                {
+                    "line_number": 855,
+                    "function_name": "std::unique_ptr<catena::common::IParam, std::default_delete<catena::common::IParam> > catena::common::ParamWithValue<std::vector<int, std::allocator<int> > >::getParam_<std::vector<int, std::allocator<int> > >(catena::common::Path&, std::vector<int, std::allocator<int> >&, catena::common::IAuthorizer const&, catena::exception_with_status&)",
+                    "count": 0,
+                    "branches": [],
                     "calls": [
                         {
                             "callno": 0,
@@ -19290,39 +19233,24 @@
                             "returned": 0
                         },
                         {
-                            "callno": 0,
-                            "source_block_id": 1,
-                            "returned": 2
-                        },
-                        {
                             "callno": 1,
                             "source_block_id": 0,
                             "returned": 0
                         },
                         {
-                            "callno": 1,
-                            "source_block_id": 1,
-                            "returned": 15
-                        },
-                        {
                             "callno": 2,
                             "source_block_id": 0,
                             "returned": 0
-                        },
-                        {
-                            "callno": 2,
-                            "source_block_id": 1,
-                            "returned": 1
                         },
                         {
                             "callno": 3,
                             "source_block_id": 1,
-                            "returned": 1
+                            "returned": 0
                         },
                         {
                             "callno": 4,
                             "source_block_id": 1,
-                            "returned": 16
+                            "returned": 0
                         },
                         {
                             "callno": 5,
@@ -19330,7 +19258,7 @@
                             "returned": 0
                         }
                     ],
-                    "gcovr/md5": "0243c9c78c7d7f6287b26a96c73036bb"
+                    "gcovr/md5": "6e9e61fcca720d358e44b4ebb8a140f1"
                 },
                 {
                     "line_number": 857,
@@ -19344,6 +19272,13 @@
                     "function_name": "catena::common::ParamWithValue<std::vector<int, std::allocator<int> > >::validateSetValueMap_::{lambda(st2138::Value const&, unsigned long, catena::common::IAuthorizer const&)#5}::operator()(st2138::Value const&, unsigned long, catena::common::IAuthorizer const&) const",
                     "count": 0,
                     "branches": [],
+                    "gcovr/md5": "229533b2de37d3517a7999d49f871832"
+                },
+                {
+                    "line_number": 858,
+                    "function_name": "std::unique_ptr<catena::common::IParam, std::default_delete<catena::common::IParam> > catena::common::ParamWithValue<std::vector<int, std::allocator<int> > >::getParam_<std::vector<int, std::allocator<int> > >(catena::common::Path&, std::vector<int, std::allocator<int> >&, catena::common::IAuthorizer const&, catena::exception_with_status&)",
+                    "count": 0,
+                    "branches": [],
                     "calls": [
                         {
                             "callno": 0,
@@ -19351,39 +19286,24 @@
                             "returned": 0
                         },
                         {
-                            "callno": 0,
-                            "source_block_id": 1,
-                            "returned": 2
-                        },
-                        {
                             "callno": 1,
                             "source_block_id": 0,
                             "returned": 0
                         },
                         {
-                            "callno": 1,
-                            "source_block_id": 1,
-                            "returned": 15
-                        },
-                        {
                             "callno": 2,
                             "source_block_id": 0,
                             "returned": 0
-                        },
-                        {
-                            "callno": 2,
-                            "source_block_id": 1,
-                            "returned": 1
                         },
                         {
                             "callno": 3,
                             "source_block_id": 1,
-                            "returned": 1
+                            "returned": 0
                         },
                         {
                             "callno": 4,
                             "source_block_id": 1,
-                            "returned": 16
+                            "returned": 0
                         },
                         {
                             "callno": 5,
@@ -19391,7 +19311,7 @@
                             "returned": 0
                         }
                     ],
-                    "gcovr/md5": "229533b2de37d3517a7999d49f871832"
+                    "gcovr/md5": "47da770e3c3566613ec3f45583c22821"
                 },
                 {
                     "line_number": 860,
@@ -19404,6 +19324,13 @@
                     "line_number": 860,
                     "function_name": "catena::common::ParamWithValue<std::vector<int, std::allocator<int> > >::validateSetValueMap_::{lambda(st2138::Value const&, unsigned long, catena::common::IAuthorizer const&)#6}::operator()(st2138::Value const&, unsigned long, catena::common::IAuthorizer const&) const",
                     "count": 3,
+                    "branches": [],
+                    "gcovr/md5": "cb38a5ec4333ca6837118d54d4c95da8"
+                },
+                {
+                    "line_number": 861,
+                    "function_name": "std::unique_ptr<catena::common::IParam, std::default_delete<catena::common::IParam> > catena::common::ParamWithValue<std::vector<int, std::allocator<int> > >::getParam_<std::vector<int, std::allocator<int> > >(catena::common::Path&, std::vector<int, std::allocator<int> >&, catena::common::IAuthorizer const&, catena::exception_with_status&)",
+                    "count": 3,
                     "branches": [
                         {
                             "branchno": 1,
@@ -19414,20 +19341,6 @@
                         },
                         {
                             "branchno": 2,
-                            "count": 0,
-                            "fallthrough": true,
-                            "throw": true,
-                            "source_block_id": 0
-                        },
-                        {
-                            "branchno": 3,
-                            "count": 0,
-                            "fallthrough": true,
-                            "throw": true,
-                            "source_block_id": 0
-                        },
-                        {
-                            "branchno": 4,
                             "count": 0,
                             "fallthrough": false,
                             "throw": true,
@@ -19448,28 +19361,14 @@
                             "source_block_id": 1
                         },
                         {
-                            "branchno": 6,
-                            "count": 3,
+                            "branchno": 7,
+                            "count": 0,
                             "fallthrough": true,
                             "throw": false,
                             "source_block_id": 2
                         },
                         {
-                            "branchno": 7,
-                            "count": 0,
-                            "fallthrough": true,
-                            "throw": true,
-                            "source_block_id": 2
-                        },
-                        {
                             "branchno": 8,
-                            "count": 3,
-                            "fallthrough": true,
-                            "throw": true,
-                            "source_block_id": 2
-                        },
-                        {
-                            "branchno": 9,
                             "count": 0,
                             "fallthrough": false,
                             "throw": true,
@@ -19525,93 +19424,13 @@
                             "returned": 0
                         },
                         {
-                            "callno": 0,
-                            "source_block_id": 5,
-                            "returned": 2
-                        },
-                        {
-                            "callno": 1,
-                            "source_block_id": 0,
-                            "returned": 0
-                        },
-                        {
-                            "callno": 1,
-                            "source_block_id": 5,
-                            "returned": 15
-                        },
-                        {
-                            "callno": 2,
-                            "source_block_id": 0,
-                            "returned": 0
-                        },
-                        {
-                            "callno": 2,
-                            "source_block_id": 1,
-                            "returned": 0
-                        },
-                        {
-                            "callno": 2,
-                            "source_block_id": 5,
-                            "returned": 1
-                        },
-                        {
                             "callno": 3,
                             "source_block_id": 1,
                             "returned": 0
                         },
                         {
-                            "callno": 3,
-                            "source_block_id": 2,
-                            "returned": 0
-                        },
-                        {
-                            "callno": 3,
-                            "source_block_id": 5,
-                            "returned": 1
-                        },
-                        {
-                            "callno": 4,
-                            "source_block_id": 2,
-                            "returned": 3
-                        },
-                        {
-                            "callno": 4,
-                            "source_block_id": 3,
-                            "returned": 3
-                        },
-                        {
-                            "callno": 4,
-                            "source_block_id": 5,
-                            "returned": 16
-                        },
-                        {
-                            "callno": 5,
-                            "source_block_id": 2,
-                            "returned": 6
-                        },
-                        {
-                            "callno": 5,
-                            "source_block_id": 3,
-                            "returned": 3
-                        },
-                        {
                             "callno": 6,
                             "source_block_id": 2,
-                            "returned": 3
-                        },
-                        {
-                            "callno": 6,
-                            "source_block_id": 4,
-                            "returned": 0
-                        },
-                        {
-                            "callno": 7,
-                            "source_block_id": 2,
-                            "returned": 3
-                        },
-                        {
-                            "callno": 7,
-                            "source_block_id": 5,
                             "returned": 0
                         },
                         {
@@ -19630,7 +19449,182 @@
                             "returned": 3
                         }
                     ],
-                    "gcovr/md5": "cb38a5ec4333ca6837118d54d4c95da8"
+                    "gcovr/md5": "7c5f47f95dbd0f21108bd6585fe82e00"
+                },
+                {
+                    "line_number": 862,
+                    "function_name": "std::unique_ptr<catena::common::IParam, std::default_delete<catena::common::IParam> > catena::common::ParamWithValue<std::vector<int, std::allocator<int> > >::getParam_<std::vector<int, std::allocator<int> > >(catena::common::Path&, std::vector<int, std::allocator<int> >&, catena::common::IAuthorizer const&, catena::exception_with_status&)",
+                    "count": 3,
+                    "branches": [
+                        {
+                            "branchno": 3,
+                            "count": 0,
+                            "fallthrough": true,
+                            "throw": false,
+                            "source_block_id": 0
+                        },
+                        {
+                            "branchno": 4,
+                            "count": 0,
+                            "fallthrough": false,
+                            "throw": true,
+                            "source_block_id": 0
+                        },
+                        {
+                            "branchno": 8,
+                            "count": 3,
+                            "fallthrough": true,
+                            "throw": false,
+                            "source_block_id": 2
+                        },
+                        {
+                            "branchno": 9,
+                            "count": 0,
+                            "fallthrough": false,
+                            "throw": true,
+                            "source_block_id": 2
+                        }
+                    ],
+                    "calls": [
+                        {
+                            "callno": 0,
+                            "source_block_id": 0,
+                            "returned": 0
+                        },
+                        {
+                            "callno": 1,
+                            "source_block_id": 0,
+                            "returned": 0
+                        },
+                        {
+                            "callno": 2,
+                            "source_block_id": 0,
+                            "returned": 0
+                        },
+                        {
+                            "callno": 5,
+                            "source_block_id": 2,
+                            "returned": 3
+                        },
+                        {
+                            "callno": 6,
+                            "source_block_id": 2,
+                            "returned": 3
+                        },
+                        {
+                            "callno": 7,
+                            "source_block_id": 2,
+                            "returned": 3
+                        }
+                    ],
+                    "gcovr/md5": "67164b2419763a4300b0bbfaef440f90"
+                },
+                {
+                    "line_number": 863,
+                    "function_name": "std::unique_ptr<catena::common::IParam, std::default_delete<catena::common::IParam> > catena::common::ParamWithValue<std::vector<int, std::allocator<int> > >::getParam_<std::vector<int, std::allocator<int> > >(catena::common::Path&, std::vector<int, std::allocator<int> >&, catena::common::IAuthorizer const&, catena::exception_with_status&)",
+                    "count": 6,
+                    "branches": [
+                        {
+                            "branchno": 2,
+                            "count": 0,
+                            "fallthrough": true,
+                            "throw": false,
+                            "source_block_id": 0
+                        },
+                        {
+                            "branchno": 3,
+                            "count": 0,
+                            "fallthrough": false,
+                            "throw": true,
+                            "source_block_id": 0
+                        },
+                        {
+                            "branchno": 6,
+                            "count": 3,
+                            "fallthrough": true,
+                            "throw": false,
+                            "source_block_id": 2
+                        },
+                        {
+                            "branchno": 7,
+                            "count": 0,
+                            "fallthrough": false,
+                            "throw": true,
+                            "source_block_id": 2
+                        }
+                    ],
+                    "calls": [
+                        {
+                            "callno": 0,
+                            "source_block_id": 0,
+                            "returned": 0
+                        },
+                        {
+                            "callno": 1,
+                            "source_block_id": 0,
+                            "returned": 0
+                        },
+                        {
+                            "callno": 4,
+                            "source_block_id": 2,
+                            "returned": 3
+                        },
+                        {
+                            "callno": 5,
+                            "source_block_id": 2,
+                            "returned": 3
+                        }
+                    ],
+                    "gcovr/md5": "958f1a8f795083856b3897bf8a4baa53"
+                },
+                {
+                    "line_number": 864,
+                    "function_name": "std::unique_ptr<catena::common::IParam, std::default_delete<catena::common::IParam> > catena::common::ParamWithValue<std::vector<int, std::allocator<int> > >::getParam_<std::vector<int, std::allocator<int> > >(catena::common::Path&, std::vector<int, std::allocator<int> >&, catena::common::IAuthorizer const&, catena::exception_with_status&)",
+                    "count": 3,
+                    "branches": [],
+                    "calls": [
+                        {
+                            "callno": 0,
+                            "source_block_id": 0,
+                            "returned": 0
+                        },
+                        {
+                            "callno": 1,
+                            "source_block_id": 0,
+                            "returned": 0
+                        },
+                        {
+                            "callno": 2,
+                            "source_block_id": 1,
+                            "returned": 0
+                        },
+                        {
+                            "callno": 3,
+                            "source_block_id": 2,
+                            "returned": 0
+                        },
+                        {
+                            "callno": 4,
+                            "source_block_id": 3,
+                            "returned": 3
+                        },
+                        {
+                            "callno": 5,
+                            "source_block_id": 3,
+                            "returned": 3
+                        },
+                        {
+                            "callno": 6,
+                            "source_block_id": 4,
+                            "returned": 0
+                        },
+                        {
+                            "callno": 7,
+                            "source_block_id": 5,
+                            "returned": 0
+                        }
+                    ],
+                    "gcovr/md5": "28e6e66ee96febd8f784327074eb2637"
                 },
                 {
                     "line_number": 865,
@@ -19643,6 +19637,13 @@
                     "line_number": 865,
                     "function_name": "catena::common::ParamWithValue<std::vector<int, std::allocator<int> > >::validateSetValueMap_::{lambda(st2138::Value const&, unsigned long, catena::common::IAuthorizer const&)#7}::operator()(st2138::Value const&, unsigned long, catena::common::IAuthorizer const&) const",
                     "count": 0,
+                    "branches": [],
+                    "gcovr/md5": "7317274e0fc342af7bd6d912413b88de"
+                },
+                {
+                    "line_number": 866,
+                    "function_name": "std::unique_ptr<catena::common::IParam, std::default_delete<catena::common::IParam> > catena::common::ParamWithValue<std::vector<int, std::allocator<int> > >::getParam_<std::vector<int, std::allocator<int> > >(catena::common::Path&, std::vector<int, std::allocator<int> >&, catena::common::IAuthorizer const&, catena::exception_with_status&)",
+                    "count": 0,
                     "branches": [
                         {
                             "branchno": 1,
@@ -19653,20 +19654,6 @@
                         },
                         {
                             "branchno": 2,
-                            "count": 0,
-                            "fallthrough": true,
-                            "throw": true,
-                            "source_block_id": 0
-                        },
-                        {
-                            "branchno": 3,
-                            "count": 0,
-                            "fallthrough": true,
-                            "throw": true,
-                            "source_block_id": 0
-                        },
-                        {
-                            "branchno": 4,
                             "count": 0,
                             "fallthrough": false,
                             "throw": true,
@@ -19687,28 +19674,14 @@
                             "source_block_id": 1
                         },
                         {
-                            "branchno": 6,
+                            "branchno": 7,
                             "count": 0,
                             "fallthrough": true,
                             "throw": false,
                             "source_block_id": 2
                         },
                         {
-                            "branchno": 7,
-                            "count": 0,
-                            "fallthrough": true,
-                            "throw": true,
-                            "source_block_id": 2
-                        },
-                        {
                             "branchno": 8,
-                            "count": 0,
-                            "fallthrough": true,
-                            "throw": true,
-                            "source_block_id": 2
-                        },
-                        {
-                            "branchno": 9,
                             "count": 0,
                             "fallthrough": false,
                             "throw": true,
@@ -19764,93 +19737,13 @@
                             "returned": 0
                         },
                         {
-                            "callno": 0,
-                            "source_block_id": 5,
-                            "returned": 2
-                        },
-                        {
-                            "callno": 1,
-                            "source_block_id": 0,
-                            "returned": 0
-                        },
-                        {
-                            "callno": 1,
-                            "source_block_id": 5,
-                            "returned": 15
-                        },
-                        {
-                            "callno": 2,
-                            "source_block_id": 0,
-                            "returned": 0
-                        },
-                        {
-                            "callno": 2,
-                            "source_block_id": 1,
-                            "returned": 0
-                        },
-                        {
-                            "callno": 2,
-                            "source_block_id": 5,
-                            "returned": 1
-                        },
-                        {
                             "callno": 3,
                             "source_block_id": 1,
                             "returned": 0
                         },
                         {
-                            "callno": 3,
-                            "source_block_id": 2,
-                            "returned": 0
-                        },
-                        {
-                            "callno": 3,
-                            "source_block_id": 5,
-                            "returned": 1
-                        },
-                        {
-                            "callno": 4,
-                            "source_block_id": 2,
-                            "returned": 0
-                        },
-                        {
-                            "callno": 4,
-                            "source_block_id": 3,
-                            "returned": 0
-                        },
-                        {
-                            "callno": 4,
-                            "source_block_id": 5,
-                            "returned": 16
-                        },
-                        {
-                            "callno": 5,
-                            "source_block_id": 2,
-                            "returned": 0
-                        },
-                        {
-                            "callno": 5,
-                            "source_block_id": 3,
-                            "returned": 0
-                        },
-                        {
                             "callno": 6,
                             "source_block_id": 2,
-                            "returned": 0
-                        },
-                        {
-                            "callno": 6,
-                            "source_block_id": 4,
-                            "returned": 0
-                        },
-                        {
-                            "callno": 7,
-                            "source_block_id": 2,
-                            "returned": 0
-                        },
-                        {
-                            "callno": 7,
-                            "source_block_id": 5,
                             "returned": 0
                         },
                         {
@@ -19869,7 +19762,182 @@
                             "returned": 0
                         }
                     ],
-                    "gcovr/md5": "7317274e0fc342af7bd6d912413b88de"
+                    "gcovr/md5": "65ef89b03d5c486b8e429301061a3a7a"
+                },
+                {
+                    "line_number": 867,
+                    "function_name": "std::unique_ptr<catena::common::IParam, std::default_delete<catena::common::IParam> > catena::common::ParamWithValue<std::vector<int, std::allocator<int> > >::getParam_<std::vector<int, std::allocator<int> > >(catena::common::Path&, std::vector<int, std::allocator<int> >&, catena::common::IAuthorizer const&, catena::exception_with_status&)",
+                    "count": 0,
+                    "branches": [
+                        {
+                            "branchno": 3,
+                            "count": 0,
+                            "fallthrough": true,
+                            "throw": false,
+                            "source_block_id": 0
+                        },
+                        {
+                            "branchno": 4,
+                            "count": 0,
+                            "fallthrough": false,
+                            "throw": true,
+                            "source_block_id": 0
+                        },
+                        {
+                            "branchno": 8,
+                            "count": 0,
+                            "fallthrough": true,
+                            "throw": false,
+                            "source_block_id": 2
+                        },
+                        {
+                            "branchno": 9,
+                            "count": 0,
+                            "fallthrough": false,
+                            "throw": true,
+                            "source_block_id": 2
+                        }
+                    ],
+                    "calls": [
+                        {
+                            "callno": 0,
+                            "source_block_id": 0,
+                            "returned": 0
+                        },
+                        {
+                            "callno": 1,
+                            "source_block_id": 0,
+                            "returned": 0
+                        },
+                        {
+                            "callno": 2,
+                            "source_block_id": 0,
+                            "returned": 0
+                        },
+                        {
+                            "callno": 5,
+                            "source_block_id": 2,
+                            "returned": 0
+                        },
+                        {
+                            "callno": 6,
+                            "source_block_id": 2,
+                            "returned": 0
+                        },
+                        {
+                            "callno": 7,
+                            "source_block_id": 2,
+                            "returned": 0
+                        }
+                    ],
+                    "gcovr/md5": "452729c0a28975f938f172f5ce66d8ff"
+                },
+                {
+                    "line_number": 868,
+                    "function_name": "std::unique_ptr<catena::common::IParam, std::default_delete<catena::common::IParam> > catena::common::ParamWithValue<std::vector<int, std::allocator<int> > >::getParam_<std::vector<int, std::allocator<int> > >(catena::common::Path&, std::vector<int, std::allocator<int> >&, catena::common::IAuthorizer const&, catena::exception_with_status&)",
+                    "count": 0,
+                    "branches": [
+                        {
+                            "branchno": 2,
+                            "count": 0,
+                            "fallthrough": true,
+                            "throw": false,
+                            "source_block_id": 0
+                        },
+                        {
+                            "branchno": 3,
+                            "count": 0,
+                            "fallthrough": false,
+                            "throw": true,
+                            "source_block_id": 0
+                        },
+                        {
+                            "branchno": 6,
+                            "count": 0,
+                            "fallthrough": true,
+                            "throw": false,
+                            "source_block_id": 2
+                        },
+                        {
+                            "branchno": 7,
+                            "count": 0,
+                            "fallthrough": false,
+                            "throw": true,
+                            "source_block_id": 2
+                        }
+                    ],
+                    "calls": [
+                        {
+                            "callno": 0,
+                            "source_block_id": 0,
+                            "returned": 0
+                        },
+                        {
+                            "callno": 1,
+                            "source_block_id": 0,
+                            "returned": 0
+                        },
+                        {
+                            "callno": 4,
+                            "source_block_id": 2,
+                            "returned": 0
+                        },
+                        {
+                            "callno": 5,
+                            "source_block_id": 2,
+                            "returned": 0
+                        }
+                    ],
+                    "gcovr/md5": "958f1a8f795083856b3897bf8a4baa53"
+                },
+                {
+                    "line_number": 869,
+                    "function_name": "std::unique_ptr<catena::common::IParam, std::default_delete<catena::common::IParam> > catena::common::ParamWithValue<std::vector<int, std::allocator<int> > >::getParam_<std::vector<int, std::allocator<int> > >(catena::common::Path&, std::vector<int, std::allocator<int> >&, catena::common::IAuthorizer const&, catena::exception_with_status&)",
+                    "count": 0,
+                    "branches": [],
+                    "calls": [
+                        {
+                            "callno": 0,
+                            "source_block_id": 0,
+                            "returned": 0
+                        },
+                        {
+                            "callno": 1,
+                            "source_block_id": 0,
+                            "returned": 0
+                        },
+                        {
+                            "callno": 2,
+                            "source_block_id": 1,
+                            "returned": 0
+                        },
+                        {
+                            "callno": 3,
+                            "source_block_id": 2,
+                            "returned": 0
+                        },
+                        {
+                            "callno": 4,
+                            "source_block_id": 3,
+                            "returned": 0
+                        },
+                        {
+                            "callno": 5,
+                            "source_block_id": 3,
+                            "returned": 0
+                        },
+                        {
+                            "callno": 6,
+                            "source_block_id": 4,
+                            "returned": 0
+                        },
+                        {
+                            "callno": 7,
+                            "source_block_id": 5,
+                            "returned": 0
+                        }
+                    ],
+                    "gcovr/md5": "28e6e66ee96febd8f784327074eb2637"
                 },
                 {
                     "line_number": 870,
@@ -19882,6 +19950,13 @@
                     "line_number": 870,
                     "function_name": "catena::common::ParamWithValue<std::vector<int, std::allocator<int> > >::validateSetValueMap_::{lambda(st2138::Value const&, unsigned long, catena::common::IAuthorizer const&)#8}::operator()(st2138::Value const&, unsigned long, catena::common::IAuthorizer const&) const",
                     "count": 0,
+                    "branches": [],
+                    "gcovr/md5": "00b83c1ee4068500cbb67d0d27afce19"
+                },
+                {
+                    "line_number": 871,
+                    "function_name": "std::unique_ptr<catena::common::IParam, std::default_delete<catena::common::IParam> > catena::common::ParamWithValue<std::vector<int, std::allocator<int> > >::getParam_<std::vector<int, std::allocator<int> > >(catena::common::Path&, std::vector<int, std::allocator<int> >&, catena::common::IAuthorizer const&, catena::exception_with_status&)",
+                    "count": 0,
                     "branches": [
                         {
                             "branchno": 1,
@@ -19892,13 +19967,6 @@
                         },
                         {
                             "branchno": 2,
-                            "count": 0,
-                            "fallthrough": true,
-                            "throw": true,
-                            "source_block_id": 0
-                        },
-                        {
-                            "branchno": 3,
                             "count": 0,
                             "fallthrough": false,
                             "throw": true,
@@ -19919,17 +19987,10 @@
                             "source_block_id": 1
                         },
                         {
-                            "branchno": 6,
-                            "count": 0,
-                            "fallthrough": true,
-                            "throw": false,
-                            "source_block_id": 2
-                        },
-                        {
                             "branchno": 7,
                             "count": 0,
                             "fallthrough": true,
-                            "throw": true,
+                            "throw": false,
                             "source_block_id": 2
                         },
                         {
@@ -19947,6 +20008,123 @@
                             "source_block_id": 3
                         },
                         {
+                            "branchno": 11,
+                            "count": 0,
+                            "fallthrough": false,
+                            "throw": true,
+                            "source_block_id": 3
+                        },
+                        {
+                            "branchno": 13,
+                            "count": 0,
+                            "fallthrough": true,
+                            "throw": false,
+                            "source_block_id": 4
+                        },
+                        {
+                            "branchno": 14,
+                            "count": 0,
+                            "fallthrough": false,
+                            "throw": true,
+                            "source_block_id": 4
+                        },
+                        {
+                            "branchno": 16,
+                            "count": 0,
+                            "fallthrough": true,
+                            "throw": false,
+                            "source_block_id": 5
+                        },
+                        {
+                            "branchno": 17,
+                            "count": 0,
+                            "fallthrough": false,
+                            "throw": true,
+                            "source_block_id": 5
+                        }
+                    ],
+                    "calls": [
+                        {
+                            "callno": 0,
+                            "source_block_id": 0,
+                            "returned": 0
+                        },
+                        {
+                            "callno": 3,
+                            "source_block_id": 1,
+                            "returned": 0
+                        },
+                        {
+                            "callno": 6,
+                            "source_block_id": 2,
+                            "returned": 0
+                        },
+                        {
+                            "callno": 9,
+                            "source_block_id": 3,
+                            "returned": 0
+                        },
+                        {
+                            "callno": 12,
+                            "source_block_id": 4,
+                            "returned": 0
+                        },
+                        {
+                            "callno": 15,
+                            "source_block_id": 5,
+                            "returned": 0
+                        }
+                    ],
+                    "gcovr/md5": "fb33e391c5ce51bfaae67fed4a27c5d6"
+                },
+                {
+                    "line_number": 872,
+                    "function_name": "std::unique_ptr<catena::common::IParam, std::default_delete<catena::common::IParam> > catena::common::ParamWithValue<std::vector<int, std::allocator<int> > >::getParam_<std::vector<int, std::allocator<int> > >(catena::common::Path&, std::vector<int, std::allocator<int> >&, catena::common::IAuthorizer const&, catena::exception_with_status&)",
+                    "count": 0,
+                    "branches": [
+                        {
+                            "branchno": 1,
+                            "count": 0,
+                            "fallthrough": true,
+                            "throw": false,
+                            "source_block_id": 0
+                        },
+                        {
+                            "branchno": 2,
+                            "count": 0,
+                            "fallthrough": false,
+                            "throw": true,
+                            "source_block_id": 0
+                        },
+                        {
+                            "branchno": 4,
+                            "count": 0,
+                            "fallthrough": true,
+                            "throw": false,
+                            "source_block_id": 1
+                        },
+                        {
+                            "branchno": 5,
+                            "count": 0,
+                            "fallthrough": false,
+                            "throw": true,
+                            "source_block_id": 1
+                        },
+                        {
+                            "branchno": 7,
+                            "count": 0,
+                            "fallthrough": true,
+                            "throw": false,
+                            "source_block_id": 2
+                        },
+                        {
+                            "branchno": 8,
+                            "count": 0,
+                            "fallthrough": false,
+                            "throw": true,
+                            "source_block_id": 2
+                        },
+                        {
                             "branchno": 10,
                             "count": 0,
                             "fallthrough": true,
@@ -19958,20 +20136,6 @@
                             "count": 0,
                             "fallthrough": false,
                             "throw": true,
-                            "source_block_id": 3
-                        },
-                        {
-                            "branchno": 11,
-                            "count": 0,
-                            "fallthrough": false,
-                            "throw": true,
-                            "source_block_id": 4
-                        },
-                        {
-                            "branchno": 13,
-                            "count": 0,
-                            "fallthrough": true,
-                            "throw": false,
                             "source_block_id": 4
                         },
                         {
@@ -19986,20 +20150,6 @@
                             "count": 0,
                             "fallthrough": false,
                             "throw": true,
-                            "source_block_id": 4
-                        },
-                        {
-                            "branchno": 14,
-                            "count": 0,
-                            "fallthrough": false,
-                            "throw": true,
-                            "source_block_id": 5
-                        },
-                        {
-                            "branchno": 16,
-                            "count": 0,
-                            "fallthrough": true,
-                            "throw": false,
                             "source_block_id": 5
                         },
                         {
@@ -20008,13 +20158,6 @@
                             "fallthrough": true,
                             "throw": false,
                             "source_block_id": 6
-                        },
-                        {
-                            "branchno": 17,
-                            "count": 0,
-                            "fallthrough": false,
-                            "throw": true,
-                            "source_block_id": 5
                         },
                         {
                             "branchno": 17,
@@ -20031,9 +20174,72 @@
                             "returned": 0
                         },
                         {
-                            "callno": 0,
+                            "callno": 3,
+                            "source_block_id": 1,
+                            "returned": 0
+                        },
+                        {
+                            "callno": 6,
+                            "source_block_id": 2,
+                            "returned": 0
+                        },
+                        {
+                            "callno": 9,
+                            "source_block_id": 4,
+                            "returned": 0
+                        },
+                        {
+                            "callno": 12,
                             "source_block_id": 5,
-                            "returned": 2
+                            "returned": 0
+                        },
+                        {
+                            "callno": 15,
+                            "source_block_id": 6,
+                            "returned": 0
+                        }
+                    ],
+                    "gcovr/md5": "bfc2fe7cf77ba878b622de31c3af9e29"
+                },
+                {
+                    "line_number": 873,
+                    "function_name": "std::unique_ptr<catena::common::IParam, std::default_delete<catena::common::IParam> > catena::common::ParamWithValue<std::vector<int, std::allocator<int> > >::getParam_<std::vector<int, std::allocator<int> > >(catena::common::Path&, std::vector<int, std::allocator<int> >&, catena::common::IAuthorizer const&, catena::exception_with_status&)",
+                    "count": 0,
+                    "branches": [
+                        {
+                            "branchno": 2,
+                            "count": 0,
+                            "fallthrough": true,
+                            "throw": false,
+                            "source_block_id": 0
+                        },
+                        {
+                            "branchno": 3,
+                            "count": 0,
+                            "fallthrough": false,
+                            "throw": true,
+                            "source_block_id": 0
+                        },
+                        {
+                            "branchno": 6,
+                            "count": 0,
+                            "fallthrough": true,
+                            "throw": false,
+                            "source_block_id": 2
+                        },
+                        {
+                            "branchno": 7,
+                            "count": 0,
+                            "fallthrough": false,
+                            "throw": true,
+                            "source_block_id": 2
+                        }
+                    ],
+                    "calls": [
+                        {
+                            "callno": 0,
+                            "source_block_id": 0,
+                            "returned": 0
                         },
                         {
                             "callno": 1,
@@ -20041,22 +20247,36 @@
                             "returned": 0
                         },
                         {
+                            "callno": 4,
+                            "source_block_id": 2,
+                            "returned": 0
+                        },
+                        {
+                            "callno": 5,
+                            "source_block_id": 2,
+                            "returned": 0
+                        }
+                    ],
+                    "gcovr/md5": "958f1a8f795083856b3897bf8a4baa53"
+                },
+                {
+                    "line_number": 874,
+                    "function_name": "std::unique_ptr<catena::common::IParam, std::default_delete<catena::common::IParam> > catena::common::ParamWithValue<std::vector<int, std::allocator<int> > >::getParam_<std::vector<int, std::allocator<int> > >(catena::common::Path&, std::vector<int, std::allocator<int> >&, catena::common::IAuthorizer const&, catena::exception_with_status&)",
+                    "count": 0,
+                    "branches": [],
+                    "calls": [
+                        {
+                            "callno": 0,
+                            "source_block_id": 0,
+                            "returned": 0
+                        },
+                        {
                             "callno": 1,
-                            "source_block_id": 5,
-                            "returned": 15
-                        },
-                        {
-                            "callno": 2,
-                            "source_block_id": 1,
+                            "source_block_id": 0,
                             "returned": 0
                         },
                         {
                             "callno": 2,
-                            "source_block_id": 5,
-                            "returned": 1
-                        },
-                        {
-                            "callno": 3,
                             "source_block_id": 1,
                             "returned": 0
                         },
@@ -20066,38 +20286,13 @@
                             "returned": 0
                         },
                         {
-                            "callno": 3,
-                            "source_block_id": 5,
-                            "returned": 1
-                        },
-                        {
-                            "callno": 4,
-                            "source_block_id": 2,
-                            "returned": 0
-                        },
-                        {
                             "callno": 4,
                             "source_block_id": 3,
                             "returned": 0
                         },
                         {
-                            "callno": 4,
-                            "source_block_id": 5,
-                            "returned": 16
-                        },
-                        {
-                            "callno": 5,
-                            "source_block_id": 2,
-                            "returned": 0
-                        },
-                        {
                             "callno": 5,
                             "source_block_id": 3,
-                            "returned": 0
-                        },
-                        {
-                            "callno": 6,
-                            "source_block_id": 2,
                             "returned": 0
                         },
                         {
@@ -20109,39 +20304,9 @@
                             "callno": 7,
                             "source_block_id": 5,
                             "returned": 0
-                        },
-                        {
-                            "callno": 9,
-                            "source_block_id": 3,
-                            "returned": 0
-                        },
-                        {
-                            "callno": 9,
-                            "source_block_id": 4,
-                            "returned": 0
-                        },
-                        {
-                            "callno": 12,
-                            "source_block_id": 4,
-                            "returned": 0
-                        },
-                        {
-                            "callno": 12,
-                            "source_block_id": 5,
-                            "returned": 0
-                        },
-                        {
-                            "callno": 15,
-                            "source_block_id": 5,
-                            "returned": 0
-                        },
-                        {
-                            "callno": 15,
-                            "source_block_id": 6,
-                            "returned": 0
                         }
                     ],
-                    "gcovr/md5": "00b83c1ee4068500cbb67d0d27afce19"
+                    "gcovr/md5": "28e6e66ee96febd8f784327074eb2637"
                 },
                 {
                     "line_number": 875,
@@ -20154,6 +20319,13 @@
                     "line_number": 875,
                     "function_name": "catena::common::ParamWithValue<std::vector<int, std::allocator<int> > >::validateSetValueMap_::{lambda(st2138::Value const&, unsigned long, catena::common::IAuthorizer const&)#9}::operator()(st2138::Value const&, unsigned long, catena::common::IAuthorizer const&) const",
                     "count": 0,
+                    "branches": [],
+                    "gcovr/md5": "ba6303ca7961b697880d1ae2f0ee1930"
+                },
+                {
+                    "line_number": 876,
+                    "function_name": "std::unique_ptr<catena::common::IParam, std::default_delete<catena::common::IParam> > catena::common::ParamWithValue<std::vector<int, std::allocator<int> > >::getParam_<std::vector<int, std::allocator<int> > >(catena::common::Path&, std::vector<int, std::allocator<int> >&, catena::common::IAuthorizer const&, catena::exception_with_status&)",
+                    "count": 0,
                     "branches": [
                         {
                             "branchno": 1,
@@ -20164,13 +20336,6 @@
                         },
                         {
                             "branchno": 2,
-                            "count": 0,
-                            "fallthrough": true,
-                            "throw": true,
-                            "source_block_id": 0
-                        },
-                        {
-                            "branchno": 3,
                             "count": 0,
                             "fallthrough": false,
                             "throw": true,
@@ -20191,17 +20356,10 @@
                             "source_block_id": 1
                         },
                         {
-                            "branchno": 6,
-                            "count": 0,
-                            "fallthrough": true,
-                            "throw": false,
-                            "source_block_id": 2
-                        },
-                        {
                             "branchno": 7,
                             "count": 0,
                             "fallthrough": true,
-                            "throw": true,
+                            "throw": false,
                             "source_block_id": 2
                         },
                         {
@@ -20219,6 +20377,123 @@
                             "source_block_id": 3
                         },
                         {
+                            "branchno": 11,
+                            "count": 0,
+                            "fallthrough": false,
+                            "throw": true,
+                            "source_block_id": 3
+                        },
+                        {
+                            "branchno": 13,
+                            "count": 0,
+                            "fallthrough": true,
+                            "throw": false,
+                            "source_block_id": 4
+                        },
+                        {
+                            "branchno": 14,
+                            "count": 0,
+                            "fallthrough": false,
+                            "throw": true,
+                            "source_block_id": 4
+                        },
+                        {
+                            "branchno": 16,
+                            "count": 0,
+                            "fallthrough": true,
+                            "throw": false,
+                            "source_block_id": 5
+                        },
+                        {
+                            "branchno": 17,
+                            "count": 0,
+                            "fallthrough": false,
+                            "throw": true,
+                            "source_block_id": 5
+                        }
+                    ],
+                    "calls": [
+                        {
+                            "callno": 0,
+                            "source_block_id": 0,
+                            "returned": 0
+                        },
+                        {
+                            "callno": 3,
+                            "source_block_id": 1,
+                            "returned": 0
+                        },
+                        {
+                            "callno": 6,
+                            "source_block_id": 2,
+                            "returned": 0
+                        },
+                        {
+                            "callno": 9,
+                            "source_block_id": 3,
+                            "returned": 0
+                        },
+                        {
+                            "callno": 12,
+                            "source_block_id": 4,
+                            "returned": 0
+                        },
+                        {
+                            "callno": 15,
+                            "source_block_id": 5,
+                            "returned": 0
+                        }
+                    ],
+                    "gcovr/md5": "90fc7c17e13adf111ed2a600a69fac94"
+                },
+                {
+                    "line_number": 877,
+                    "function_name": "std::unique_ptr<catena::common::IParam, std::default_delete<catena::common::IParam> > catena::common::ParamWithValue<std::vector<int, std::allocator<int> > >::getParam_<std::vector<int, std::allocator<int> > >(catena::common::Path&, std::vector<int, std::allocator<int> >&, catena::common::IAuthorizer const&, catena::exception_with_status&)",
+                    "count": 0,
+                    "branches": [
+                        {
+                            "branchno": 1,
+                            "count": 0,
+                            "fallthrough": true,
+                            "throw": false,
+                            "source_block_id": 0
+                        },
+                        {
+                            "branchno": 2,
+                            "count": 0,
+                            "fallthrough": false,
+                            "throw": true,
+                            "source_block_id": 0
+                        },
+                        {
+                            "branchno": 4,
+                            "count": 0,
+                            "fallthrough": true,
+                            "throw": false,
+                            "source_block_id": 1
+                        },
+                        {
+                            "branchno": 5,
+                            "count": 0,
+                            "fallthrough": false,
+                            "throw": true,
+                            "source_block_id": 1
+                        },
+                        {
+                            "branchno": 7,
+                            "count": 0,
+                            "fallthrough": true,
+                            "throw": false,
+                            "source_block_id": 2
+                        },
+                        {
+                            "branchno": 8,
+                            "count": 0,
+                            "fallthrough": false,
+                            "throw": true,
+                            "source_block_id": 2
+                        },
+                        {
                             "branchno": 10,
                             "count": 0,
                             "fallthrough": true,
@@ -20230,20 +20505,6 @@
                             "count": 0,
                             "fallthrough": false,
                             "throw": true,
-                            "source_block_id": 3
-                        },
-                        {
-                            "branchno": 11,
-                            "count": 0,
-                            "fallthrough": false,
-                            "throw": true,
-                            "source_block_id": 4
-                        },
-                        {
-                            "branchno": 13,
-                            "count": 0,
-                            "fallthrough": true,
-                            "throw": false,
                             "source_block_id": 4
                         },
                         {
@@ -20258,20 +20519,6 @@
                             "count": 0,
                             "fallthrough": false,
                             "throw": true,
-                            "source_block_id": 4
-                        },
-                        {
-                            "branchno": 14,
-                            "count": 0,
-                            "fallthrough": false,
-                            "throw": true,
-                            "source_block_id": 5
-                        },
-                        {
-                            "branchno": 16,
-                            "count": 0,
-                            "fallthrough": true,
-                            "throw": false,
                             "source_block_id": 5
                         },
                         {
@@ -20280,13 +20527,6 @@
                             "fallthrough": true,
                             "throw": false,
                             "source_block_id": 6
-                        },
-                        {
-                            "branchno": 17,
-                            "count": 0,
-                            "fallthrough": false,
-                            "throw": true,
-                            "source_block_id": 5
                         },
                         {
                             "branchno": 17,
@@ -20303,9 +20543,72 @@
                             "returned": 0
                         },
                         {
-                            "callno": 0,
+                            "callno": 3,
+                            "source_block_id": 1,
+                            "returned": 0
+                        },
+                        {
+                            "callno": 6,
+                            "source_block_id": 2,
+                            "returned": 0
+                        },
+                        {
+                            "callno": 9,
+                            "source_block_id": 4,
+                            "returned": 0
+                        },
+                        {
+                            "callno": 12,
                             "source_block_id": 5,
-                            "returned": 2
+                            "returned": 0
+                        },
+                        {
+                            "callno": 15,
+                            "source_block_id": 6,
+                            "returned": 0
+                        }
+                    ],
+                    "gcovr/md5": "b5fe43be06136bba6f1d196962af5b0a"
+                },
+                {
+                    "line_number": 878,
+                    "function_name": "std::unique_ptr<catena::common::IParam, std::default_delete<catena::common::IParam> > catena::common::ParamWithValue<std::vector<int, std::allocator<int> > >::getParam_<std::vector<int, std::allocator<int> > >(catena::common::Path&, std::vector<int, std::allocator<int> >&, catena::common::IAuthorizer const&, catena::exception_with_status&)",
+                    "count": 0,
+                    "branches": [
+                        {
+                            "branchno": 2,
+                            "count": 0,
+                            "fallthrough": true,
+                            "throw": false,
+                            "source_block_id": 0
+                        },
+                        {
+                            "branchno": 3,
+                            "count": 0,
+                            "fallthrough": false,
+                            "throw": true,
+                            "source_block_id": 0
+                        },
+                        {
+                            "branchno": 6,
+                            "count": 0,
+                            "fallthrough": true,
+                            "throw": false,
+                            "source_block_id": 2
+                        },
+                        {
+                            "branchno": 7,
+                            "count": 0,
+                            "fallthrough": false,
+                            "throw": true,
+                            "source_block_id": 2
+                        }
+                    ],
+                    "calls": [
+                        {
+                            "callno": 0,
+                            "source_block_id": 0,
+                            "returned": 0
                         },
                         {
                             "callno": 1,
@@ -20313,22 +20616,36 @@
                             "returned": 0
                         },
                         {
+                            "callno": 4,
+                            "source_block_id": 2,
+                            "returned": 0
+                        },
+                        {
+                            "callno": 5,
+                            "source_block_id": 2,
+                            "returned": 0
+                        }
+                    ],
+                    "gcovr/md5": "958f1a8f795083856b3897bf8a4baa53"
+                },
+                {
+                    "line_number": 879,
+                    "function_name": "std::unique_ptr<catena::common::IParam, std::default_delete<catena::common::IParam> > catena::common::ParamWithValue<std::vector<int, std::allocator<int> > >::getParam_<std::vector<int, std::allocator<int> > >(catena::common::Path&, std::vector<int, std::allocator<int> >&, catena::common::IAuthorizer const&, catena::exception_with_status&)",
+                    "count": 0,
+                    "branches": [],
+                    "calls": [
+                        {
+                            "callno": 0,
+                            "source_block_id": 0,
+                            "returned": 0
+                        },
+                        {
                             "callno": 1,
-                            "source_block_id": 5,
-                            "returned": 15
-                        },
-                        {
-                            "callno": 2,
-                            "source_block_id": 1,
+                            "source_block_id": 0,
                             "returned": 0
                         },
                         {
                             "callno": 2,
-                            "source_block_id": 5,
-                            "returned": 1
-                        },
-                        {
-                            "callno": 3,
                             "source_block_id": 1,
                             "returned": 0
                         },
@@ -20338,38 +20655,13 @@
                             "returned": 0
                         },
                         {
-                            "callno": 3,
-                            "source_block_id": 5,
-                            "returned": 1
-                        },
-                        {
-                            "callno": 4,
-                            "source_block_id": 2,
-                            "returned": 0
-                        },
-                        {
                             "callno": 4,
                             "source_block_id": 3,
                             "returned": 0
                         },
                         {
-                            "callno": 4,
-                            "source_block_id": 5,
-                            "returned": 16
-                        },
-                        {
-                            "callno": 5,
-                            "source_block_id": 2,
-                            "returned": 0
-                        },
-                        {
                             "callno": 5,
                             "source_block_id": 3,
-                            "returned": 0
-                        },
-                        {
-                            "callno": 6,
-                            "source_block_id": 2,
                             "returned": 0
                         },
                         {
@@ -20381,39 +20673,9 @@
                             "callno": 7,
                             "source_block_id": 5,
                             "returned": 0
-                        },
-                        {
-                            "callno": 9,
-                            "source_block_id": 3,
-                            "returned": 0
-                        },
-                        {
-                            "callno": 9,
-                            "source_block_id": 4,
-                            "returned": 0
-                        },
-                        {
-                            "callno": 12,
-                            "source_block_id": 4,
-                            "returned": 0
-                        },
-                        {
-                            "callno": 12,
-                            "source_block_id": 5,
-                            "returned": 0
-                        },
-                        {
-                            "callno": 15,
-                            "source_block_id": 5,
-                            "returned": 0
-                        },
-                        {
-                            "callno": 15,
-                            "source_block_id": 6,
-                            "returned": 0
                         }
                     ],
-                    "gcovr/md5": "ba6303ca7961b697880d1ae2f0ee1930"
+                    "gcovr/md5": "28e6e66ee96febd8f784327074eb2637"
                 },
                 {
                     "line_number": 880,
@@ -20426,6 +20688,13 @@
                     "line_number": 880,
                     "function_name": "catena::common::ParamWithValue<std::vector<int, std::allocator<int> > >::validateSetValueMap_::{lambda(st2138::Value const&, unsigned long, catena::common::IAuthorizer const&)#10}::operator()(st2138::Value const&, unsigned long, catena::common::IAuthorizer const&) const",
                     "count": 0,
+                    "branches": [],
+                    "gcovr/md5": "f0ab4d02f6616ccc842ca7a587220503"
+                },
+                {
+                    "line_number": 881,
+                    "function_name": "std::unique_ptr<catena::common::IParam, std::default_delete<catena::common::IParam> > catena::common::ParamWithValue<std::vector<int, std::allocator<int> > >::getParam_<std::vector<int, std::allocator<int> > >(catena::common::Path&, std::vector<int, std::allocator<int> >&, catena::common::IAuthorizer const&, catena::exception_with_status&)",
+                    "count": 0,
                     "branches": [
                         {
                             "branchno": 1,
@@ -20436,13 +20705,6 @@
                         },
                         {
                             "branchno": 2,
-                            "count": 0,
-                            "fallthrough": true,
-                            "throw": true,
-                            "source_block_id": 0
-                        },
-                        {
-                            "branchno": 3,
                             "count": 0,
                             "fallthrough": false,
                             "throw": true,
@@ -20463,17 +20725,10 @@
                             "source_block_id": 1
                         },
                         {
-                            "branchno": 6,
-                            "count": 0,
-                            "fallthrough": true,
-                            "throw": false,
-                            "source_block_id": 2
-                        },
-                        {
                             "branchno": 7,
                             "count": 0,
                             "fallthrough": true,
-                            "throw": true,
+                            "throw": false,
                             "source_block_id": 2
                         },
                         {
@@ -20491,6 +20746,123 @@
                             "source_block_id": 3
                         },
                         {
+                            "branchno": 11,
+                            "count": 0,
+                            "fallthrough": false,
+                            "throw": true,
+                            "source_block_id": 3
+                        },
+                        {
+                            "branchno": 13,
+                            "count": 0,
+                            "fallthrough": true,
+                            "throw": false,
+                            "source_block_id": 4
+                        },
+                        {
+                            "branchno": 14,
+                            "count": 0,
+                            "fallthrough": false,
+                            "throw": true,
+                            "source_block_id": 4
+                        },
+                        {
+                            "branchno": 16,
+                            "count": 0,
+                            "fallthrough": true,
+                            "throw": false,
+                            "source_block_id": 5
+                        },
+                        {
+                            "branchno": 17,
+                            "count": 0,
+                            "fallthrough": false,
+                            "throw": true,
+                            "source_block_id": 5
+                        }
+                    ],
+                    "calls": [
+                        {
+                            "callno": 0,
+                            "source_block_id": 0,
+                            "returned": 0
+                        },
+                        {
+                            "callno": 3,
+                            "source_block_id": 1,
+                            "returned": 0
+                        },
+                        {
+                            "callno": 6,
+                            "source_block_id": 2,
+                            "returned": 0
+                        },
+                        {
+                            "callno": 9,
+                            "source_block_id": 3,
+                            "returned": 0
+                        },
+                        {
+                            "callno": 12,
+                            "source_block_id": 4,
+                            "returned": 0
+                        },
+                        {
+                            "callno": 15,
+                            "source_block_id": 5,
+                            "returned": 0
+                        }
+                    ],
+                    "gcovr/md5": "41ae82197fd7bb66078408f0af9319b7"
+                },
+                {
+                    "line_number": 882,
+                    "function_name": "std::unique_ptr<catena::common::IParam, std::default_delete<catena::common::IParam> > catena::common::ParamWithValue<std::vector<int, std::allocator<int> > >::getParam_<std::vector<int, std::allocator<int> > >(catena::common::Path&, std::vector<int, std::allocator<int> >&, catena::common::IAuthorizer const&, catena::exception_with_status&)",
+                    "count": 0,
+                    "branches": [
+                        {
+                            "branchno": 1,
+                            "count": 0,
+                            "fallthrough": true,
+                            "throw": false,
+                            "source_block_id": 0
+                        },
+                        {
+                            "branchno": 2,
+                            "count": 0,
+                            "fallthrough": false,
+                            "throw": true,
+                            "source_block_id": 0
+                        },
+                        {
+                            "branchno": 4,
+                            "count": 0,
+                            "fallthrough": true,
+                            "throw": false,
+                            "source_block_id": 1
+                        },
+                        {
+                            "branchno": 5,
+                            "count": 0,
+                            "fallthrough": false,
+                            "throw": true,
+                            "source_block_id": 1
+                        },
+                        {
+                            "branchno": 7,
+                            "count": 0,
+                            "fallthrough": true,
+                            "throw": false,
+                            "source_block_id": 2
+                        },
+                        {
+                            "branchno": 8,
+                            "count": 0,
+                            "fallthrough": false,
+                            "throw": true,
+                            "source_block_id": 2
+                        },
+                        {
                             "branchno": 10,
                             "count": 0,
                             "fallthrough": true,
@@ -20502,20 +20874,6 @@
                             "count": 0,
                             "fallthrough": false,
                             "throw": true,
-                            "source_block_id": 3
-                        },
-                        {
-                            "branchno": 11,
-                            "count": 0,
-                            "fallthrough": false,
-                            "throw": true,
-                            "source_block_id": 4
-                        },
-                        {
-                            "branchno": 13,
-                            "count": 0,
-                            "fallthrough": true,
-                            "throw": false,
                             "source_block_id": 4
                         },
                         {
@@ -20530,20 +20888,6 @@
                             "count": 0,
                             "fallthrough": false,
                             "throw": true,
-                            "source_block_id": 4
-                        },
-                        {
-                            "branchno": 14,
-                            "count": 0,
-                            "fallthrough": false,
-                            "throw": true,
-                            "source_block_id": 5
-                        },
-                        {
-                            "branchno": 16,
-                            "count": 0,
-                            "fallthrough": true,
-                            "throw": false,
                             "source_block_id": 5
                         },
                         {
@@ -20552,13 +20896,6 @@
                             "fallthrough": true,
                             "throw": false,
                             "source_block_id": 6
-                        },
-                        {
-                            "branchno": 17,
-                            "count": 0,
-                            "fallthrough": false,
-                            "throw": true,
-                            "source_block_id": 5
                         },
                         {
                             "branchno": 17,
@@ -20568,6 +20905,103 @@
                             "source_block_id": 6
                         }
                     ],
+                    "calls": [
+                        {
+                            "callno": 0,
+                            "source_block_id": 0,
+                            "returned": 0
+                        },
+                        {
+                            "callno": 3,
+                            "source_block_id": 1,
+                            "returned": 0
+                        },
+                        {
+                            "callno": 6,
+                            "source_block_id": 2,
+                            "returned": 0
+                        },
+                        {
+                            "callno": 9,
+                            "source_block_id": 4,
+                            "returned": 0
+                        },
+                        {
+                            "callno": 12,
+                            "source_block_id": 5,
+                            "returned": 0
+                        },
+                        {
+                            "callno": 15,
+                            "source_block_id": 6,
+                            "returned": 0
+                        }
+                    ],
+                    "gcovr/md5": "423c6709b5557c2106a1f938a075cfe4"
+                },
+                {
+                    "line_number": 883,
+                    "function_name": "std::unique_ptr<catena::common::IParam, std::default_delete<catena::common::IParam> > catena::common::ParamWithValue<std::vector<int, std::allocator<int> > >::getParam_<std::vector<int, std::allocator<int> > >(catena::common::Path&, std::vector<int, std::allocator<int> >&, catena::common::IAuthorizer const&, catena::exception_with_status&)",
+                    "count": 0,
+                    "branches": [
+                        {
+                            "branchno": 2,
+                            "count": 0,
+                            "fallthrough": true,
+                            "throw": false,
+                            "source_block_id": 0
+                        },
+                        {
+                            "branchno": 3,
+                            "count": 0,
+                            "fallthrough": false,
+                            "throw": true,
+                            "source_block_id": 0
+                        },
+                        {
+                            "branchno": 6,
+                            "count": 0,
+                            "fallthrough": true,
+                            "throw": false,
+                            "source_block_id": 2
+                        },
+                        {
+                            "branchno": 7,
+                            "count": 0,
+                            "fallthrough": false,
+                            "throw": true,
+                            "source_block_id": 2
+                        }
+                    ],
+                    "calls": [
+                        {
+                            "callno": 0,
+                            "source_block_id": 0,
+                            "returned": 0
+                        },
+                        {
+                            "callno": 1,
+                            "source_block_id": 0,
+                            "returned": 0
+                        },
+                        {
+                            "callno": 4,
+                            "source_block_id": 2,
+                            "returned": 0
+                        },
+                        {
+                            "callno": 5,
+                            "source_block_id": 2,
+                            "returned": 0
+                        }
+                    ],
+                    "gcovr/md5": "958f1a8f795083856b3897bf8a4baa53"
+                },
+                {
+                    "line_number": 884,
+                    "function_name": "std::unique_ptr<catena::common::IParam, std::default_delete<catena::common::IParam> > catena::common::ParamWithValue<std::vector<int, std::allocator<int> > >::getParam_<std::vector<int, std::allocator<int> > >(catena::common::Path&, std::vector<int, std::allocator<int> >&, catena::common::IAuthorizer const&, catena::exception_with_status&)",
+                    "count": 0,
+                    "branches": [],
                     "calls": [
                         {
                             "callno": 0,
@@ -20586,16 +21020,6 @@
                         },
                         {
                             "callno": 3,
-                            "source_block_id": 1,
-                            "returned": 0
-                        },
-                        {
-                            "callno": 3,
-                            "source_block_id": 2,
-                            "returned": 0
-                        },
-                        {
-                            "callno": 4,
                             "source_block_id": 2,
                             "returned": 0
                         },
@@ -20606,17 +21030,7 @@
                         },
                         {
                             "callno": 5,
-                            "source_block_id": 2,
-                            "returned": 0
-                        },
-                        {
-                            "callno": 5,
                             "source_block_id": 3,
-                            "returned": 0
-                        },
-                        {
-                            "callno": 6,
-                            "source_block_id": 2,
                             "returned": 0
                         },
                         {
@@ -20628,39 +21042,23 @@
                             "callno": 7,
                             "source_block_id": 5,
                             "returned": 0
-                        },
-                        {
-                            "callno": 9,
-                            "source_block_id": 3,
-                            "returned": 0
-                        },
-                        {
-                            "callno": 9,
-                            "source_block_id": 4,
-                            "returned": 0
-                        },
-                        {
-                            "callno": 12,
-                            "source_block_id": 4,
-                            "returned": 0
-                        },
-                        {
-                            "callno": 12,
-                            "source_block_id": 5,
-                            "returned": 0
-                        },
-                        {
-                            "callno": 15,
-                            "source_block_id": 5,
-                            "returned": 0
-                        },
-                        {
-                            "callno": 15,
-                            "source_block_id": 6,
-                            "returned": 0
                         }
                     ],
-                    "gcovr/md5": "f0ab4d02f6616ccc842ca7a587220503"
+                    "gcovr/md5": "7d220e4b0d7044bf45fe3b8d05023f8d"
+                },
+                {
+                    "line_number": 913,
+                    "function_name": "std::unique_ptr<catena::common::IParam, std::default_delete<catena::common::IParam> > catena::common::ParamWithValue<std::vector<int, std::allocator<int> > >::getParam_<std::vector<int, std::allocator<int> > >(catena::common::Path&, std::vector<int, std::allocator<int> >&, catena::common::IAuthorizer const&, catena::exception_with_status&)",
+                    "count": 8,
+                    "branches": [],
+                    "gcovr/md5": "9910979bc710e86e1e562cf4a90c490a"
+                },
+                {
+                    "line_number": 914,
+                    "function_name": "std::unique_ptr<catena::common::IParam, std::default_delete<catena::common::IParam> > catena::common::ParamWithValue<std::vector<int, std::allocator<int> > >::getParam_<std::vector<int, std::allocator<int> > >(catena::common::Path&, std::vector<int, std::allocator<int> >&, catena::common::IAuthorizer const&, catena::exception_with_status&)",
+                    "count": 8,
+                    "branches": [],
+                    "gcovr/md5": "5d54edcc6379cca1e465cad3057f7150"
                 }
             ],
             "functions": [
