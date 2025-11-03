@@ -8,6 +8,10 @@ indent_style = space
 insert_final_newline = true
 trim_trailing_whitespace = true
 
+# Ignore specific file
+[*.gcov]
+ignore = true
+
 # for the makefiles use tabs
 [Makefile]
 indent_style = tab
