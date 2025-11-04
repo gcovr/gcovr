@@ -2,7 +2,7 @@
     "gcovr/format_version": "0.14",
     "files": [
         {
-            "file": "/home/abrown/Catena/sdks/cpp/common/include/ParamWithValue.h",
+            "file": "ParamWithValue.h",
             "lines": [
                 {
                     "line_number": 81,

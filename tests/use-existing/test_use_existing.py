@@ -74,6 +74,15 @@ def test_exclude_existing(gcovr_test_exec: "GcovrTestExec", check) -> None:  # t
 )
 def test_issue_1168(gcovr_test_exec: "GcovrTestExec", check) -> None:  # type: ignore[no-untyped-def]
     """A test that verifies exclusion when using existing *.gcov coverage files."""
+    gcov_file = (
+        gcovr_test_exec.output_dir
+        / "ParamWithIntArray_test.cpp.gcda.ParamWithValue.h.gcov"
+    )
+    gcov_file_content = gcov_file.read_text().replace(
+        "/home/abrown/Catena/sdks/cpp/common/include",  # cspell:disable-line
+        str(gcovr_test_exec.output_dir),
+    )
+    gcov_file.write_text(gcov_file_content)
     gcovr_test_exec.gcovr(
         "--verbose",
         "--gcov-use-existing-files",
