@@ -9,6 +9,68 @@ Known bugs
 This list contains bugs for version 6.0 and newer, always check the latest
 version of this file available `here <https://gcovr.com/en/latest/known_bugs.html>`_.
 
+.. _fix_1189:
+
+Line coverage missing if template functions are used
+----------------------------------------------------
+
+.. list-table::
+
+   * - Introduced
+     - :ref:`release_8_4`
+
+   * - Fixed
+     - :ref:`next_release`, :issue:`1189`
+
+With release :ref:`release_8_4` we ignored lines without a function name.
+If template functions are used there are separators in ``gcov`` text format
+before and after the function specialization. The lines after the specialization
+were ignored because the function name was set to ``None``.
+
+.. code-block::
+  :caption: Snippet of ``gcov`` file provided in :issue:`1168`
+
+          -:  844:    const std::unordered_map<Kind, std::function<catena::exception_with_status(const st2138::Value&, Path::Index, const IAuthorizer&)>> validateSetValueMap_ {
+         45:  845:        {Kind::kInt32Value, [this](const st2138::Value& protoVal, Path::Index index, const IAuthorizer& authz) {
+  call    0 returned 2
+  call    1 returned 15
+  call    2 returned 1
+  call    3 returned 1
+  call    4 returned 16
+  ------------------
+  catena::common::ParamWithValue<int>::validateSetValueMap_::{lambda(st2138::Value const&, unsigned long, catena::common::IAuthorizer const&)#1}::operator()(st2138::Value const&, unsigned long, catena::common::IAuthorizer const&) const:
+  function catena::common::ParamWithValue<int>::validateSetValueMap_::{lambda(st2138::Value const&, unsigned long, catena::common::IAuthorizer const&)#1}::operator()(st2138::Value const&, unsigned long, catena::common::IAuthorizer const&) const called 3 returned 100% blocks executed 100%
+          3:  845:        {Kind::kInt32Value, [this](const st2138::Value& protoVal, Path::Index index, const IAuthorizer& authz) {
+  ------------------
+  catena::common::ParamWithValue<std::vector<int, std::allocator<int> > >::validateSetValueMap_::{lambda(st2138::Value const&, unsigned long, catena::common::IAuthorizer const&)#1}::operator()(st2138::Value const&, unsigned long, catena::common::IAuthorizer const&) const:
+  function catena::common::ParamWithValue<std::vector<int, std::allocator<int> > >::validateSetValueMap_::{lambda(st2138::Value const&, unsigned long, catena::common::IAuthorizer const&)#1}::operator()(st2138::Value const&, unsigned long, catena::common::IAuthorizer const&) const called 7 returned 100% blocks executed 100%
+          7:  845:        {Kind::kInt32Value, [this](const st2138::Value& protoVal, Path::Index index, const IAuthorizer& authz) {
+  ------------------
+         20:  846:            return this->validateSetValue_(this->get(), protoVal.int32_value(), protoVal, index, authz);
+          3:  846-block  0
+  call    0 returned 3
+  branch  1 taken 3 (fallthrough)
+  branch  2 taken 0 (throw)
+          3:  846-block  1
+  call    3 returned 3
+  call    4 returned 3
+  branch  5 taken 3 (fallthrough)
+  branch  6 taken 0 (throw)
+          3:  846-block  2
+          3:  846-block  3
+          7:  846-block  4
+  call    7 returned 7
+  branch  8 taken 7 (fallthrough)
+  branch  9 taken 0 (throw)
+          7:  846-block  5
+  call   10 returned 7
+  call   11 returned 7
+  branch 12 taken 7 (fallthrough)
+  branch 13 taken 0 (throw)
+          7:  846-block  6
+          7:  846-block  7
+          -:  847:        }},
+
 .. _fix_1187:
 
 Detection of version mismatch between gcc and gcov doesn't work
