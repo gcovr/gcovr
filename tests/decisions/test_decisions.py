@@ -2,7 +2,7 @@ from pathlib import Path
 import pytest
 
 
-from tests.conftest import IS_GCC, IS_LINUX, GcovrTestExec
+from tests.conftest import IS_LINUX, USE_PROFDATA_POSSIBLE, GcovrTestExec
 
 
 @pytest.mark.skipif(
@@ -62,7 +62,7 @@ def test_decisions(gcovr_test_exec: "GcovrTestExec") -> None:
 
 
 @pytest.mark.skipif(
-    not IS_LINUX or IS_GCC,
+    not USE_PROFDATA_POSSIBLE,
     reason="Parsing of decision is independent of OS and we do not want to have separate data for Windows and Darwin and LLVM profdata is not compatible with GCC coverage data.",
 )
 def test_decisions_llvm_profdata(gcovr_test_exec: "GcovrTestExec") -> None:

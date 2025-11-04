@@ -1,6 +1,6 @@
 import pytest
 
-from tests.conftest import IS_GCC, GcovrTestExec
+from tests.conftest import USE_PROFDATA_POSSIBLE, GcovrTestExec
 
 
 def test_template_function(gcovr_test_exec: "GcovrTestExec") -> None:
@@ -112,7 +112,8 @@ def test_template_function(gcovr_test_exec: "GcovrTestExec") -> None:
 
 
 @pytest.mark.skipif(
-    IS_GCC, reason="LLVM profdata is not compatible with GCC coverage data."
+    not USE_PROFDATA_POSSIBLE,
+    reason="LLVM profdata is not compatible with GCC coverage data.",  # noqa: F821
 )
 def test_template_function_llvm_profdata(  # type: ignore[no-untyped-def]
     gcovr_test_exec: "GcovrTestExec", check

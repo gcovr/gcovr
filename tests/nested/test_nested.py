@@ -2,7 +2,7 @@ from pathlib import Path
 
 import pytest
 
-from tests.conftest import IS_GCC, GcovrTestExec
+from tests.conftest import USE_PROFDATA_POSSIBLE, GcovrTestExec
 
 
 def test_standard(gcovr_test_exec: "GcovrTestExec") -> None:
@@ -98,7 +98,8 @@ def test_standard(gcovr_test_exec: "GcovrTestExec") -> None:
 
 
 @pytest.mark.skipif(
-    IS_GCC, reason="LLVM profdata is not compatible with GCC coverage data."
+    not USE_PROFDATA_POSSIBLE,
+    reason="LLVM profdata is not compatible with GCC coverage data.",
 )
 def test_standard_llvm_profdata(gcovr_test_exec: "GcovrTestExec") -> None:
     """Test nested coverage report generation."""

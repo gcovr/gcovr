@@ -120,6 +120,7 @@ else:
 USE_GCC_JSON_INTERMEDIATE_FORMAT = (
     IS_GCC and f"JSON format version: {GCOV_JSON_VERSION}" in _GCOV_VERSION_OUTPUT
 )
+USE_PROFDATA_POSSIBLE = IS_LINUX and not IS_GCC
 GCOVR_TEST_USE_CXX_LAMBDA_EXPRESSIONS = "c++20" in _CC_HELP_OUTPUT
 
 _CFLAGS = [
@@ -129,6 +130,7 @@ _CFLAGS = [
 ]
 if "condition-coverage" in _CC_HELP_OUTPUT:
     _CFLAGS.append("-fcondition-coverage")
+
 _CFLAGS_PROFDATA = [
     "-fprofile-instr-generate",
     "-fcoverage-mapping",
@@ -183,8 +185,8 @@ def pytest_report_header(config: pytest.Config) -> tuple[str, ...]:
     return (
         "GCOVR test configuration:",
         f"   {_CC_VERSION_OUTPUT.splitlines()[0]}",
-        f"      C:   {CC} {shlex.join(_CFLAGS)}{'' if IS_GCC else (' (with profdata: ' + shlex.join(_CFLAGS_PROFDATA) + ')')}",
-        f"      C++: {CXX} {shlex.join(_CXXFLAGS)}{'' if IS_GCC else (' (with profdata: ' + shlex.join(_CXXFLAGS_PROFDATA) + ')')}",
+        f"      C:   {CC} {shlex.join(_CFLAGS)}{(' (with profdata: ' + shlex.join(_CFLAGS_PROFDATA) + ')') if USE_PROFDATA_POSSIBLE else ''}",
+        f"      C++: {CXX} {shlex.join(_CXXFLAGS)}{(' (with profdata: ' + shlex.join(_CXXFLAGS_PROFDATA) + ')') if USE_PROFDATA_POSSIBLE else ''}",
         f"      gcov: {shlex.join(str(e) for e in GCOV)}",
         f"   {cmake_version}",
         f"   {make_version}",

@@ -513,4 +513,4 @@ class McDcRecord:
     kind: RegionKind
     """Type of region (e.g., code, gap, etc.)."""
     conditions: list[bool]
-    """Type of region (e.g., code, gap, etc.)."""
+    """The list of conditions."""
