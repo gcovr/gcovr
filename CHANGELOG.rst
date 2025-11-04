@@ -12,8 +12,13 @@ Breaking changes:
 
 New features and notable changes:
 
-- Add support for clang ``Source-based Code Coverage`` instead of ``gcov`` text format. (:issue:`1188`)
+- Due to added support for LLVM source based code coverage format some configuration file
+  keys got changed. The options still exist with ``gcov`` in it but they also affect the
+  LLVM toolchain. (:issue:`1188`)
 
+  - ``gcov-exclude-directory`` is changed to ``exclude-directory``.
+  - ``keep-gcov-files`` is changed to ``keep-intermediate-files``.
+  - ``delete-gcov-files`` is changed to ``delete-input-files``.
 
 Bug fixes and small improvements:
 
@@ -78,13 +83,6 @@ Breaking changes:
 
 - Add excluded metrics to HTML report. The total numbers in the report contain now also
   the excluded elements. (:issue:`1153`)
-- Due to added support for LLVM source based code coverage format some configuration file
-  keys got changed. The options still exist with ``gcov`` in it but they also affect the
-  LLVM toolchain. (:issue:`xxxx``)
-
-  - ``gcov-exclude-directory`` is changed to ``exclude-directory``.
-  - ``keep-gcov-files`` is changed to ``keep-intermediate-files``.
-  - ``delete-gcov-files`` is changed to ``delete-input-files``.
 
 New features and notable changes:
 
