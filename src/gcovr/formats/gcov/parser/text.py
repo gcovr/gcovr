@@ -370,6 +370,37 @@ def _reconstruct_source_code(tokens: Iterable[_Line]) -> list[str]:
 
 
 class _ParserState(NamedTuple):
+    """State information while parsing gcov lines.
+
+    >>> state = _ParserState()
+    >>> state.previous_state is None
+    True
+    >>> state = state._replace(linecov_list=["x"])
+    >>> state.linecov_list == ["x"]
+    True
+    >>> new_state = state.save_state()
+    >>> new_state == state
+    False
+    >>> new_state.previous_state == state
+    True
+    >>> new_state.linecov_list == ["x"]
+    True
+    >>> state.linecov_list == ["x"]
+    True
+    >>> state = new_state._replace(linecov_list=[])
+    >>> state.linecov_list == []
+    True
+    >>> restored_state = state.restore_state()
+    >>> restored_state.previous_state is None
+    True
+    >>> state.linecov_list == []
+    True
+    >>> restored_state.restore_state()
+    Traceback (most recent call last):
+    ...
+    RuntimeError: Sanity check failed, previous_state of _ParserState is None.
+    """
+
     deferred_functions: list[_FunctionLine] = []
     function_name: Optional[str] = None
     function_specialization: bool = False
