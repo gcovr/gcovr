@@ -118,6 +118,7 @@ def test_standard_llvm_profdata(gcovr_test_exec: "GcovrTestExec") -> None:
     gcovr_test_exec.run("./testcase", cwd=Path("subdir"))
     gcovr_test_exec.gcovr(
         "--llvm-cov-binary=./testcase",
+        "--trace-include=.+/file.\\.cpp$",
         "--json-pretty",
         "--json=../coverage.json",
         cwd=Path("subdir"),

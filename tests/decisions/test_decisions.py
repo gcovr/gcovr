@@ -85,10 +85,12 @@ def test_decisions_llvm_profdata(gcovr_test_exec: "GcovrTestExec", check) -> Non
     gcovr_test_exec.run("./testcase")
     process = gcovr_test_exec.gcovr(
         "--verbose",
+        "--delete-input-files",
         "--decisions",
         "--llvm-cov-binary=./testcase",
         "--json-pretty",
         "--json=coverage.json.gz",
+        "default.profraw",
     )
     if mcdc_supported_by_compiler:
         check.is_in(
