@@ -410,14 +410,14 @@ class _ParserState(NamedTuple):
     previous_state: Optional["_ParserState"] = None
 
     def save_state(self) -> "_ParserState":
-        """Save the current state and."""
+        """Save the current parser state and return a new one with the current line coverage list."""
         return _ParserState(
             previous_state=self,
             linecov_list=self.linecov_list,
         )
 
     def restore_state(self) -> "_ParserState":
-        """Save the current state and."""
+        """Restore the previous parser state with the current line coverage list."""
         if self.previous_state is None:
             raise RuntimeError(
                 f"Sanity check failed, previous_state of {type(self).__name__} is None."
