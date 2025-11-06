@@ -135,8 +135,6 @@ _CFLAGS_PROFDATA = [
     "-fprofile-instr-generate",
     "-fcoverage-mapping",
 ]
-if "coverage-mcdc" in _CC_HELP_OUTPUT:
-    _CFLAGS_PROFDATA.append("-fcoverage-mcdc")
 
 _CXXFLAGS = _CFLAGS.copy()
 _CXXFLAGS_PROFDATA = _CFLAGS_PROFDATA.copy()

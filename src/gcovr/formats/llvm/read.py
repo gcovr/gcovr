@@ -241,6 +241,14 @@ def read_json(
     """Read one clang JSON coverage report."""
     covdata = CoverageContainer()
     for data in json_data["data"]:
+        if any(
+            "mcdc_records" in entry
+            for key in ("files", "functions")
+            for entry in data[key]
+        ):
+            LOGGER.warning(
+                f"{data_source}: Found 'mcdc_records' in exported JSON report. This is ignored by GCOVR."
+            )
         read_json_files(data_source, data, options, merge_options, covdata, version)
         read_json_functions(data_source, data, options, merge_options, covdata)
 
@@ -494,23 +502,3 @@ class FunctionRegion:
     """Identifier for the expanded file, if applicable."""
     kind: RegionKind
     """Type of region (e.g., code, gap, etc.)."""
-
-
-@dataclass
-class McDcRecord:
-    """Representation of a MC/DC record."""
-
-    line_start: int
-    """The starting line number of the region."""
-    column_start: int
-    """The starting column number of the region."""
-    line_end: int
-    """The ending line number of the region."""
-    column_end: int
-    """The ending column number of the region."""
-    expanded_file_id: int
-    """Identifier for the expanded file, if applicable."""
-    kind: RegionKind
-    """Type of region (e.g., code, gap, etc.)."""
-    conditions: list[bool]
-    """The list of conditions."""
