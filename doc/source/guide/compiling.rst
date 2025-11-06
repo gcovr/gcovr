@@ -90,9 +90,21 @@ Optional compiler flags:
 This examples uses the ``g++`` compiler for C++ code,
 but any GCC or Clang-based compiler should work.
 
+To use the clang source based code coverage instead of gcov code coverage format
+you need to compile with ``-fprofile-instr-generate`` and ``-fcoverage-mapping``
+instead of the flags above. In addition you need to configure
+:option:`--llvm-profdata-executable` and :option:`--llvm-cov-binary`.
+
+Starting with clang 12 the branches are included in the source based coverage reports, if
+no branches are found a warning is printed. Clang 11 also produces the JSON format 2.0.1
+but without branches.
+
 If you are using CMake, see :ref:`oos cmake`
 for information on configuring that build system
 to compile your software with coverage enabled.
+
+.. versionadded:: NEXT
+   Added support for LLVM source based code coverage.
 
 
 Running the Program
