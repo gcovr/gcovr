@@ -13,7 +13,7 @@ Breaking changes:
 New features and notable changes:
 
 - Due to added support for LLVM source based code coverage format some configuration file
-  keys got changed. The options still exist with ``gcov`` in it but they also affect the
+  keys got changed. The old ``gcov`` named options are still supported but they also affect the
   LLVM toolchain. (:issue:`1188`)
 
   - ``gcov-exclude-directory`` is changed to ``exclude-directory``.
@@ -101,7 +101,7 @@ New features and notable changes:
 - If the value for :option:`-j` is 0, the number of CPUs is used. If it is negative the it means "all but N CPUs". (:issue:`1148`)
 - Add :option:`--warn-excluded-lines-with-hits` to print a warning if a line which is excluded by comments has a hit counter != 0. (:issue:`1151`)
 - Add comment to exclude branches without hit in addition to exclude all. (:issue:`1152`)
-- Add support for LLVM source based code coverage format. (:issue:`xxxx`)
+- Add support for LLVM source based code coverage format excluding MC/DC coverage. (:issue:`1188`)
 
 Bug fixes and small improvements:
 
