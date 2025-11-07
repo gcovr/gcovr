@@ -1,7 +1,6 @@
-import typing
+import pytest
 
-if typing.TYPE_CHECKING:
-    from tests.conftest import GcovrTestExec
+from tests.conftest import USE_PROFDATA_POSSIBLE, GcovrTestExec
 
 
 def test_template_function(gcovr_test_exec: "GcovrTestExec") -> None:
@@ -21,6 +20,7 @@ def test_template_function(gcovr_test_exec: "GcovrTestExec") -> None:
         "--json=coverage.merged.json",
     )
     gcovr_test_exec.compare_json()
+    gcovr_test_exec.run("diff", "-U", "1", "coverage.json", "coverage.merged.json")
 
     gcovr_test_exec.gcovr(
         "--json-add-tracefile=coverage.json",
@@ -109,3 +109,44 @@ def test_template_function(gcovr_test_exec: "GcovrTestExec") -> None:
         "sonarqube.merged.xml",
     )
     gcovr_test_exec.compare_sonarqube()
+
+
+@pytest.mark.skipif(
+    not USE_PROFDATA_POSSIBLE,
+    reason="LLVM profdata is not compatible with GCC coverage data.",  # noqa: F821
+)
+def test_template_function_llvm_profdata(  # type: ignore[no-untyped-def]
+    gcovr_test_exec: "GcovrTestExec", check
+) -> None:
+    """Test template function coverage and merge-lines option."""
+    gcovr_test_exec.use_llvm_profdata = True
+
+    gcovr_test_exec.cxx_link("testcase", "main.cpp")
+
+    gcovr_test_exec.run("./testcase")
+    gcovr_test_exec.gcovr(
+        "--decision",
+        "--llvm-cov-binary=./testcase",
+        "--json-pretty",
+        "--json=coverage.json",
+    )
+    process = gcovr_test_exec.gcovr(
+        "--verbose",
+        "--merge-lines",
+        "--decision",
+        "--llvm-cov-binary=./testcase",
+        "--keep-intermediate-files",
+        "--json-pretty",
+        "--json=coverage.merged.json",
+    )
+    gcovr_test_exec.compare_json()
+    if gcovr_test_exec.cc_version() >= 12:
+        check.is_not_in(
+            "No branches found in LLVM JSON, this needs at least clang 12.",
+            process.stderr,
+        )
+    else:
+        check.is_in(
+            "No branches found in LLVM JSON, this needs at least clang 12.",
+            process.stderr,
+        )

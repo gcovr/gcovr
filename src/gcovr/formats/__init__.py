@@ -38,6 +38,7 @@ from .html import HtmlHandler
 from .jacoco import JaCoCoHandler
 from .json import JsonHandler
 from .lcov import LcovHandler
+from .llvm import LlvmHandler
 from .markdown import MarkdownHandler
 from .sonarqube import SonarqubeHandler
 from .txt import TxtHandler
@@ -57,6 +58,7 @@ def get_options() -> list[GcovrConfigOption]:
             *JaCoCoHandler.get_options(),
             *JsonHandler.get_options(),
             *LcovHandler.get_options(),
+            *LlvmHandler.get_options(),
             *MarkdownHandler.get_options(),
             *SonarqubeHandler.get_options(),
             *TxtHandler.get_options(),
@@ -77,6 +79,7 @@ def validate_options(options: Options) -> None:
         JaCoCoHandler,
         JsonHandler,
         LcovHandler,
+        LlvmHandler,
         MarkdownHandler,
         SonarqubeHandler,
         TxtHandler,
@@ -92,6 +95,8 @@ def read_reports(options: Options) -> CoverageContainer:
             CoberturaHandler(options).read_report(),
             get_merge_mode_from_options(options),
         )
+    elif options.llvm_profdata_cmd:
+        covdata = LlvmHandler(options).read_report()
     else:
         covdata = GcovHandler(options).read_report()
 
@@ -103,7 +108,7 @@ def read_reports(options: Options) -> CoverageContainer:
                     f.match(fname) for f in options.include_search_filter
                 ),
                 search_path,
-                gcov_exclude_directory=options.gcov_exclude_directory,
+                exclude_directory=options.exclude_directory,
             ):
                 # Return if the filename does not match the filter
                 # Return if the filename matches the exclude pattern

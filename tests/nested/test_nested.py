@@ -1,7 +1,8 @@
-import typing
+from pathlib import Path
 
-if typing.TYPE_CHECKING:
-    from tests.conftest import GcovrTestExec
+import pytest
+
+from tests.conftest import USE_PROFDATA_POSSIBLE, GcovrTestExec
 
 
 def test_standard(gcovr_test_exec: "GcovrTestExec") -> None:
@@ -19,25 +20,23 @@ def test_standard(gcovr_test_exec: "GcovrTestExec") -> None:
     )
 
     gcovr_test_exec.run("./subdir/testcase")
-    gcovr_test_exec.gcovr("-r", "subdir", "--json-pretty", "--json=coverage.json")
+    gcovr_test_exec.gcovr("--root=subdir", "--json-pretty", "--json=coverage.json")
     gcovr_test_exec.compare_json()
 
     gcovr_test_exec.gcovr(
-        "-r",
-        "subdir",
+        "--root=subdir",
         "--json-add-tracefile=coverage.json",
         "--html-details=coverage.html",
     )
     gcovr_test_exec.compare_html()
 
     gcovr_test_exec.gcovr(
-        "-r", "subdir", "--json-add-tracefile=coverage.json", "--txt", "coverage.txt"
+        "--root=subdir", "--json-add-tracefile=coverage.json", "--txt", "coverage.txt"
     )
     gcovr_test_exec.compare_txt()
 
     gcovr_test_exec.gcovr(
-        "-r",
-        "subdir",
+        "--root=subdir",
         "--json-add-tracefile=coverage.json",
         "--markdown",
         "coverage.md",
@@ -49,8 +48,7 @@ def test_standard(gcovr_test_exec: "GcovrTestExec") -> None:
     gcovr_test_exec.compare_markdown()
 
     gcovr_test_exec.gcovr(
-        "-r",
-        "subdir",
+        "--root=subdir",
         "--json-add-tracefile=coverage.json",
         "--lcov=coverage.lcov",
         "--lcov-format-1.x",
@@ -58,8 +56,7 @@ def test_standard(gcovr_test_exec: "GcovrTestExec") -> None:
     gcovr_test_exec.compare_lcov()
 
     gcovr_test_exec.gcovr(
-        "-r",
-        "subdir",
+        "--root=subdir",
         "--json-add-tracefile=coverage.json",
         "--clover-pretty",
         "--clover=clover.xml",
@@ -69,8 +66,7 @@ def test_standard(gcovr_test_exec: "GcovrTestExec") -> None:
     gcovr_test_exec.compare_clover()
 
     gcovr_test_exec.gcovr(
-        "-r",
-        "subdir",
+        "--root=subdir",
         "--json-add-tracefile=coverage.json",
         "--cobertura-pretty",
         "--cobertura=cobertura.xml",
@@ -78,8 +74,7 @@ def test_standard(gcovr_test_exec: "GcovrTestExec") -> None:
     gcovr_test_exec.compare_cobertura()
 
     gcovr_test_exec.gcovr(
-        "-r",
-        "subdir",
+        "--root=subdir",
         "--json-add-tracefile=coverage.json",
         "--coveralls-pretty",
         "--coveralls=coveralls.json",
@@ -87,8 +82,7 @@ def test_standard(gcovr_test_exec: "GcovrTestExec") -> None:
     gcovr_test_exec.compare_coveralls()
 
     gcovr_test_exec.gcovr(
-        "-r",
-        "subdir",
+        "--root=subdir",
         "--json-add-tracefile=coverage.json",
         "--jacoco-pretty",
         "--jacoco=jacoco.xml",
@@ -96,12 +90,40 @@ def test_standard(gcovr_test_exec: "GcovrTestExec") -> None:
     gcovr_test_exec.compare_jacoco()
 
     gcovr_test_exec.gcovr(
-        "-r",
-        "subdir",
+        "--root=subdir",
         "--json-add-tracefile=coverage.json",
         "--sonarqube=sonarqube.xml",
     )
     gcovr_test_exec.compare_sonarqube()
+
+
+@pytest.mark.skipif(
+    not USE_PROFDATA_POSSIBLE,
+    reason="LLVM profdata is not compatible with GCC coverage data.",
+)
+def test_standard_llvm_profdata(gcovr_test_exec: "GcovrTestExec") -> None:
+    """Test nested coverage report generation."""
+    gcovr_test_exec.cxx_link(
+        "subdir/testcase",
+        gcovr_test_exec.cxx_compile("subdir/A/file1.cpp"),
+        gcovr_test_exec.cxx_compile("subdir/A/File2.cpp"),
+        gcovr_test_exec.cxx_compile("subdir/A/file3.cpp"),
+        gcovr_test_exec.cxx_compile("subdir/A/File4.cpp"),
+        gcovr_test_exec.cxx_compile("subdir/A/file7.cpp"),
+        gcovr_test_exec.cxx_compile("subdir/A/C/file5.cpp"),
+        gcovr_test_exec.cxx_compile("subdir/A/C/D/File6.cpp"),
+        gcovr_test_exec.cxx_compile("subdir/B/main.cpp"),
+    )
+
+    gcovr_test_exec.run("./testcase", cwd=Path("subdir"))
+    gcovr_test_exec.gcovr(
+        "--llvm-cov-binary=./testcase",
+        "--trace-include=.+/file.\\.cpp$",
+        "--json-pretty",
+        "--json=../coverage.json",
+        cwd=Path("subdir"),
+    )
+    gcovr_test_exec.compare_json()
 
 
 def test_threaded(gcovr_test_exec: "GcovrTestExec") -> None:
@@ -118,9 +140,15 @@ def test_threaded(gcovr_test_exec: "GcovrTestExec") -> None:
         gcovr_test_exec.cxx_compile("subdir/B/main.cpp"),
     )
 
-    gcovr_test_exec.run("./subdir/testcase")
+    gcovr_test_exec.run(
+        "./testcase",
+        cwd=Path("subdir"),
+    )
     gcovr_test_exec.gcovr(
-        "-r", "subdir", "-j=-1", "--json-pretty", "--json=coverage.json"
+        "-j=-1",
+        "--json-pretty",
+        "--json=../coverage.json",
+        cwd=Path("subdir"),
     )
     gcovr_test_exec.compare_json()
 
@@ -232,8 +260,7 @@ def test_use_existing(gcovr_test_exec: "GcovrTestExec") -> None:
     gcovr_test_exec.run("./subdir/testcase")
     # Simulate gcov and subdir/A coverage if needed
     gcovr_test_exec.gcovr(
-        "-r",
-        "subdir",
+        "--root=subdir",
         "-g",
         "-k",
         "--json-pretty",
@@ -263,8 +290,7 @@ def test_oos(gcovr_test_exec: "GcovrTestExec") -> None:
 
     gcovr_test_exec.run("./subdir/testcase")
     gcovr_test_exec.gcovr(
-        "-r",
-        "subdir",
+        "--root=subdir",
         "--gcov-object-directory=objs",
         "--exclude-function-lines",
         "--json-pretty",
@@ -273,8 +299,7 @@ def test_oos(gcovr_test_exec: "GcovrTestExec") -> None:
     gcovr_test_exec.compare_json()
 
     gcovr_test_exec.gcovr(
-        "-r",
-        "subdir",
+        "--root=subdir",
         "--json-add-tracefile=coverage.json",
         "--html-details",
         "--no-html-details-syntax-highlighting",
@@ -283,13 +308,12 @@ def test_oos(gcovr_test_exec: "GcovrTestExec") -> None:
     gcovr_test_exec.compare_html()
 
     gcovr_test_exec.gcovr(
-        "-r", "subdir", "--json-add-tracefile=coverage.json", "--txt", "coverage.txt"
+        "--root=subdir", "--json-add-tracefile=coverage.json", "--txt", "coverage.txt"
     )
     gcovr_test_exec.compare_txt()
 
     gcovr_test_exec.gcovr(
-        "-r",
-        "subdir",
+        "--root=subdir",
         "--json-add-tracefile=coverage.json",
         "--cobertura-pretty",
         "--cobertura=cobertura.xml",
@@ -297,8 +321,7 @@ def test_oos(gcovr_test_exec: "GcovrTestExec") -> None:
     gcovr_test_exec.compare_cobertura()
 
     gcovr_test_exec.gcovr(
-        "-r",
-        "subdir",
+        "--root=subdir",
         "--json-add-tracefile=coverage.json",
         "--coveralls-pretty",
         "--coveralls=coveralls.json",
@@ -306,18 +329,17 @@ def test_oos(gcovr_test_exec: "GcovrTestExec") -> None:
     gcovr_test_exec.compare_coveralls()
 
     gcovr_test_exec.gcovr(
-        "-r", "subdir", "--json-add-tracefile=coverage.json", "--jacoco", "jacoco.xml"
+        "--root=subdir", "--json-add-tracefile=coverage.json", "--jacoco", "jacoco.xml"
     )
     gcovr_test_exec.compare_jacoco()
 
     gcovr_test_exec.gcovr(
-        "-r", "subdir", "--json-add-tracefile=coverage.json", "--lcov", "coverage.lcov"
+        "--root=subdir", "--json-add-tracefile=coverage.json", "--lcov", "coverage.lcov"
     )
     gcovr_test_exec.compare_lcov()
 
     gcovr_test_exec.gcovr(
-        "-r",
-        "subdir",
+        "--root=subdir",
         "--json-add-tracefile=coverage.json",
         "--sonarqube=sonarqube.xml",
     )
