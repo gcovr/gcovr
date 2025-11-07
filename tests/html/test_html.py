@@ -381,7 +381,7 @@ PARAMETERS_NESTED = [
 
 @pytest.mark.skipif(
     not IS_LINUX,
-    reason="The nested report generation is independent of OS and we do not want to have separate data wor Windows and Darwin.",
+    reason="The nested report generation is independent of OS and we do not want to have separate data for Windows and Darwin.",
 )
 @pytest.mark.parametrize(
     "_test_id,options",
@@ -416,8 +416,7 @@ def test_nested(
 
     gcovr_test_exec.run("./subdir/testcase")
     gcovr_test_exec.gcovr(
-        "-r",
-        "subdir",
+        "--root=subdir",
         *options,
     )
     gcovr_test_exec.compare_html()

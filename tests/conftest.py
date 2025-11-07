@@ -120,6 +120,7 @@ else:
 USE_GCC_JSON_INTERMEDIATE_FORMAT = (
     IS_GCC and f"JSON format version: {GCOV_JSON_VERSION}" in _GCOV_VERSION_OUTPUT
 )
+USE_PROFDATA_POSSIBLE = IS_LINUX and not IS_GCC
 GCOVR_TEST_USE_CXX_LAMBDA_EXPRESSIONS = "c++20" in _CC_HELP_OUTPUT
 
 _CFLAGS = [
@@ -129,9 +130,17 @@ _CFLAGS = [
 ]
 if "condition-coverage" in _CC_HELP_OUTPUT:
     _CFLAGS.append("-fcondition-coverage")
+
+_CFLAGS_PROFDATA = [
+    "-fprofile-instr-generate",
+    "-fcoverage-mapping",
+]
+
 _CXXFLAGS = _CFLAGS.copy()
+_CXXFLAGS_PROFDATA = _CFLAGS_PROFDATA.copy()
 if GCOVR_TEST_USE_CXX_LAMBDA_EXPRESSIONS:
     _CXXFLAGS += ["-std=c++20", "-DGCOVR_TEST_USE_CXX_LAMBDA_EXPRESSIONS"]
+    _CXXFLAGS_PROFDATA += ["-std=c++20", "-DGCOVR_TEST_USE_CXX_LAMBDA_EXPRESSIONS"]
 
 _REFERENCE_DIR_OS_SUFFIX = "" if IS_LINUX else f"-{platform.system()}"
 REFERENCE_DIRS = list[str]()
@@ -174,8 +183,8 @@ def pytest_report_header(config: pytest.Config) -> tuple[str, ...]:
     return (
         "GCOVR test configuration:",
         f"   {_CC_VERSION_OUTPUT.splitlines()[0]}",
-        f"      C:   {CC} {shlex.join(_CFLAGS)}",
-        f"      C++: {CXX} {shlex.join(_CXXFLAGS)}",
+        f"      C:   {CC} {shlex.join(_CFLAGS)}{(' (with profdata: ' + shlex.join(_CFLAGS_PROFDATA) + ')') if USE_PROFDATA_POSSIBLE else ''}",
+        f"      C++: {CXX} {shlex.join(_CXXFLAGS)}{(' (with profdata: ' + shlex.join(_CXXFLAGS_PROFDATA) + ')') if USE_PROFDATA_POSSIBLE else ''}",
         f"      gcov: {shlex.join(str(e) for e in GCOV)}",
         f"   {cmake_version}",
         f"   {make_version}",
@@ -616,6 +625,7 @@ class GcovrTestExec:
         self.capsys = capsys
         self.check = check
         self._compare = compare
+        self.use_llvm_profdata = False
 
     @staticmethod
     def is_linux() -> bool:
@@ -702,13 +712,17 @@ class GcovrTestExec:
         self._compare.reference_files.clear()
         pytest.skip(message)
 
-    @staticmethod
-    def __get_env(env: Optional[dict[str, str]]) -> dict[str, str]:
+    def __get_env(self, env: Optional[dict[str, str]]) -> dict[str, str]:
         if env is None:
             env = os.environ.copy()
         for name in ["CFLAGS", "CXXFLAGS"]:
             if name in env:
                 del env[name]
+
+        if self.use_llvm_profdata:
+            env["LLVM_PROFDATA"] = str(
+                CC.parent / CC.name.replace("clang", "llvm-profdata")
+            )
 
         env["CC"] = str(CC)
         env["CXX"] = str(CXX)
@@ -793,7 +807,12 @@ class GcovrTestExec:
         cwd: Optional[Path] = None,
     ) -> None:
         """Run CC with the given arguments."""
-        self.run(CC, *_CFLAGS, *args, cwd=cwd)
+        self.run(
+            CC,
+            *(_CFLAGS_PROFDATA if self.use_llvm_profdata else _CFLAGS),
+            *args,
+            cwd=cwd,
+        )
 
     def cxx(
         self,
@@ -801,7 +820,12 @@ class GcovrTestExec:
         cwd: Optional[Path] = None,
     ) -> None:
         """Run CXX with the given arguments."""
-        self.run(CXX, *_CXXFLAGS, *args, cwd=cwd)
+        self.run(
+            CXX,
+            *(_CXXFLAGS_PROFDATA if self.use_llvm_profdata else _CXXFLAGS),
+            *args,
+            cwd=cwd,
+        )
 
     def cc_compile(
         self,

@@ -108,7 +108,7 @@ def get_version_for_report() -> str:
 def search_file(
     predicate: Callable[[str], bool],
     path: str,
-    gcov_exclude_directory: list[re.Pattern[str]],
+    exclude_directory: list[re.Pattern[str]],
 ) -> Iterator[str]:
     """
     Given a search path, recursively descend to find files that satisfy a
@@ -129,9 +129,7 @@ def search_file(
         dirs[:] = [
             d
             for d in sorted(dirs)
-            if not any(
-                exc.match(os.path.join(root, d)) for exc in gcov_exclude_directory
-            )
+            if not any(exc.match(os.path.join(root, d)) for exc in exclude_directory)
         ]
         root = os.path.abspath(root)
 
@@ -300,3 +298,41 @@ def force_unix_separator(path: str) -> str:
 def get_md5_hexdigest(data: bytes) -> str:
     """Get the MD5 digest of the given bytes."""
     return md5(data, usedforsecurity=False).hexdigest()  # nosec # Not used for security
+
+
+def read_source_file(
+    source_encoding: str, filename: str, max_line_number: int
+) -> list[str]:
+    """Read in the source file and fill up lines if needed."""
+    source_lines: list[bytes] = []
+    try:
+        with open(filename, "rb") as fh_in:
+            source_lines = fh_in.read().splitlines()
+        lines = len(source_lines)
+        if lines < max_line_number:
+            LOGGER.warning(
+                f"File {filename} has {lines} line(s) but coverage data has {max_line_number} line(s)."
+            )
+            # GCOV itself adds the /*EOF*/ in the text report if there is no data and we used the same.
+            source_lines += [b"/*EOF*/"] * (max_line_number - lines)
+    except OSError as e:
+        if filename.endswith("<stdin>"):
+            message = (
+                f"Got unreadable source file '{filename}', replacing with empty lines."
+            )
+            LOGGER.info(message)
+        else:
+            # The exception contains the source file name,
+            # e.g. [Errno 2] No such file or directory: 'xy.txt'
+            message = f"Can't read file, using empty lines: {e}"
+            LOGGER.warning(message)
+            # If we can't read the file we use as first line the error
+            # and use empty lines for the rest of the lines.
+        source_lines = [b""] * max_line_number
+        source_lines[0] = f"/* {message} */".encode()
+
+    encoded_source_lines = [
+        line.decode(source_encoding, errors="replace") for line in source_lines
+    ]
+
+    return encoded_source_lines

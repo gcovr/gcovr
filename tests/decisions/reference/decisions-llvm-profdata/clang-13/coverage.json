@@ -1,0 +1,2825 @@
+{
+    "gcovr/format_version": "0.14",
+    "files": [
+        {
+            "file": "main.cpp",
+            "lines": [
+                {
+                    "line_number": 9,
+                    "count": 1,
+                    "branches": [],
+                    "gcovr/md5": "f95b70fdc3088560732a5ac135644506"
+                },
+                {
+                    "line_number": 10,
+                    "count": 1,
+                    "branches": [
+                        {
+                            "branchno": 0,
+                            "count": 1,
+                            "fallthrough": false,
+                            "throw": false
+                        },
+                        {
+                            "branchno": 1,
+                            "count": 0,
+                            "fallthrough": false,
+                            "throw": false
+                        }
+                    ],
+                    "gcovr/decision": {
+                        "type": "conditional",
+                        "count_true": 1,
+                        "count_false": 0
+                    },
+                    "gcovr/md5": "9eb017aa338d065a39a9c50252dd0884"
+                },
+                {
+                    "line_number": 11,
+                    "count": 1,
+                    "branches": [],
+                    "gcovr/md5": "820e8e844ba43f93d7e70b04ff4088c1"
+                },
+                {
+                    "line_number": 13,
+                    "count": 0,
+                    "branches": [],
+                    "gcovr/md5": "68e4fcd72e87ba52e753d0af1b16fc7d"
+                },
+                {
+                    "line_number": 15,
+                    "count": 0,
+                    "branches": [],
+                    "gcovr/md5": "820e8e844ba43f93d7e70b04ff4088c1"
+                },
+                {
+                    "line_number": 17,
+                    "count": 1,
+                    "branches": [],
+                    "gcovr/md5": "68e4fcd72e87ba52e753d0af1b16fc7d"
+                },
+                {
+                    "line_number": 18,
+                    "count": 0,
+                    "branches": [],
+                    "gcovr/md5": "cbb184dd8e05c9709e5dcaedaa0495cf"
+                },
+                {
+                    "line_number": 21,
+                    "count": 1,
+                    "branches": [],
+                    "gcovr/md5": "f95b70fdc3088560732a5ac135644506"
+                },
+                {
+                    "line_number": 22,
+                    "count": 1,
+                    "branches": [
+                        {
+                            "branchno": 0,
+                            "count": 0,
+                            "fallthrough": false,
+                            "throw": false
+                        },
+                        {
+                            "branchno": 1,
+                            "count": 1,
+                            "fallthrough": false,
+                            "throw": false
+                        }
+                    ],
+                    "gcovr/decision": {
+                        "type": "conditional",
+                        "count_true": 0,
+                        "count_false": 1
+                    },
+                    "gcovr/md5": "9eb017aa338d065a39a9c50252dd0884"
+                },
+                {
+                    "line_number": 23,
+                    "count": 0,
+                    "branches": [],
+                    "gcovr/md5": "820e8e844ba43f93d7e70b04ff4088c1"
+                },
+                {
+                    "line_number": 25,
+                    "count": 1,
+                    "branches": [],
+                    "gcovr/md5": "68e4fcd72e87ba52e753d0af1b16fc7d"
+                },
+                {
+                    "line_number": 27,
+                    "count": 1,
+                    "branches": [],
+                    "gcovr/md5": "820e8e844ba43f93d7e70b04ff4088c1"
+                },
+                {
+                    "line_number": 29,
+                    "count": 1,
+                    "branches": [],
+                    "gcovr/md5": "68e4fcd72e87ba52e753d0af1b16fc7d"
+                },
+                {
+                    "line_number": 30,
+                    "count": 0,
+                    "branches": [],
+                    "gcovr/md5": "cbb184dd8e05c9709e5dcaedaa0495cf"
+                },
+                {
+                    "line_number": 33,
+                    "count": 2,
+                    "branches": [],
+                    "gcovr/md5": "f95b70fdc3088560732a5ac135644506"
+                },
+                {
+                    "line_number": 34,
+                    "count": 2,
+                    "branches": [
+                        {
+                            "branchno": 0,
+                            "count": 1,
+                            "fallthrough": false,
+                            "throw": false
+                        },
+                        {
+                            "branchno": 1,
+                            "count": 1,
+                            "fallthrough": false,
+                            "throw": false
+                        }
+                    ],
+                    "gcovr/decision": {
+                        "type": "conditional",
+                        "count_true": 1,
+                        "count_false": 1
+                    },
+                    "gcovr/md5": "9eb017aa338d065a39a9c50252dd0884"
+                },
+                {
+                    "line_number": 35,
+                    "count": 1,
+                    "branches": [],
+                    "gcovr/md5": "820e8e844ba43f93d7e70b04ff4088c1"
+                },
+                {
+                    "line_number": 37,
+                    "count": 1,
+                    "branches": [],
+                    "gcovr/md5": "68e4fcd72e87ba52e753d0af1b16fc7d"
+                },
+                {
+                    "line_number": 39,
+                    "count": 1,
+                    "branches": [],
+                    "gcovr/md5": "820e8e844ba43f93d7e70b04ff4088c1"
+                },
+                {
+                    "line_number": 41,
+                    "count": 2,
+                    "branches": [],
+                    "gcovr/md5": "68e4fcd72e87ba52e753d0af1b16fc7d"
+                },
+                {
+                    "line_number": 42,
+                    "count": 0,
+                    "branches": [],
+                    "gcovr/md5": "cbb184dd8e05c9709e5dcaedaa0495cf"
+                },
+                {
+                    "line_number": 45,
+                    "count": 1,
+                    "branches": [],
+                    "gcovr/md5": "f95b70fdc3088560732a5ac135644506"
+                },
+                {
+                    "line_number": 46,
+                    "count": 1,
+                    "branches": [
+                        {
+                            "branchno": 0,
+                            "count": 1,
+                            "fallthrough": false,
+                            "throw": false
+                        },
+                        {
+                            "branchno": 1,
+                            "count": 0,
+                            "fallthrough": false,
+                            "throw": false
+                        }
+                    ],
+                    "gcovr/decision": {
+                        "type": "conditional",
+                        "count_true": 1,
+                        "count_false": 0
+                    },
+                    "gcovr/md5": "aefaa176c8639c64cebe2afde4bc42af"
+                },
+                {
+                    "line_number": 47,
+                    "count": 1,
+                    "branches": [],
+                    "gcovr/md5": "820e8e844ba43f93d7e70b04ff4088c1"
+                },
+                {
+                    "line_number": 49,
+                    "count": 0,
+                    "branches": [],
+                    "gcovr/md5": "68e4fcd72e87ba52e753d0af1b16fc7d"
+                },
+                {
+                    "line_number": 51,
+                    "count": 0,
+                    "branches": [],
+                    "gcovr/md5": "820e8e844ba43f93d7e70b04ff4088c1"
+                },
+                {
+                    "line_number": 53,
+                    "count": 1,
+                    "branches": [],
+                    "gcovr/md5": "68e4fcd72e87ba52e753d0af1b16fc7d"
+                },
+                {
+                    "line_number": 54,
+                    "count": 0,
+                    "branches": [],
+                    "gcovr/md5": "cbb184dd8e05c9709e5dcaedaa0495cf"
+                },
+                {
+                    "line_number": 57,
+                    "count": 1,
+                    "branches": [],
+                    "gcovr/md5": "f95b70fdc3088560732a5ac135644506"
+                },
+                {
+                    "line_number": 58,
+                    "count": 1,
+                    "branches": [
+                        {
+                            "branchno": 0,
+                            "count": 0,
+                            "fallthrough": false,
+                            "throw": false
+                        },
+                        {
+                            "branchno": 1,
+                            "count": 1,
+                            "fallthrough": false,
+                            "throw": false
+                        }
+                    ],
+                    "gcovr/decision": {
+                        "type": "conditional",
+                        "count_true": 0,
+                        "count_false": 1
+                    },
+                    "gcovr/md5": "aefaa176c8639c64cebe2afde4bc42af"
+                },
+                {
+                    "line_number": 59,
+                    "count": 0,
+                    "branches": [],
+                    "gcovr/md5": "820e8e844ba43f93d7e70b04ff4088c1"
+                },
+                {
+                    "line_number": 61,
+                    "count": 1,
+                    "branches": [],
+                    "gcovr/md5": "68e4fcd72e87ba52e753d0af1b16fc7d"
+                },
+                {
+                    "line_number": 63,
+                    "count": 1,
+                    "branches": [],
+                    "gcovr/md5": "820e8e844ba43f93d7e70b04ff4088c1"
+                },
+                {
+                    "line_number": 65,
+                    "count": 1,
+                    "branches": [],
+                    "gcovr/md5": "68e4fcd72e87ba52e753d0af1b16fc7d"
+                },
+                {
+                    "line_number": 66,
+                    "count": 0,
+                    "branches": [],
+                    "gcovr/md5": "cbb184dd8e05c9709e5dcaedaa0495cf"
+                },
+                {
+                    "line_number": 69,
+                    "count": 1,
+                    "branches": [],
+                    "gcovr/md5": "f95b70fdc3088560732a5ac135644506"
+                },
+                {
+                    "line_number": 70,
+                    "count": 1,
+                    "branches": [
+                        {
+                            "branchno": 0,
+                            "count": 1,
+                            "fallthrough": false,
+                            "throw": false
+                        },
+                        {
+                            "branchno": 1,
+                            "count": 0,
+                            "fallthrough": false,
+                            "throw": false
+                        }
+                    ],
+                    "gcovr/decision": {
+                        "type": "conditional",
+                        "count_true": 1,
+                        "count_false": 0
+                    },
+                    "gcovr/md5": "f00aa9ee0a7a2963e5ed28c3d5f411ba"
+                },
+                {
+                    "line_number": 71,
+                    "count": 1,
+                    "branches": [],
+                    "gcovr/md5": "820e8e844ba43f93d7e70b04ff4088c1"
+                },
+                {
+                    "line_number": 73,
+                    "count": 0,
+                    "branches": [],
+                    "gcovr/md5": "68e4fcd72e87ba52e753d0af1b16fc7d"
+                },
+                {
+                    "line_number": 75,
+                    "count": 0,
+                    "branches": [],
+                    "gcovr/md5": "820e8e844ba43f93d7e70b04ff4088c1"
+                },
+                {
+                    "line_number": 77,
+                    "count": 1,
+                    "branches": [],
+                    "gcovr/md5": "68e4fcd72e87ba52e753d0af1b16fc7d"
+                },
+                {
+                    "line_number": 78,
+                    "count": 0,
+                    "branches": [],
+                    "gcovr/md5": "cbb184dd8e05c9709e5dcaedaa0495cf"
+                },
+                {
+                    "line_number": 81,
+                    "count": 1,
+                    "branches": [],
+                    "gcovr/md5": "f95b70fdc3088560732a5ac135644506"
+                },
+                {
+                    "line_number": 82,
+                    "count": 1,
+                    "branches": [
+                        {
+                            "branchno": 0,
+                            "count": 0,
+                            "fallthrough": false,
+                            "throw": false
+                        },
+                        {
+                            "branchno": 1,
+                            "count": 1,
+                            "fallthrough": false,
+                            "throw": false
+                        }
+                    ],
+                    "gcovr/decision": {
+                        "type": "conditional",
+                        "count_true": 0,
+                        "count_false": 1
+                    },
+                    "gcovr/md5": "f00aa9ee0a7a2963e5ed28c3d5f411ba"
+                },
+                {
+                    "line_number": 83,
+                    "count": 0,
+                    "branches": [],
+                    "gcovr/md5": "820e8e844ba43f93d7e70b04ff4088c1"
+                },
+                {
+                    "line_number": 85,
+                    "count": 1,
+                    "branches": [],
+                    "gcovr/md5": "68e4fcd72e87ba52e753d0af1b16fc7d"
+                },
+                {
+                    "line_number": 87,
+                    "count": 1,
+                    "branches": [],
+                    "gcovr/md5": "820e8e844ba43f93d7e70b04ff4088c1"
+                },
+                {
+                    "line_number": 89,
+                    "count": 1,
+                    "branches": [],
+                    "gcovr/md5": "68e4fcd72e87ba52e753d0af1b16fc7d"
+                },
+                {
+                    "line_number": 90,
+                    "count": 0,
+                    "branches": [],
+                    "gcovr/md5": "cbb184dd8e05c9709e5dcaedaa0495cf"
+                },
+                {
+                    "line_number": 93,
+                    "count": 1,
+                    "branches": [],
+                    "gcovr/md5": "f95b70fdc3088560732a5ac135644506"
+                },
+                {
+                    "line_number": 94,
+                    "count": 1,
+                    "branches": [
+                        {
+                            "branchno": 0,
+                            "count": 1,
+                            "fallthrough": false,
+                            "throw": false
+                        },
+                        {
+                            "branchno": 1,
+                            "count": 0,
+                            "fallthrough": false,
+                            "throw": false
+                        }
+                    ],
+                    "gcovr/decision": {
+                        "type": "conditional",
+                        "count_true": 1,
+                        "count_false": 0
+                    },
+                    "gcovr/md5": "f1b4991cba9c51e1b01479bf5a3f8107"
+                },
+                {
+                    "line_number": 95,
+                    "count": 1,
+                    "branches": [],
+                    "gcovr/md5": "820e8e844ba43f93d7e70b04ff4088c1"
+                },
+                {
+                    "line_number": 97,
+                    "count": 0,
+                    "branches": [],
+                    "gcovr/md5": "68e4fcd72e87ba52e753d0af1b16fc7d"
+                },
+                {
+                    "line_number": 99,
+                    "count": 0,
+                    "branches": [],
+                    "gcovr/md5": "820e8e844ba43f93d7e70b04ff4088c1"
+                },
+                {
+                    "line_number": 101,
+                    "count": 1,
+                    "branches": [],
+                    "gcovr/md5": "68e4fcd72e87ba52e753d0af1b16fc7d"
+                },
+                {
+                    "line_number": 102,
+                    "count": 0,
+                    "branches": [],
+                    "gcovr/md5": "cbb184dd8e05c9709e5dcaedaa0495cf"
+                },
+                {
+                    "line_number": 105,
+                    "count": 1,
+                    "branches": [],
+                    "gcovr/md5": "f95b70fdc3088560732a5ac135644506"
+                },
+                {
+                    "line_number": 106,
+                    "count": 1,
+                    "branches": [
+                        {
+                            "branchno": 0,
+                            "count": 0,
+                            "fallthrough": false,
+                            "throw": false
+                        },
+                        {
+                            "branchno": 1,
+                            "count": 1,
+                            "fallthrough": false,
+                            "throw": false
+                        }
+                    ],
+                    "gcovr/decision": {
+                        "type": "conditional",
+                        "count_true": 0,
+                        "count_false": 1
+                    },
+                    "gcovr/md5": "f1b4991cba9c51e1b01479bf5a3f8107"
+                },
+                {
+                    "line_number": 107,
+                    "count": 0,
+                    "branches": [],
+                    "gcovr/md5": "820e8e844ba43f93d7e70b04ff4088c1"
+                },
+                {
+                    "line_number": 109,
+                    "count": 1,
+                    "branches": [],
+                    "gcovr/md5": "68e4fcd72e87ba52e753d0af1b16fc7d"
+                },
+                {
+                    "line_number": 111,
+                    "count": 1,
+                    "branches": [],
+                    "gcovr/md5": "820e8e844ba43f93d7e70b04ff4088c1"
+                },
+                {
+                    "line_number": 113,
+                    "count": 1,
+                    "branches": [],
+                    "gcovr/md5": "68e4fcd72e87ba52e753d0af1b16fc7d"
+                },
+                {
+                    "line_number": 114,
+                    "count": 0,
+                    "branches": [],
+                    "gcovr/md5": "cbb184dd8e05c9709e5dcaedaa0495cf"
+                },
+                {
+                    "line_number": 117,
+                    "count": 1,
+                    "branches": [],
+                    "gcovr/md5": "f95b70fdc3088560732a5ac135644506"
+                },
+                {
+                    "line_number": 118,
+                    "count": 1,
+                    "branches": [
+                        {
+                            "branchno": 0,
+                            "count": 0,
+                            "fallthrough": false,
+                            "throw": false
+                        },
+                        {
+                            "branchno": 1,
+                            "count": 1,
+                            "fallthrough": false,
+                            "throw": false
+                        },
+                        {
+                            "branchno": 2,
+                            "count": 1,
+                            "fallthrough": false,
+                            "throw": false
+                        },
+                        {
+                            "branchno": 3,
+                            "count": 0,
+                            "fallthrough": false,
+                            "throw": false
+                        },
+                        {
+                            "branchno": 4,
+                            "count": 1,
+                            "fallthrough": false,
+                            "throw": false
+                        },
+                        {
+                            "branchno": 5,
+                            "count": 0,
+                            "fallthrough": false,
+                            "throw": false
+                        }
+                    ],
+                    "gcovr/decision": {
+                        "type": "conditional",
+                        "count_true": 1,
+                        "count_false": 0
+                    },
+                    "gcovr/md5": "488462d327ca243033ac1a4eebc24b42"
+                },
+                {
+                    "line_number": 119,
+                    "count": 1,
+                    "branches": [],
+                    "gcovr/md5": "820e8e844ba43f93d7e70b04ff4088c1"
+                },
+                {
+                    "line_number": 121,
+                    "count": 0,
+                    "branches": [],
+                    "gcovr/md5": "68e4fcd72e87ba52e753d0af1b16fc7d"
+                },
+                {
+                    "line_number": 123,
+                    "count": 0,
+                    "branches": [],
+                    "gcovr/md5": "820e8e844ba43f93d7e70b04ff4088c1"
+                },
+                {
+                    "line_number": 125,
+                    "count": 1,
+                    "branches": [],
+                    "gcovr/md5": "68e4fcd72e87ba52e753d0af1b16fc7d"
+                },
+                {
+                    "line_number": 126,
+                    "count": 0,
+                    "branches": [],
+                    "gcovr/md5": "cbb184dd8e05c9709e5dcaedaa0495cf"
+                },
+                {
+                    "line_number": 129,
+                    "count": 1,
+                    "branches": [],
+                    "gcovr/md5": "f95b70fdc3088560732a5ac135644506"
+                },
+                {
+                    "line_number": 130,
+                    "count": 1,
+                    "branches": [
+                        {
+                            "branchno": 0,
+                            "count": 0,
+                            "fallthrough": false,
+                            "throw": false
+                        },
+                        {
+                            "branchno": 1,
+                            "count": 1,
+                            "fallthrough": false,
+                            "throw": false
+                        },
+                        {
+                            "branchno": 2,
+                            "count": 0,
+                            "fallthrough": false,
+                            "throw": false
+                        },
+                        {
+                            "branchno": 3,
+                            "count": 1,
+                            "fallthrough": false,
+                            "throw": false
+                        },
+                        {
+                            "branchno": 4,
+                            "count": 0,
+                            "fallthrough": false,
+                            "throw": false
+                        },
+                        {
+                            "branchno": 5,
+                            "count": 0,
+                            "fallthrough": false,
+                            "throw": false
+                        }
+                    ],
+                    "gcovr/decision": {
+                        "type": "conditional",
+                        "count_true": 0,
+                        "count_false": 1
+                    },
+                    "gcovr/md5": "488462d327ca243033ac1a4eebc24b42"
+                },
+                {
+                    "line_number": 131,
+                    "count": 0,
+                    "branches": [],
+                    "gcovr/md5": "820e8e844ba43f93d7e70b04ff4088c1"
+                },
+                {
+                    "line_number": 133,
+                    "count": 1,
+                    "branches": [],
+                    "gcovr/md5": "68e4fcd72e87ba52e753d0af1b16fc7d"
+                },
+                {
+                    "line_number": 135,
+                    "count": 1,
+                    "branches": [],
+                    "gcovr/md5": "820e8e844ba43f93d7e70b04ff4088c1"
+                },
+                {
+                    "line_number": 137,
+                    "count": 1,
+                    "branches": [],
+                    "gcovr/md5": "68e4fcd72e87ba52e753d0af1b16fc7d"
+                },
+                {
+                    "line_number": 138,
+                    "count": 0,
+                    "branches": [],
+                    "gcovr/md5": "cbb184dd8e05c9709e5dcaedaa0495cf"
+                },
+                {
+                    "line_number": 141,
+                    "count": 1,
+                    "branches": [],
+                    "gcovr/md5": "f95b70fdc3088560732a5ac135644506"
+                },
+                {
+                    "line_number": 142,
+                    "count": 1,
+                    "branches": [
+                        {
+                            "branchno": 0,
+                            "count": 1,
+                            "fallthrough": false,
+                            "throw": false
+                        },
+                        {
+                            "branchno": 1,
+                            "count": 0,
+                            "fallthrough": false,
+                            "throw": false
+                        }
+                    ],
+                    "gcovr/decision": {
+                        "type": "conditional",
+                        "count_true": 1,
+                        "count_false": 0
+                    },
+                    "gcovr/md5": "f00aa9ee0a7a2963e5ed28c3d5f411ba"
+                },
+                {
+                    "line_number": 143,
+                    "count": 1,
+                    "branches": [],
+                    "gcovr/md5": "820e8e844ba43f93d7e70b04ff4088c1"
+                },
+                {
+                    "line_number": 145,
+                    "count": 0,
+                    "branches": [],
+                    "gcovr/md5": "68e4fcd72e87ba52e753d0af1b16fc7d"
+                },
+                {
+                    "line_number": 146,
+                    "count": 0,
+                    "branches": [
+                        {
+                            "branchno": 0,
+                            "count": 0,
+                            "fallthrough": false,
+                            "throw": false
+                        },
+                        {
+                            "branchno": 1,
+                            "count": 0,
+                            "fallthrough": false,
+                            "throw": false
+                        }
+                    ],
+                    "gcovr/decision": {
+                        "type": "conditional",
+                        "count_true": 0,
+                        "count_false": 0
+                    },
+                    "gcovr/md5": "49b898f9974955f74f69f174b54a6668"
+                },
+                {
+                    "line_number": 147,
+                    "count": 0,
+                    "branches": [],
+                    "gcovr/md5": "820e8e844ba43f93d7e70b04ff4088c1"
+                },
+                {
+                    "line_number": 149,
+                    "count": 0,
+                    "branches": [],
+                    "gcovr/md5": "68e4fcd72e87ba52e753d0af1b16fc7d"
+                },
+                {
+                    "line_number": 151,
+                    "count": 0,
+                    "branches": [],
+                    "gcovr/md5": "820e8e844ba43f93d7e70b04ff4088c1"
+                },
+                {
+                    "line_number": 153,
+                    "count": 1,
+                    "branches": [],
+                    "gcovr/md5": "68e4fcd72e87ba52e753d0af1b16fc7d"
+                },
+                {
+                    "line_number": 154,
+                    "count": 0,
+                    "branches": [],
+                    "gcovr/md5": "cbb184dd8e05c9709e5dcaedaa0495cf"
+                },
+                {
+                    "line_number": 157,
+                    "count": 1,
+                    "branches": [],
+                    "gcovr/md5": "f95b70fdc3088560732a5ac135644506"
+                },
+                {
+                    "line_number": 158,
+                    "count": 1,
+                    "branches": [
+                        {
+                            "branchno": 0,
+                            "count": 0,
+                            "fallthrough": false,
+                            "throw": false
+                        },
+                        {
+                            "branchno": 1,
+                            "count": 1,
+                            "fallthrough": false,
+                            "throw": false
+                        }
+                    ],
+                    "gcovr/decision": {
+                        "type": "conditional",
+                        "count_true": 0,
+                        "count_false": 1
+                    },
+                    "gcovr/md5": "f00aa9ee0a7a2963e5ed28c3d5f411ba"
+                },
+                {
+                    "line_number": 159,
+                    "count": 0,
+                    "branches": [],
+                    "gcovr/md5": "820e8e844ba43f93d7e70b04ff4088c1"
+                },
+                {
+                    "line_number": 161,
+                    "count": 1,
+                    "branches": [],
+                    "gcovr/md5": "68e4fcd72e87ba52e753d0af1b16fc7d"
+                },
+                {
+                    "line_number": 162,
+                    "count": 1,
+                    "branches": [
+                        {
+                            "branchno": 0,
+                            "count": 1,
+                            "fallthrough": false,
+                            "throw": false
+                        },
+                        {
+                            "branchno": 1,
+                            "count": 0,
+                            "fallthrough": false,
+                            "throw": false
+                        }
+                    ],
+                    "gcovr/decision": {
+                        "type": "conditional",
+                        "count_true": 1,
+                        "count_false": 0
+                    },
+                    "gcovr/md5": "b428569a14d78c85b2215dd962d9c82c"
+                },
+                {
+                    "line_number": 163,
+                    "count": 1,
+                    "branches": [],
+                    "gcovr/md5": "820e8e844ba43f93d7e70b04ff4088c1"
+                },
+                {
+                    "line_number": 165,
+                    "count": 0,
+                    "branches": [],
+                    "gcovr/md5": "68e4fcd72e87ba52e753d0af1b16fc7d"
+                },
+                {
+                    "line_number": 167,
+                    "count": 0,
+                    "branches": [],
+                    "gcovr/md5": "820e8e844ba43f93d7e70b04ff4088c1"
+                },
+                {
+                    "line_number": 169,
+                    "count": 1,
+                    "branches": [],
+                    "gcovr/md5": "68e4fcd72e87ba52e753d0af1b16fc7d"
+                },
+                {
+                    "line_number": 170,
+                    "count": 0,
+                    "branches": [],
+                    "gcovr/md5": "cbb184dd8e05c9709e5dcaedaa0495cf"
+                },
+                {
+                    "line_number": 173,
+                    "count": 1,
+                    "branches": [],
+                    "gcovr/md5": "f95b70fdc3088560732a5ac135644506"
+                },
+                {
+                    "line_number": 174,
+                    "count": 1,
+                    "branches": [
+                        {
+                            "branchno": 0,
+                            "count": 0,
+                            "fallthrough": false,
+                            "throw": false
+                        },
+                        {
+                            "branchno": 1,
+                            "count": 1,
+                            "fallthrough": false,
+                            "throw": false
+                        }
+                    ],
+                    "gcovr/decision": {
+                        "type": "conditional",
+                        "count_true": 0,
+                        "count_false": 1
+                    },
+                    "gcovr/md5": "f00aa9ee0a7a2963e5ed28c3d5f411ba"
+                },
+                {
+                    "line_number": 175,
+                    "count": 0,
+                    "branches": [],
+                    "gcovr/md5": "820e8e844ba43f93d7e70b04ff4088c1"
+                },
+                {
+                    "line_number": 177,
+                    "count": 1,
+                    "branches": [],
+                    "gcovr/md5": "68e4fcd72e87ba52e753d0af1b16fc7d"
+                },
+                {
+                    "line_number": 178,
+                    "count": 1,
+                    "branches": [
+                        {
+                            "branchno": 0,
+                            "count": 0,
+                            "fallthrough": false,
+                            "throw": false
+                        },
+                        {
+                            "branchno": 1,
+                            "count": 1,
+                            "fallthrough": false,
+                            "throw": false
+                        }
+                    ],
+                    "gcovr/decision": {
+                        "type": "conditional",
+                        "count_true": 0,
+                        "count_false": 1
+                    },
+                    "gcovr/md5": "b428569a14d78c85b2215dd962d9c82c"
+                },
+                {
+                    "line_number": 179,
+                    "count": 0,
+                    "branches": [],
+                    "gcovr/md5": "820e8e844ba43f93d7e70b04ff4088c1"
+                },
+                {
+                    "line_number": 181,
+                    "count": 1,
+                    "branches": [],
+                    "gcovr/md5": "68e4fcd72e87ba52e753d0af1b16fc7d"
+                },
+                {
+                    "line_number": 183,
+                    "count": 1,
+                    "branches": [],
+                    "gcovr/md5": "820e8e844ba43f93d7e70b04ff4088c1"
+                },
+                {
+                    "line_number": 185,
+                    "count": 1,
+                    "branches": [],
+                    "gcovr/md5": "68e4fcd72e87ba52e753d0af1b16fc7d"
+                },
+                {
+                    "line_number": 186,
+                    "count": 0,
+                    "branches": [],
+                    "gcovr/md5": "cbb184dd8e05c9709e5dcaedaa0495cf"
+                },
+                {
+                    "line_number": 189,
+                    "count": 1,
+                    "branches": [],
+                    "gcovr/md5": "f95b70fdc3088560732a5ac135644506"
+                },
+                {
+                    "line_number": 191,
+                    "count": 0,
+                    "branches": [],
+                    "gcovr/md5": "820e8e844ba43f93d7e70b04ff4088c1"
+                },
+                {
+                    "line_number": 192,
+                    "count": 1,
+                    "branches": [
+                        {
+                            "branchno": 0,
+                            "count": 1,
+                            "fallthrough": false,
+                            "throw": false
+                        },
+                        {
+                            "branchno": 1,
+                            "count": 0,
+                            "fallthrough": false,
+                            "throw": false
+                        }
+                    ],
+                    "gcovr/decision": {
+                        "type": "conditional",
+                        "count_true": 1,
+                        "count_false": 0
+                    },
+                    "gcovr/md5": "c55ac16d79ecde6ccafa6981a9351947"
+                },
+                {
+                    "line_number": 193,
+                    "count": 0,
+                    "branches": [],
+                    "gcovr/md5": "ebf9069ab8837a4c9f4efb118ef8c1ba"
+                },
+                {
+                    "line_number": 194,
+                    "count": 0,
+                    "branches": [
+                        {
+                            "branchno": 0,
+                            "count": 0,
+                            "fallthrough": false,
+                            "throw": false
+                        },
+                        {
+                            "branchno": 1,
+                            "count": 1,
+                            "fallthrough": false,
+                            "throw": false
+                        }
+                    ],
+                    "gcovr/decision": {
+                        "type": "conditional",
+                        "count_true": 0,
+                        "count_false": 1
+                    },
+                    "gcovr/md5": "5192495be2208d8d390eeb8bfd5a50e9"
+                },
+                {
+                    "line_number": 195,
+                    "count": 0,
+                    "branches": [],
+                    "gcovr/md5": "13ac2d49ddd597de3319ab678bdcc5be"
+                },
+                {
+                    "line_number": 197,
+                    "count": 0,
+                    "branches": [],
+                    "gcovr/md5": "13ac2d49ddd597de3319ab678bdcc5be"
+                },
+                {
+                    "line_number": 198,
+                    "count": 0,
+                    "branches": [],
+                    "gcovr/md5": "b196f20f76addf41e9513a5869eacdf4"
+                },
+                {
+                    "line_number": 199,
+                    "count": 0,
+                    "branches": [],
+                    "gcovr/md5": "13ac2d49ddd597de3319ab678bdcc5be"
+                },
+                {
+                    "line_number": 200,
+                    "count": 0,
+                    "branches": [
+                        {
+                            "branchno": 0,
+                            "count": 0,
+                            "fallthrough": false,
+                            "throw": false
+                        },
+                        {
+                            "branchno": 1,
+                            "count": 1,
+                            "fallthrough": false,
+                            "throw": false
+                        }
+                    ],
+                    "gcovr/decision": {
+                        "type": "conditional",
+                        "count_true": 0,
+                        "count_false": 1
+                    },
+                    "gcovr/md5": "8f556dc5bac889fb0d6b398cc5f1d1a2"
+                },
+                {
+                    "line_number": 201,
+                    "count": 0,
+                    "branches": [],
+                    "gcovr/md5": "13ac2d49ddd597de3319ab678bdcc5be"
+                },
+                {
+                    "line_number": 203,
+                    "count": 0,
+                    "branches": [],
+                    "gcovr/md5": "13ac2d49ddd597de3319ab678bdcc5be"
+                },
+                {
+                    "line_number": 204,
+                    "count": 1,
+                    "branches": [],
+                    "gcovr/md5": "b196f20f76addf41e9513a5869eacdf4"
+                },
+                {
+                    "line_number": 205,
+                    "count": 1,
+                    "branches": [],
+                    "gcovr/md5": "13ac2d49ddd597de3319ab678bdcc5be"
+                },
+                {
+                    "line_number": 207,
+                    "count": 0,
+                    "branches": [],
+                    "gcovr/md5": "cbb184dd8e05c9709e5dcaedaa0495cf"
+                },
+                {
+                    "line_number": 210,
+                    "count": 1,
+                    "branches": [],
+                    "gcovr/md5": "f95b70fdc3088560732a5ac135644506"
+                },
+                {
+                    "line_number": 212,
+                    "count": 0,
+                    "branches": [],
+                    "gcovr/md5": "820e8e844ba43f93d7e70b04ff4088c1"
+                },
+                {
+                    "line_number": 213,
+                    "count": 0,
+                    "branches": [
+                        {
+                            "branchno": 0,
+                            "count": 0,
+                            "fallthrough": false,
+                            "throw": false
+                        },
+                        {
+                            "branchno": 1,
+                            "count": 1,
+                            "fallthrough": false,
+                            "throw": false
+                        }
+                    ],
+                    "gcovr/decision": {
+                        "type": "conditional",
+                        "count_true": 0,
+                        "count_false": 1
+                    },
+                    "gcovr/md5": "4e16c5488167f241ab1487a55fdbe6d1"
+                },
+                {
+                    "line_number": 214,
+                    "count": 0,
+                    "branches": [],
+                    "gcovr/md5": "62a065f25d3a698c626b4544d33c875d"
+                },
+                {
+                    "line_number": 215,
+                    "count": 0,
+                    "branches": [],
+                    "gcovr/md5": "b196f20f76addf41e9513a5869eacdf4"
+                },
+                {
+                    "line_number": 216,
+                    "count": 1,
+                    "branches": [
+                        {
+                            "branchno": 0,
+                            "count": 1,
+                            "fallthrough": false,
+                            "throw": false
+                        },
+                        {
+                            "branchno": 1,
+                            "count": 0,
+                            "fallthrough": false,
+                            "throw": false
+                        }
+                    ],
+                    "gcovr/decision": {
+                        "type": "conditional",
+                        "count_true": 1,
+                        "count_false": 0
+                    },
+                    "gcovr/md5": "5192495be2208d8d390eeb8bfd5a50e9"
+                },
+                {
+                    "line_number": 217,
+                    "count": 0,
+                    "branches": [],
+                    "gcovr/md5": "62a065f25d3a698c626b4544d33c875d"
+                },
+                {
+                    "line_number": 218,
+                    "count": 0,
+                    "branches": [],
+                    "gcovr/md5": "b196f20f76addf41e9513a5869eacdf4"
+                },
+                {
+                    "line_number": 219,
+                    "count": 0,
+                    "branches": [
+                        {
+                            "branchno": 0,
+                            "count": 0,
+                            "fallthrough": false,
+                            "throw": false
+                        },
+                        {
+                            "branchno": 1,
+                            "count": 1,
+                            "fallthrough": false,
+                            "throw": false
+                        }
+                    ],
+                    "gcovr/decision": {
+                        "type": "conditional",
+                        "count_true": 0,
+                        "count_false": 1
+                    },
+                    "gcovr/md5": "8f556dc5bac889fb0d6b398cc5f1d1a2"
+                },
+                {
+                    "line_number": 220,
+                    "count": 0,
+                    "branches": [],
+                    "gcovr/md5": "235ad08b96dfe43e66fbcdb9a2ffc171"
+                },
+                {
+                    "line_number": 221,
+                    "count": 1,
+                    "branches": [],
+                    "gcovr/md5": "b196f20f76addf41e9513a5869eacdf4"
+                },
+                {
+                    "line_number": 223,
+                    "count": 0,
+                    "branches": [],
+                    "gcovr/md5": "cbb184dd8e05c9709e5dcaedaa0495cf"
+                },
+                {
+                    "line_number": 226,
+                    "count": 1,
+                    "branches": [],
+                    "gcovr/md5": "f95b70fdc3088560732a5ac135644506"
+                },
+                {
+                    "line_number": 228,
+                    "count": 0,
+                    "branches": [],
+                    "gcovr/md5": "820e8e844ba43f93d7e70b04ff4088c1"
+                },
+                {
+                    "line_number": 229,
+                    "count": 0,
+                    "branches": [
+                        {
+                            "branchno": 0,
+                            "count": 0,
+                            "fallthrough": false,
+                            "throw": false
+                        },
+                        {
+                            "branchno": 1,
+                            "count": 1,
+                            "fallthrough": false,
+                            "throw": false
+                        }
+                    ],
+                    "gcovr/decision": {
+                        "type": "conditional",
+                        "count_true": 0,
+                        "count_false": 1
+                    },
+                    "gcovr/md5": "4e16c5488167f241ab1487a55fdbe6d1"
+                },
+                {
+                    "line_number": 230,
+                    "count": 0,
+                    "branches": [],
+                    "gcovr/md5": "62a065f25d3a698c626b4544d33c875d"
+                },
+                {
+                    "line_number": 231,
+                    "count": 0,
+                    "branches": [],
+                    "gcovr/md5": "b196f20f76addf41e9513a5869eacdf4"
+                },
+                {
+                    "line_number": 232,
+                    "count": 0,
+                    "branches": [
+                        {
+                            "branchno": 0,
+                            "count": 0,
+                            "fallthrough": false,
+                            "throw": false
+                        },
+                        {
+                            "branchno": 1,
+                            "count": 1,
+                            "fallthrough": false,
+                            "throw": false
+                        }
+                    ],
+                    "gcovr/decision": {
+                        "type": "conditional",
+                        "count_true": 0,
+                        "count_false": 1
+                    },
+                    "gcovr/md5": "5192495be2208d8d390eeb8bfd5a50e9"
+                },
+                {
+                    "line_number": 233,
+                    "count": 0,
+                    "branches": [],
+                    "gcovr/md5": "62a065f25d3a698c626b4544d33c875d"
+                },
+                {
+                    "line_number": 234,
+                    "count": 0,
+                    "branches": [],
+                    "gcovr/md5": "b196f20f76addf41e9513a5869eacdf4"
+                },
+                {
+                    "line_number": 235,
+                    "count": 1,
+                    "branches": [
+                        {
+                            "branchno": 0,
+                            "count": 1,
+                            "fallthrough": false,
+                            "throw": false
+                        },
+                        {
+                            "branchno": 1,
+                            "count": 0,
+                            "fallthrough": false,
+                            "throw": false
+                        }
+                    ],
+                    "gcovr/decision": {
+                        "type": "conditional",
+                        "count_true": 1,
+                        "count_false": 0
+                    },
+                    "gcovr/md5": "8f556dc5bac889fb0d6b398cc5f1d1a2"
+                },
+                {
+                    "line_number": 236,
+                    "count": 0,
+                    "branches": [],
+                    "gcovr/md5": "235ad08b96dfe43e66fbcdb9a2ffc171"
+                },
+                {
+                    "line_number": 237,
+                    "count": 1,
+                    "branches": [],
+                    "gcovr/md5": "b196f20f76addf41e9513a5869eacdf4"
+                },
+                {
+                    "line_number": 239,
+                    "count": 0,
+                    "branches": [],
+                    "gcovr/md5": "cbb184dd8e05c9709e5dcaedaa0495cf"
+                },
+                {
+                    "line_number": 242,
+                    "count": 1,
+                    "branches": [],
+                    "gcovr/md5": "f95b70fdc3088560732a5ac135644506"
+                },
+                {
+                    "line_number": 243,
+                    "count": 1,
+                    "branches": [
+                        {
+                            "branchno": 0,
+                            "count": 1,
+                            "fallthrough": false,
+                            "throw": false
+                        },
+                        {
+                            "branchno": 1,
+                            "count": 0,
+                            "fallthrough": false,
+                            "throw": false
+                        }
+                    ],
+                    "gcovr/decision": {
+                        "type": "conditional",
+                        "count_true": 1,
+                        "count_false": 0
+                    },
+                    "gcovr/md5": "e749733f42b89caef9a0026be7b83b75"
+                },
+                {
+                    "line_number": 244,
+                    "count": 0,
+                    "branches": [],
+                    "gcovr/md5": "cbb184dd8e05c9709e5dcaedaa0495cf"
+                },
+                {
+                    "line_number": 247,
+                    "count": 1,
+                    "branches": [],
+                    "gcovr/md5": "f95b70fdc3088560732a5ac135644506"
+                },
+                {
+                    "line_number": 248,
+                    "count": 1,
+                    "branches": [
+                        {
+                            "branchno": 0,
+                            "count": 0,
+                            "fallthrough": false,
+                            "throw": false
+                        },
+                        {
+                            "branchno": 1,
+                            "count": 1,
+                            "fallthrough": false,
+                            "throw": false
+                        }
+                    ],
+                    "gcovr/decision": {
+                        "type": "conditional",
+                        "count_true": 0,
+                        "count_false": 1
+                    },
+                    "gcovr/md5": "e749733f42b89caef9a0026be7b83b75"
+                },
+                {
+                    "line_number": 249,
+                    "count": 0,
+                    "branches": [],
+                    "gcovr/md5": "cbb184dd8e05c9709e5dcaedaa0495cf"
+                },
+                {
+                    "line_number": 252,
+                    "count": 1,
+                    "branches": [],
+                    "gcovr/md5": "f95b70fdc3088560732a5ac135644506"
+                },
+                {
+                    "line_number": 253,
+                    "count": 1,
+                    "branches": [
+                        {
+                            "branchno": 0,
+                            "count": 1,
+                            "fallthrough": false,
+                            "throw": false
+                        },
+                        {
+                            "branchno": 1,
+                            "count": 0,
+                            "fallthrough": false,
+                            "throw": false
+                        },
+                        {
+                            "branchno": 2,
+                            "count": 1,
+                            "fallthrough": false,
+                            "throw": false
+                        },
+                        {
+                            "branchno": 3,
+                            "count": 0,
+                            "fallthrough": false,
+                            "throw": false
+                        }
+                    ],
+                    "gcovr/decision": {
+                        "type": "uncheckable"
+                    },
+                    "gcovr/md5": "f10e70f8cd7ef7ef1645378b8571e499"
+                },
+                {
+                    "line_number": 254,
+                    "count": 0,
+                    "branches": [],
+                    "gcovr/md5": "cbb184dd8e05c9709e5dcaedaa0495cf"
+                },
+                {
+                    "line_number": 257,
+                    "count": 1,
+                    "branches": [],
+                    "gcovr/md5": "f95b70fdc3088560732a5ac135644506"
+                },
+                {
+                    "line_number": 258,
+                    "count": 1,
+                    "branches": [
+                        {
+                            "branchno": 0,
+                            "count": 0,
+                            "fallthrough": false,
+                            "throw": false
+                        },
+                        {
+                            "branchno": 1,
+                            "count": 1,
+                            "fallthrough": false,
+                            "throw": false
+                        },
+                        {
+                            "branchno": 2,
+                            "count": 0,
+                            "fallthrough": false,
+                            "throw": false
+                        },
+                        {
+                            "branchno": 3,
+                            "count": 0,
+                            "fallthrough": false,
+                            "throw": false
+                        }
+                    ],
+                    "gcovr/decision": {
+                        "type": "uncheckable"
+                    },
+                    "gcovr/md5": "f10e70f8cd7ef7ef1645378b8571e499"
+                },
+                {
+                    "line_number": 259,
+                    "count": 0,
+                    "branches": [],
+                    "gcovr/md5": "cbb184dd8e05c9709e5dcaedaa0495cf"
+                },
+                {
+                    "line_number": 262,
+                    "count": 1,
+                    "branches": [],
+                    "gcovr/md5": "f95b70fdc3088560732a5ac135644506"
+                },
+                {
+                    "line_number": 263,
+                    "count": 1,
+                    "branches": [
+                        {
+                            "branchno": 0,
+                            "count": 0,
+                            "fallthrough": false,
+                            "throw": false
+                        },
+                        {
+                            "branchno": 1,
+                            "count": 1,
+                            "fallthrough": false,
+                            "throw": false
+                        }
+                    ],
+                    "gcovr/md5": "e5687ce2bfb55e6b964d04780a002b51"
+                },
+                {
+                    "line_number": 264,
+                    "count": 0,
+                    "branches": [],
+                    "gcovr/md5": "cbb184dd8e05c9709e5dcaedaa0495cf"
+                },
+                {
+                    "line_number": 267,
+                    "count": 1,
+                    "branches": [],
+                    "gcovr/md5": "f95b70fdc3088560732a5ac135644506"
+                },
+                {
+                    "line_number": 268,
+                    "count": 1,
+                    "branches": [
+                        {
+                            "branchno": 0,
+                            "count": 0,
+                            "fallthrough": false,
+                            "throw": false
+                        },
+                        {
+                            "branchno": 1,
+                            "count": 1,
+                            "fallthrough": false,
+                            "throw": false
+                        }
+                    ],
+                    "gcovr/md5": "e5687ce2bfb55e6b964d04780a002b51"
+                },
+                {
+                    "line_number": 269,
+                    "count": 0,
+                    "branches": [],
+                    "gcovr/md5": "cbb184dd8e05c9709e5dcaedaa0495cf"
+                },
+                {
+                    "line_number": 272,
+                    "count": 1,
+                    "branches": [],
+                    "gcovr/md5": "f95b70fdc3088560732a5ac135644506"
+                },
+                {
+                    "line_number": 273,
+                    "count": 1,
+                    "branches": [
+                        {
+                            "branchno": 0,
+                            "count": 1,
+                            "fallthrough": false,
+                            "throw": false
+                        },
+                        {
+                            "branchno": 1,
+                            "count": 0,
+                            "fallthrough": false,
+                            "throw": false
+                        },
+                        {
+                            "branchno": 2,
+                            "count": 1,
+                            "fallthrough": false,
+                            "throw": false
+                        },
+                        {
+                            "branchno": 3,
+                            "count": 0,
+                            "fallthrough": false,
+                            "throw": false
+                        }
+                    ],
+                    "gcovr/md5": "cc459c18ce48cc663bdc4a760ec410f6"
+                },
+                {
+                    "line_number": 274,
+                    "count": 0,
+                    "branches": [],
+                    "gcovr/md5": "cbb184dd8e05c9709e5dcaedaa0495cf"
+                },
+                {
+                    "line_number": 277,
+                    "count": 1,
+                    "branches": [],
+                    "gcovr/md5": "f95b70fdc3088560732a5ac135644506"
+                },
+                {
+                    "line_number": 278,
+                    "count": 1,
+                    "branches": [
+                        {
+                            "branchno": 0,
+                            "count": 0,
+                            "fallthrough": false,
+                            "throw": false
+                        },
+                        {
+                            "branchno": 1,
+                            "count": 1,
+                            "fallthrough": false,
+                            "throw": false
+                        },
+                        {
+                            "branchno": 2,
+                            "count": 0,
+                            "fallthrough": false,
+                            "throw": false
+                        },
+                        {
+                            "branchno": 3,
+                            "count": 0,
+                            "fallthrough": false,
+                            "throw": false
+                        }
+                    ],
+                    "gcovr/md5": "cc459c18ce48cc663bdc4a760ec410f6"
+                },
+                {
+                    "line_number": 279,
+                    "count": 0,
+                    "branches": [],
+                    "gcovr/md5": "cbb184dd8e05c9709e5dcaedaa0495cf"
+                },
+                {
+                    "line_number": 282,
+                    "count": 1,
+                    "branches": [],
+                    "gcovr/md5": "f95b70fdc3088560732a5ac135644506"
+                },
+                {
+                    "line_number": 283,
+                    "count": 1,
+                    "branches": [
+                        {
+                            "branchno": 0,
+                            "count": 1,
+                            "fallthrough": false,
+                            "throw": false
+                        },
+                        {
+                            "branchno": 1,
+                            "count": 0,
+                            "fallthrough": false,
+                            "throw": false
+                        },
+                        {
+                            "branchno": 2,
+                            "count": 1,
+                            "fallthrough": false,
+                            "throw": false
+                        },
+                        {
+                            "branchno": 3,
+                            "count": 0,
+                            "fallthrough": false,
+                            "throw": false
+                        }
+                    ],
+                    "gcovr/decision": {
+                        "type": "conditional",
+                        "count_true": 1,
+                        "count_false": 0
+                    },
+                    "gcovr/md5": "95fe066f0947d235fa17bb062051a3b2"
+                },
+                {
+                    "line_number": 284,
+                    "count": 1,
+                    "branches": [],
+                    "gcovr/md5": "645924eb3b07dbb34295edeaa6442673"
+                },
+                {
+                    "line_number": 285,
+                    "count": 0,
+                    "branches": [],
+                    "gcovr/md5": "cbb184dd8e05c9709e5dcaedaa0495cf"
+                },
+                {
+                    "line_number": 288,
+                    "count": 1,
+                    "branches": [],
+                    "gcovr/md5": "f95b70fdc3088560732a5ac135644506"
+                },
+                {
+                    "line_number": 289,
+                    "count": 1,
+                    "branches": [
+                        {
+                            "branchno": 0,
+                            "count": 0,
+                            "fallthrough": false,
+                            "throw": false
+                        },
+                        {
+                            "branchno": 1,
+                            "count": 1,
+                            "fallthrough": false,
+                            "throw": false
+                        },
+                        {
+                            "branchno": 2,
+                            "count": 0,
+                            "fallthrough": false,
+                            "throw": false
+                        },
+                        {
+                            "branchno": 3,
+                            "count": 0,
+                            "fallthrough": false,
+                            "throw": false
+                        }
+                    ],
+                    "gcovr/decision": {
+                        "type": "conditional",
+                        "count_true": 1,
+                        "count_false": 0
+                    },
+                    "gcovr/md5": "95fe066f0947d235fa17bb062051a3b2"
+                },
+                {
+                    "line_number": 290,
+                    "count": 1,
+                    "branches": [],
+                    "gcovr/md5": "645924eb3b07dbb34295edeaa6442673"
+                },
+                {
+                    "line_number": 291,
+                    "count": 0,
+                    "branches": [],
+                    "gcovr/md5": "cbb184dd8e05c9709e5dcaedaa0495cf"
+                },
+                {
+                    "line_number": 294,
+                    "count": 1,
+                    "branches": [],
+                    "gcovr/md5": "f95b70fdc3088560732a5ac135644506"
+                },
+                {
+                    "line_number": 296,
+                    "count": 6,
+                    "branches": [
+                        {
+                            "branchno": 0,
+                            "count": 5,
+                            "fallthrough": false,
+                            "throw": false
+                        },
+                        {
+                            "branchno": 1,
+                            "count": 1,
+                            "fallthrough": false,
+                            "throw": false
+                        }
+                    ],
+                    "gcovr/decision": {
+                        "type": "conditional",
+                        "count_true": 5,
+                        "count_false": 1
+                    },
+                    "gcovr/md5": "3acfab0519f3428bd6e85b610574acac"
+                },
+                {
+                    "line_number": 297,
+                    "count": 5,
+                    "branches": [],
+                    "gcovr/md5": "820e8e844ba43f93d7e70b04ff4088c1"
+                },
+                {
+                    "line_number": 299,
+                    "count": 1,
+                    "branches": [],
+                    "gcovr/md5": "68e4fcd72e87ba52e753d0af1b16fc7d"
+                },
+                {
+                    "line_number": 301,
+                    "count": 0,
+                    "branches": [],
+                    "gcovr/md5": "cbb184dd8e05c9709e5dcaedaa0495cf"
+                },
+                {
+                    "line_number": 304,
+                    "count": 1,
+                    "branches": [],
+                    "gcovr/md5": "f95b70fdc3088560732a5ac135644506"
+                },
+                {
+                    "line_number": 306,
+                    "count": 6,
+                    "branches": [
+                        {
+                            "branchno": 0,
+                            "count": 5,
+                            "fallthrough": false,
+                            "throw": false
+                        },
+                        {
+                            "branchno": 1,
+                            "count": 1,
+                            "fallthrough": false,
+                            "throw": false
+                        },
+                        {
+                            "branchno": 2,
+                            "count": 5,
+                            "fallthrough": false,
+                            "throw": false
+                        },
+                        {
+                            "branchno": 3,
+                            "count": 0,
+                            "fallthrough": false,
+                            "throw": false
+                        }
+                    ],
+                    "gcovr/decision": {
+                        "type": "uncheckable"
+                    },
+                    "gcovr/md5": "f045ba8b7bbb82cb14b97f844c17a868"
+                },
+                {
+                    "line_number": 307,
+                    "count": 5,
+                    "branches": [],
+                    "gcovr/md5": "820e8e844ba43f93d7e70b04ff4088c1"
+                },
+                {
+                    "line_number": 309,
+                    "count": 1,
+                    "branches": [],
+                    "gcovr/md5": "68e4fcd72e87ba52e753d0af1b16fc7d"
+                },
+                {
+                    "line_number": 311,
+                    "count": 0,
+                    "branches": [],
+                    "gcovr/md5": "cbb184dd8e05c9709e5dcaedaa0495cf"
+                },
+                {
+                    "line_number": 314,
+                    "count": 1,
+                    "branches": [],
+                    "gcovr/md5": "f95b70fdc3088560732a5ac135644506"
+                },
+                {
+                    "line_number": 317,
+                    "count": 1,
+                    "branches": [],
+                    "gcovr/md5": "d41d8cd98f00b204e9800998ecf8427e"
+                },
+                {
+                    "line_number": 318,
+                    "count": 6,
+                    "branches": [
+                        {
+                            "branchno": 0,
+                            "count": 5,
+                            "fallthrough": false,
+                            "throw": false
+                        },
+                        {
+                            "branchno": 1,
+                            "count": 1,
+                            "fallthrough": false,
+                            "throw": false
+                        }
+                    ],
+                    "gcovr/decision": {
+                        "type": "conditional",
+                        "count_true": 5,
+                        "count_false": 1
+                    },
+                    "gcovr/md5": "670ed65f1c3b23a11afd3746e0865ce4"
+                },
+                {
+                    "line_number": 319,
+                    "count": 5,
+                    "branches": [],
+                    "gcovr/md5": "820e8e844ba43f93d7e70b04ff4088c1"
+                },
+                {
+                    "line_number": 322,
+                    "count": 1,
+                    "branches": [],
+                    "gcovr/md5": "68e4fcd72e87ba52e753d0af1b16fc7d"
+                },
+                {
+                    "line_number": 323,
+                    "count": 1,
+                    "branches": [],
+                    "gcovr/md5": "d41d8cd98f00b204e9800998ecf8427e"
+                },
+                {
+                    "line_number": 325,
+                    "count": 0,
+                    "branches": [],
+                    "gcovr/md5": "cbb184dd8e05c9709e5dcaedaa0495cf"
+                },
+                {
+                    "line_number": 328,
+                    "count": 1,
+                    "branches": [],
+                    "gcovr/md5": "f95b70fdc3088560732a5ac135644506"
+                },
+                {
+                    "line_number": 331,
+                    "count": 1,
+                    "branches": [],
+                    "gcovr/md5": "d41d8cd98f00b204e9800998ecf8427e"
+                },
+                {
+                    "line_number": 333,
+                    "count": 5,
+                    "branches": [],
+                    "gcovr/md5": "820e8e844ba43f93d7e70b04ff4088c1"
+                },
+                {
+                    "line_number": 336,
+                    "count": 5,
+                    "branches": [
+                        {
+                            "branchno": 0,
+                            "count": 4,
+                            "fallthrough": false,
+                            "throw": false
+                        },
+                        {
+                            "branchno": 1,
+                            "count": 1,
+                            "fallthrough": false,
+                            "throw": false
+                        }
+                    ],
+                    "gcovr/decision": {
+                        "type": "conditional",
+                        "count_true": 4,
+                        "count_false": 1
+                    },
+                    "gcovr/md5": "3e8434067cc44c9640dd8a6d237d800a"
+                },
+                {
+                    "line_number": 337,
+                    "count": 1,
+                    "branches": [],
+                    "gcovr/md5": "d41d8cd98f00b204e9800998ecf8427e"
+                },
+                {
+                    "line_number": 339,
+                    "count": 0,
+                    "branches": [],
+                    "gcovr/md5": "cbb184dd8e05c9709e5dcaedaa0495cf"
+                },
+                {
+                    "line_number": 342,
+                    "count": 1,
+                    "branches": [],
+                    "gcovr/md5": "f95b70fdc3088560732a5ac135644506"
+                },
+                {
+                    "line_number": 345,
+                    "count": 1,
+                    "branches": [],
+                    "gcovr/md5": "d41d8cd98f00b204e9800998ecf8427e"
+                },
+                {
+                    "line_number": 350,
+                    "count": 1,
+                    "branches": [],
+                    "gcovr/md5": "d41d8cd98f00b204e9800998ecf8427e"
+                },
+                {
+                    "line_number": 353,
+                    "count": 1,
+                    "branches": [],
+                    "gcovr/md5": "d41d8cd98f00b204e9800998ecf8427e"
+                },
+                {
+                    "line_number": 356,
+                    "count": 1,
+                    "branches": [],
+                    "gcovr/md5": "d41d8cd98f00b204e9800998ecf8427e"
+                },
+                {
+                    "line_number": 357,
+                    "count": 1,
+                    "branches": [
+                        {
+                            "branchno": 0,
+                            "count": 1,
+                            "fallthrough": false,
+                            "throw": false
+                        },
+                        {
+                            "branchno": 1,
+                            "count": 0,
+                            "fallthrough": false,
+                            "throw": false
+                        }
+                    ],
+                    "gcovr/decision": {
+                        "type": "conditional",
+                        "count_true": 1,
+                        "count_false": 0
+                    },
+                    "gcovr/md5": "9eb017aa338d065a39a9c50252dd0884"
+                },
+                {
+                    "line_number": 358,
+                    "count": 1,
+                    "branches": [],
+                    "gcovr/md5": "820e8e844ba43f93d7e70b04ff4088c1"
+                },
+                {
+                    "line_number": 360,
+                    "count": 0,
+                    "branches": [],
+                    "gcovr/md5": "68e4fcd72e87ba52e753d0af1b16fc7d"
+                },
+                {
+                    "line_number": 361,
+                    "count": 0,
+                    "branches": [],
+                    "gcovr/md5": "d41d8cd98f00b204e9800998ecf8427e"
+                },
+                {
+                    "line_number": 362,
+                    "count": 1,
+                    "branches": [],
+                    "gcovr/md5": "645924eb3b07dbb34295edeaa6442673"
+                },
+                {
+                    "line_number": 363,
+                    "count": 0,
+                    "branches": [],
+                    "gcovr/md5": "cbb184dd8e05c9709e5dcaedaa0495cf"
+                },
+                {
+                    "line_number": 365,
+                    "count": 2,
+                    "branches": [],
+                    "gcovr/md5": "78cbf5dc7f0e6f7d02476603c791b3fd"
+                },
+                {
+                    "line_number": 366,
+                    "count": 2,
+                    "branches": [
+                        {
+                            "branchno": 0,
+                            "count": 1,
+                            "fallthrough": false,
+                            "throw": false
+                        },
+                        {
+                            "branchno": 1,
+                            "count": 1,
+                            "fallthrough": false,
+                            "throw": false
+                        }
+                    ],
+                    "gcovr/decision": {
+                        "type": "conditional",
+                        "count_true": 1,
+                        "count_false": 1
+                    },
+                    "gcovr/md5": "ea7f2e78805e85d9aa20a2bec77cee2e"
+                },
+                {
+                    "line_number": 367,
+                    "count": 11,
+                    "branches": [
+                        {
+                            "branchno": 0,
+                            "count": 10,
+                            "fallthrough": false,
+                            "throw": false
+                        },
+                        {
+                            "branchno": 1,
+                            "count": 1,
+                            "fallthrough": false,
+                            "throw": false
+                        }
+                    ],
+                    "gcovr/decision": {
+                        "type": "conditional",
+                        "count_true": 10,
+                        "count_false": 1
+                    },
+                    "gcovr/md5": "3e2cc082cb7c4086fe2acf4d52b8819b"
+                },
+                {
+                    "line_number": 368,
+                    "count": 1,
+                    "branches": [],
+                    "gcovr/md5": "ea5a1cbe764918679997181a3ea281d3"
+                },
+                {
+                    "line_number": 369,
+                    "count": 2,
+                    "branches": [],
+                    "gcovr/md5": "7eefb90de6682989ef933bcadcbb7de9"
+                },
+                {
+                    "line_number": 370,
+                    "count": 0,
+                    "branches": [],
+                    "gcovr/md5": "cbb184dd8e05c9709e5dcaedaa0495cf"
+                },
+                {
+                    "line_number": 373,
+                    "count": 1,
+                    "branches": [],
+                    "gcovr/md5": "f95b70fdc3088560732a5ac135644506"
+                },
+                {
+                    "line_number": 378,
+                    "count": 1,
+                    "branches": [],
+                    "gcovr/md5": "d41d8cd98f00b204e9800998ecf8427e"
+                },
+                {
+                    "line_number": 381,
+                    "count": 1,
+                    "branches": [],
+                    "gcovr/md5": "d41d8cd98f00b204e9800998ecf8427e"
+                },
+                {
+                    "line_number": 384,
+                    "count": 1,
+                    "branches": [],
+                    "gcovr/md5": "d41d8cd98f00b204e9800998ecf8427e"
+                },
+                {
+                    "line_number": 387,
+                    "count": 1,
+                    "branches": [],
+                    "gcovr/md5": "d41d8cd98f00b204e9800998ecf8427e"
+                },
+                {
+                    "line_number": 390,
+                    "count": 1,
+                    "branches": [],
+                    "gcovr/md5": "d41d8cd98f00b204e9800998ecf8427e"
+                },
+                {
+                    "line_number": 394,
+                    "count": 1,
+                    "branches": [],
+                    "gcovr/md5": "d41d8cd98f00b204e9800998ecf8427e"
+                },
+                {
+                    "line_number": 398,
+                    "count": 1,
+                    "branches": [],
+                    "gcovr/md5": "d41d8cd98f00b204e9800998ecf8427e"
+                },
+                {
+                    "line_number": 402,
+                    "count": 1,
+                    "branches": [],
+                    "gcovr/md5": "d41d8cd98f00b204e9800998ecf8427e"
+                },
+                {
+                    "line_number": 405,
+                    "count": 1,
+                    "branches": [],
+                    "gcovr/md5": "d41d8cd98f00b204e9800998ecf8427e"
+                },
+                {
+                    "line_number": 408,
+                    "count": 1,
+                    "branches": [],
+                    "gcovr/md5": "d41d8cd98f00b204e9800998ecf8427e"
+                },
+                {
+                    "line_number": 411,
+                    "count": 1,
+                    "branches": [],
+                    "gcovr/md5": "d41d8cd98f00b204e9800998ecf8427e"
+                },
+                {
+                    "line_number": 414,
+                    "count": 1,
+                    "branches": [],
+                    "gcovr/md5": "d41d8cd98f00b204e9800998ecf8427e"
+                },
+                {
+                    "line_number": 417,
+                    "count": 1,
+                    "branches": [],
+                    "gcovr/md5": "d41d8cd98f00b204e9800998ecf8427e"
+                },
+                {
+                    "line_number": 422,
+                    "count": 1,
+                    "branches": [],
+                    "gcovr/md5": "d41d8cd98f00b204e9800998ecf8427e"
+                },
+                {
+                    "line_number": 424,
+                    "count": 1,
+                    "branches": [],
+                    "gcovr/md5": "d41d8cd98f00b204e9800998ecf8427e"
+                },
+                {
+                    "line_number": 427,
+                    "count": 1,
+                    "branches": [],
+                    "gcovr/md5": "d41d8cd98f00b204e9800998ecf8427e"
+                },
+                {
+                    "line_number": 429,
+                    "count": 0,
+                    "branches": [],
+                    "gcovr/md5": "cbb184dd8e05c9709e5dcaedaa0495cf"
+                }
+            ],
+            "functions": [
+                {
+                    "name": "_Z15checkBiggerTruei",
+                    "lineno": 9,
+                    "execution_count": 1,
+                    "blocks_percent": 66.7,
+                    "pos": [
+                        "9:1",
+                        "17:5"
+                    ]
+                },
+                {
+                    "name": "_Z16checkBiggerFalsei",
+                    "lineno": 21,
+                    "execution_count": 1,
+                    "blocks_percent": 66.7,
+                    "pos": [
+                        "21:1",
+                        "29:5"
+                    ]
+                },
+                {
+                    "name": "_Z15checkBiggerBothi",
+                    "lineno": 33,
+                    "execution_count": 2,
+                    "blocks_percent": 100.0,
+                    "pos": [
+                        "33:1",
+                        "41:5"
+                    ]
+                },
+                {
+                    "name": "_Z16checkSmallerTruei",
+                    "lineno": 45,
+                    "execution_count": 1,
+                    "blocks_percent": 66.7,
+                    "pos": [
+                        "45:1",
+                        "53:5"
+                    ]
+                },
+                {
+                    "name": "_Z17checkSmallerFalsei",
+                    "lineno": 57,
+                    "execution_count": 1,
+                    "blocks_percent": 66.7,
+                    "pos": [
+                        "57:1",
+                        "65:5"
+                    ]
+                },
+                {
+                    "name": "_Z14checkEqualTruei",
+                    "lineno": 69,
+                    "execution_count": 1,
+                    "blocks_percent": 66.7,
+                    "pos": [
+                        "69:1",
+                        "77:5"
+                    ]
+                },
+                {
+                    "name": "_Z15checkEqualFalsei",
+                    "lineno": 81,
+                    "execution_count": 1,
+                    "blocks_percent": 66.7,
+                    "pos": [
+                        "81:1",
+                        "89:5"
+                    ]
+                },
+                {
+                    "name": "_Z17checkNotEqualTruei",
+                    "lineno": 93,
+                    "execution_count": 1,
+                    "blocks_percent": 66.7,
+                    "pos": [
+                        "93:1",
+                        "101:5"
+                    ]
+                },
+                {
+                    "name": "_Z18checkNotEqualFalsei",
+                    "lineno": 105,
+                    "execution_count": 1,
+                    "blocks_percent": 66.7,
+                    "pos": [
+                        "105:1",
+                        "113:5"
+                    ]
+                },
+                {
+                    "name": "_Z16checkComplexTruei",
+                    "lineno": 117,
+                    "execution_count": 1,
+                    "blocks_percent": 80.0,
+                    "pos": [
+                        "117:1",
+                        "125:5"
+                    ]
+                },
+                {
+                    "name": "_Z17checkComplexFalsei",
+                    "lineno": 129,
+                    "execution_count": 1,
+                    "blocks_percent": 70.0,
+                    "pos": [
+                        "129:1",
+                        "137:5"
+                    ]
+                },
+                {
+                    "name": "_Z12checkElseIf1i",
+                    "lineno": 141,
+                    "execution_count": 1,
+                    "blocks_percent": 36.4,
+                    "pos": [
+                        "141:1",
+                        "153:5"
+                    ]
+                },
+                {
+                    "name": "_Z12checkElseIf2i",
+                    "lineno": 157,
+                    "execution_count": 1,
+                    "blocks_percent": 63.6,
+                    "pos": [
+                        "157:1",
+                        "169:5"
+                    ]
+                },
+                {
+                    "name": "_Z12checkElseIf3i",
+                    "lineno": 173,
+                    "execution_count": 1,
+                    "blocks_percent": 63.6,
+                    "pos": [
+                        "173:1",
+                        "185:5"
+                    ]
+                },
+                {
+                    "name": "_Z12checkSwitch1i",
+                    "lineno": 189,
+                    "execution_count": 1,
+                    "blocks_percent": 10.0,
+                    "pos": [
+                        "189:1",
+                        "205:20"
+                    ]
+                },
+                {
+                    "name": "_Z12checkSwitch2i",
+                    "lineno": 210,
+                    "execution_count": 1,
+                    "blocks_percent": 15.4,
+                    "pos": [
+                        "210:1",
+                        "221:12"
+                    ]
+                },
+                {
+                    "name": "_Z12checkSwitch3i",
+                    "lineno": 226,
+                    "execution_count": 1,
+                    "blocks_percent": 15.4,
+                    "pos": [
+                        "226:1",
+                        "237:12"
+                    ]
+                },
+                {
+                    "name": "_Z23checkCompactBranch1Truei",
+                    "lineno": 242,
+                    "execution_count": 1,
+                    "blocks_percent": 66.7,
+                    "pos": [
+                        "242:1",
+                        "243:54"
+                    ]
+                },
+                {
+                    "name": "_Z24checkCompactBranch1Falsei",
+                    "lineno": 247,
+                    "execution_count": 1,
+                    "blocks_percent": 66.7,
+                    "pos": [
+                        "247:1",
+                        "248:54"
+                    ]
+                },
+                {
+                    "name": "_Z23checkCompactBranch2Truei",
+                    "lineno": 252,
+                    "execution_count": 1,
+                    "blocks_percent": 75.0,
+                    "pos": [
+                        "252:1",
+                        "253:64"
+                    ]
+                },
+                {
+                    "name": "_Z24checkCompactBranch2Falsei",
+                    "lineno": 257,
+                    "execution_count": 1,
+                    "blocks_percent": 62.5,
+                    "pos": [
+                        "257:1",
+                        "258:64"
+                    ]
+                },
+                {
+                    "name": "_Z17checkTernary1Truei",
+                    "lineno": 262,
+                    "execution_count": 1,
+                    "blocks_percent": 60.0,
+                    "pos": [
+                        "262:1",
+                        "263:34"
+                    ]
+                },
+                {
+                    "name": "_Z18checkTernary1Falsei",
+                    "lineno": 267,
+                    "execution_count": 1,
+                    "blocks_percent": 60.0,
+                    "pos": [
+                        "267:1",
+                        "268:34"
+                    ]
+                },
+                {
+                    "name": "_Z17checkTernary2Truei",
+                    "lineno": 272,
+                    "execution_count": 1,
+                    "blocks_percent": 85.7,
+                    "pos": [
+                        "272:1",
+                        "273:43"
+                    ]
+                },
+                {
+                    "name": "_Z18checkTernary2Falsei",
+                    "lineno": 277,
+                    "execution_count": 1,
+                    "blocks_percent": 57.1,
+                    "pos": [
+                        "277:1",
+                        "278:43"
+                    ]
+                },
+                {
+                    "name": "_Z17checkSplittedTruei",
+                    "lineno": 282,
+                    "execution_count": 1,
+                    "blocks_percent": 77.8,
+                    "pos": [
+                        "282:1",
+                        "284:16"
+                    ]
+                },
+                {
+                    "name": "_Z18checkSplittedFalsei",
+                    "lineno": 288,
+                    "execution_count": 1,
+                    "blocks_percent": 44.4,
+                    "pos": [
+                        "288:1",
+                        "290:16"
+                    ]
+                },
+                {
+                    "name": "_Z12checkForLoopi",
+                    "lineno": 294,
+                    "execution_count": 1,
+                    "blocks_percent": 100.0,
+                    "pos": [
+                        "294:1",
+                        "299:5"
+                    ]
+                },
+                {
+                    "name": "_Z19checkComplexForLoopi",
+                    "lineno": 304,
+                    "execution_count": 1,
+                    "blocks_percent": 100.0,
+                    "pos": [
+                        "304:1",
+                        "309:5"
+                    ]
+                },
+                {
+                    "name": "_Z14checkWhileLoopi",
+                    "lineno": 314,
+                    "execution_count": 1,
+                    "blocks_percent": 66.7,
+                    "pos": [
+                        "314:1",
+                        "323:1"
+                    ]
+                },
+                {
+                    "name": "_Z16checkDoWhileLoopi",
+                    "lineno": 328,
+                    "execution_count": 1,
+                    "blocks_percent": 60.0,
+                    "pos": [
+                        "328:1",
+                        "337:1"
+                    ]
+                },
+                {
+                    "name": "_Z16checkInterpreteri",
+                    "lineno": 342,
+                    "execution_count": 1,
+                    "blocks_percent": 36.4,
+                    "pos": [
+                        "342:1",
+                        "362:16"
+                    ]
+                },
+                {
+                    "name": "_Z16verify_issue_679b",
+                    "lineno": 365,
+                    "execution_count": 2,
+                    "blocks_percent": 100.0,
+                    "pos": [
+                        "365:37",
+                        "368:6"
+                    ]
+                },
+                {
+                    "name": "main",
+                    "lineno": 373,
+                    "execution_count": 1,
+                    "blocks_percent": 5.9,
+                    "pos": [
+                        "373:1",
+                        "427:1"
+                    ]
+                }
+            ]
+        },
+        {
+            "file": "switch_test.cpp",
+            "lines": [
+                {
+                    "line_number": 5,
+                    "count": 1,
+                    "branches": [],
+                    "gcovr/md5": "daaee5f922cdfe45cf6519c84a4de5b0"
+                },
+                {
+                    "line_number": 7,
+                    "count": 1,
+                    "branches": [],
+                    "gcovr/md5": "8047128d0af317bb6db2334074f87249"
+                },
+                {
+                    "line_number": 9,
+                    "count": 0,
+                    "branches": [],
+                    "gcovr/md5": "cbb184dd8e05c9709e5dcaedaa0495cf"
+                }
+            ],
+            "functions": [
+                {
+                    "name": "_ZN18SwitchTestIssue783C2Ev",
+                    "lineno": 5,
+                    "execution_count": 1,
+                    "blocks_percent": 100.0,
+                    "pos": [
+                        "5:58",
+                        "5:60"
+                    ]
+                },
+                {
+                    "name": "_ZN18SwitchTestIssue78311checkSwitchEv",
+                    "lineno": 7,
+                    "execution_count": 1,
+                    "blocks_percent": 100.0,
+                    "pos": [
+                        "7:40",
+                        "9:2"
+                    ]
+                }
+            ]
+        },
+        {
+            "file": "switch_test.h",
+            "lines": [
+                {
+                    "line_number": 17,
+                    "count": 1,
+                    "branches": [],
+                    "gcovr/md5": "d23ee0504026734c593c30a7231387ed"
+                },
+                {
+                    "line_number": 18,
+                    "count": 0,
+                    "branches": [
+                        {
+                            "branchno": 0,
+                            "count": 0,
+                            "fallthrough": false,
+                            "throw": false
+                        },
+                        {
+                            "branchno": 1,
+                            "count": 1,
+                            "fallthrough": false,
+                            "throw": false
+                        }
+                    ],
+                    "gcovr/md5": "fcb068fee0ede6857cdd1a834d4da42f"
+                },
+                {
+                    "line_number": 19,
+                    "count": 1,
+                    "branches": [
+                        {
+                            "branchno": 0,
+                            "count": 1,
+                            "fallthrough": false,
+                            "throw": false
+                        },
+                        {
+                            "branchno": 1,
+                            "count": 0,
+                            "fallthrough": false,
+                            "throw": false
+                        }
+                    ],
+                    "gcovr/decision": {
+                        "type": "conditional",
+                        "count_true": 1,
+                        "count_false": 0
+                    },
+                    "gcovr/md5": "90473f043e847e68da8d588d72e3de20"
+                },
+                {
+                    "line_number": 20,
+                    "count": 0,
+                    "branches": [
+                        {
+                            "branchno": 0,
+                            "count": 0,
+                            "fallthrough": false,
+                            "throw": false
+                        },
+                        {
+                            "branchno": 1,
+                            "count": 1,
+                            "fallthrough": false,
+                            "throw": false
+                        }
+                    ],
+                    "gcovr/decision": {
+                        "type": "conditional",
+                        "count_true": 0,
+                        "count_false": 1
+                    },
+                    "gcovr/md5": "3020e494435c1480987210ff58a9cee4"
+                },
+                {
+                    "line_number": 21,
+                    "count": 1,
+                    "branches": [
+                        {
+                            "branchno": 0,
+                            "count": 0,
+                            "fallthrough": false,
+                            "throw": false
+                        },
+                        {
+                            "branchno": 1,
+                            "count": 1,
+                            "fallthrough": false,
+                            "throw": false
+                        }
+                    ],
+                    "gcovr/decision": {
+                        "type": "conditional",
+                        "count_true": 0,
+                        "count_false": 1
+                    },
+                    "gcovr/md5": "69a9613ffc070fae51be672517d8d38a"
+                },
+                {
+                    "line_number": 22,
+                    "count": 0,
+                    "branches": [],
+                    "gcovr/md5": "4e1ddba1c31545ee09fb38ae1fd79346"
+                },
+                {
+                    "line_number": 23,
+                    "count": 1,
+                    "branches": [],
+                    "gcovr/md5": "10768d314ff01a06ad913aa6ed6ece64"
+                },
+                {
+                    "line_number": 24,
+                    "count": 0,
+                    "branches": [],
+                    "gcovr/md5": "ea5a1cbe764918679997181a3ea281d3"
+                }
+            ],
+            "functions": [
+                {
+                    "name": "_ZN18SwitchTestIssue78311doSomethingEN13EnumNamespace8SomeEnumE",
+                    "lineno": 17,
+                    "execution_count": 1,
+                    "blocks_percent": 22.2,
+                    "pos": [
+                        "17:62",
+                        "23:19"
+                    ]
+                }
+            ]
+        }
+    ]
+}

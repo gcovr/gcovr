@@ -359,8 +359,8 @@ def main(args: Optional[list[str]] = None) -> int:  # pylint: disable=too-many-r
         options.gcov_exclude_filter = _setup_filter(
             "--gcov-exclude", options.gcov_exclude_filter
         )
-        options.gcov_exclude_directory = _setup_filter(
-            "--gcov-exclude-directory", options.gcov_exclude_directory
+        options.exclude_directory = _setup_filter(
+            "--exclude-directory", options.exclude_directory
         )
 
         options.trace_include_filter = _setup_filter(

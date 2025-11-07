@@ -5,7 +5,7 @@ from tests.conftest import IS_DARWIN, IS_LINUX, GcovrTestExec
 
 @pytest.mark.skipif(
     not IS_LINUX,
-    reason="Exclusion markers are independent of OS and we do not want to have separate data wor Windows and Darwin.",
+    reason="Exclusion markers are independent of OS and we do not want to have separate data for Windows and Darwin.",
 )
 def test_exclude_line(  # type: ignore[no-untyped-def]
     gcovr_test_exec: "GcovrTestExec",
@@ -73,7 +73,7 @@ def test_exclude_line(  # type: ignore[no-untyped-def]
 
 @pytest.mark.skipif(
     not IS_LINUX,
-    reason="Exclusion markers are independent of OS and we do not want to have separate data wor Windows and Darwin.",
+    reason="Exclusion markers are independent of OS and we do not want to have separate data for Windows and Darwin.",
 )
 def test_exclude_line_custom(gcovr_test_exec: "GcovrTestExec") -> None:
     """This test case verifies that custom tagged lines (LINE/START/STOP) are excluded per run options.
@@ -143,7 +143,7 @@ def test_exclude_line_custom(gcovr_test_exec: "GcovrTestExec") -> None:
 
 @pytest.mark.skipif(
     not IS_LINUX,
-    reason="Exclusion markers are independent of OS and we do not want to have separate data wor Windows and Darwin.",
+    reason="Exclusion markers are independent of OS and we do not want to have separate data for Windows and Darwin.",
 )
 def test_exclude_line_branch(gcovr_test_exec: "GcovrTestExec") -> None:
     """Test for --exclude-unreachable-branches option.
@@ -322,7 +322,7 @@ def test_exclude_lines_by_pattern(gcovr_test_exec: "GcovrTestExec") -> None:
 
 @pytest.mark.skipif(
     not IS_LINUX,
-    reason="Exclusion markers are independent of OS and we do not want to have separate data wor Windows and Darwin.",
+    reason="Exclusion markers are independent of OS and we do not want to have separate data for Windows and Darwin.",
 )
 def test_exclude_branch(gcovr_test_exec: "GcovrTestExec") -> None:
     """This test case verifies that tagged lines (BR_LINE/BR_START/BR_STOP) are excluded per run options."""
@@ -390,7 +390,7 @@ def test_exclude_branch(gcovr_test_exec: "GcovrTestExec") -> None:
 
 @pytest.mark.skipif(
     not IS_LINUX,
-    reason="Exclusion markers are independent of OS and we do not want to have separate data wor Windows and Darwin.",
+    reason="Exclusion markers are independent of OS and we do not want to have separate data for Windows and Darwin.",
 )
 def test_exclude_branch_source(  # type: ignore[no-untyped-def]
     gcovr_test_exec: "GcovrTestExec",
@@ -578,7 +578,7 @@ def test_exclude_branch_without_hit(  # type: ignore[no-untyped-def]
 
 @pytest.mark.skipif(
     not IS_LINUX,
-    reason="Exclusion of throw branches is independent of OS and we do not want to have separate data wor Windows and Darwin.",
+    reason="Exclusion of throw branches is independent of OS and we do not want to have separate data for Windows and Darwin.",
 )
 def test_exclude_throw_branches(gcovr_test_exec: "GcovrTestExec") -> None:
     """Test exclude-throw-branches option."""
@@ -749,7 +749,7 @@ def test_exclude_file_relative(gcovr_test_exec: "GcovrTestExec") -> None:
 
 @pytest.mark.skipif(
     not IS_LINUX,
-    reason="Exclusion markers are independent of OS and we do not want to have separate data wor Windows and Darwin.",
+    reason="Exclusion markers are independent of OS and we do not want to have separate data for Windows and Darwin.",
 )
 def test_exclude_function(  # type: ignore[no-untyped-def]
     gcovr_test_exec: "GcovrTestExec",

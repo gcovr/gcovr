@@ -95,7 +95,7 @@ def test_empty_exclude(capsys: pytest.CaptureFixture[str]) -> None:
 
 
 def test_empty_exclude_directory(capsys: pytest.CaptureFixture[str]) -> None:
-    c = capture(capsys, ["--gcov-exclude-directory", ""])
+    c = capture(capsys, ["--exclude-directory", ""])
     assert c.out == ""
     assert "filter cannot be empty" in c.err
     assert c.exitcode != 0
@@ -789,7 +789,11 @@ def test_import_cobertura_file_with_invalid_line(
         "--include",
         "--gcov-filter",
         "--gcov-exclude",
-        "--gcov-exclude-directory",
+        "--exclude-directory",
+        "--trace-include",
+        "--trace-exclude",
+        "--exclude-lines-by-pattern",
+        "--exclude-branches-by-pattern",
     ],
 )
 def test_exclude_filter(caplog: pytest.LogCaptureFixture, option: str) -> None:
@@ -800,7 +804,7 @@ def test_exclude_filter(caplog: pytest.LogCaptureFixture, option: str) -> None:
     message = c.record_tuples[0]
     assert message[1] == logging.ERROR
     assert message[2].startswith(
-        f"Error setting up filter {option}='example.**': multiple repeat at position 9"
+        f"Error setting up {'pattern' if 'pattern' in option else 'filter'} {option}='example.**': multiple repeat at position 9"
     )
     assert c.exitcode != 0
 

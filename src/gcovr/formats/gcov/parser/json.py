@@ -35,7 +35,7 @@ import os
 from locale import getpreferredencoding
 from typing import Any, Optional
 
-from gcovr.utils import get_md5_hexdigest
+from gcovr.utils import get_md5_hexdigest, read_source_file
 
 from ....data_model.coverage import FileCoverage
 from ....data_model.merging import FUNCTION_MAX_LINE_MERGE_OPTIONS, MergeOptions
@@ -79,7 +79,6 @@ def parse_coverage(
             )
             continue
 
-        source_lines: list[bytes] = []
         fname = os.path.normpath(
             os.path.join(gcov_json_data["current_working_directory"], file["file"])
         )
@@ -92,33 +91,7 @@ def parse_coverage(
         max_line_number = (
             max(line["line_number"] for line in file["lines"]) if file["lines"] else 1
         )
-        try:
-            with open(fname, "rb") as fh_in:
-                source_lines = fh_in.read().splitlines()
-            lines = len(source_lines)
-            if lines < max_line_number:
-                LOGGER.warning(
-                    f"File {fname} has {lines} line(s) but coverage data has {max_line_number} line(s)."
-                )
-                # GCOV itself adds the /*EOF*/ in the text report if there is no data and we used the same.
-                source_lines += [b"/*EOF*/"] * (max_line_number - lines)
-        except OSError as e:
-            if file["file"].endswith("<stdin>"):
-                message = f"Got unreadable source file '{file['file']}', replacing with empty lines."
-                LOGGER.info(message)
-            else:
-                # The exception contains the source file name,
-                # e.g. [Errno 2] No such file or directory: 'xy.txt'
-                message = f"Can't read file, using empty lines: {e}"
-                LOGGER.warning(message)
-            # If we can't read the file we use as first line the error
-            # and use empty lines for the rest of the lines.
-            source_lines = [b""] * max_line_number
-            source_lines[0] = f"/* {message} */".encode()
-
-        encoded_source_lines = [
-            line.decode(source_encoding, errors="replace") for line in source_lines
-        ]
+        encoded_source_lines = read_source_file(source_encoding, fname, max_line_number)
 
         filecov = _parse_file_node(
             data_fname,

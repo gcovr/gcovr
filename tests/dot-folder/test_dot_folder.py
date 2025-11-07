@@ -10,7 +10,7 @@ if typing.TYPE_CHECKING:
 
 @pytest.mark.skipif(
     platform.system() == "Windows",
-    reason="Dor-folders have no special meaning on Windows and we do not want to have separate data wor Windows and Darwin.",
+    reason="Dor-folders have no special meaning on Windows and we do not want to have separate data for Windows and Darwin.",
 )
 def test(gcovr_test_exec: "GcovrTestExec") -> None:
     """Test adding a tracefile output."""
