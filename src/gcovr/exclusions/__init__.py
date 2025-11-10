@@ -219,9 +219,11 @@ def remove_functions(filecov: FileCoverage, patterns: list[re.Pattern[str]]) -> 
                                 functions_by_line=functions_by_line,
                             )
                         break
-        LOGGER.debug(
-            f"Exclusion range for functions from CLI in {filecov.filename}: {str(exclude_ranges)}."
-        )
+            LOGGER.debug(
+                "Exclusion range for functions from CLI in %s: %s.",
+                filecov.filename,
+                str(exclude_ranges),
+            )
         exclusion_predicate: ExclusionPredicate = make_is_in_any_range_inclusive(
             exclude_ranges
         )

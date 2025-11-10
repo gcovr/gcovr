@@ -281,7 +281,9 @@ class CoverageContainer(ContainerBase):
                     # Replace the reference to ourself with our content
                     if covdata_dir.parent_dirname is not None:
                         LOGGER.debug(
-                            f"Move {orphan_key} to {covdata_dir.parent_dirname}."
+                            "Move %s to %s.",
+                            orphan_key,
+                            covdata_dir.parent_dirname,
                         )
                         parent_covdata_dir = subdirs[covdata_dir.parent_dirname]
                         parent_covdata_dir[orphan_key] = orphan_value
@@ -289,7 +291,9 @@ class CoverageContainer(ContainerBase):
                         subdirs_to_remove.add(dirname)
                 else:
                     LOGGER.debug(
-                        f"Move content of {orphan_value.dirname} to {dirname}."
+                        "Move content of %s to %s.",
+                        orphan_value.dirname,
+                        dirname,
                     )
                     # Replace the children with the orphan ones
                     covdata_dir.data = orphan_value.data

@@ -206,7 +206,7 @@ class PygmentsHighlighting:
                 else style,
             )
         except ImportError as e:  # pragma: no cover
-            LOGGER.warning(f"No syntax highlighting available: {str(e)}")
+            LOGGER.warning("No syntax highlighting available: %s", str(e))
 
     def get_css(self) -> str:
         """Get the CSS for the syntax highlighting."""
@@ -382,7 +382,8 @@ def write_report(
 
     if PYGMENTS_CSS_MARKER in css_data:
         LOGGER.info(
-            f"Skip adding of pygments styles since {PYGMENTS_CSS_MARKER!r} found in user stylesheet"
+            "Skip adding of pygments styles since %r found in user stylesheet",
+            PYGMENTS_CSS_MARKER,
         )
     else:
         css_data += get_formatter(options).get_css()
@@ -625,7 +626,8 @@ def write_directory_pages(
             filename = cdata_sourcefile[dircov.dirname]
         else:
             LOGGER.warning(
-                f"There's a subdirectory {dircov.dirname!r} that there's no source files within it"
+                "There's a subdirectory %r that there's no source files within it",
+                dircov.dirname,
             )
 
         if filename:
@@ -931,7 +933,10 @@ def get_file_data(
                     )
                 if lineno < max_line_from_cdata:
                     LOGGER.warning(
-                        f"File {filename} has {lineno} line(s) but coverage data has {max_line_from_cdata} line(s)."
+                        "File %s has %d line(s) but coverage data has %d line(s).",
+                        filename,
+                        lineno,
+                        max_line_from_cdata,
                     )
         except OSError as e:
             if filename.endswith("<stdin>"):
@@ -939,7 +944,7 @@ def get_file_data(
                 file_info = "!!! File from stdin !!!"
             else:
                 file_info = f"!!! Can't read file: {e.strerror} !!!"
-                LOGGER.warning(f"Can't read file: {e}")
+                LOGGER.warning("Can't read file: %s", e)
             # Python ranges are exclusive. We want to iterate over all lines, including
             # that last line. Thus, we have to add a +1 to include that line.
             for lineno in range(1, max_line_from_cdata + 1):

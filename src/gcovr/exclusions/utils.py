@@ -39,8 +39,10 @@ def function_exclude_not_supported(
         LOGGER.warning("Function exclusion not supported for this compiler.")
     else:
         LOGGER.warning(
-            f"Function exclude marker found on line {lineno}:{columnno} but not supported for this compiler, "
-            f"when processing {filename}."
+            "Function exclude marker found on line %s:%s but not supported for this compiler, when processing %s.",
+            lineno,
+            columnno,
+            filename,
         )
 
 
@@ -49,8 +51,10 @@ def function_exclude_not_at_function_line(
 ) -> None:
     """warn that a function exclude is found at a line where no function is defined"""
     LOGGER.warning(
-        f"Function exclude marker found on line {lineno}:{columnno} but no function definition found, "
-        f"when processing {filename}."
+        "Function exclude marker found on line %s:%s but no function definition found, when processing %s.",
+        lineno,
+        columnno,
+        filename,
     )
 
 
@@ -143,7 +147,9 @@ def apply_exclusion_ranges(
         if line_is_excluded(linecov_collection.lineno):
             if warn_excluded_lines_with_hits and linecov_collection.count:
                 LOGGER.warning(
-                    f"{linecov_collection.location}: Line with {linecov_collection.count} hit(s) excluded."
+                    "%s: Line with %d hit(s) excluded.",
+                    linecov_collection.location,
+                    linecov_collection.count,
                 )
             linecov_collection.exclude()
 

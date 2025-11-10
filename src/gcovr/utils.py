@@ -66,7 +66,7 @@ def is_fs_case_insensitive() -> bool:
         and os.path.exists(cwd.lower())
         and os.path.samefile(cwd.upper(), cwd.lower())
     )
-    LOGGER.debug(f"File system is case {'in' if ret else ''}sensitive.")
+    LOGGER.debug("File system is case %s.", "insensitive" if ret else "sensitive")
 
     return ret
 
@@ -92,7 +92,7 @@ def fix_case_of_path(path: str) -> str:
         if len(matched_filename) == 1:
             path = os.path.join(fix_case_of_path(rest), matched_filename[0])
     except FileNotFoundError:
-        LOGGER.warning(f"Can not fix case of path because {rest} not found.")
+        LOGGER.warning("Can not fix case of path because %s not found.", rest)
 
     return path.replace("\\", "/")
 
@@ -182,14 +182,14 @@ def commonpath(files: list[str]) -> str:
                 break
         prefix_path = os.path.sep.join(common)
 
-    LOGGER.debug(f"Common prefix path is {prefix_path!r}")
+    LOGGER.debug("Common prefix path is %r.", prefix_path)
 
     # make the path relative and add a trailing slash
     if prefix_path:
         prefix_path = os.path.join(
             os.path.relpath(prefix_path, os.path.realpath(os.getcwd())), ""
         )
-        LOGGER.debug(f"Common relative prefix path is {prefix_path!r}")
+        LOGGER.debug("Common relative prefix path is %r.", prefix_path)
     return prefix_path
 
 
@@ -311,7 +311,10 @@ def read_source_file(
         lines = len(source_lines)
         if lines < max_line_number:
             LOGGER.warning(
-                f"File {filename} has {lines} line(s) but coverage data has {max_line_number} line(s)."
+                "File %s has %d line(s) but coverage data has %d line(s).",
+                filename,
+                lines,
+                max_line_number,
             )
             # GCOV itself adds the /*EOF*/ in the text report if there is no data and we used the same.
             source_lines += [b"/*EOF*/"] * (max_line_number - lines)

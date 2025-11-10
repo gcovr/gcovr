@@ -53,7 +53,7 @@ def read_report(options: Options) -> CoverageContainer:
 
         merge_options = get_merge_mode_from_options(options)
         for data_source in datafiles:
-            LOGGER.debug(f"Processing file: {data_source}")
+            LOGGER.debug("Processing file: %s", data_source)
 
             if data_source.casefold().endswith(GZIP_SUFFIX):
                 with gzip.open(data_source, "rt", encoding="UTF-8") as fh:

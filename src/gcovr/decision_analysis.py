@@ -228,7 +228,7 @@ class DecisionParser:
                         linecov,
                         linecov.data_sources,
                     )
-                    LOGGER.debug(f"Uncheckable decision at line {lineno}")
+                    LOGGER.debug("Uncheckable decision at line %d", lineno)
             else:
                 self._start_multiline_decision_analysis(lineno, code)
 
@@ -285,7 +285,7 @@ class DecisionParser:
                     linecov, "unknown" if linecov is None else linecov.data_sources
                 )
                 LOGGER.debug(
-                    f"Uncheckable decision at line {lineno}. (Delta = {delta_count})"
+                    "Uncheckable decision at line %d. (Delta = %d)", lineno, delta_count
                 )
 
             # disable the current decision analysis

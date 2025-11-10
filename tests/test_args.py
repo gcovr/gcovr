@@ -416,14 +416,13 @@ def test_filter_backslashes_are_detected(caplog: pytest.LogCaptureFixture) -> No
     )
     message0 = c.record_tuples[0]
     assert message0[1] == logging.WARNING
-    assert message0[2].startswith("filters must use forward slashes as path separators")
+    assert message0[2].startswith(
+        "Filters must use forward slashes as path separators, your filter >>C:\\\\foo\\moo<<."
+    )
     message = c.record_tuples[1]
     assert message[1] == logging.WARNING
-    assert message[2].startswith("your filter : C:\\\\foo\\moo")
+    assert message[2].startswith("Did you mean >>C:/foo/moo<<?")
     message = c.record_tuples[2]
-    assert message[1] == logging.WARNING
-    assert message[2].startswith("did you mean: C:/foo/moo")
-    message = c.record_tuples[3]
     assert message[1] == logging.ERROR
     assert message[2].startswith(
         "Error setting up filter --filter='C:\\\\foo\\moo': bad escape \\m at position 7"
@@ -480,7 +479,7 @@ def test_medium_threshold_zero(caplog: pytest.LogCaptureFixture) -> None:
     c = log_capture(caplog, ["--medium-threshold", "0.0"])
     message = c.record_tuples[0]
     assert message[1] == logging.ERROR
-    assert message[2] == "value of --medium-threshold should not be zero."
+    assert message[2] == "Value of --medium-threshold should not be zero."
     assert c.exitcode != 0
 
 
@@ -506,7 +505,7 @@ def test_medium_threshold_gt_high_threshold(
     assert message[1] == logging.ERROR
     assert (
         message[2]
-        == "value of --medium-threshold=60.0 should be\nlower than or equal to the value of --high-threshold=50.0."
+        == "Value of --medium-threshold=60.0 should be\nlower than or equal to the value of --high-threshold=50.0."
     )
     assert c.exitcode != 0
 
@@ -515,7 +514,7 @@ def test_html_tab_size_zero(caplog: pytest.LogCaptureFixture) -> None:
     c = log_capture(caplog, ["--html-tab-size", "0"])
     message = c.record_tuples[0]
     assert message[1] == logging.ERROR
-    assert message[2] == "value of --html-tab-size= should be greater 0."
+    assert message[2] == "Value of --html-tab-size should be greater 0."
     assert c.exitcode != 0
 
 
@@ -685,8 +684,14 @@ def test_import_valid_cobertura_file(tmp_path: Path) -> None:
 
     filename = str(tempfile)
     opts = merge_options_and_set_defaults(
-        [{"cobertura_tracefile": [filename], "include_filter": [re.compile(".")]}]
+        [
+            {
+                "cobertura_tracefile": [filename],
+                "include_filter": [re.compile(".")],
+            }
+        ]
     )
+    opts.include_filter = tuple(opts.include_filter)
     covdata = read_reports(opts)
     assert covdata is not None
     testfile = os.path.join(tmp_path, testfile)

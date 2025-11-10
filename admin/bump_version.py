@@ -388,7 +388,7 @@ def main(version: str, for_file: Optional[str] = None) -> None:
                 for handler in handlers:
                     new_lines = handler(fullname, new_lines, version)
                 if new_lines != lines:
-                    logging.info(f"Modifying {fullname}")
+                    logging.info("Modifying %s", fullname)
                     new_lines = list(f"{line}\n" for line in new_lines)
                     if not trailing_newline:
                         new_lines[-1] = new_lines[-1][:-1]

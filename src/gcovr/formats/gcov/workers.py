@@ -131,7 +131,7 @@ class Workers:
     def __init__(self, number: int, context: Callable[[], dict[str, Any]]) -> None:
         if number <= 0:
             number = max(1, cpu_count() + number)
-        LOGGER.debug(f"Using {number} workers.")
+        LOGGER.debug("Using %d workers.", number)
 
         self.q: "Queue[QueueContent]" = Queue()
         self.lock = RLock()

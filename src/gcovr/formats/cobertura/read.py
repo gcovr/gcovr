@@ -58,7 +58,7 @@ def read_report(options: Options) -> CoverageContainer:
             datafiles.add(os.path.normpath(trace_file))
 
     for data_sources in datafiles:
-        LOGGER.debug(f"Processing XML file: {data_sources}")
+        LOGGER.debug("Processing XML file: %s", data_sources)
 
         try:
             root: etree._Element = etree.parse(data_sources).getroot()  # nosec # We parse the file given by the user
@@ -75,7 +75,9 @@ def read_report(options: Options) -> CoverageContainer:
             filename = gcovr_file.get("filename")
             if filename is None:  # pragma: no cover
                 LOGGER.warning(
-                    f"Missing filename attribute in class element at {data_sources}:{gcovr_file.sourceline}"
+                    "Missing filename attribute in class element at %s:%s",
+                    data_sources,
+                    gcovr_file.sourceline,
                 )
                 continue
 
@@ -131,7 +133,7 @@ def _insert_line_from_xml(
                 _branch_from_json(linecov, data_sources, i, i < int(covered))
         except AssertionError as exc:  # pragma: no cover
             LOGGER.warning(
-                f"Invalid branch information for line {linecov.lineno}: {exc}"
+                "Invalid branch information for line %s: %s", linecov.lineno, exc
             )
 
 

@@ -36,7 +36,7 @@ class Filter:
         """Return True if the given path (always with /) matches the regular expression."""
         os_independent_path = force_unix_separator(path)
         if self.pattern.match(os_independent_path):
-            LOGGER.debug(f"  Filter {self} matched for path {os_independent_path}.")
+            LOGGER.debug("  Filter %s matched for path %s.", self, os_independent_path)
             return True
         return False
 
@@ -124,7 +124,7 @@ def is_file_excluded(
         True when filename is not matching a include filter or matches an exclude filter.
     """
 
-    LOGGER.debug(f"Check if {filename} is included...")
+    LOGGER.debug("Check if %s is included...", filename)
     if not any(f.match(filename) for f in include_filter):
         LOGGER.debug("  No filter matched.")
         return True

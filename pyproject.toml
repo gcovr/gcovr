@@ -125,7 +125,6 @@ fail-under = 9.99
 disable = [
     "unknown-option-value",          # This is because we are testing with several versions
     "Format",
-    "logging-fstring-interpolation",
     "missing-module-docstring",
     "no-member",
     "too-few-public-methods",

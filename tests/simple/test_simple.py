@@ -243,7 +243,7 @@ def test_fail_under(
     messages = caplog.record_tuples
     assert len(messages) == 1
     assert messages[0][1] == logging.ERROR
-    assert messages[0][2].startswith("failed minimum line coverage ")
+    assert messages[0][2].startswith("Failed minimum line coverage ")
     caplog.clear()
 
     process = gcovr_test_exec.gcovr(
@@ -255,7 +255,7 @@ def test_fail_under(
     messages = caplog.record_tuples
     assert len(messages) == 1
     assert messages[0][1] == logging.ERROR
-    assert messages[0][2].startswith("failed minimum branch coverage ")
+    assert messages[0][2].startswith("Failed minimum branch coverage ")
     caplog.clear()
 
     process = gcovr_test_exec.gcovr(
@@ -268,7 +268,7 @@ def test_fail_under(
     messages = caplog.record_tuples
     assert len(messages) == 1
     assert messages[0][1] == logging.ERROR
-    assert messages[0][2].startswith("failed minimum decision coverage ")
+    assert messages[0][2].startswith("Failed minimum decision coverage ")
     caplog.clear()
 
     process = gcovr_test_exec.gcovr(
@@ -280,7 +280,7 @@ def test_fail_under(
     messages = caplog.record_tuples
     assert len(messages) == 1
     assert messages[0][1] == logging.ERROR
-    assert messages[0][2].startswith("failed minimum function coverage ")
+    assert messages[0][2].startswith("Failed minimum function coverage ")
     caplog.clear()
 
     process = gcovr_test_exec.gcovr(
@@ -296,13 +296,13 @@ def test_fail_under(
     messages = caplog.record_tuples
     assert len(messages) == 4
     assert messages[0][1] == logging.ERROR
-    assert messages[0][2].startswith("failed minimum line coverage ")
+    assert messages[0][2].startswith("Failed minimum line coverage ")
     assert messages[1][1] == logging.ERROR
-    assert messages[1][2].startswith("failed minimum branch coverage ")
+    assert messages[1][2].startswith("Failed minimum branch coverage ")
     assert messages[2][1] == logging.ERROR
-    assert messages[2][2].startswith("failed minimum decision coverage ")
+    assert messages[2][2].startswith("Failed minimum decision coverage ")
     assert messages[3][1] == logging.ERROR
-    assert messages[3][2].startswith("failed minimum function coverage ")
+    assert messages[3][2].startswith("Failed minimum function coverage ")
     caplog.clear()
 
     process = gcovr_test_exec.gcovr(
@@ -316,7 +316,7 @@ def test_fail_under(
         use_main=True,
     )
     assert process.returncode == 0
-    assert "(ERROR) failed minimum line coverage" not in process.stderr
-    assert "(ERROR) failed minimum branch coverage" not in process.stderr
-    assert "(ERROR) failed minimum decision coverage" not in process.stderr
-    assert "(ERROR) failed minimum function coverage" not in process.stderr
+    assert "(ERROR) Failed minimum line coverage" not in process.stderr
+    assert "(ERROR) Failed minimum branch coverage" not in process.stderr
+    assert "(ERROR) Failed minimum decision coverage" not in process.stderr
+    assert "(ERROR) Failed minimum function coverage" not in process.stderr

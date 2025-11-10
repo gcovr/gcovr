@@ -238,7 +238,7 @@ def parse_metadata(
         if isinstance(parsed_line, _MetadataLine):
             key, value = parsed_line
             if trace_file:
-                LOGGER.trace(f"Metadata: {parsed_line.key}={parsed_line.value}")
+                LOGGER.trace("Metadata: %s=%s", parsed_line.key, parsed_line.value)
             collected[key] = value
         else:
             break  # stop at the first line that is not metadata
@@ -301,7 +301,7 @@ def parse_coverage(
             )
             tokenized_lines.append((parsed_line, raw_line))
             if trace_file:
-                LOGGER.trace(f"Parsed line: {parsed_line}")
+                LOGGER.trace("Parsed line: %s", parsed_line)
         except Exception as ex:  # pylint: disable=broad-except
             lines_with_errors.append((raw_line, ex))
 
@@ -310,7 +310,8 @@ def parse_coverage(
         and persistent_states["negative_hits.warn_once_per_file"] > 1
     ):
         LOGGER.warning(
-            f"Ignored {persistent_states['negative_hits.warn_once_per_file']} negative hits overall."
+            "Ignored %d negative hits overall.",
+            persistent_states["negative_hits.warn_once_per_file"],
         )
 
     if (
@@ -318,7 +319,8 @@ def parse_coverage(
         and persistent_states["suspicious_hits.warn_once_per_file"] > 1
     ):
         LOGGER.warning(
-            f"Ignored {persistent_states['suspicious_hits.warn_once_per_file']} suspicious hits overall."
+            "Ignored %d suspicious hits overall.",
+            persistent_states["suspicious_hits.warn_once_per_file"],
         )
 
     filecov = FileCoverage(data_filename, filename=filename)
@@ -473,9 +475,17 @@ def _gather_coverage_from_line(
                     for linecov in state.linecov_list
                     if linecov.lineno >= lineno
                 ]
-                LOGGER.debug(
-                    f"Removing line coverage for line {to_remove[0].lineno}{'' if len(to_remove) == 1 else (' to line ' + str(to_remove[-1].lineno))} from previous function."
-                )
+                if len(to_remove) == 1:
+                    LOGGER.debug(
+                        "Removing line coverage for line %s from previous function.",
+                        to_remove[0].lineno,
+                    )
+                else:
+                    LOGGER.debug(
+                        "Removing line coverage for line %s to line %s from previous function.",
+                        to_remove[0].lineno,
+                        to_remove[-1].lineno,
+                    )
                 for linecov in to_remove:
                     filecov.remove_line_coverage(linecov)
             state = state._replace(
@@ -489,7 +499,10 @@ def _gather_coverage_from_line(
             # In this we get the overall line coverage of all specializations which we must ignore.
             if state.function_name is None:
                 LOGGER.debug(
-                    f"{filecov.location}:{lineno}: Ignoring line coverage because of missing function name: {source_code}"
+                    "%s:%s: Ignoring line coverage because of missing function name: %s",
+                    filecov.location,
+                    lineno,
+                    source_code,
                 )
             else:
                 linecov = filecov.insert_line_coverage(
@@ -511,7 +524,8 @@ def _gather_coverage_from_line(
         # This is important to get correct line number information.
         if len(state.deferred_functions):
             LOGGER.debug(
-                f"Several function definitions for the next coverage lines, function {state.deferred_functions[-1].name} will not contain line coverage."
+                "Several function definitions for the next coverage lines, function %s will not contain line coverage.",
+                state.deferred_functions[-1].name,
             )
         return state._replace(
             deferred_functions=[*state.deferred_functions, line],
@@ -591,15 +605,13 @@ def _report_lines_with_errors(
 
     lines_output = "\n\t  ".join(lines)
     LOGGER.warning(
-        f"Unrecognized GCOV output for {filename}\n"
-        f"\t  {lines_output}\n"
-        "\tThis is indicative of a gcov output parse error.\n"
-        "\tPlease report this to the gcovr developers\n"
-        "\tat <https://github.com/gcovr/gcovr/issues>."
+        "Unrecognized GCOV output for %s\n\t  %s\n\tThis is indicative of a gcov output parse error.\n\tPlease report this to the gcovr developers\n\tat <https://github.com/gcovr/gcovr/issues>.",
+        filename,
+        lines_output,
     )
 
     for ex in errors:
-        LOGGER.warning(f"Exception during parsing:\n\t{type(ex).__name__}: {ex}")
+        LOGGER.warning("Exception during parsing:\n\t%s: %s", type(ex).__name__, ex)
 
     if ignore_parse_errors is not None and "all" in ignore_parse_errors:
         return

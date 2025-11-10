@@ -75,7 +75,8 @@ def parse_coverage(
     for file in gcov_json_data["files"]:
         if not file["lines"] and not file["functions"]:
             LOGGER.debug(
-                f"Skip data for file {file['file']} because no lines and functions defined."
+                "Skip data for file %s because no lines and functions defined.",
+                file["file"],
             )
             continue
 
@@ -86,7 +87,7 @@ def parse_coverage(
         if is_file_excluded(fname, include_filter, exclude_filter):
             continue
 
-        LOGGER.debug(f"Parsing coverage data for file {fname}")
+        LOGGER.debug("Parsing coverage data for file %s", fname)
 
         max_line_number = (
             max(line["line_number"] for line in file["lines"]) if file["lines"] else 1
@@ -148,7 +149,9 @@ def _parse_file_node(
         persistent_states.update(location=(filename, line["line_number"]))
         if trace_file:
             LOGGER.trace(
-                f"Reading {':'.join(str(e) for e in persistent_states['location'])} of function {line.get('function_name')}"
+                "Reading %s of function %s",
+                ":".join(str(e) for e in persistent_states["location"]),
+                line.get("function_name"),
             )
         linecov = filecov.insert_line_coverage(
             str(data_fname),
@@ -233,7 +236,8 @@ def _parse_file_node(
         and persistent_states["negative_hits.warn_once_per_file"] > 1
     ):
         LOGGER.warning(
-            f"Ignored {persistent_states['negative_hits.warn_once_per_file']} negative hits overall."
+            "Ignored %d negative hits overall.",
+            persistent_states["negative_hits.warn_once_per_file"],
         )
 
     if (
@@ -241,7 +245,8 @@ def _parse_file_node(
         and persistent_states["suspicious_hits.warn_once_per_file"] > 1
     ):
         LOGGER.warning(
-            f"Ignored {persistent_states['suspicious_hits.warn_once_per_file']} suspicious hits overall."
+            "Ignored %d suspicious hits overall.",
+            persistent_states["suspicious_hits.warn_once_per_file"],
         )
 
     return filecov
