@@ -78,13 +78,6 @@ class LlvmHandler(BaseHandler):
                 type=str,
                 action="append",
             ),
-            GcovrConfigOption(
-                "llvm_keep",
-                ["--llvm-keep"],
-                group="llvm_options",
-                help=("Keep profdata files after processing."),
-                action="store_true",
-            ),
         ]
 
     def read_report(self) -> CoverageContainer:

@@ -790,7 +790,8 @@ GCOVR_CONFIG_OPTIONS = [
         ["--trace-include"],
         group="filter_options",
         help=(
-            "Log very verbose output for files that match this filter. "
+            "Log output for files that match this filter. "
+            "The output is logged without activating verbose mode. "
             "Can be specified multiple times."
         ),
         action="append",
