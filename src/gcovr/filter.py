@@ -17,6 +17,7 @@
 #
 # ****************************************************************************
 
+import functools
 import platform
 import re
 import os
@@ -104,10 +105,31 @@ class DirectoryPrefixFilter(Filter):
         return super().match(path)
 
 
+@functools.cache
+def __is_file_matching_any(filename: str, filters: tuple[Filter, ...]) -> bool:
+    """Check if filename matches any of the given filters.
+
+    The filename is tested against all filters in the list.
+    The first matching filter causes a True result.
+
+    filename (str): the file path to match
+    filters (list of Filter): the filters to test against
+
+    returns:
+        True when filename is matching any filter.
+    """
+
+    if any(f.match(filename) for f in filters):
+        return True
+
+    LOGGER.debug("  No filter matched.")
+    return False
+
+
 def is_file_excluded(
     filename: str,
-    include_filter: list[Filter],
-    exclude_filter: list[Filter],
+    include_filter: tuple[Filter, ...],
+    exclude_filter: tuple[Filter, ...],
 ) -> bool:
     """Apply inclusion/exclusion filters to filename.
 
@@ -125,16 +147,14 @@ def is_file_excluded(
     """
 
     LOGGER.debug("Check if %s is included...", filename)
-    if not any(f.match(filename) for f in include_filter):
-        LOGGER.debug("  No filter matched.")
-        return True
+    is_included = __is_file_matching_any(filename, include_filter)
+    if is_included and exclude_filter:
+        LOGGER.debug("Check for exclusion...")
+        is_included = not __is_file_matching_any(filename, exclude_filter)
 
-    if not exclude_filter:
+    if is_included:
+        LOGGER.debug("--> File is included.")
         return False
 
-    LOGGER.debug("Check for exclusion...")
-    if any(f.match(filename) for f in exclude_filter):
-        return True
-
-    LOGGER.debug("  No filter matched.")
-    return False
+    LOGGER.debug("--> File is excluded.")
+    return True

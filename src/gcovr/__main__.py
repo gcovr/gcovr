@@ -319,7 +319,7 @@ def main(args: Optional[list[str]] = None) -> int:  # pylint: disable=too-many-r
 
     def _setup_filter(
         option: str, patterns: list[str], default_filter: Optional[Filter] = None
-    ) -> list[Filter]:
+    ) -> tuple[Filter, ...]:
         """Setup a filter and handle the exception."""
         try:
             filters = list[Filter]()
@@ -330,7 +330,7 @@ def main(args: Optional[list[str]] = None) -> int:  # pylint: disable=too-many-r
             LOGGER.debug("Filters for %s: (%d)", option, len(filters))
             for f in filters:
                 LOGGER.debug(" - %s", f)
-            return filters
+            return tuple(filters)
         except re.error as e:
             # mypy is thinking that the pattern can be a byte string therefore we need to explicit use !s.
             # See also discussion https://github.com/gcovr/gcovr/pull/1028#discussion_r1855437452
@@ -338,7 +338,7 @@ def main(args: Optional[list[str]] = None) -> int:  # pylint: disable=too-many-r
                 f"Error setting up filter {option}='{e.pattern!s}': {e}"
             ) from None
 
-    def _setup_pattern(option: str, patterns: list[str]) -> list[re.Pattern[str]]:
+    def _setup_pattern(option: str, patterns: list[str]) -> tuple[re.Pattern[str], ...]:
         """Setup a filter and handle the exception."""
         try:
             compiled_patterns = list[re.Pattern[str]]()
@@ -347,7 +347,7 @@ def main(args: Optional[list[str]] = None) -> int:  # pylint: disable=too-many-r
             LOGGER.debug("Patterns for %s: (%d)", option, len(compiled_patterns))
             for p in compiled_patterns:
                 LOGGER.debug(" - %s", p)
-            return compiled_patterns
+            return tuple(compiled_patterns)
         except re.error as e:
             # mypy is thinking that the pattern can be a byte string therefore we need to explicit use !s.
             # See also discussion https://github.com/gcovr/gcovr/pull/1028#discussion_r1855437452

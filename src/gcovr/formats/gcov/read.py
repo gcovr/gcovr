@@ -960,8 +960,8 @@ def run_gcov_and_process_files(
 
 def select_gcov_files_from_stdout(
     out: str,
-    include_filter: list[Filter],
-    exclude_filter: list[Filter],
+    include_filter: tuple[Filter, ...],
+    exclude_filter: tuple[Filter, ...],
     chdir: str,
 ) -> tuple[set[str], set[str]]:
     """Parse the output to get the list of files to use and all files (unfiltered)."""
