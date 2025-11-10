@@ -60,7 +60,7 @@ def parse_coverage(
     ignore_parse_errors: Optional[set[str]],
     suspicious_hits_threshold: int = SUSPICIOUS_COUNTER,
     source_encoding: str = DEFAULT_SOURCE_ENCODING,
-    trace_file: bool = False,
+    activate_trace_logging: bool = False,
 ) -> list[tuple[FileCoverage, list[str]]]:
     """Process a GCOV JSON output."""
 
@@ -74,10 +74,11 @@ def parse_coverage(
 
     for file in gcov_json_data["files"]:
         if not file["lines"] and not file["functions"]:
-            LOGGER.debug(
-                "Skip data for file %s because no lines and functions defined.",
-                file["file"],
-            )
+            if activate_trace_logging:
+                LOGGER.trace(
+                    "Skip data for file %s because no lines and functions defined.",
+                    file["file"],
+                )
             continue
 
         fname = os.path.normpath(
@@ -101,7 +102,7 @@ def parse_coverage(
             source_lines=encoded_source_lines,
             ignore_parse_errors=ignore_parse_errors,
             suspicious_hits_threshold=suspicious_hits_threshold,
-            trace_file=trace_file,
+            activate_trace_logging=activate_trace_logging,
         )
 
         files_coverage.append((filecov, encoded_source_lines))
@@ -117,7 +118,7 @@ def _parse_file_node(
     source_lines: list[str],
     ignore_parse_errors: Optional[set[str]],
     suspicious_hits_threshold: int = SUSPICIOUS_COUNTER,
-    trace_file: bool = False,
+    activate_trace_logging: bool = False,
 ) -> FileCoverage:
     """
     Extract coverage data from a json gcov report.
@@ -147,7 +148,7 @@ def _parse_file_node(
     filecov = FileCoverage(data_fname, filename=filename)
     for line in gcov_file_node["lines"]:
         persistent_states.update(location=(filename, line["line_number"]))
-        if trace_file:
+        if activate_trace_logging:
             LOGGER.trace(
                 "Reading %s of function %s",
                 ":".join(str(e) for e in persistent_states["location"]),

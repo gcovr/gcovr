@@ -78,7 +78,11 @@ def read_report(options: Options) -> CoverageContainer:
 
     merge_options = get_merge_mode_from_options(options)
     for profraw_file in profraw_files:
-        LOGGER.debug("Processing file: %s", profraw_file)
+        activate_trace_logging = not is_file_excluded(
+            profraw_file, options.trace_include_filter, options.trace_exclude_filter
+        )
+        if activate_trace_logging:
+            LOGGER.trace("Processing file: %s", profraw_file)
         llvm_json_data = _llvm_profraw_to_json(options, profraw_file)
 
         if (current_type := llvm_json_data.get("type")) != EXPECTED_TYPE:
@@ -115,7 +119,11 @@ def read_report(options: Options) -> CoverageContainer:
             filecov.filename,
             max(linecov_collection.lineno for linecov_collection in filecov.lines()),
         )
-        LOGGER.debug("Apply exclusions for %s", filecov.filename)
+        activate_trace_logging = not is_file_excluded(
+            filecov.filename, options.trace_include_filter, options.trace_exclude_filter
+        )
+        if activate_trace_logging:
+            LOGGER.trace("Apply exclusions for %s", filecov.filename)
         apply_all_exclusions(
             filecov,
             lines=source_lines,
@@ -254,7 +262,11 @@ def read_json(
         read_json_functions(data_source, data, options, merge_options, covdata)
 
     for filecov in covdata.values():
-        LOGGER.debug("Apply exclusions for %s", filecov.filename)
+        activate_trace_logging = not is_file_excluded(
+            filecov.filename, options.trace_include_filter, options.trace_exclude_filter
+        )
+        if activate_trace_logging:
+            LOGGER.trace("Apply exclusions for %s", filecov.filename)
         apply_all_exclusions(
             filecov,
             lines=[],

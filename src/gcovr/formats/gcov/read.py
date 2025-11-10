@@ -187,13 +187,13 @@ def process_gcov_json_data(
     options: Options,
 ) -> None:
     """Process a GCOV JSON output."""
-    trace_file = not is_file_excluded(
+    activate_trace_logging = not is_file_excluded(
         data_fname, options.trace_include_filter, options.trace_exclude_filter
     )
 
     with gzip.open(data_fname, "rt", encoding="UTF-8") as fh_in:
         gcov_json_data = json_loads(fh_in.read())
-        if trace_file:
+        if activate_trace_logging:
             LOGGER.trace(
                 "Parsing gcov data file %s:\n%s<<EOF",
                 data_fname,
@@ -208,23 +208,29 @@ def process_gcov_json_data(
         ignore_parse_errors=options.gcov_ignore_parse_errors,
         suspicious_hits_threshold=options.gcov_suspicious_hits_threshold,
         source_encoding=options.source_encoding,
-        trace_file=trace_file,
+        activate_trace_logging=activate_trace_logging,
     )
 
     merge_options = get_merge_mode_from_options(options)
     for filecov, source_lines in coverage:
-        LOGGER.debug("Apply exclusions for %s", filecov.filename)
+        activate_trace_logging = not is_file_excluded(
+            filecov.filename, options.trace_include_filter, options.trace_exclude_filter
+        )
+        if activate_trace_logging:
+            LOGGER.trace("Apply exclusions for %s", filecov.filename)
         apply_all_exclusions(
             filecov,
             lines=source_lines,
             options=get_exclusion_options_from_options(options),
+            activate_trace_logging=activate_trace_logging,
         )
 
         if options.show_decision:
             decision_parser = DecisionParser(filecov, source_lines)
             decision_parser.parse_all_lines()
 
-        LOGGER.debug("Merge coverage data for %s", filecov.filename)
+        if activate_trace_logging:
+            LOGGER.trace("Merge coverage data for %s", filecov.filename)
         covdata.insert_file_coverage(filecov, merge_options)
 
 
@@ -239,14 +245,14 @@ def process_gcov_text_data(
     current_dir: Optional[str] = None,
 ) -> None:
     """Process a GCOV text output."""
-    trace_file = not is_file_excluded(
+    activate_trace_logging = not is_file_excluded(
         data_fname, options.trace_include_filter, options.trace_exclude_filter
     )
     with open(
         data_fname, "r", encoding=options.source_encoding, errors="replace"
     ) as fh_in:
         content = fh_in.read()
-        if trace_file:
+        if activate_trace_logging:
             LOGGER.trace("Parsing gcov data file %s:\n%s<<EOF", data_fname, content)
         lines = content.splitlines()
 
@@ -255,7 +261,7 @@ def process_gcov_text_data(
         data_fname,
         lines,
         suspicious_hits_threshold=options.gcov_suspicious_hits_threshold,
-        trace_file=trace_file,
+        activate_trace_logging=activate_trace_logging,
     )
     source = metadata.get("Source")
     if source is None:
@@ -281,7 +287,8 @@ def process_gcov_text_data(
     if is_file_excluded(fname, options.include_filter, options.exclude_filter):
         return
 
-    LOGGER.debug("Parsing coverage data for file %s", fname)
+    if activate_trace_logging:
+        LOGGER.trace("Parsing coverage data for file %s", fname)
     key = os.path.normpath(fname)
 
     filecov, source_lines = text.parse_coverage(
@@ -290,18 +297,25 @@ def process_gcov_text_data(
         filename=key,
         ignore_parse_errors=options.gcov_ignore_parse_errors,
         suspicious_hits_threshold=options.gcov_suspicious_hits_threshold,
-        trace_file=trace_file,
+        activate_trace_logging=activate_trace_logging,
     )
 
-    LOGGER.debug("Apply exclusions for %s", fname)
-    apply_all_exclusions(filecov, lines=source_lines, options=options)  # type: ignore [arg-type]
+    if activate_trace_logging:
+        LOGGER.trace("Apply exclusions for %s", fname)
+    apply_all_exclusions(
+        filecov,
+        lines=source_lines,
+        options=get_exclusion_options_from_options(options),
+        activate_trace_logging=activate_trace_logging,
+    )
 
     if options.show_decision:
         decision_parser = DecisionParser(filecov, source_lines)
         decision_parser.parse_all_lines()
 
     merge_mode = get_merge_mode_from_options(options)
-    LOGGER.debug("Merge coverage data for %s using %s", fname, str(merge_mode))
+    if activate_trace_logging:
+        LOGGER.trace("Merge coverage data for %s using %s", fname, str(merge_mode))
     covdata.insert_file_coverage(filecov, merge_mode)
 
 
@@ -475,7 +489,11 @@ def process_datafile(
     i.e. the object files are in a sibling directory.
     TODO: So far there is no good way to address this case.
     """
-    LOGGER.debug("Processing file: %s", filename)
+    activate_trace_logging = not is_file_excluded(
+        filename, options.trace_include_filter, options.trace_exclude_filter
+    )
+    if activate_trace_logging:
+        LOGGER.trace("Processing file: %s", filename)
 
     abs_filename = os.path.abspath(filename).replace(
         os.path.sep, "/"
@@ -995,7 +1013,10 @@ def process_existing_gcov_file(
     if is_file_excluded(
         filename, options.gcov_include_filter, options.gcov_exclude_filter
     ):
-        LOGGER.debug("Excluding gcov file: %s", filename)
+        if not is_file_excluded(
+            filename, options.trace_include_filter, options.trace_exclude_filter
+        ):
+            LOGGER.trace("Excluding gcov file: %s", filename)
         return
 
     if filename.endswith(".gcov"):

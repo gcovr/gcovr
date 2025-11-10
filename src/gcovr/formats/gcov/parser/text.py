@@ -203,7 +203,7 @@ def parse_metadata(
     lines: list[str],
     *,
     suspicious_hits_threshold: int = SUSPICIOUS_COUNTER,
-    trace_file: bool = False,
+    activate_trace_logging: bool = False,
 ) -> dict[str, Optional[str]]:
     r"""
     Collect the header/metadata lines from a gcov file.
@@ -237,7 +237,7 @@ def parse_metadata(
 
         if isinstance(parsed_line, _MetadataLine):
             key, value = parsed_line
-            if trace_file:
+            if activate_trace_logging:
                 LOGGER.trace("Metadata: %s=%s", parsed_line.key, parsed_line.value)
             collected[key] = value
         else:
@@ -262,7 +262,7 @@ def parse_coverage(
     filename: str,
     ignore_parse_errors: Optional[set[str]],
     suspicious_hits_threshold: int = SUSPICIOUS_COUNTER,
-    trace_file: bool = False,
+    activate_trace_logging: bool = False,
 ) -> tuple[FileCoverage, list[str]]:
     """
     Extract coverage data from a gcov report.
@@ -300,7 +300,7 @@ def parse_coverage(
                 persistent_states,
             )
             tokenized_lines.append((parsed_line, raw_line))
-            if trace_file:
+            if activate_trace_logging:
                 LOGGER.trace("Parsed line: %s", parsed_line)
         except Exception as ex:  # pylint: disable=broad-except
             lines_with_errors.append((raw_line, ex))
@@ -331,6 +331,7 @@ def parse_coverage(
                 state,
                 line,
                 filecov=filecov,
+                activate_trace_logging=activate_trace_logging,
             )
         except Exception as ex:  # pylint: disable=broad-except
             lines_with_errors.append((raw_line, ex))
@@ -432,12 +433,13 @@ def _gather_coverage_from_line(
     line: _Line,
     *,
     filecov: FileCoverage,
+    activate_trace_logging: bool,
 ) -> _ParserState:
     """
     Interpret a Line, updating the FileCoverage, and transitioning ParserState.
 
     The function handles all possible Line variants, and dies otherwise:
-    >>> _gather_coverage_from_line(_ParserState(), "illegal line type", filecov=...)
+    >>> _gather_coverage_from_line(_ParserState(), "illegal line type", filecov=..., activate_trace_logging=...)
     Traceback (most recent call last):
     AssertionError: Unexpected line type: 'illegal line type'
     """
@@ -476,16 +478,18 @@ def _gather_coverage_from_line(
                     if linecov.lineno >= lineno
                 ]
                 if len(to_remove) == 1:
-                    LOGGER.debug(
-                        "Removing line coverage for line %s from previous function.",
-                        to_remove[0].lineno,
-                    )
+                    if activate_trace_logging:
+                        LOGGER.trace(
+                            "Removing line coverage for line %s from previous function.",
+                            to_remove[0].lineno,
+                        )
                 else:
-                    LOGGER.debug(
-                        "Removing line coverage for line %s to line %s from previous function.",
-                        to_remove[0].lineno,
-                        to_remove[-1].lineno,
-                    )
+                    if activate_trace_logging:
+                        LOGGER.trace(
+                            "Removing line coverage for line %s to line %s from previous function.",
+                            to_remove[0].lineno,
+                            to_remove[-1].lineno,
+                        )
                 for linecov in to_remove:
                     filecov.remove_line_coverage(linecov)
             state = state._replace(
@@ -498,12 +502,13 @@ def _gather_coverage_from_line(
             # This occurs if a file starts with a function with specializations.
             # In this we get the overall line coverage of all specializations which we must ignore.
             if state.function_name is None:
-                LOGGER.debug(
-                    "%s:%s: Ignoring line coverage because of missing function name: %s",
-                    filecov.location,
-                    lineno,
-                    source_code,
-                )
+                if activate_trace_logging:
+                    LOGGER.trace(
+                        "%s:%s: Ignoring line coverage because of missing function name: %s",
+                        filecov.location,
+                        lineno,
+                        source_code,
+                    )
             else:
                 linecov = filecov.insert_line_coverage(
                     filecov.data_sources,
@@ -523,10 +528,11 @@ def _gather_coverage_from_line(
         # Defer handling of the function tag until the next source line.
         # This is important to get correct line number information.
         if len(state.deferred_functions):
-            LOGGER.debug(
-                "Several function definitions for the next coverage lines, function %s will not contain line coverage.",
-                state.deferred_functions[-1].name,
-            )
+            if activate_trace_logging:
+                LOGGER.trace(
+                    "Several function definitions for the next coverage lines, function %s will not contain line coverage.",
+                    state.deferred_functions[-1].name,
+                )
         return state._replace(
             deferred_functions=[*state.deferred_functions, line],
             function_name=line.name,

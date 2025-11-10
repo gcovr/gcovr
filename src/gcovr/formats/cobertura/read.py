@@ -54,8 +54,8 @@ def read_report(options: Options) -> CoverageContainer:
                 "\tThe specified file does not exist."
             )
 
-        for trace_file in trace_files:
-            datafiles.add(os.path.normpath(trace_file))
+        for activate_trace_logging in trace_files:
+            datafiles.add(os.path.normpath(activate_trace_logging))
 
     for data_sources in datafiles:
         LOGGER.debug("Processing XML file: %s", data_sources)

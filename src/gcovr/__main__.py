@@ -40,6 +40,7 @@ from .filter import (
 )
 from .formats.gcov.read import GcovProgram
 from .logging import configure_logging, update_logging, LOGGER
+from .options import FilterOption
 from .version import __version__
 
 # formats
@@ -242,6 +243,7 @@ def main(args: Optional[list[str]] = None) -> int:  # pylint: disable=too-many-r
 
     # Reconfigure the logging.
     update_logging(options)
+    LOGGER.debug("gcovr version %s", __version__)
 
     # We need to reset the stored information her for our test framework
     GcovProgram.reset()
@@ -318,7 +320,9 @@ def main(args: Optional[list[str]] = None) -> int:  # pylint: disable=too-many-r
     options.root_filter = re.compile("^" + re.escape(options.root_dir + os.sep))
 
     def _setup_filter(
-        option: str, patterns: list[str], default_filter: Optional[Filter] = None
+        option: str,
+        patterns: list[FilterOption],
+        default_filter: Optional[Filter] = None,
     ) -> tuple[Filter, ...]:
         """Setup a filter and handle the exception."""
         try:
