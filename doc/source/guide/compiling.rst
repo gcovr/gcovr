@@ -98,6 +98,7 @@ instead of the flags above. In addition you need to configure
 Following format versions of LLVM are supported:
 - `2.0.0`: This version is produced by ``clang-10``.
 - `2.0.1`: This version is produced by ``clang-11`` to ``clang-20`` but the entries differ for several compiler versions:
+
   - ``clang-11``: Difference to version ``2.0.0`` is that the segments got an additional flag if a GAP region was entered.
   - ``clang-12``: Branches where added.
   - ``clang-18``: MC/DC coverage is added if code is compiled with ``-fcoverage-mcdc``. gcovr ignores this information in the current version.

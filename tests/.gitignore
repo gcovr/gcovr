@@ -1,6 +1,9 @@
 # Ignore output directory and files
 output/
 
+# Do not ignore source files with coverage data
+!/*/source/**.gcov
+
 # except in config, reference and data directories
 !*/config/**
 !*/reference/**

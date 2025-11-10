@@ -35,6 +35,7 @@ Bug fixes and small improvements:
 - Fix regular expression for detecting a version mismatch between ``gcc`` and ``gcov``. (:issue:`1187`)
 - Improve logging messages for GCOV execution errors to not print information twice and add trace
   messages for gcov execution. (:issue:`1187`)
+- Fix handling of lines after function specialization. (:issue:`1189`)
 
 Documentation:
 
@@ -71,6 +72,7 @@ Known bugs:
 - :ref:`fix_1171_2`
 - :ref:`fix_1176`
 - :ref:`fix_1187`
+- :ref:`fix_1189`
 
 Breaking changes:
 
