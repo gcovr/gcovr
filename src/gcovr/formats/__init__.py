@@ -113,7 +113,7 @@ def read_reports(options: Options) -> CoverageContainer:
                 # Return if the filename does not match the filter
                 # Return if the filename matches the exclude pattern
                 if is_file_excluded(
-                    fname, options.include_filter, options.exclude_filter
+                    "source file", fname, options.include_filter, options.exclude_filter
                 ):
                     continue
 

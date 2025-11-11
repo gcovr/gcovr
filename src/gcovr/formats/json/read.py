@@ -56,7 +56,10 @@ def read_report(options: Options) -> CoverageContainer:
         merge_options = get_merge_mode_from_options(options)
         for data_source in datafiles:
             activate_trace_logging = not is_file_excluded(
-                data_source, options.trace_include_filter, options.trace_exclude_filter
+                "trace",
+                data_source,
+                options.trace_include_filter,
+                options.trace_exclude_filter,
             )
             if activate_trace_logging:
                 LOGGER.trace("Processing file: %s", data_source)

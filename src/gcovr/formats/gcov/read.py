@@ -188,7 +188,7 @@ def process_gcov_json_data(
 ) -> None:
     """Process a GCOV JSON output."""
     activate_trace_logging = not is_file_excluded(
-        data_fname, options.trace_include_filter, options.trace_exclude_filter
+        "trace", data_fname, options.trace_include_filter, options.trace_exclude_filter
     )
 
     with gzip.open(data_fname, "rt", encoding="UTF-8") as fh_in:
@@ -214,7 +214,10 @@ def process_gcov_json_data(
     merge_options = get_merge_mode_from_options(options)
     for filecov, source_lines in coverage:
         activate_trace_logging = not is_file_excluded(
-            filecov.filename, options.trace_include_filter, options.trace_exclude_filter
+            "trace",
+            filecov.filename,
+            options.trace_include_filter,
+            options.trace_exclude_filter,
         )
         if activate_trace_logging:
             LOGGER.trace("Apply exclusions for %s", filecov.filename)
@@ -246,7 +249,7 @@ def process_gcov_text_data(
 ) -> None:
     """Process a GCOV text output."""
     activate_trace_logging = not is_file_excluded(
-        data_fname, options.trace_include_filter, options.trace_exclude_filter
+        "trace", data_fname, options.trace_include_filter, options.trace_exclude_filter
     )
     with open(
         data_fname, "r", encoding=options.source_encoding, errors="replace"
@@ -284,7 +287,9 @@ def process_gcov_text_data(
         current_dir=current_dir,
     )
 
-    if is_file_excluded(fname, options.include_filter, options.exclude_filter):
+    if is_file_excluded(
+        "source file", fname, options.include_filter, options.exclude_filter
+    ):
         return
 
     if activate_trace_logging:
@@ -490,7 +495,7 @@ def process_datafile(
     TODO: So far there is no good way to address this case.
     """
     activate_trace_logging = not is_file_excluded(
-        filename, options.trace_include_filter, options.trace_exclude_filter
+        "trace", filename, options.trace_include_filter, options.trace_exclude_filter
     )
     if activate_trace_logging:
         LOGGER.trace("Processing file: %s", filename)
@@ -753,7 +758,11 @@ class GcovProgram:
         )
 
     def run_with_args(
-        self, args: list[str], cwd: str, trace: bool = False, **kwargs: Any
+        self,
+        args: list[str],
+        cwd: str,
+        activate_trace_logging: bool = False,
+        **kwargs: Any,
     ) -> tuple[str, str]:
         """Run the gcov program.
 
@@ -787,7 +796,9 @@ class GcovProgram:
         ...
         GcovProgram.GcovExecutionError: GCOV returncode was 15.
         """
-        process = self.__get_gcov_process(args, cwd=cwd, trace=trace, **kwargs)
+        process = self.__get_gcov_process(
+            args, cwd=cwd, trace=activate_trace_logging, **kwargs
+        )
         out, err = process.communicate()
 
         def remove_generated_files() -> None:
@@ -818,7 +829,7 @@ class GcovProgram:
                 f"Version mismatch gcc/gcov.\nSTDERR >>{err}<< End of STDERR"
             )
 
-        if trace:
+        if activate_trace_logging:
             LOGGER.trace("STDERR >>%s<< End of STDERR", err)
             LOGGER.trace("STDOUT >>%s<< End of STDOUT", out)
 
@@ -879,7 +890,8 @@ def run_gcov_and_process_files(
                     object_directory,
                 ],
                 cwd=chdir,
-                trace=not is_file_excluded(
+                activate_trace_logging=not is_file_excluded(
+                    "trace",
                     abs_filename,
                     options.trace_include_filter,
                     options.trace_exclude_filter,
@@ -995,7 +1007,7 @@ def select_gcov_files_from_stdout(
         full = os.path.join(chdir, fname)
         all_files.add(full)
 
-        if is_file_excluded(fname, include_filter, exclude_filter):
+        if is_file_excluded("gcov file", fname, include_filter, exclude_filter):
             continue
 
         active_files.add(full)
@@ -1011,10 +1023,13 @@ def process_existing_gcov_file(
 ) -> None:
     """Process an existing GCOV filename."""
     if is_file_excluded(
-        filename, options.gcov_include_filter, options.gcov_exclude_filter
+        "gcov file", filename, options.gcov_include_filter, options.gcov_exclude_filter
     ):
         if not is_file_excluded(
-            filename, options.trace_include_filter, options.trace_exclude_filter
+            "trace",
+            filename,
+            options.trace_include_filter,
+            options.trace_exclude_filter,
         ):
             LOGGER.trace("Excluding gcov file: %s", filename)
         return

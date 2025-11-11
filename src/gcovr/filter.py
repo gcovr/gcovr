@@ -88,6 +88,7 @@ class AlwaysMatchFilter(Filter):
 
     def match(self, path: str) -> bool:
         """Return always True."""
+        LOGGER.debug("  Filter %s matched.", self)
         return True
 
 
@@ -127,6 +128,7 @@ def __is_file_matching_any(filename: str, filters: tuple[Filter, ...]) -> bool:
 
 
 def is_file_excluded(
+    filter_type: str,
     filename: str,
     include_filter: tuple[Filter, ...],
     exclude_filter: tuple[Filter, ...],
@@ -146,7 +148,7 @@ def is_file_excluded(
         True when filename is not matching a include filter or matches an exclude filter.
     """
 
-    LOGGER.debug("Check if %s is included...", filename)
+    LOGGER.debug("Check if %s is included (%s)...", filename, filter_type)
     is_included = __is_file_matching_any(filename, include_filter)
     if is_included and exclude_filter:
         LOGGER.debug("Check for exclusion...")

@@ -79,7 +79,10 @@ def read_report(options: Options) -> CoverageContainer:
     merge_options = get_merge_mode_from_options(options)
     for profraw_file in profraw_files:
         activate_trace_logging = not is_file_excluded(
-            profraw_file, options.trace_include_filter, options.trace_exclude_filter
+            "trace",
+            profraw_file,
+            options.trace_include_filter,
+            options.trace_exclude_filter,
         )
         if activate_trace_logging:
             LOGGER.trace("Processing file: %s", profraw_file)
@@ -120,7 +123,10 @@ def read_report(options: Options) -> CoverageContainer:
             max(linecov_collection.lineno for linecov_collection in filecov.lines()),
         )
         activate_trace_logging = not is_file_excluded(
-            filecov.filename, options.trace_include_filter, options.trace_exclude_filter
+            "trace",
+            filecov.filename,
+            options.trace_include_filter,
+            options.trace_exclude_filter,
         )
         if activate_trace_logging:
             LOGGER.trace("Apply exclusions for %s", filecov.filename)
@@ -175,15 +181,15 @@ def _llvm_profraw_to_json(options: Options, profraw: str) -> dict[str, Any]:
     env["LC_ALL"] = "C"
     env["LANGUAGE"] = "en_US"
 
-    trace = not is_file_excluded(
-        profraw, options.trace_include_filter, options.trace_exclude_filter
+    activate_trace_logging = not is_file_excluded(
+        "trace", profraw, options.trace_include_filter, options.trace_exclude_filter
     )
 
     def run_cmd(cmd: list[str]) -> tuple[str, str]:
         """Run the given command."""
 
         tool = cmd[0]
-        if trace:
+        if activate_trace_logging:
             LOGGER.trace("Running %s: %s", tool, shlex.join(cmd))
         with subprocess.Popen(  # nosec # We know that we execute llvm-profdata tool
             cmd,
@@ -194,7 +200,7 @@ def _llvm_profraw_to_json(options: Options, profraw: str) -> dict[str, Any]:
         ) as process:
             out, err = process.communicate()
             if process.returncode == 0:
-                if trace:
+                if activate_trace_logging:
                     LOGGER.trace("STDERR >>%s<< End of STDERR", err)
                     LOGGER.trace("STDOUT >>%s<< End of STDOUT", out)
             else:
@@ -263,7 +269,10 @@ def read_json(
 
     for filecov in covdata.values():
         activate_trace_logging = not is_file_excluded(
-            filecov.filename, options.trace_include_filter, options.trace_exclude_filter
+            "trace",
+            filecov.filename,
+            options.trace_include_filter,
+            options.trace_exclude_filter,
         )
         if activate_trace_logging:
             LOGGER.trace("Apply exclusions for %s", filecov.filename)
@@ -286,15 +295,12 @@ def read_json_files(
 ) -> None:
     """Read the files from clang JSON coverage report."""
     file_data: dict[str, Any]
-    exclusion_cache = dict[str, bool]()
     branches_found = False
     for file_data in json_data["files"]:
         filename = file_data["filename"]
-        if filename not in exclusion_cache:
-            exclusion_cache[filename] = is_file_excluded(
-                filename, options.include_filter, options.exclude_filter
-            )
-        if exclusion_cache[filename]:
+        if is_file_excluded(
+            "source file", filename, options.include_filter, options.exclude_filter
+        ):
             continue
         filecov = FileCoverage(data_source, filename=filename)
         segments_by_line = dict[int, list[Segment]]()
@@ -371,14 +377,11 @@ def read_json_functions(
 ) -> None:
     """Read the functions from clang JSON coverage report."""
     function_data: dict[str, Any]
-    exclusion_cache = dict[str, bool]()
     for function_data in json_data["functions"]:
         filenames: list[str] = function_data["filenames"]
-        if filenames[0] not in exclusion_cache:
-            exclusion_cache[filenames[0]] = is_file_excluded(
-                filenames[0], options.include_filter, options.exclude_filter
-            )
-        if exclusion_cache[filenames[0]]:
+        if is_file_excluded(
+            "source file", filenames[0], options.include_filter, options.exclude_filter
+        ):
             continue
 
         filecov = FileCoverage(data_source, filename=filenames[0])

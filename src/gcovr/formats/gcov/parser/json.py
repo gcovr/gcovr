@@ -85,7 +85,7 @@ def parse_coverage(
             os.path.join(gcov_json_data["current_working_directory"], file["file"])
         )
 
-        if is_file_excluded(fname, include_filter, exclude_filter):
+        if is_file_excluded("source file", fname, include_filter, exclude_filter):
             continue
 
         LOGGER.debug("Parsing coverage data for file %s", fname)

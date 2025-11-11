@@ -83,7 +83,7 @@ def read_report(options: Options) -> CoverageContainer:
 
             filename = str(os.path.normpath(os.path.join(source_dir, filename)))
             if is_file_excluded(
-                filename, options.include_filter, options.exclude_filter
+                "source file", filename, options.include_filter, options.exclude_filter
             ):
                 continue
 
