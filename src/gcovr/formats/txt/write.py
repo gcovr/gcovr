@@ -28,7 +28,7 @@ from ...utils import force_unix_separator, open_text_for_writing
 # Widths of the various columns
 COL_FILE_WIDTH = 40
 COL_TOTAL_COUNT_WIDTH = 8
-COL_COVERED_COUNT_WIDTH = 8
+COL_COVERED_COUNT_WIDTH = 9
 COL_PERCENTAGE_WIDTH = 7  # including "%" percentage sign
 UN_COVERED_SEPARATOR = "   "
 LINE_WIDTH = 78
