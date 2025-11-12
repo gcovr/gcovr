@@ -222,7 +222,7 @@ def _covered_branches_str(filecov: FileCoverage) -> str:
 def _covered_decisions_str(filecov: FileCoverage) -> str:
     covered_decisions = sorted(
         linecov.lineno
-        for linecov in filecov.linecov
+        for linecov in filecov.linecov()
         if not linecov.has_uncovered_decision
     )
     return ",".join(str(lineno) for lineno in covered_decisions)

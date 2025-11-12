@@ -37,6 +37,7 @@ Bug fixes and small improvements:
   messages for gcov execution. (:issue:`1187`)
 - Fix handling of lines after function specialization. (:issue:`1189`)
 - Improve performance by changing logging messages (level and lazy interpolation). (:issue:`1191`)
+- Fix text report for covered decisions. (:issue:`1192`)
 
 Documentation:
 
@@ -74,6 +75,7 @@ Known bugs:
 - :ref:`fix_1176`
 - :ref:`fix_1187`
 - :ref:`fix_1189`
+- :ref:`fix_1192`
 
 Breaking changes:
 
