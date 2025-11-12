@@ -84,7 +84,7 @@ def read_report(options: Options) -> CoverageContainer:
         options.gcov_parallel,
         lambda: {"covdata": CoverageContainer(), "to_erase": set(), "options": options},
     ) as pool:
-        LOGGER.debug(f"Pool started with {pool.size()} threads")
+        LOGGER.debug("Pool started with %d threads", pool.size())
         for filename in sorted(datafiles):
             pool.add(process_file, filename)
         try:
@@ -112,10 +112,10 @@ def find_existing_gcov_files(
 ) -> list[str]:
     """Find .gcov and .gcov.json.gz files under the given search path."""
     if os.path.isfile(search_path):
-        LOGGER.debug(f"Using given gcov file {search_path}")
+        LOGGER.debug("Using given gcov file %s", search_path)
         gcov_files = [search_path]
     else:
-        LOGGER.debug(f"Scanning directory {search_path} for gcov files...")
+        LOGGER.debug("Scanning directory %s for gcov files...", search_path)
         gcov_files = list(
             search_file(
                 lambda fname: re.compile(r".*\.gcov(?:\.json\.gz)?$").match(fname)
@@ -124,7 +124,7 @@ def find_existing_gcov_files(
                 exclude_directory=exclude_directory,
             )
         )
-        LOGGER.debug(f"Found {len(gcov_files)} files (and will process all of them)")
+        LOGGER.debug("Found %d files (and will process all of them)", len(gcov_files))
     return gcov_files
 
 
@@ -140,11 +140,13 @@ def find_datafiles(
     """
     if os.path.isfile(search_path):
         LOGGER.debug(
-            f"Using given {os.path.splitext(search_path)[1][1:]} file {search_path}"
+            "Using given %s file %s",
+            os.path.splitext(search_path)[1][1:],
+            search_path,
         )
         files = [search_path]
     else:
-        LOGGER.debug(f"Scanning directory {search_path} for gcda/gcno files...")
+        LOGGER.debug("Scanning directory %s for gcda/gcno files...", search_path)
         files = list(
             search_file(
                 lambda fname: re.compile(r".*\.gc(da|no)$").match(fname) is not None,
@@ -169,7 +171,9 @@ def find_datafiles(
         if os.path.splitext(filename)[0] not in known_file_stems
     ]
     LOGGER.debug(
-        f"Found {len(files)} files (and will process {len(gcda_files) + len(gcno_files)})"
+        "Found %d files (and will process %d)",
+        len(files),
+        len(gcda_files) + len(gcno_files),
     )
     return gcda_files + gcno_files
 
@@ -183,15 +187,17 @@ def process_gcov_json_data(
     options: Options,
 ) -> None:
     """Process a GCOV JSON output."""
-    trace_file = not is_file_excluded(
-        data_fname, options.trace_include_filter, options.trace_exclude_filter
+    activate_trace_logging = not is_file_excluded(
+        "trace", data_fname, options.trace_include_filter, options.trace_exclude_filter
     )
 
     with gzip.open(data_fname, "rt", encoding="UTF-8") as fh_in:
         gcov_json_data = json_loads(fh_in.read())
-        if trace_file:
+        if activate_trace_logging:
             LOGGER.trace(
-                f"Parsing gcov data file {data_fname}:\n{json_dumps(gcov_json_data, indent=PRETTY_JSON_INDENT)}<<EOF"
+                "Parsing gcov data file %s:\n%s<<EOF",
+                data_fname,
+                json_dumps(gcov_json_data, indent=PRETTY_JSON_INDENT),
             )
 
     coverage = json.parse_coverage(
@@ -202,23 +208,32 @@ def process_gcov_json_data(
         ignore_parse_errors=options.gcov_ignore_parse_errors,
         suspicious_hits_threshold=options.gcov_suspicious_hits_threshold,
         source_encoding=options.source_encoding,
-        trace_file=trace_file,
+        activate_trace_logging=activate_trace_logging,
     )
 
     merge_options = get_merge_mode_from_options(options)
     for filecov, source_lines in coverage:
-        LOGGER.debug(f"Apply exclusions for {filecov.filename}")
+        activate_trace_logging = not is_file_excluded(
+            "trace",
+            filecov.filename,
+            options.trace_include_filter,
+            options.trace_exclude_filter,
+        )
+        if activate_trace_logging:
+            LOGGER.trace("Apply exclusions for %s", filecov.filename)
         apply_all_exclusions(
             filecov,
             lines=source_lines,
             options=get_exclusion_options_from_options(options),
+            activate_trace_logging=activate_trace_logging,
         )
 
         if options.show_decision:
             decision_parser = DecisionParser(filecov, source_lines)
             decision_parser.parse_all_lines()
 
-        LOGGER.debug(f"Merge coverage data for {filecov.filename}")
+        if activate_trace_logging:
+            LOGGER.trace("Merge coverage data for %s", filecov.filename)
         covdata.insert_file_coverage(filecov, merge_options)
 
 
@@ -233,15 +248,15 @@ def process_gcov_text_data(
     current_dir: Optional[str] = None,
 ) -> None:
     """Process a GCOV text output."""
-    trace_file = not is_file_excluded(
-        data_fname, options.trace_include_filter, options.trace_exclude_filter
+    activate_trace_logging = not is_file_excluded(
+        "trace", data_fname, options.trace_include_filter, options.trace_exclude_filter
     )
     with open(
         data_fname, "r", encoding=options.source_encoding, errors="replace"
     ) as fh_in:
         content = fh_in.read()
-        if trace_file:
-            LOGGER.trace(f"Parsing gcov data file {data_fname}:\n{content}<<EOF")
+        if activate_trace_logging:
+            LOGGER.trace("Parsing gcov data file %s:\n%s<<EOF", data_fname, content)
         lines = content.splitlines()
 
     # Find the source file
@@ -249,7 +264,7 @@ def process_gcov_text_data(
         data_fname,
         lines,
         suspicious_hits_threshold=options.gcov_suspicious_hits_threshold,
-        trace_file=trace_file,
+        activate_trace_logging=activate_trace_logging,
     )
     source = metadata.get("Source")
     if source is None:
@@ -272,10 +287,13 @@ def process_gcov_text_data(
         current_dir=current_dir,
     )
 
-    if is_file_excluded(fname, options.include_filter, options.exclude_filter):
+    if is_file_excluded(
+        "source file", fname, options.include_filter, options.exclude_filter
+    ):
         return
 
-    LOGGER.debug(f"Parsing coverage data for file {fname}")
+    if activate_trace_logging:
+        LOGGER.trace("Parsing coverage data for file %s", fname)
     key = os.path.normpath(fname)
 
     filecov, source_lines = text.parse_coverage(
@@ -284,18 +302,25 @@ def process_gcov_text_data(
         filename=key,
         ignore_parse_errors=options.gcov_ignore_parse_errors,
         suspicious_hits_threshold=options.gcov_suspicious_hits_threshold,
-        trace_file=trace_file,
+        activate_trace_logging=activate_trace_logging,
     )
 
-    LOGGER.debug(f"Apply exclusions for {fname}")
-    apply_all_exclusions(filecov, lines=source_lines, options=options)  # type: ignore [arg-type]
+    if activate_trace_logging:
+        LOGGER.trace("Apply exclusions for %s", fname)
+    apply_all_exclusions(
+        filecov,
+        lines=source_lines,
+        options=get_exclusion_options_from_options(options),
+        activate_trace_logging=activate_trace_logging,
+    )
 
     if options.show_decision:
         decision_parser = DecisionParser(filecov, source_lines)
         decision_parser.parse_all_lines()
 
     merge_mode = get_merge_mode_from_options(options)
-    LOGGER.debug(f"Merge coverage data for {fname} using {str(merge_mode)}")
+    if activate_trace_logging:
+        LOGGER.trace("Merge coverage data for %s using %s", fname, str(merge_mode))
     covdata.insert_file_coverage(filecov, merge_mode)
 
 
@@ -332,14 +357,21 @@ def guess_source_file_name(
         fname = fix_case_of_path(fname)
 
     LOGGER.debug(
-        f"Finding source file corresponding to a gcov data file\n"
-        f"  gcov_fname   {data_fname}\n"
-        f"  current_dir  {current_dir}\n"
-        f"  root         {root_dir}\n"
-        f"  starting_dir {starting_dir}\n"
-        f"  obj_dir      {obj_dir}\n"
-        f"  gcda_fname   {gcda_fname}\n"
-        f"  --> fname    {fname}"
+        "Finding source file corresponding to a gcov data file\n"
+        "  gcov_fname   %s\n"
+        "  current_dir  %s\n"
+        "  root         %s\n"
+        "  starting_dir %s\n"
+        "  obj_dir      %s\n"
+        "  gcda_fname   %s\n"
+        "  --> fname    %s",
+        data_fname,
+        current_dir,
+        root_dir,
+        starting_dir,
+        obj_dir,
+        gcda_fname,
+        fname,
     )
 
     return fname
@@ -462,7 +494,11 @@ def process_datafile(
     i.e. the object files are in a sibling directory.
     TODO: So far there is no good way to address this case.
     """
-    LOGGER.debug(f"Processing file: {filename}")
+    activate_trace_logging = not is_file_excluded(
+        "trace", filename, options.trace_include_filter, options.trace_exclude_filter
+    )
+    if activate_trace_logging:
+        LOGGER.trace("Processing file: %s", filename)
 
     abs_filename = os.path.abspath(filename).replace(
         os.path.sep, "/"
@@ -638,9 +674,8 @@ class GcovProgram:
                     GcovProgram.__default_options.append("--preserve-paths")
                 else:
                     LOGGER.warning(
-                        "Options '--hash-filenames' and '--preserve-paths' are not "
-                        f"supported by '{GcovProgram.__cmd}'. Source files with "
-                        "identical file names may result in incorrect coverage."
+                        "Options '--hash-filenames' and '--preserve-paths' are not supported by '%s'. Source files with identical file names may result in incorrect coverage.",
+                        GcovProgram.__cmd,
                     )
 
                 if not self.__check_gcov_help_content("LLVM"):
@@ -711,7 +746,7 @@ class GcovProgram:
             kwargs["cwd"] = "."
         cmd = GcovProgram.__cmd_split + args
         if trace:
-            LOGGER.trace(f"Running gcov in {kwargs['cwd']}: {shlex.join(cmd)}")
+            LOGGER.trace("Running gcov in %s: %s", kwargs["cwd"], shlex.join(cmd))
 
         return subprocess.Popen(  # nosec # We know that we execute gcov tool
             cmd,
@@ -723,7 +758,11 @@ class GcovProgram:
         )
 
     def run_with_args(
-        self, args: list[str], cwd: str, trace: bool = False, **kwargs: Any
+        self,
+        args: list[str],
+        cwd: str,
+        activate_trace_logging: bool = False,
+        **kwargs: Any,
     ) -> tuple[str, str]:
         """Run the gcov program.
 
@@ -757,7 +796,9 @@ class GcovProgram:
         ...
         GcovProgram.GcovExecutionError: GCOV returncode was 15.
         """
-        process = self.__get_gcov_process(args, cwd=cwd, trace=trace, **kwargs)
+        process = self.__get_gcov_process(
+            args, cwd=cwd, trace=activate_trace_logging, **kwargs
+        )
         out, err = process.communicate()
 
         def remove_generated_files() -> None:
@@ -788,9 +829,9 @@ class GcovProgram:
                 f"Version mismatch gcc/gcov.\nSTDERR >>{err}<< End of STDERR"
             )
 
-        if trace:
-            LOGGER.trace(f"STDERR >>{err}<< End of STDERR")
-            LOGGER.trace(f"STDOUT >>{out}<< End of STDOUT")
+        if activate_trace_logging:
+            LOGGER.trace("STDERR >>%s<< End of STDERR", err)
+            LOGGER.trace("STDOUT >>%s<< End of STDOUT", out)
 
         return (out, err)
 
@@ -849,7 +890,8 @@ def run_gcov_and_process_files(
                     object_directory,
                 ],
                 cwd=chdir,
-                trace=not is_file_excluded(
+                activate_trace_logging=not is_file_excluded(
+                    "trace",
                     abs_filename,
                     options.trace_include_filter,
                     options.trace_exclude_filter,
@@ -948,8 +990,8 @@ def run_gcov_and_process_files(
 
 def select_gcov_files_from_stdout(
     out: str,
-    include_filter: list[Filter],
-    exclude_filter: list[Filter],
+    include_filter: tuple[Filter, ...],
+    exclude_filter: tuple[Filter, ...],
     chdir: str,
 ) -> tuple[set[str], set[str]]:
     """Parse the output to get the list of files to use and all files (unfiltered)."""
@@ -965,7 +1007,7 @@ def select_gcov_files_from_stdout(
         full = os.path.join(chdir, fname)
         all_files.add(full)
 
-        if is_file_excluded(fname, include_filter, exclude_filter):
+        if is_file_excluded("gcov file", fname, include_filter, exclude_filter):
             continue
 
         active_files.add(full)
@@ -981,9 +1023,15 @@ def process_existing_gcov_file(
 ) -> None:
     """Process an existing GCOV filename."""
     if is_file_excluded(
-        filename, options.gcov_include_filter, options.gcov_exclude_filter
+        "gcov file", filename, options.gcov_include_filter, options.gcov_exclude_filter
     ):
-        LOGGER.debug(f"Excluding gcov file: {filename}")
+        if not is_file_excluded(
+            "trace",
+            filename,
+            options.trace_include_filter,
+            options.trace_exclude_filter,
+        ):
+            LOGGER.trace("Excluding gcov file: %s", filename)
         return
 
     if filename.endswith(".gcov"):

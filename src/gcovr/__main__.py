@@ -40,6 +40,7 @@ from .filter import (
 )
 from .formats.gcov.read import GcovProgram
 from .logging import configure_logging, update_logging, LOGGER
+from .options import FilterOption
 from .version import __version__
 
 # formats
@@ -90,7 +91,9 @@ def get_exit_code(
             if percent_lines < threshold_line:
                 line_nok = True
                 LOGGER.error(
-                    f"failed minimum line coverage (got {percent_lines}%, minimum {threshold_line}%)"
+                    "Failed minimum line coverage (got %s%%, minimum %s%%)",
+                    percent_lines,
+                    threshold_line,
                 )
 
         branch_nok = False
@@ -100,7 +103,9 @@ def get_exit_code(
             if percent_branches < threshold_branch:
                 branch_nok = True
                 LOGGER.error(
-                    f"failed minimum branch coverage (got {percent_branches}%, minimum {threshold_branch}%)"
+                    "Failed minimum branch coverage (got %s%%, minimum %s%%)",
+                    percent_branches,
+                    threshold_branch,
                 )
 
         decision_nok = False
@@ -110,7 +115,9 @@ def get_exit_code(
             if percent_decision < threshold_decision:
                 decision_nok = True
                 LOGGER.error(
-                    f"failed minimum decision coverage (got {percent_decision}%, minimum {threshold_decision}%)"
+                    "Failed minimum decision coverage (got %s%%, minimum %s%%)",
+                    percent_decision,
+                    threshold_decision,
                 )
 
         function_nok = False
@@ -120,7 +127,9 @@ def get_exit_code(
             if percent_function < threshold_function:
                 function_nok = True
                 LOGGER.error(
-                    f"failed minimum function coverage (got {percent_function}%, minimum {threshold_function}%)"
+                    "Failed minimum function coverage (got %s%%, minimum %s%%)",
+                    percent_function,
+                    threshold_function,
                 )
 
         if line_nok:
@@ -234,6 +243,7 @@ def main(args: Optional[list[str]] = None) -> int:  # pylint: disable=too-many-r
 
     # Reconfigure the logging.
     update_logging(options)
+    LOGGER.debug("gcovr version %s", __version__)
 
     # We need to reset the stored information her for our test framework
     GcovProgram.reset()
@@ -261,7 +271,7 @@ def main(args: Optional[list[str]] = None) -> int:  # pylint: disable=too-many-r
         option_high = f"--{key_high.replace('_', '-')}"
 
         if getattr(options, key_medium) == 0:
-            LOGGER.error(f"value of {option_medium} should not be zero.")
+            LOGGER.error("Value of %s should not be zero.", option_medium)
             return EXIT_CMDLINE_ERROR
 
         # Inherit the defaults from the global coverage values if not set
@@ -285,15 +295,18 @@ def main(args: Optional[list[str]] = None) -> int:  # pylint: disable=too-many-r
 
         if getattr(options, key_medium) > getattr(options, key_high):
             LOGGER.error(
-                f"value of {option_medium}={getattr(options, key_medium)} should be\n"
-                f"lower than or equal to the value of {option_high}={getattr(options, key_high)}."
+                "Value of %s=%s should be\nlower than or equal to the value of %s=%s.",
+                option_medium,
+                getattr(options, key_medium),
+                option_high,
+                getattr(options, key_high),
             )
             return EXIT_CMDLINE_ERROR
 
     try:
         gcovr_formats.validate_options(options)
     except RuntimeError as exc:
-        LOGGER.error(str(exc))
+        LOGGER.error("%s", str(exc))
         return EXIT_CMDLINE_ERROR
 
     options.starting_dir = os.path.abspath(os.getcwd())
@@ -307,8 +320,10 @@ def main(args: Optional[list[str]] = None) -> int:  # pylint: disable=too-many-r
     options.root_filter = re.compile("^" + re.escape(options.root_dir + os.sep))
 
     def _setup_filter(
-        option: str, patterns: list[str], default_filter: Optional[Filter] = None
-    ) -> list[Filter]:
+        option: str,
+        patterns: list[FilterOption],
+        default_filter: Optional[Filter] = None,
+    ) -> tuple[Filter, ...]:
         """Setup a filter and handle the exception."""
         try:
             filters = list[Filter]()
@@ -316,10 +331,10 @@ def main(args: Optional[list[str]] = None) -> int:  # pylint: disable=too-many-r
                 filters = [f.build_filter() for f in patterns]
             elif default_filter is not None:
                 filters.append(default_filter)
-            LOGGER.debug(f"Filters for {option}: ({len(filters)})")
+            LOGGER.debug("Filters for %s: (%d)", option, len(filters))
             for f in filters:
-                LOGGER.debug(f" - {f}")
-            return filters
+                LOGGER.debug(" - %s", f)
+            return tuple(filters)
         except re.error as e:
             # mypy is thinking that the pattern can be a byte string therefore we need to explicit use !s.
             # See also discussion https://github.com/gcovr/gcovr/pull/1028#discussion_r1855437452
@@ -327,16 +342,16 @@ def main(args: Optional[list[str]] = None) -> int:  # pylint: disable=too-many-r
                 f"Error setting up filter {option}='{e.pattern!s}': {e}"
             ) from None
 
-    def _setup_pattern(option: str, patterns: list[str]) -> list[re.Pattern[str]]:
+    def _setup_pattern(option: str, patterns: list[str]) -> tuple[re.Pattern[str], ...]:
         """Setup a filter and handle the exception."""
         try:
             compiled_patterns = list[re.Pattern[str]]()
             if len(patterns):
                 compiled_patterns = [re.compile(p) for p in patterns]
-            LOGGER.debug(f"Patterns for {option}: ({len(compiled_patterns)})")
+            LOGGER.debug("Patterns for %s: (%d)", option, len(compiled_patterns))
             for p in compiled_patterns:
-                LOGGER.debug(f" - {p}")
-            return compiled_patterns
+                LOGGER.debug(" - %s", p)
+            return tuple(compiled_patterns)
         except re.error as e:
             # mypy is thinking that the pattern can be a byte string therefore we need to explicit use !s.
             # See also discussion https://github.com/gcovr/gcovr/pull/1028#discussion_r1855437452
@@ -384,7 +399,7 @@ def main(args: Optional[list[str]] = None) -> int:  # pylint: disable=too-many-r
             "--exclude-branches-by-pattern", options.exclude_branches_by_pattern
         )
     except RuntimeError as e:
-        LOGGER.error(str(e))
+        LOGGER.error("%s", str(e))
         return EXIT_CMDLINE_ERROR
 
     if options.fail_under_decision > 0.0 and not options.show_decision:
@@ -401,7 +416,9 @@ def main(args: Optional[list[str]] = None) -> int:  # pylint: disable=too-many-r
     try:
         covdata = gcovr_formats.read_reports(options)
     except Exception:  # pylint: disable=broad-exception-caught
-        LOGGER.error(f"Error occurred while reading reports:\n{traceback.format_exc()}")
+        LOGGER.error(
+            "Error occurred while reading reports:\n%s", traceback.format_exc()
+        )
         return EXIT_READ_ERROR
 
     LOGGER.info("Writing coverage report...")
@@ -409,7 +426,7 @@ def main(args: Optional[list[str]] = None) -> int:  # pylint: disable=too-many-r
         gcovr_formats.write_reports(covdata, options)
     except Exception:  # pylint: disable=broad-exception-caught
         LOGGER.error(
-            f"Error occurred while printing reports:\n{traceback.format_exc()}"
+            "Error occurred while printing reports:\n%s", traceback.format_exc()
         )
         return EXIT_WRITE_ERROR
 

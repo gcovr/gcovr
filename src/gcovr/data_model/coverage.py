@@ -2254,7 +2254,9 @@ class FileCoverage(CoverageBase):
             os.path.abspath(options.root), os.path.normpath(data_dict["file"])
         )
 
-        if is_file_excluded(filename, options.include_filter, options.exclude_filter):
+        if is_file_excluded(
+            "source file", filename, options.include_filter, options.exclude_filter
+        ):
             return None
 
         def get_data_sources(data_dict: dict[str, Any]) -> set[tuple[str, ...]]:

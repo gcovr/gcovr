@@ -102,7 +102,7 @@ def read_reports(options: Options) -> CoverageContainer:
 
     if options.include_search_filter:
         for search_path in options.search_paths or [options.root]:
-            LOGGER.debug(f"Search for included files in {search_path}")
+            LOGGER.debug("Search for included files in %s", search_path)
             for fname in search_file(
                 lambda fname: any(
                     f.match(fname) for f in options.include_search_filter
@@ -113,12 +113,12 @@ def read_reports(options: Options) -> CoverageContainer:
                 # Return if the filename does not match the filter
                 # Return if the filename matches the exclude pattern
                 if is_file_excluded(
-                    fname, options.include_filter, options.exclude_filter
+                    "source file", fname, options.include_filter, options.exclude_filter
                 ):
                     continue
 
                 filecov = FileCoverage("option --include", filename=fname)
-                LOGGER.debug(f"Merge empty coverage data for {fname}")
+                LOGGER.debug("Merge empty coverage data for %s", fname)
                 covdata.insert_file_coverage(
                     filecov, get_merge_mode_from_options(options)
                 )
@@ -329,7 +329,7 @@ def write_reports(covdata: CoverageContainer, options: Options) -> None:
         and not default_output_used
     ):
         LOGGER.warning(
-            f"--output={repr(default_output.value)} option was provided but not used."
+            "--output=%s option was provided but not used.", repr(default_output.value)
         )
 
     if options.txt_summary:

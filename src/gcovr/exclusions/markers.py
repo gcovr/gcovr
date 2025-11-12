@@ -77,6 +77,7 @@ def apply_exclusion_markers(
     exclude_branches_by_pattern: list[re.Pattern[str]],
     exclude_pattern_prefix: str,
     warn_excluded_lines_with_hits: bool,
+    activate_trace_logging: bool,
 ) -> None:
     """
     Remove any coverage information that is excluded by explicit markers such as
@@ -98,12 +99,14 @@ def apply_exclusion_markers(
         lines=lines,
         exclude_pattern_prefix=exclude_pattern_prefix,
         filecov=filecov,
+        activate_trace_logging=activate_trace_logging,
     )
 
     _process_exclude_branch_with_no_hit(
         lines=lines,
         exclude_pattern_prefix=exclude_pattern_prefix,
         filecov=filecov,
+        activate_trace_logging=activate_trace_logging,
     )
 
     line_is_excluded, branch_is_excluded = _find_excluded_ranges(
@@ -113,6 +116,7 @@ def apply_exclusion_markers(
         exclude_branches_by_custom_patterns=exclude_branches_by_pattern,
         exclude_pattern_prefix=exclude_pattern_prefix,
         filecov=filecov,
+        activate_trace_logging=activate_trace_logging,
     )
 
     apply_exclusion_ranges(
@@ -128,6 +132,7 @@ def _process_exclude_branch_source(
     *,
     exclude_pattern_prefix: str,
     filecov: FileCoverage,
+    activate_trace_logging: bool,
 ) -> None:
     """Scan through all lines to find source branch exclusion markers."""
 
@@ -143,17 +148,20 @@ def _process_exclude_branch_source(
                 linecovs = filecov.get_line(lineno)
                 if linecovs is None:
                     LOGGER.error(
-                        f"Found marker for source branch exclusion at {location} without coverage information"
+                        "Found marker for source branch exclusion at %s without coverage information",
+                        location,
                     )
                 else:
                     for linecov in linecovs:
                         if linecov.function_name is None or linecov.block_ids is None:
                             LOGGER.warning(
-                                f"Source branch exclusion at {location} needs at least gcc-14 with supported JSON format."
+                                "Source branch exclusion at %s needs at least gcc-14 with supported JSON format.",
+                                location,
                             )
                         elif not linecov.block_ids:
                             LOGGER.error(
-                                f"Source branch exclusion at {location} found but no block ids defined at this line."
+                                "Source branch exclusion at %s found but no block ids defined at this line.",
+                                location,
                             )
                         else:
                             function_name = linecov.function_name
@@ -165,14 +173,18 @@ def _process_exclude_branch_source(
                                 # Exclude the branch where the destination is one of the blocks of the line with the marker
                                 for cur_branchcov in cur_linecov.branches():
                                     if cur_branchcov.destination_block_id in block_ids:
-                                        branch_info = (
-                                            f"{cur_branchcov.source_block_id}->{cur_branchcov.destination_block_id}"
-                                            if cur_branchcov.branchno is None
-                                            else cur_branchcov.branchno
-                                        )
-                                        LOGGER.debug(
-                                            f"Source branch exclusion at {location} is excluding branch {branch_info} of line {cur_linecov.lineno}"
-                                        )
+                                        if activate_trace_logging:
+                                            branch_info = (
+                                                f"{cur_branchcov.source_block_id}->{cur_branchcov.destination_block_id}"
+                                                if cur_branchcov.branchno is None
+                                                else f"{cur_branchcov.branchno}"
+                                            )
+                                            LOGGER.trace(
+                                                "Source branch exclusion at %s is excluding branch %s of line %s",
+                                                location,
+                                                branch_info,
+                                                cur_linecov.lineno,
+                                            )
                                         cur_branchcov.excluded = True
                 columnno += len(match)
 
@@ -182,6 +194,7 @@ def _process_exclude_branch_with_no_hit(
     *,
     exclude_pattern_prefix: str,
     filecov: FileCoverage,
+    activate_trace_logging: bool,
 ) -> None:
     """Scan through all lines to find exclusion markers for branches without a hit."""
 
@@ -203,7 +216,8 @@ def _process_exclude_branch_with_no_hit(
                 linecovs = filecov.get_line(lineno)
                 if linecovs is None:
                     LOGGER.error(
-                        f"Found marker for exclusion of branches without hits at {location} without coverage information"
+                        "Found marker for exclusion of branches without hits at %s without coverage information",
+                        location,
                     )
                 else:
                     for linecov in linecovs:
@@ -213,13 +227,21 @@ def _process_exclude_branch_with_no_hit(
                             str(stats.total) == total
                             and str(expected_uncovered) == uncovered
                         ):
-                            LOGGER.debug(
-                                f"Exclusion of branches without hits at {location} is excluding {uncovered} branch(es)"
-                            )
+                            if activate_trace_logging:
+                                LOGGER.trace(
+                                    "Exclusion of branches without hits at %s is excluding %s branch(es)",
+                                    location,
+                                    uncovered,
+                                )
                             linecov.exclude_branches()
                         else:
                             LOGGER.error(
-                                f"Exclusion of branches without hits ({stats_string}) at {location} is wrong. There {'is' if expected_uncovered <= 1 else 'are'} {expected_uncovered} out of {stats.total} branches uncovered"
+                                "Exclusion of branches without hits (%s) at %s is wrong. There %s %s out of %s branches uncovered",
+                                stats_string,
+                                location,
+                                "is" if expected_uncovered <= 1 else "are",
+                                expected_uncovered,
+                                stats.total,
                             )
                 columnno += len(match)
 
@@ -245,7 +267,8 @@ class _ExclusionRangeWarnings:
     ...     exclude_lines_by_pattern=[],
     ...     exclude_branches_by_pattern=[],
     ...     exclude_pattern_prefix=r"[GL]COVR?",
-    ...     warn_excluded_lines_with_hits=False)
+    ...     warn_excluded_lines_with_hits=False,
+    ...     activate_trace_logging=False)
     >>> for message in caplog.record_tuples:
     ...     print(f"{message[1]}: {message[2]}")
     30: mismatched coverage exclusion flags.
@@ -265,32 +288,45 @@ class _ExclusionRangeWarnings:
     ) -> None:
         """warn that start/stop region markers don't match"""
         LOGGER.warning(
-            f"{start} found on line {start_lineno} "
-            f"was terminated by {stop} on line {stop_lineno}, "
-            f"when processing {self.filename}."
+            "%s found on line %d was terminated by %s on line %d, when processing %s.",
+            start,
+            start_lineno,
+            stop,
+            stop_lineno,
+            self.filename,
         )
 
     def stop_without_start(self, lineno: int, expected_start: str, stop: str) -> None:
         """warn that a region was ended without corresponding start marker"""
         LOGGER.warning(
             "mismatched coverage exclusion flags.\n"
-            f"          {stop} found on line {lineno} without corresponding {expected_start}, "
-            f"when processing {self.filename}."
+            "          %s found on line %d without corresponding %s, when processing %s.",
+            stop,
+            lineno,
+            expected_start,
+            self.filename,
         )
 
     def start_without_stop(self, lineno: int, start: str, expected_stop: str) -> None:
         """warn that a region was started but not closed"""
         LOGGER.warning(
-            f"The coverage exclusion region start flag {start}\n"
-            f"          on line {lineno} did not have corresponding {expected_stop} flag\n"
-            f"          in file {self.filename}."
+            "The coverage exclusion region start flag %s\n"
+            "          on line %d did not have corresponding %s flag\n"
+            "          in file %s.",
+            start,
+            lineno,
+            expected_stop,
+            self.filename,
         )
 
     def line_after_start(self, lineno: int, start: str, start_lineno: int) -> None:
         """warn that a region was started but an excluded line was found"""
         LOGGER.warning(
-            f"{start} found on line {lineno} in excluded region started on line {start_lineno}, "
-            f"when processing {self.filename}."
+            "%s found on line %d in excluded region started on line %d, when processing %s.",
+            start,
+            lineno,
+            start_lineno,
+            self.filename,
         )
 
 
@@ -357,6 +393,7 @@ def _find_excluded_ranges(
     exclude_lines_by_custom_patterns: list[re.Pattern[str]],
     exclude_branches_by_custom_patterns: list[re.Pattern[str]],
     filecov: FileCoverage,
+    activate_trace_logging: bool = False,
 ) -> tuple[ExclusionPredicate, ExclusionPredicate]:
     """
     Scan through all lines to find line ranges and branch ranges covered by exclusion markers.
@@ -442,9 +479,10 @@ def _find_excluded_ranges(
                 f"{header}{_EXCLUDE_FLAG}{exclude_word}{_EXCLUDE_PATTERN_SUFFIX_STOP}",
             )
 
-        LOGGER.debug(
-            f"Exclusion ranges for pattern {excl_pattern!r}: {exclude_ranges!s}"
-        )
+        if activate_trace_logging:
+            LOGGER.trace(
+                "Exclusion ranges for pattern %r: %s", excl_pattern, exclude_ranges
+            )
 
         return make_is_in_any_range_inclusive(exclude_ranges)
 

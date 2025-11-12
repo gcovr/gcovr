@@ -22,6 +22,8 @@ import json
 import os
 from glob import glob
 
+from ...filter import is_file_excluded
+
 from ...data_model import version
 from ...data_model.container import CoverageContainer
 from ...data_model.merging import get_merge_mode_from_options
@@ -48,12 +50,19 @@ def read_report(options: Options) -> CoverageContainer:
                     "\tThe specified file does not exist."
                 )
 
-            for trace_file in trace_files:
-                datafiles.add(os.path.normpath(trace_file))
+            for activate_trace_logging in trace_files:
+                datafiles.add(os.path.normpath(activate_trace_logging))
 
         merge_options = get_merge_mode_from_options(options)
         for data_source in datafiles:
-            LOGGER.debug(f"Processing file: {data_source}")
+            activate_trace_logging = not is_file_excluded(
+                "trace",
+                data_source,
+                options.trace_include_filter,
+                options.trace_exclude_filter,
+            )
+            if activate_trace_logging:
+                LOGGER.trace("Processing file: %s", data_source)
 
             if data_source.casefold().endswith(GZIP_SUFFIX):
                 with gzip.open(data_source, "rt", encoding="UTF-8") as fh:

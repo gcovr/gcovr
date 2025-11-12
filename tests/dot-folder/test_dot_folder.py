@@ -1,16 +1,12 @@
-import platform
-import typing
-
 import pytest
 
 
-if typing.TYPE_CHECKING:
-    from tests.conftest import GcovrTestExec
+from tests.conftest import IS_WINDOWS, GcovrTestExec
 
 
 @pytest.mark.skipif(
-    platform.system() == "Windows",
-    reason="Dor-folders have no special meaning on Windows and we do not want to have separate data for Windows and Darwin.",
+    IS_WINDOWS,
+    reason="Dot-folders have no special meaning on Windows and we do not want to have separate data for Windows and Darwin.",
 )
 def test(gcovr_test_exec: "GcovrTestExec") -> None:
     """Test adding a tracefile output."""

@@ -94,6 +94,7 @@ def apply_all_exclusions(
     *,
     lines: list[str],
     options: ExclusionOptions,
+    activate_trace_logging: bool = False,
 ) -> None:
     """
     Apply all available exclusion mechanisms, if they are enabled by the options.
@@ -102,7 +103,9 @@ def apply_all_exclusions(
     """
 
     if options.exclude_noncode_lines:
-        remove_noncode_lines(filecov, lines=lines)
+        remove_noncode_lines(
+            filecov, lines=lines, activate_trace_logging=activate_trace_logging
+        )
 
     if options.respect_exclusion_markers:
         apply_exclusion_markers(
@@ -112,25 +115,38 @@ def apply_all_exclusions(
             exclude_branches_by_pattern=options.exclude_branches_by_pattern,
             exclude_pattern_prefix=options.exclude_pattern_prefix,
             warn_excluded_lines_with_hits=options.warn_excluded_lines_with_hits,
+            activate_trace_logging=activate_trace_logging,
         )
 
     if options.exclude_function:
-        remove_functions(filecov, options.exclude_function)
+        remove_functions(
+            filecov,
+            options.exclude_function,
+            activate_trace_logging=activate_trace_logging,
+        )
 
     if options.exclude_throw_branches:
-        remove_throw_branches(filecov)
+        remove_throw_branches(filecov, activate_trace_logging=activate_trace_logging)
 
     if options.exclude_unreachable_branches:
-        remove_unreachable_branches(filecov, lines=lines)
+        remove_unreachable_branches(
+            filecov, lines=lines, activate_trace_logging=activate_trace_logging
+        )
 
     if options.exclude_function_lines:
-        remove_function_definition_lines(filecov)
+        remove_function_definition_lines(
+            filecov, activate_trace_logging=activate_trace_logging
+        )
 
     if options.exclude_internal_functions:
-        remove_internal_functions(filecov)
+        remove_internal_functions(
+            filecov, activate_trace_logging=activate_trace_logging
+        )
 
 
-def remove_internal_functions(filecov: FileCoverage) -> None:
+def remove_internal_functions(
+    filecov: FileCoverage, activate_trace_logging: bool
+) -> None:
     """Remove compiler-generated functions, e.g. for static initialization."""
 
     # Get all the functions first because we want to remove some of them which will else result in an error.
@@ -138,11 +154,12 @@ def remove_internal_functions(filecov: FileCoverage) -> None:
         if _function_can_be_excluded(
             functioncov.mangled_name, functioncov.demangled_name
         ):
-            LOGGER.debug(
-                "%s Removing symbol %s detected as compiler generated functions, e.g. for static initialization",
-                functioncov.location,
-                functioncov.name,
-            )
+            if activate_trace_logging:
+                LOGGER.trace(
+                    "%s Removing symbol %s detected as compiler generated functions, e.g. for static initialization",
+                    functioncov.location,
+                    functioncov.name,
+                )
             filecov.remove_function_coverage(functioncov)
 
 
@@ -155,7 +172,9 @@ def _function_can_be_excluded(*names: Optional[str]) -> bool:
     )
 
 
-def remove_function_definition_lines(filecov: FileCoverage) -> None:
+def remove_function_definition_lines(
+    filecov: FileCoverage, activate_trace_logging: bool
+) -> None:
     """Remove coverage for lines that contain a function definition."""
     # iterate over a shallow copy
     known_function_lines = set(
@@ -168,27 +187,31 @@ def remove_function_definition_lines(filecov: FileCoverage) -> None:
             linecov.lineno,
             linecov.demangled_function_name,
         ) in known_function_lines:
-            LOGGER.debug(
-                "%s Removing line of function definition",
-                linecov.location,
-            )
+            if activate_trace_logging:
+                LOGGER.trace(
+                    "%s Removing line of function definition",
+                    linecov.location,
+                )
             filecov.remove_line_coverage(linecov)
 
 
-def remove_throw_branches(filecov: FileCoverage) -> None:
+def remove_throw_branches(filecov: FileCoverage, activate_trace_logging: bool) -> None:
     """Remove branches annotated as "throw"."""
     for linecov in filecov.linecov():
         # iterate over shallow copy
         for branchcov in list(linecov.branches()):
             if branchcov.throw:
-                LOGGER.debug(
-                    "%s Removing unreachable branch detected as exception-only code",
-                    linecov.location,
-                )
+                if activate_trace_logging:
+                    LOGGER.trace(
+                        "%s Removing unreachable branch detected as exception-only code",
+                        linecov.location,
+                    )
                 linecov.remove_branch(branchcov)
 
 
-def remove_functions(filecov: FileCoverage, patterns: list[re.Pattern[str]]) -> None:
+def remove_functions(
+    filecov: FileCoverage, patterns: list[re.Pattern[str]], activate_trace_logging: bool
+) -> None:
     """Remove matching functions"""
     if filecov.functioncov():
         functions_by_line: FunctionListByLine = get_functions_by_line(filecov)
@@ -219,9 +242,12 @@ def remove_functions(filecov: FileCoverage, patterns: list[re.Pattern[str]]) -> 
                                 functions_by_line=functions_by_line,
                             )
                         break
-        LOGGER.debug(
-            f"Exclusion range for functions from CLI in {filecov.filename}: {str(exclude_ranges)}."
-        )
+            if activate_trace_logging:
+                LOGGER.trace(
+                    "Exclusion range for functions from CLI in %s: %s.",
+                    filecov.filename,
+                    str(exclude_ranges),
+                )
         exclusion_predicate: ExclusionPredicate = make_is_in_any_range_inclusive(
             exclude_ranges
         )

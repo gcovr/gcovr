@@ -77,7 +77,9 @@ class NegativeHits(Exception):
                 persistent_states["negative_hits.warn_once_per_file"] += 1
             else:
                 LOGGER.warning(
-                    f"{':'.join(str(item) for item in persistent_states['location'])} Ignoring negative hits in: {line}."
+                    "%s Ignoring negative hits in: %s.",
+                    ":".join(str(item) for item in persistent_states["location"]),
+                    line,
                 )
                 if "negative_hits.warn_once_per_file" in ignore_parse_errors:
                     persistent_states["negative_hits.warn_once_per_file"] = 1
@@ -137,7 +139,9 @@ class SuspiciousHits(Exception):
                 persistent_states["suspicious_hits.warn_once_per_file"] += 1
             else:
                 LOGGER.warning(
-                    f"Ignoring suspicious hits in {':'.join(str(item) for item in persistent_states['location'])}: {line}."
+                    "Ignoring suspicious hits in %s: %s.",
+                    ":".join(str(item) for item in persistent_states["location"]),
+                    line,
                 )
                 if "suspicious_hits.warn_once_per_file" in ignore_parse_errors:
                     persistent_states["suspicious_hits.warn_once_per_file"] = 1

@@ -221,7 +221,7 @@ class HtmlHandler(BaseHandler):
 
     def validate_options(self) -> None:
         if self.options.html_tab_size < 1:
-            raise RuntimeError("value of --html-tab-size= should be greater 0.")
+            raise RuntimeError("Value of --html-tab-size should be greater 0.")
 
         if self.options.html_details and self.options.html_nested:
             raise RuntimeError(

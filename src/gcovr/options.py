@@ -100,9 +100,11 @@ class FilterOption:
             r"\\\\|\\(?=[^\WabfnrtuUvx0-9AbBdDsSwWZ])", "/", self.regex
         )
         if bs_count:
-            LOGGER.warning("filters must use forward slashes as path separators")
-            LOGGER.warning(f"your filter : {self.regex}")
-            LOGGER.warning(f"did you mean: {suggestion}")
+            LOGGER.warning(
+                "Filters must use forward slashes as path separators, your filter >>%s<<.",
+                self.regex,
+            )
+            LOGGER.warning("Did you mean >>%s<<?", suggestion)
 
         if self.regex.startswith("/") or (
             (platform.system() == "Windows") and re.match(r"^[A-Za-z]:/", self.regex)
@@ -256,7 +258,10 @@ class GcovrDeprecatedConfigOptionAction(GcovrConfigOptionAction):
     ) -> None:
         """Used by argparse to store the values."""
         LOGGER.warning(
-            f"Deprecated option {option_string} used, please use '{self.option} {self.value}' instead."
+            "Deprecated option %s used, please use '%s %s' instead.",
+            option_string,
+            self.option,
+            self.value,
         )
         setattr(namespace, self.dest, self.value)
 
@@ -265,7 +270,10 @@ class GcovrDeprecatedConfigOptionAction(GcovrConfigOptionAction):
     ) -> None:
         if config is not None:
             LOGGER.warning(
-                f"Deprecated config key {config} used, please use '{self.config}={self.value}' instead."
+                "Deprecated config key %s used, please use '%s=%s' instead.",
+                config,
+                self.config,
+                self.value,
             )
         namespace[self.dest] = values
 

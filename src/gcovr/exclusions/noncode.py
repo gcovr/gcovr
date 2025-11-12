@@ -31,7 +31,9 @@ _C_STYLE_COMMENT_PATTERN = re.compile(r"/\*.*?\*/")
 _CPP_STYLE_COMMENT_PATTERN = re.compile(r"//.*?$")
 
 
-def remove_unreachable_branches(filecov: FileCoverage, *, lines: list[str]) -> None:
+def remove_unreachable_branches(
+    filecov: FileCoverage, *, lines: list[str], activate_trace_logging: bool
+) -> None:
     """Remove branches on lines that look like they don't contain useful code."""
     for linecov in filecov.linecov():
         if not linecov.has_reportable_branches:
@@ -40,11 +42,11 @@ def remove_unreachable_branches(filecov: FileCoverage, *, lines: list[str]) -> N
         if _line_can_contain_branches(lines[linecov.lineno - 1]):
             continue
 
-        LOGGER.debug(
-            "%s Removing unreachable branch detected as compiler-generated code",
-            linecov.location,
-        )
-
+        if activate_trace_logging:
+            LOGGER.trace(
+                "%s Removing unreachable branch detected as compiler-generated code",
+                linecov.location,
+            )
         linecov.clear_branches()
 
 
@@ -64,16 +66,19 @@ def _line_can_contain_branches(code: str) -> bool:
     return code not in ["", "{", "}", "{}"]
 
 
-def remove_noncode_lines(filecov: FileCoverage, *, lines: list[str]) -> None:
+def remove_noncode_lines(
+    filecov: FileCoverage, *, lines: list[str], activate_trace_logging: bool
+) -> None:
     """Remove lines that look like non-code."""
     # iterate over a shallow copy
     for linecov in list(filecov.linecov()):
         source_code = lines[linecov.lineno - 1]
         if linecov.count == 0 and _is_non_code(source_code):
-            LOGGER.debug(
-                "%s Removing line detected as non code",
-                linecov.location,
-            )
+            if activate_trace_logging:
+                LOGGER.trace(
+                    "%s Removing line detected as non code",
+                    linecov.location,
+                )
             filecov.remove_line_coverage(linecov)
 
 

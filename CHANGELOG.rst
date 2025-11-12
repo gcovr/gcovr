@@ -36,6 +36,7 @@ Bug fixes and small improvements:
 - Improve logging messages for GCOV execution errors to not print information twice and add trace
   messages for gcov execution. (:issue:`1187`)
 - Fix handling of lines after function specialization. (:issue:`1189`)
+- Improve performance by changing logging messages (level and lazy interpolation). (:issue:`1191`)
 
 Documentation:
 

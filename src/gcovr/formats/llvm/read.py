@@ -78,7 +78,14 @@ def read_report(options: Options) -> CoverageContainer:
 
     merge_options = get_merge_mode_from_options(options)
     for profraw_file in profraw_files:
-        LOGGER.debug(f"Processing file: {profraw_file}")
+        activate_trace_logging = not is_file_excluded(
+            "trace",
+            profraw_file,
+            options.trace_include_filter,
+            options.trace_exclude_filter,
+        )
+        if activate_trace_logging:
+            LOGGER.trace("Processing file: %s", profraw_file)
         llvm_json_data = _llvm_profraw_to_json(options, profraw_file)
 
         if (current_type := llvm_json_data.get("type")) != EXPECTED_TYPE:
@@ -115,7 +122,14 @@ def read_report(options: Options) -> CoverageContainer:
             filecov.filename,
             max(linecov_collection.lineno for linecov_collection in filecov.lines()),
         )
-        LOGGER.debug(f"Apply exclusions for {filecov.filename}")
+        activate_trace_logging = not is_file_excluded(
+            "trace",
+            filecov.filename,
+            options.trace_include_filter,
+            options.trace_exclude_filter,
+        )
+        if activate_trace_logging:
+            LOGGER.trace("Apply exclusions for %s", filecov.filename)
         apply_all_exclusions(
             filecov,
             lines=source_lines,
@@ -145,11 +159,11 @@ def find_datafiles(
     """
     if os.path.isfile(search_path):
         LOGGER.debug(
-            f"Using given {os.path.splitext(search_path)[1][1:]} file {search_path}"
+            "Using given %s file %s", os.path.splitext(search_path)[1][1:], search_path
         )
         files = [search_path]
     else:
-        LOGGER.debug(f"Scanning directory {search_path} for profraw files...")
+        LOGGER.debug("Scanning directory %s for profraw files...", search_path)
         files = list(
             search_file(
                 lambda fname: re.compile(r".*\.profraw$").match(fname) is not None,
@@ -157,7 +171,7 @@ def find_datafiles(
                 exclude_directory=exclude_directory,
             )
         )
-    LOGGER.debug(f"Found {len(files)} files")
+    LOGGER.debug("Found %d files", len(files))
     return files
 
 
@@ -167,16 +181,16 @@ def _llvm_profraw_to_json(options: Options, profraw: str) -> dict[str, Any]:
     env["LC_ALL"] = "C"
     env["LANGUAGE"] = "en_US"
 
-    trace = not is_file_excluded(
-        profraw, options.trace_include_filter, options.trace_exclude_filter
+    activate_trace_logging = not is_file_excluded(
+        "trace", profraw, options.trace_include_filter, options.trace_exclude_filter
     )
 
     def run_cmd(cmd: list[str]) -> tuple[str, str]:
         """Run the given command."""
 
         tool = cmd[0]
-        if trace:
-            LOGGER.trace(f"Running {tool}: {shlex.join(cmd)}")
+        if activate_trace_logging:
+            LOGGER.trace("Running %s: %s", tool, shlex.join(cmd))
         with subprocess.Popen(  # nosec # We know that we execute llvm-profdata tool
             cmd,
             env=env,
@@ -186,9 +200,9 @@ def _llvm_profraw_to_json(options: Options, profraw: str) -> dict[str, Any]:
         ) as process:
             out, err = process.communicate()
             if process.returncode == 0:
-                if trace:
-                    LOGGER.trace(f"STDERR >>{err}<< End of STDERR")
-                    LOGGER.trace(f"STDOUT >>{out}<< End of STDOUT")
+                if activate_trace_logging:
+                    LOGGER.trace("STDERR >>%s<< End of STDERR", err)
+                    LOGGER.trace("STDOUT >>%s<< End of STDOUT", out)
             else:
                 raise RuntimeError(
                     f"{tool} returncode was {process.returncode}{' (exited by signal)' if process.returncode < 0 else ''}.\n"
@@ -247,13 +261,21 @@ def read_json(
             for entry in data[key]
         ):
             LOGGER.warning(
-                f"{data_source}: Found 'mcdc_records' in exported JSON report. This is ignored by GCOVR."
+                "%s: Found 'mcdc_records' in exported JSON report. This is ignored by GCOVR.",
+                data_source,
             )
         read_json_files(data_source, data, options, merge_options, covdata, version)
         read_json_functions(data_source, data, options, merge_options, covdata)
 
     for filecov in covdata.values():
-        LOGGER.debug(f"Apply exclusions for {filecov.filename}")
+        activate_trace_logging = not is_file_excluded(
+            "trace",
+            filecov.filename,
+            options.trace_include_filter,
+            options.trace_exclude_filter,
+        )
+        if activate_trace_logging:
+            LOGGER.trace("Apply exclusions for %s", filecov.filename)
         apply_all_exclusions(
             filecov,
             lines=[],
@@ -273,15 +295,12 @@ def read_json_files(
 ) -> None:
     """Read the files from clang JSON coverage report."""
     file_data: dict[str, Any]
-    exclusion_cache = dict[str, bool]()
     branches_found = False
     for file_data in json_data["files"]:
         filename = file_data["filename"]
-        if filename not in exclusion_cache:
-            exclusion_cache[filename] = is_file_excluded(
-                filename, options.include_filter, options.exclude_filter
-            )
-        if exclusion_cache[filename]:
+        if is_file_excluded(
+            "source file", filename, options.include_filter, options.exclude_filter
+        ):
             continue
         filecov = FileCoverage(data_source, filename=filename)
         segments_by_line = dict[int, list[Segment]]()
@@ -358,14 +377,11 @@ def read_json_functions(
 ) -> None:
     """Read the functions from clang JSON coverage report."""
     function_data: dict[str, Any]
-    exclusion_cache = dict[str, bool]()
     for function_data in json_data["functions"]:
         filenames: list[str] = function_data["filenames"]
-        if filenames[0] not in exclusion_cache:
-            exclusion_cache[filenames[0]] = is_file_excluded(
-                filenames[0], options.include_filter, options.exclude_filter
-            )
-        if exclusion_cache[filenames[0]]:
+        if is_file_excluded(
+            "source file", filenames[0], options.include_filter, options.exclude_filter
+        ):
             continue
 
         filecov = FileCoverage(data_source, filename=filenames[0])

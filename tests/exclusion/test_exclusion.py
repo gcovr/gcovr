@@ -412,6 +412,7 @@ def test_exclude_branch_source(  # type: ignore[no-untyped-def]
         "--verbose",
         "--json-pretty",
         "--json=coverage.json",
+        "--trace-include=.*main.cpp",
     )
     gcovr_test_exec.compare_json()
 
@@ -510,6 +511,7 @@ def test_exclude_branch_without_hit(  # type: ignore[no-untyped-def]
         "--verbose",
         "--json-pretty",
         "--json=coverage.json",
+        "--trace-include=.*main.cpp",
     )
     gcovr_test_exec.compare_json()
 
