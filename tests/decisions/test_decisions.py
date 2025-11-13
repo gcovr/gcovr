@@ -58,6 +58,18 @@ def test_decisions(gcovr_test_exec: "GcovrTestExec") -> None:
     (gcovr_test_exec.output_dir / "coverage_summary.txt").write_text(
         process.stdout, encoding="utf-8"
     )
+
+    process = gcovr_test_exec.gcovr(
+        "--verbose",
+        "--json-add-tracefile=coverage.json.gz",
+        "--txt-report-covered",
+        "--txt-metric=decision",
+        "--txt-summary",
+        "--txt=coverage_uncovered.txt",
+    )
+    (gcovr_test_exec.output_dir / "coverage_uncovered_summary.txt").write_text(
+        process.stdout, encoding="utf-8"
+    )
     gcovr_test_exec.compare_txt()
 
 

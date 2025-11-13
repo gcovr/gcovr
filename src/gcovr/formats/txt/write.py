@@ -28,7 +28,7 @@ from ...utils import force_unix_separator, open_text_for_writing
 # Widths of the various columns
 COL_FILE_WIDTH = 40
 COL_TOTAL_COUNT_WIDTH = 8
-COL_COVERED_COUNT_WIDTH = 8
+COL_COVERED_COUNT_WIDTH = 9
 COL_PERCENTAGE_WIDTH = 7  # including "%" percentage sign
 UN_COVERED_SEPARATOR = "   "
 LINE_WIDTH = 78
@@ -222,7 +222,7 @@ def _covered_branches_str(filecov: FileCoverage) -> str:
 def _covered_decisions_str(filecov: FileCoverage) -> str:
     covered_decisions = sorted(
         linecov.lineno
-        for linecov in filecov.linecov
+        for linecov in filecov.linecov()
         if not linecov.has_uncovered_decision
     )
     return ",".join(str(lineno) for lineno in covered_decisions)

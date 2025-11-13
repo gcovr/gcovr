@@ -2,19 +2,19 @@
                            GCC Code Coverage Report
 Directory: .
 ------------------------------------------------------------------------------
-File                                       Lines    Exec  Cover   Missing
+File                                       Lines     Exec  Cover   Missing
 ------------------------------------------------------------------------------
-source/fn_00.cpp                               3       3   100%
-source/fn_01.cpp                               3       3   100%
-source/fn_02.cpp                               3       3   100%
-source/fn_03.cpp                               3       3   100%
-source/fn_04.cpp                               3       3   100%
-source/fn_05.cpp                               3       0     0%   2-4
-source/fn_06.cpp                               3       0     0%   2-4
-source/fn_07.cpp                               3       0     0%   2-4
-source/fn_08.cpp                               3       0     0%   2-4
-source/fn_09.cpp                               3       0     0%   2-4
-source/main.cpp                                8       8   100%
+source/fn_00.cpp                               3        3   100%
+source/fn_01.cpp                               3        3   100%
+source/fn_02.cpp                               3        3   100%
+source/fn_03.cpp                               3        3   100%
+source/fn_04.cpp                               3        3   100%
+source/fn_05.cpp                               3        0     0%   2-4
+source/fn_06.cpp                               3        0     0%   2-4
+source/fn_07.cpp                               3        0     0%   2-4
+source/fn_08.cpp                               3        0     0%   2-4
+source/fn_09.cpp                               3        0     0%   2-4
+source/main.cpp                                8        8   100%
 ------------------------------------------------------------------------------
-TOTAL                                         38      23    60%
+TOTAL                                         38       23    60%
 ------------------------------------------------------------------------------
