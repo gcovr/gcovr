@@ -2196,7 +2196,7 @@ class FunctionCoverage(CoverageBase):
 class FileCoverage(CoverageBase):
     """Represent coverage information about a file."""
 
-    __slots__ = "filename", "__functions", "__lines"
+    __slots__ = "filename", "__functions", "__lines", "__linecov_by_function"
 
     def __init__(
         self,
@@ -2208,6 +2208,7 @@ class FileCoverage(CoverageBase):
         self.filename: str = filename
         self.__functions = CoverageDict[FunctioncovKeyType, FunctionCoverage]()
         self.__lines = CoverageDict[LinecovCollectionKeyType, LineCoverageCollection]()
+        self.__linecov_by_function = CoverageDict[str, list[LineCoverage]]()
 
     def serialize(self, options: Options) -> dict[str, Any]:
         """Serialize the object."""
@@ -2284,7 +2285,6 @@ class FileCoverage(CoverageBase):
             FunctionCoverage.deserialize(
                 filecov, merge_options, get_data_sources, data_dict_function
             )
-
         return filecov
 
     def merge(
@@ -2432,7 +2432,7 @@ class FileCoverage(CoverageBase):
             self.__lines[key] = linecov_collection
             self.__lines[key].parent = self
 
-        return self.__lines[key].insert_line_coverage(
+        linecov = self.__lines[key].insert_line_coverage(
             data_sources,
             options,
             count=count,
@@ -2440,10 +2440,22 @@ class FileCoverage(CoverageBase):
             block_ids=block_ids,
             excluded=excluded,
         )
+        if function_name is not None:
+            if function_name not in self.__linecov_by_function:
+                self.__linecov_by_function[function_name] = list[LineCoverage]()
+            self.__linecov_by_function[function_name].append(linecov)
+
+        return linecov
 
     def remove_line_coverage(self, linecov: LineCoverage) -> None:
         """Remove line coverage objects."""
         self.__lines[linecov.parent.key].remove_line_coverage(linecov)
+        if linecov.function_name is not None:
+            self.__linecov_by_function[linecov.function_name] = [
+                current_linecov
+                for current_linecov in self.__linecov_by_function[linecov.function_name]
+                if current_linecov != linecov
+            ]
 
     def insert_function_coverage(
         self,
@@ -2478,12 +2490,13 @@ class FileCoverage(CoverageBase):
         else:
             self.__functions[key] = functioncov
             self.__functions[key].parent = self
-        for linecov_collection in self.lines():
-            for linecov in linecov_collection.linecov():
-                if functioncov.mangled_name is not None and (
-                    functioncov.mangled_name == linecov.function_name
-                ):
-                    linecov.demangled_function_name = functioncov.demangled_name
+        if (
+            functioncov.demangled_name is not None
+            and functioncov.mangled_name is not None
+            and functioncov.mangled_name in self.__linecov_by_function
+        ):
+            for linecov in self.__linecov_by_function[functioncov.mangled_name]:
+                linecov.demangled_function_name = functioncov.demangled_name
 
         return functioncov
 
