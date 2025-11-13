@@ -72,7 +72,6 @@ from typing import (
     Any,
     Callable,
     Iterable,
-    Iterator,
     NoReturn,
     Optional,
     TypeVar,
@@ -1181,20 +1180,20 @@ class LineCoverage(CoverageBase):
                 "count": self.count,
                 "branches": [
                     branchcov.serialize(get_data_sources)
-                    for branchcov in self.branches()
+                    for branchcov in self.branches(sort=True)
                 ],
             }
         )
         if self.__conditions:
             data_dict["conditions"] = [
                 conditioncov.serialize(get_data_sources)
-                for _, conditioncov in sorted(self.__conditions.items())
+                for conditioncov in self.conditions(sort=True)
             ]
         if self.decision is not None:
             data_dict["gcovr/decision"] = self.decision.serialize(get_data_sources)
         if len(self.__calls) > 0:
             data_dict["calls"] = [
-                callcov.serialize(get_data_sources) for callcov in self.calls()
+                callcov.serialize(get_data_sources) for callcov in self.calls(sort=True)
             ]
         if self.md5:
             data_dict["gcovr/md5"] = self.md5
@@ -1475,15 +1474,18 @@ class LineCoverage(CoverageBase):
             for branchcov in self.branches()
         )
 
-    def branches(self) -> Iterable[BranchCoverage]:
+    def branches(self, *, sort: bool = False) -> Iterable[BranchCoverage]:
         """Iterate over the branches."""
-        yield from [
-            v
-            for _, v in sorted(
-                self.__branches.items(),
-                key=lambda kv: tuple(x if x is not None else -1 for x in kv[0]),
+        if sort:
+            yield from sorted(
+                self.__branches.values(),
+                key=lambda branchcov: tuple(
+                    -1 if x is None else x for x in branchcov.key
+                ),
             )
-        ]
+
+        else:
+            yield from self.__branches.values()
 
     @property
     def has_reportable_conditions(self) -> bool:
@@ -1498,9 +1500,12 @@ class LineCoverage(CoverageBase):
             for conditioncov in self.conditions()
         )
 
-    def conditions(self) -> Iterable[ConditionCoverage]:
+    def conditions(self, *, sort: bool = False) -> Iterable[ConditionCoverage]:
         """Iterate over the conditions."""
-        yield from [v for _, v in sorted(self.__conditions.items())]
+        if sort:
+            yield from [v for _, v in sorted(self.__conditions.items())]
+        else:
+            yield from self.__conditions.values()
 
     @property
     def has_uncovered_decision(self) -> bool:
@@ -1515,15 +1520,15 @@ class LineCoverage(CoverageBase):
         """Test if there are reportable calls."""
         return any(callcov.is_reportable for callcov in self.calls())
 
-    def calls(self) -> Iterable[CallCoverage]:
+    def calls(self, *, sort: bool = False) -> Iterable[CallCoverage]:
         """Iterate over the calls."""
-        yield from [
-            v
-            for _, v in sorted(
-                self.__calls.items(),
-                key=lambda kv: tuple(x if x is not None else -1 for x in kv[0]),
+        if sort:
+            yield from sorted(
+                self.__calls.values(),
+                key=lambda callcov: tuple(-1 if x is None else x for x in callcov.key),
             )
-        ]
+        else:
+            yield from self.__calls.values()
 
     def exclude(self) -> None:
         """Exclude line from coverage statistic."""
@@ -1646,27 +1651,30 @@ class LineCoverageCollection(CoverageBase):
     def __len__(self) -> int:
         return len(self.__linecov)
 
-    def __iter__(self) -> Iterator[LineCoverage]:
-        return iter(self.__linecov.values())
-
-    def linecov(self) -> Iterable[LineCoverage]:
+    def linecov(self, *, sort: bool = False) -> Iterable[LineCoverage]:
         """Iterate over the lines."""
-        for _, linecov in sorted(self.__linecov.items()):
-            yield linecov
+        if sort:
+            yield from [linecov for _, linecov in sorted(self.__linecov.items())]
+        else:
+            yield from self.__linecov.values()
 
-    def raw_linecov(self) -> Iterable[LineCoverage]:
+    def raw_linecov(self, *, sort: bool = False) -> Iterable[LineCoverage]:
         """Iterate over the lines."""
         if self.__raw_linecov:
-            for _, linecov in sorted(self.__raw_linecov.items()):
-                yield linecov
+            if sort:
+                yield from [
+                    linecov for _, linecov in sorted(self.__raw_linecov.items())
+                ]
+            else:
+                yield from self.__raw_linecov.values()
         else:
-            yield from self.linecov()
+            yield from self.linecov(sort=sort)
 
     def merge_lines(self) -> None:
         """Merge line coverage if there are several items for same line."""
         if len(self) > 1:
             # Remember the line coverage objects and clear the dictionary
-            separate_linecov = list(self)
+            separate_linecov = list(self.linecov())
             self.__linecov.clear()
             # Merge the information, needed for line coverage
             data_sources = set[tuple[str, ...]]()
@@ -2069,7 +2077,7 @@ class FunctionCoverage(CoverageBase):
 
         # keep distinct counts for each line number
         if options.func_opts.separate_function:
-            for lineno, count in sorted(other.count.items()):
+            for lineno, count in other.count.items():
                 try:
                     self.count[lineno] += count
                 except KeyError:
@@ -2145,7 +2153,7 @@ class FunctionCoverage(CoverageBase):
     @property
     def location(self) -> Optional[str]:
         """Get the source location of the coverage data."""
-        lines = list(sorted(self.count.keys()))
+        lines = sorted(self.count.keys())
         lines_as_string = str(lines.pop(0))
         if lines:
             lines_as_string += f" ({', '.join(str(line) for line in lines)})"
@@ -2229,11 +2237,12 @@ class FileCoverage(CoverageBase):
         data_dict = {
             "file": filename,
             "lines": [
-                linecov.serialize(get_data_sources) for linecov in self.raw_linecov()
+                linecov.serialize(get_data_sources)
+                for linecov in self.raw_linecov(sort=True)
             ],
             "functions": [
                 f
-                for function in self.functioncov()
+                for function in self.functioncov(sort=True)
                 for f in function.serialize(get_data_sources)
             ],
         }
@@ -2315,13 +2324,29 @@ class FileCoverage(CoverageBase):
         """Mangle a filename so that it is suitable for a report."""
         return _presentable_filename(self.filename, root_filter)
 
-    def functioncov(self) -> Iterable[FunctionCoverage]:
+    def functioncov(
+        self,
+        *,
+        sort: bool = False,
+        key: Optional[Callable[[FunctionCoverage], Any]] = None,
+    ) -> Iterable[FunctionCoverage]:
         """Iterate over the function coverage object."""
-        yield from sorted(
-            self.__functions.values(),
-            # Sort functions always by lowest line number
-            key=lambda functioncov: (min(functioncov.count.keys()), functioncov.name),
-        )
+        if sort or key:
+            if key is None:
+
+                def key_func(functioncov: FunctionCoverage) -> Any:
+                    return (
+                        min(functioncov.count.keys()),
+                        functioncov.name,
+                    )
+            else:
+
+                def key_func(functioncov: FunctionCoverage) -> Any:
+                    return key(functioncov)
+
+            yield from sorted(self.__functions.values(), key=key_func)
+        else:
+            yield from self.__functions.values()
 
     def get_functioncov(self, name: str) -> Optional[FunctionCoverage]:
         """Get the function coverage object of a function."""
@@ -2331,11 +2356,15 @@ class FileCoverage(CoverageBase):
         """Test if there are line coverage collections."""
         return bool(self.__lines)
 
-    def lines(self) -> Iterable[LineCoverageCollection]:
+    def lines(self, *, sort: bool = False) -> Iterable[LineCoverageCollection]:
         """Iterate over the line coverage collection objects."""
-        yield from [
-            linecov_collection for _, linecov_collection in sorted(self.__lines.items())
-        ]
+        if sort:
+            yield from [
+                linecov_collection
+                for _, linecov_collection in sorted(self.__lines.items())
+            ]
+        else:
+            yield from self.__lines.values()
 
     def get_line(self, lineno: int) -> Optional[LineCoverageCollection]:
         """Get the line coverage collection of the given line."""
@@ -2358,15 +2387,15 @@ class FileCoverage(CoverageBase):
         """Test if there are line coverage objects available."""
         return any(linecov_collection for linecov_collection in self.lines())
 
-    def linecov(self) -> Iterable[LineCoverage]:
+    def linecov(self, *, sort: bool = False) -> Iterable[LineCoverage]:
         """Iterate over the line coverage objects."""
-        for linecov_collection in self.lines():
-            yield from linecov_collection
+        for linecov_collection in self.lines(sort=sort):
+            yield from linecov_collection.linecov(sort=sort)
 
-    def raw_linecov(self) -> Iterable[LineCoverage]:
+    def raw_linecov(self, *, sort: bool = False) -> Iterable[LineCoverage]:
         """Iterate over the line coverage objects."""
-        for linecov_collection in self.lines():
-            yield from linecov_collection.raw_linecov()
+        for linecov_collection in self.lines(sort=sort):
+            yield from linecov_collection.raw_linecov(sort=sort)
 
     @property
     def stats(self) -> SummarizedStats:

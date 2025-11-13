@@ -46,7 +46,7 @@ def write_report(
         file_node = etree.Element("file")
         file_node.set("path", filename)
 
-        for linecov in filecov.linecov():
+        for linecov in filecov.linecov(sort=True):
             if linecov.is_reportable:
                 line_node = etree.Element("lineToCover")
                 line_node.set("lineNumber", str(linecov.lineno))

@@ -73,7 +73,7 @@ def write_report(
         # The Cobertura DTD requires a methods section, which isn't
         # trivial to get from gcov (so we will leave it blank)
         methods_elem = etree.SubElement(class_elem, "methods")
-        for functioncov in filecov.functioncov():
+        for functioncov in filecov.functioncov(sort=True):
             filtered_filecov = filecov.filter_for_function(functioncov)
             function_stats = filtered_filecov.stats
             name, signature = functioncov.name_and_signature
@@ -84,13 +84,13 @@ def write_report(
             method_elem.set("branch-rate", _rate(function_stats.branch))
             method_elem.set("complexity", "0.0")
             lines_elem = etree.SubElement(method_elem, "lines")
-            for linecov in filtered_filecov.linecov():
+            for linecov in filtered_filecov.linecov(sort=True):
                 if linecov.is_reportable:
                     lines_elem.append(_line_element(linecov))
 
         lines_elem = etree.SubElement(class_elem, "lines")
 
-        for linecov in filecov.linecov():
+        for linecov in filecov.linecov(sort=True):
             if linecov.is_reportable:
                 lines_elem.append(_line_element(linecov))
 
@@ -106,12 +106,11 @@ def write_report(
         package_data.classes_xml[class_name] = class_elem
         package_data.stats += stats
 
-    for package_name in sorted(packages):
-        package_data = packages[package_name]
+    for package_name, package_data in sorted(packages.items()):
         package_elem = etree.SubElement(packages_elem, "package")
         classes_elem = etree.SubElement(package_elem, "classes")
-        for class_name in sorted(package_data.classes_xml):
-            classes_elem.append(package_data.classes_xml[class_name])
+        for _, class_data in sorted(package_data.classes_xml.items()):
+            classes_elem.append(class_data)
         package_elem.set("name", package_name.replace("/", "."))
         package_elem.set("line-rate", _rate(package_data.stats.line))
         package_elem.set("branch-rate", _rate(package_data.stats.branch))

@@ -198,7 +198,7 @@ def _make_source_file(filecov: FileCoverage, options: Options) -> dict[str, Any]
     branches = list[Optional[int]]()
     source_file["coverage"] = coverage
     # source_file['branches'] = []
-    for linecov_collection in filecov.lines():
+    for linecov_collection in filecov.lines(sort=True):
         # Comment lines are not collected in `covdata`, but must
         # be reported to coveralls (fill missing lines)
         _extend_with_none(coverage, linecov_collection.lineno - 1)
@@ -206,17 +206,19 @@ def _make_source_file(filecov: FileCoverage, options: Options) -> dict[str, Any]
             coverage.append(
                 sum(
                     linecov.count
-                    for linecov in linecov_collection
+                    for linecov in linecov_collection.linecov()
                     if linecov.is_reportable
                 )
             )
         else:
             coverage.append(None)
 
-        for linecov in linecov_collection.linecov():
+        for linecov in linecov_collection.linecov(sort=True):
             # Record branch information (INCOMPLETE/OMITTED)
             for branchno, branchcov in enumerate(
-                branchcov for branchcov in linecov.branches() if branchcov.is_reportable
+                branchcov
+                for branchcov in linecov.branches(sort=True)
+                if branchcov.is_reportable
             ):
                 branches.append(linecov.lineno)
                 branches.append(branchcov.source_block_id_or_0)

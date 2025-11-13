@@ -37,7 +37,7 @@ def write_report(
     """produce gcovr csv report"""
 
     with open_text_for_writing(output_file, "coverage.lcov") as fh:
-        keys = covdata.sort_coverage(
+        sorted_keys = covdata.sort_coverage(
             sort_key=options.sort_key,
             sort_reverse=options.sort_reverse,
             by_metric="branch" if options.sort_branches else "line",
@@ -51,7 +51,7 @@ def write_report(
         def postfix() -> str:
             return f"_{lineno}" if len(linenos) > 1 else ""
 
-        for key in keys:
+        for key in sorted_keys:
             filecov = covdata[key]
             filename = force_unix_separator(filecov.filename)
 
@@ -68,7 +68,7 @@ def write_report(
 
             functions = 0
             function_hits = 0
-            for functioncov in filecov.functioncov():
+            for functioncov in filecov.functioncov(sort=True):
                 linenos = list(functioncov.count)
                 functions += len(linenos)
 
@@ -87,11 +87,11 @@ def write_report(
 
             branches = 0
             branch_hits = 0
-            for linecov in filecov.linecov():
+            for linecov in filecov.linecov(sort=True):
                 if linecov.is_reportable:
                     for branchno, branchcov in enumerate(
                         branchcov
-                        for branchcov in linecov.branches()
+                        for branchcov in linecov.branches(sort=True)
                         if branchcov.is_reportable
                     ):
                         branches += 1
@@ -108,7 +108,7 @@ def write_report(
             fh.write(f"BRH:{branch_hits}\n")
 
             lines_covered = 0
-            for linecov in filecov.linecov():
+            for linecov in filecov.linecov(sort=True):
                 if linecov.is_reportable:
                     if linecov.count:
                         lines_covered += 1

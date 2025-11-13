@@ -152,7 +152,7 @@ def _process_exclude_branch_source(
                         location,
                     )
                 else:
-                    for linecov in linecovs:
+                    for linecov in linecovs.linecov():
                         if linecov.function_name is None or linecov.block_ids is None:
                             LOGGER.warning(
                                 "Source branch exclusion at %s needs at least gcc-14 with supported JSON format.",
@@ -220,7 +220,7 @@ def _process_exclude_branch_with_no_hit(
                         location,
                     )
                 else:
-                    for linecov in linecovs:
+                    for linecov in linecovs.linecov():
                         stats = linecov.branch_coverage()
                         expected_uncovered = stats.total - stats.covered
                         if (
