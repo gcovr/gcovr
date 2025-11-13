@@ -136,7 +136,7 @@ class CoverageBase:
         if isinstance(data_sources, str):
             self.data_sources = set[tuple[str, ...]]([(data_sources,)])
         else:
-            self.data_sources = data_sources
+            self.data_sources = data_sources.copy()
 
     def merge_base_data(
         self,
@@ -1280,6 +1280,7 @@ class LineCoverage(CoverageBase):
         self.__conditions.merge(other.__conditions, options)
         self.__merge_decision(other.decision)
         self.__calls.merge(other.__calls, options)
+        self.merge_base_data(other)
 
     def __merge_decision(  # pylint: disable=too-many-return-statements
         self,
@@ -2075,7 +2076,7 @@ class FunctionCoverage(CoverageBase):
                     other,
                 )
 
-        # keep distinct counts for each line number
+        # Keep distinct counts for each line number
         if options.func_opts.separate_function:
             for lineno, count in other.count.items():
                 try:
@@ -2104,44 +2105,44 @@ class FunctionCoverage(CoverageBase):
                     self.end = CoverageDict[int, tuple[int, int]]()
                 for lineno, end in other.end.items():
                     self.end[lineno] = end
-            return
-
-        right_lineno = list(other.count.keys())[0]
-        # merge all counts into an entry for a single line number
-        if right_lineno in self.count:
-            lineno = right_lineno
-        elif options.func_opts.merge_function_use_line_zero:
-            lineno = 0
-        elif options.func_opts.merge_function_use_line_min:
-            lineno = min(*self.count.keys(), *other.count.keys())
-        elif options.func_opts.merge_function_use_line_max:
-            lineno = max(*self.count.keys(), *other.count.keys())
+        # Merge the counters into a single line number
         else:
-            raise AssertionError("Sanity check, unknown merge mode")
+            right_lineno = list(other.count.keys())[0]
+            # merge all counts into an entry for a single line number
+            if right_lineno in self.count:
+                lineno = right_lineno
+            elif options.func_opts.merge_function_use_line_zero:
+                lineno = 0
+            elif options.func_opts.merge_function_use_line_min:
+                lineno = min(*self.count.keys(), *other.count.keys())
+            elif options.func_opts.merge_function_use_line_max:
+                lineno = max(*self.count.keys(), *other.count.keys())
+            else:
+                raise AssertionError("Sanity check, unknown merge mode")
 
-        # Overwrite data with the sum at the desired line
-        self.count = CoverageDict[int, int](
-            {lineno: sum(self.count.values()) + sum(other.count.values())}
-        )
-        # or the max value at the desired line
-        self.blocks = CoverageDict[int, float](
-            {lineno: max(*self.blocks.values(), *other.blocks.values())}
-        )
-        # or the logical or of all values
-        self.excluded = CoverageDict[int, bool](
-            {lineno: any(self.excluded.values()) or any(other.excluded.values())}
-        )
+            # Overwrite data with the sum at the desired line
+            self.count = CoverageDict[int, int](
+                {lineno: sum(self.count.values()) + sum(other.count.values())}
+            )
+            # or the max value at the desired line
+            self.blocks = CoverageDict[int, float](
+                {lineno: max(*self.blocks.values(), *other.blocks.values())}
+            )
+            # or the logical or of all values
+            self.excluded = CoverageDict[int, bool](
+                {lineno: any(self.excluded.values()) or any(other.excluded.values())}
+            )
 
-        if self.start is not None and other.start is not None:
-            # or the minimum start
-            self.start = CoverageDict[int, tuple[int, int]](
-                {lineno: min(*self.start.values(), *other.start.values())}
-            )
-        if self.end is not None and other.end is not None:
-            # or the maximum end
-            self.end = CoverageDict[int, tuple[int, int]](
-                {lineno: max(*self.end.values(), *other.end.values())}
-            )
+            if self.start is not None and other.start is not None:
+                # or the minimum start
+                self.start = CoverageDict[int, tuple[int, int]](
+                    {lineno: min(*self.start.values(), *other.start.values())}
+                )
+            if self.end is not None and other.end is not None:
+                # or the maximum end
+                self.end = CoverageDict[int, tuple[int, int]](
+                    {lineno: max(*self.end.values(), *other.end.values())}
+                )
 
         self.merge_base_data(other)
 
