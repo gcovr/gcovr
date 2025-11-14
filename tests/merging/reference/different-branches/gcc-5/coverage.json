@@ -166,14 +166,6 @@
                             "gcovr/data_sources": [
                                 [
                                     "main.gcda",
-                                    "build1/^#main.c.gcov"
-                                ],
-                                [
-                                    "main.gcda",
-                                    "build2/^#main.c.gcov"
-                                ],
-                                [
-                                    "main.gcda",
                                     "build3/^#main.c.gcov"
                                 ],
                                 [
@@ -189,14 +181,6 @@
                             "throw": false,
                             "source_block_id": 0,
                             "gcovr/data_sources": [
-                                [
-                                    "main.gcda",
-                                    "build1/^#main.c.gcov"
-                                ],
-                                [
-                                    "main.gcda",
-                                    "build2/^#main.c.gcov"
-                                ],
                                 [
                                     "main.gcda",
                                     "build3/^#main.c.gcov"

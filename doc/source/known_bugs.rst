@@ -9,6 +9,42 @@ Known bugs
 This list contains bugs for version 6.0 and newer, always check the latest
 version of this file available `here <https://gcovr.com/en/latest/known_bugs.html>`_.
 
+.. _fix_1194_1:
+
+Drastic increase of runtime with large projects
+-----------------------------------------------
+
+.. list-table::
+
+   * - Introduced
+     - :ref:`release_8_4`
+
+   * - Fixed
+     - :ref:`next_release`, :issue:`1194`
+
+The runtime of ``gcovr`` increased drastically if a project had source files with many lines and functions.
+
+- In :issue:`1193` the runtime increased from 1,3s to 350s for a file with data for
+  ~5.000 functions, ~75.000 lines of code with ~95.000 branches and ~60.000 calls.
+- In :issue:`1164` the runtime increased from ~43s to ~150s for the provided data.
+
+.. _fix_1194_2:
+
+Data source in JSON report can contain wrong information
+--------------------------------------------------------
+
+.. list-table::
+
+   * - Introduced
+     - :ref:`release_8_4`
+
+   * - Fixed
+     - :ref:`next_release`, :issue:`1194`
+
+The set used to store the data source is shared for all items of the
+input file. Merging data from another source e.g. for a line is adding
+the data source to all other locations.
+
 .. _fix_1192:
 
 `TypeError` in text report for covered decisions

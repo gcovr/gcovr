@@ -33,7 +33,7 @@ The behavior of this parser was informed by the following sources:
 
 import os
 from locale import getpreferredencoding
-from typing import Any, Optional
+from typing import Any, Iterator, Optional
 
 from gcovr.utils import get_md5_hexdigest, read_source_file
 
@@ -61,10 +61,8 @@ def parse_coverage(
     suspicious_hits_threshold: int = SUSPICIOUS_COUNTER,
     source_encoding: str = DEFAULT_SOURCE_ENCODING,
     activate_trace_logging: bool = False,
-) -> list[tuple[FileCoverage, list[str]]]:
+) -> Iterator[tuple[FileCoverage, list[str]]]:
     """Process a GCOV JSON output."""
-
-    files_coverage = list[tuple[FileCoverage, list[str]]]()
 
     # Check format version because the file can be created external
     if gcov_json_data["format_version"] != GCOV_JSON_VERSION:
@@ -95,19 +93,18 @@ def parse_coverage(
         )
         encoded_source_lines = read_source_file(source_encoding, fname, max_line_number)
 
-        filecov = _parse_file_node(
-            data_fname,
-            gcov_file_node=file,
-            filename=fname,
-            source_lines=encoded_source_lines,
-            ignore_parse_errors=ignore_parse_errors,
-            suspicious_hits_threshold=suspicious_hits_threshold,
-            activate_trace_logging=activate_trace_logging,
+        yield (
+            _parse_file_node(
+                data_fname,
+                gcov_file_node=file,
+                filename=fname,
+                source_lines=encoded_source_lines,
+                ignore_parse_errors=ignore_parse_errors,
+                suspicious_hits_threshold=suspicious_hits_threshold,
+                activate_trace_logging=activate_trace_logging,
+            ),
+            encoded_source_lines,
         )
-
-        files_coverage.append((filecov, encoded_source_lines))
-
-    return files_coverage
 
 
 def _parse_file_node(

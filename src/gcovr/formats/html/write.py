@@ -392,9 +392,9 @@ def write_report(
         data["css"] = css_data
     else:
         css_output = os.path.splitext(output_file)[0] + ".css"
-        with open_text_for_writing(css_output) as f:
-            f.write(css_data)
-            f.write("\n")
+        with open_text_for_writing(css_output) as fh_out:
+            fh_out.write(css_data)
+            fh_out.write("\n")
 
         if options.html_relative_anchors:
             css_link = os.path.basename(css_output)
@@ -422,29 +422,29 @@ def write_report(
 
     cdata_fname = dict[str, str]()
     cdata_sourcefile = dict[str, Optional[str]]()
-    for f in sorted_keys + [v.dirname for v in covdata.directories]:
-        filtered_fname = options.root_filter.sub("", f)
+    for fname in sorted_keys + [v.dirname for v in covdata.directories]:
+        filtered_fname = options.root_filter.sub("", fname)
         if filtered_fname != "":
             files.append(filtered_fname)
-        cdata_fname[f] = force_unix_separator(filtered_fname)
+        cdata_fname[fname] = force_unix_separator(filtered_fname)
         if options.html_details or options.html_nested or options.html_single_page:
-            if os.path.normpath(f) == os.path.normpath(options.root_dir):
-                cdata_sourcefile[f] = (
+            if os.path.normpath(fname) == os.path.normpath(options.root_dir):
+                cdata_sourcefile[fname] = (
                     output_file[: -len(GZIP_SUFFIX)]
                     if output_file.endswith(GZIP_SUFFIX)
                     else output_file
                 )
             else:
-                cdata_sourcefile[f] = _make_short_source_filename(
+                cdata_sourcefile[fname] = _make_short_source_filename(
                     output_file, filtered_fname.rstrip(os.sep)
                 )
-                if options.html_single_page and cdata_sourcefile[f] is not None:
+                if options.html_single_page and cdata_sourcefile[fname] is not None:
                     # Remove the prefix to get shorter links
-                    cdata_sourcefile[f] = str(cdata_sourcefile[f]).split(
+                    cdata_sourcefile[fname] = str(cdata_sourcefile[fname]).split(
                         ".", maxsplit=1
                     )[1]
         else:
-            cdata_sourcefile[f] = None
+            cdata_sourcefile[fname] = None
 
     # Define the common root directory, which may differ from options.root_dir
     # when source files share a common prefix.
@@ -527,10 +527,10 @@ def write_root_page(
 ) -> None:
     """Generate the root HTML file that contains the high level report."""
     files = []
-    for f in sorted_keys:
+    for fname in sorted_keys:
         files.append(
             get_coverage_data(
-                root_info, covdata[f], cdata_sourcefile[f], cdata_fname[f]
+                root_info, covdata[fname], cdata_sourcefile[fname], cdata_fname[fname]
             )
         )
 
@@ -557,9 +557,9 @@ def write_source_pages(
     """Write a page for each source file."""
     error_no_files_not_found = 0
     all_functions = {}
-    for fname, cdata in covdata.items():
+    for fname, filecov in sorted(covdata.items()):
         file_data, functions, file_not_found = get_file_data(
-            options, root_info, fname, cdata_fname, cdata_sourcefile, cdata
+            options, root_info, fname, cdata_fname, cdata_sourcefile, filecov
         )
         all_functions.update(functions)
         if file_not_found:
@@ -651,9 +651,9 @@ def write_single_page(
     error_no_files_not_found = 0
     files = []
     all_functions = {}
-    for filename, filecov in covdata.items():
+    for fname, filecov in sorted(covdata.items()):
         file_data, functions, file_not_found = get_file_data(
-            options, root_info, filename, cdata_fname, cdata_sourcefile, filecov
+            options, root_info, fname, cdata_fname, cdata_sourcefile, filecov
         )
         all_functions.update(functions)
         if file_not_found:
@@ -662,10 +662,10 @@ def write_single_page(
         files.append(file_data)
 
     all_files = []
-    for f in sorted_keys:
+    for fname in sorted_keys:
         all_files.append(
             get_coverage_data(
-                root_info, covdata[f], cdata_sourcefile[f], cdata_fname[f]
+                root_info, covdata[fname], cdata_sourcefile[fname], cdata_fname[fname]
             )
         )
     directories = list[dict[str, Any]]([{"entries": all_files}])
@@ -876,16 +876,14 @@ def get_file_data(
     )
     functions = dict[tuple[FunctioncovKeyType, str, int], dict[str, Any]]()
     # Only use demangled names (containing a brace)
-    for functioncov in sorted(
-        cdata.functioncov(), key=lambda functioncov: functioncov.key
-    ):
-        for lineno in sorted(functioncov.count.keys()):
+    for functioncov in cdata.functioncov(key=lambda functioncov: functioncov.key):
+        for lineno, count in sorted(functioncov.count.items()):
             f_data = dict[str, Any]()
             f_data["name"] = functioncov.name
             f_data["filename"] = cdata_fname[filename]
             f_data["html_filename"] = os.path.basename(cdata_sourcefile[filename])
             f_data["line"] = lineno
-            f_data["count"] = functioncov.count[lineno]
+            f_data["count"] = count
             f_data["blocks"] = functioncov.blocks[lineno]
             function_stats = cdata.filter_for_function(functioncov).stats
             f_data["line_coverage"] = function_stats.line.percent_or(100.0)
@@ -904,15 +902,15 @@ def get_file_data(
     def get_linecovs(lineno: int) -> Optional[list[LineCoverage]]:
         """Get a list of line coverage objects if available for the line."""
         linecovs = cdata.get_line(lineno)
-        return None if linecovs is None else list(linecovs)
+        return None if linecovs is None else list(linecovs.linecov(sort=True))
 
     with chdir(options.root_dir):
         linecov_collections = list(cdata.lines())
         max_line_from_cdata = (
             linecov_collections[-1].lineno if linecov_collections else 0
         )
+        file_not_found = True
         try:
-            file_not_found = True
             with open(
                 filename,
                 "r",
@@ -1054,7 +1052,9 @@ def source_row_branch(
     """Get branch information for a row"""
     items = list[dict[str, Any]]()
     for branchcov in [
-        branchcov for branchcov in linecov.branches() if branchcov.is_reportable
+        branchcov
+        for branchcov in linecov.branches(sort=True)
+        if branchcov.is_reportable
     ]:
         items.append(
             {
@@ -1087,7 +1087,7 @@ def source_row_condition(
 
     conditioncov_list = list(
         conditioncov
-        for conditioncov in linecov.conditions()
+        for conditioncov in linecov.conditions(sort=True)
         if conditioncov.is_reportable
     )
     for conditioncov in conditioncov_list:
@@ -1173,7 +1173,7 @@ def source_row_call(linecov: LineCoverage) -> dict[str, Any]:
     items = []
 
     for callno, callcov in enumerate(
-        filter(lambda callcov: callcov.is_reportable, linecov.calls())
+        callcov for callcov in linecov.calls(sort=True) if callcov.is_reportable
     ):
         items.append(
             {

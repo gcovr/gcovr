@@ -178,7 +178,7 @@ class CoverageContainer(ContainerBase):
 
     def merge_lines(self) -> None:
         """Merge line coverage for same line number. Remove the function information on merged lines."""
-        for _, filecov in sorted(self.items()):
+        for filecov in self.values():
             filecov.merge_lines()
 
     def merge(self, other: CoverageContainer, options: MergeOptions) -> None:

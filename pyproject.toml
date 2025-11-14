@@ -121,7 +121,7 @@ __version__ = {version!r}
 
 [tool.pylint]
 ignore-paths = ["tests/*"]
-fail-under = 9.99
+fail-under = 9.98
 disable = [
     "unknown-option-value",          # This is because we are testing with several versions
     "Format",

@@ -71,7 +71,7 @@ def write_report(
 
         statements = 0
         covered_statements = 0
-        for linecov in filecov.linecov():
+        for linecov in filecov.linecov(sort=True):
             if linecov.is_reportable:
                 statements += 1
                 if linecov.is_covered:
@@ -108,9 +108,9 @@ def write_report(
     project_metrics.set("statements", str(project_data.statements))
     project_metrics.set("coveredstatements", str(project_data.covered_statements))
 
-    for package_name in sorted(packages):
-        package_data = packages[package_name]
+    for package_name, package_data in sorted(packages.items()):
         package_elem = etree.SubElement(project_elem, "package")
+        package_elem.set("name", package_name.replace("/", "."))
         package_metrics = _metrics_element()
         package_elem.append(package_metrics)
         number_files = str(len(package_data.files_xml))
@@ -120,9 +120,8 @@ def write_report(
         package_metrics.set("coveredelements", str(package_data.covered_statements))
         package_metrics.set("statements", str(package_data.statements))
         package_metrics.set("coveredstatements", str(package_data.covered_statements))
-        for fname in sorted(package_data.files_xml):
-            package_elem.append(package_data.files_xml[fname])
-        package_elem.set("name", package_name.replace("/", "."))
+        for _, file_data in sorted(package_data.files_xml.items()):
+            package_elem.append(file_data)
 
     # WTH is this needed???
     testproject_elem = etree.SubElement(root_elem, "testproject")

@@ -54,7 +54,7 @@ def write_report(
         source_elem = etree.Element("sourcefile")
         source_elem.set("name", fname)
 
-        for linecov in filecov.linecov():
+        for linecov in filecov.linecov(sort=True):
             line_elem = etree.SubElement(source_elem, "line")
             line_elem.set("nr", str(linecov.lineno))
             if linecov.is_reportable:
@@ -69,12 +69,11 @@ def write_report(
         package_data.sources[fname] = source_elem
         package_data.stats += filecov_stats
 
-    for package_name in sorted(packages):
-        package_data = packages[package_name]
+    for package_name, package_data in sorted(packages.items()):
         package_elem = etree.SubElement(root_elem, "package")
         package_elem.set("name", package_name.replace("/", "."))
-        for source in sorted(package_data.sources):
-            package_elem.append(package_data.sources[source])
+        for _, source_data in sorted(package_data.sources.items()):
+            package_elem.append(source_data)
         add_counters(package_elem, package_data.stats)
 
     add_counters(root_elem, covdata.stats)
