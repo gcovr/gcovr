@@ -22,7 +22,7 @@ Drastic increase of runtime with large projects
    * - Fixed
      - :ref:`next_release`, :issue:`1194`
 
-If there are files with man lines and functions the runtime of ``gcovr`` increases drastically.
+The runtime of ``gcovr`` increased drastically if a project had source files with many lines and functions.
 
 - In :issue:`1193` the runtime increased from 1,3s to 350s for a file with data for
   ~5.000 functions, ~75.000 lines of code with ~95.000 branches and ~60.000 calls.
