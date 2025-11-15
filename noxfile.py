@@ -740,7 +740,7 @@ def docker_build_compiler(session: nox.Session, cc: str) -> None:
         if os.environ["GITHUB_REF"] == "refs/heads/main":
             cache_options += [
                 "--cache-to",
-                f"type=gha,mode=max,scope={cc}",
+                f"type=gha,mode=min,scope={cc}",
             ]
         compiler_versions = cc
     else:
