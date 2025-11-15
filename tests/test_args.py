@@ -714,7 +714,7 @@ def test_import_valid_cobertura_file(tmp_path: Path) -> None:
                 matching_branch = [
                     branchcov
                     for branchcov in branchcov_list
-                    if branchcov.key == (branch_idx, None, None)
+                    if branchcov.key == (branch_idx, -1, -1)
                 ]
                 assert len(matching_branch) == 1
                 assert matching_branch[0].count == branch_count

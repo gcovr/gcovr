@@ -389,9 +389,9 @@ class BranchCoverage(CoverageBase):
     def key(self) -> BranchcovKeyType:
         """Get the key used for the dictionary to unique identify the coverage object."""
         return (
-            self.branchno,
-            self.source_block_id,
-            self.destination_block_id,
+            -1 if self.branchno is None else int(self.branchno),
+            -1 if self.source_block_id is None else int(self.source_block_id),
+            -1 if self.destination_block_id is None else int(self.destination_block_id),
         )
 
     @property
@@ -1061,9 +1061,13 @@ class CallCoverage(CoverageBase):
     def key(self) -> CallcovKeyType:
         """Get the key used for the dictionary to unique identify the coverage object."""
         return (
-            self.callno,
-            self.source_block_id,
-            self.destination_block_id,
+            (-1 if self.callno is None else int(self.callno)),
+            (-1 if self.source_block_id is None else int(self.source_block_id)),
+            (
+                -1
+                if self.destination_block_id is None
+                else int(self.destination_block_id)
+            ),
         )
 
     @property
@@ -1478,12 +1482,7 @@ class LineCoverage(CoverageBase):
     def branches(self, *, sort: bool = False) -> Iterable[BranchCoverage]:
         """Iterate over the branches."""
         if sort:
-            yield from sorted(
-                self.__branches.values(),
-                key=lambda branchcov: tuple(
-                    -1 if x is None else x for x in branchcov.key
-                ),
-            )
+            yield from [v for _, v in sorted(self.__branches.items())]
 
         else:
             yield from self.__branches.values()
@@ -1524,10 +1523,7 @@ class LineCoverage(CoverageBase):
     def calls(self, *, sort: bool = False) -> Iterable[CallCoverage]:
         """Iterate over the calls."""
         if sort:
-            yield from sorted(
-                self.__calls.values(),
-                key=lambda callcov: tuple(-1 if x is None else x for x in callcov.key),
-            )
+            yield from [v for _, v in sorted(self.__calls.items())]
         else:
             yield from self.__calls.values()
 

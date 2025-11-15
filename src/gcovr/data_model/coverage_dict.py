@@ -18,16 +18,16 @@
 # ****************************************************************************
 
 from __future__ import annotations
-from typing import Optional, TypeVar
+from typing import TypeVar
 
 from .merging import MergeOptions
 
 
 LinecovCollectionKeyType = int
 LinecovKeyType = str
-BranchcovKeyType = tuple[Optional[int], Optional[int], Optional[int]]
+BranchcovKeyType = tuple[int, int, int]
 ConditioncovKeyType = tuple[int, int]
-CallcovKeyType = tuple[Optional[int], int, Optional[int]]
+CallcovKeyType = tuple[int, int, int]
 FunctioncovKeyType = str
 _Key = TypeVar(
     "_Key",
