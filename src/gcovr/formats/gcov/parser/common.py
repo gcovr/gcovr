@@ -77,7 +77,7 @@ class NegativeHits(Exception):
                 persistent_states["negative_hits.warn_once_per_file"] += 1
             else:
                 LOGGER.warning(
-                    "%s Ignoring negative hits in: %s.",
+                    "%s: Ignoring negative hits in: %s.",
                     ":".join(str(item) for item in persistent_states["location"]),
                     line,
                 )

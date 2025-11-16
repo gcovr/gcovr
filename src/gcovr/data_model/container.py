@@ -31,6 +31,8 @@ from typing import (
     ValuesView,
 )
 
+from ..filter import is_file_excluded
+
 from ..logging import LOGGER
 from ..options import Options
 from ..utils import commonpath, force_unix_separator
@@ -176,10 +178,17 @@ class CoverageContainer(ContainerBase):
 
         return covdata
 
-    def merge_lines(self) -> None:
+    def merge_lines(self, options: Options) -> None:
         """Merge line coverage for same line number. Remove the function information on merged lines."""
         for filecov in self.values():
-            filecov.merge_lines()
+            filecov.merge_lines(
+                is_file_excluded(
+                    "trace",
+                    filecov.filename,
+                    options.trace_include_filter,
+                    options.trace_exclude_filter,
+                )
+            )
 
     def merge(self, other: CoverageContainer, options: MergeOptions) -> None:
         """

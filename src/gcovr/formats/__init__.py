@@ -124,7 +124,7 @@ def read_reports(options: Options) -> CoverageContainer:
                 )
 
     if options.merge_lines:
-        covdata.merge_lines()
+        covdata.merge_lines(options)
 
     return covdata
 
