@@ -378,6 +378,7 @@ class GcovrTestCompare:
         seen_files = set()
         missing_files = set()
         for pattern in output_pattern:
+            # Iterate over a shallow copy to allow removal during iteration
             for reference_file in list(sorted(self.reference_files)):
                 if fnmatch.fnmatch(reference_file.name, pattern):
                     seen_files.add(reference_file.name)
