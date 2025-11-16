@@ -1,4 +1,4 @@
-TN:GCOVR report
+TN:GCOVR_report
 SF:tests/exclusion/output/exclude-branch/main.cpp
 VER:6d3285119b8ab4620218bf24baa23923
 FN:4,_Z3fooi

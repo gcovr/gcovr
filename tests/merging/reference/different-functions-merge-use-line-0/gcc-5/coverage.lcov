@@ -1,4 +1,4 @@
-TN:GCOVR report
+TN:GCOVR_report
 SF:tests/merging/output/different-functions-merge-use-line-0/func.h
 VER:038c9fe6d002775301b38c63c7aa5e6c
 FN:0,foo(int)

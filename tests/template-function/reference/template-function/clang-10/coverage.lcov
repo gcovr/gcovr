@@ -1,4 +1,4 @@
-TN:GCOVR report
+TN:GCOVR_report
 SF:tests/template-function/output/template-function/main.cpp
 VER:50772fdb5b19353fa726392fd21699e0
 FN:5,_Z3fooIdEvT_

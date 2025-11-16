@@ -1,4 +1,4 @@
-TN:GCOVR report
+TN:GCOVR_report
 SF:tests/const-functions/output/main.cpp
 VER:549f71f95b884f32c503c48f22ced191
 FN:6,Bar::Bar()

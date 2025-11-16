@@ -63,10 +63,22 @@ class LcovHandler(BaseHandler):
                 ["--lcov-test-name"],
                 group="output_options",
                 metavar="NAME",
-                help="The name used for TN in LCOV file. Default is '{default!s}'.",
-                default="GCOVR report",
+                help=(
+                    "The name used for TN in LCOV file, must not contain spaces. "
+                    "Default is '{default!s}'."
+                ),
+                default="GCOVR_report",
             ),
         ]
+
+    def validate_options(self) -> None:
+        if (
+            self.options.lcov_test_name is not None
+            and " " in self.options.lcov_test_name
+        ):
+            raise RuntimeError(
+                f"The LCOV test name must not contain spaces, got {self.options.lcov_test_name!r}."
+            )
 
     def write_report(self, covdata: CoverageContainer, output_file: str) -> None:
         from .write import write_report  # pylint: disable=import-outside-toplevel # Lazy loading is intended here
