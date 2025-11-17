@@ -1,4 +1,4 @@
-TN:GCOVR report
+TN:GCOVR_report
 SF:tests/simple/output/stdout/main.cpp
 VER:8a17fee4731f4aa369ea27803c70cc8a
 FN:3,not_called()

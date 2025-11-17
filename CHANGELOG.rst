@@ -10,6 +10,8 @@ Next Release
 
 Breaking changes:
 
+- The option :option:`--lcov-test-name` doesn't accept values with spaces anymore. (:issue:`1196`)
+
 New features and notable changes:
 
 - Due to added support for LLVM source based code coverage format some configuration file

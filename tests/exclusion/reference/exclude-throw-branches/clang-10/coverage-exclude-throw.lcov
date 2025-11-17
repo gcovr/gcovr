@@ -1,4 +1,4 @@
-TN:GCOVR report
+TN:GCOVR_report
 SF:tests/exclusion/output/exclude-throw-branches/main.cpp
 VER:1a27c541bdd456d68b3ca671ff1cf419
 FN:3,_Z23function_that_may_throwb

@@ -1,4 +1,4 @@
-TN:GCOVR report
+TN:GCOVR_report
 SF:tests/split-signature/output/main.cpp
 VER:39030f47fbff470180d95246db4bac93
 FN:8,(anonymous namespace)::Bar::Bar()

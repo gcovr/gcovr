@@ -1,4 +1,4 @@
-TN:GCOVR report
+TN:GCOVR_report
 SF:tests/dot-folder/output/.subdir/A/C/D/File6.cpp
 VER:51c81752202f160b25ffc07fb9134018
 FN:1,_Z4foo6i

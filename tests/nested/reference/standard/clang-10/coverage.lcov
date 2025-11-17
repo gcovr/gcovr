@@ -1,4 +1,4 @@
-TN:GCOVR report
+TN:GCOVR_report
 SF:tests/nested/output/standard/subdir/A/C/D/File6.cpp
 FN:1,_Z4foo6i
 FNDA:1,_Z4foo6i

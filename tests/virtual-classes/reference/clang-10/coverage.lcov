@@ -1,4 +1,4 @@
-TN:GCOVR report
+TN:GCOVR_report
 SF:tests/virtual-classes/output/main.cpp
 VER:b886ade13bcdf26378ac76876e02cded
 FN:8,_ZN3ns14Bar1C2Ev

@@ -1,4 +1,4 @@
-TN:GCOVR report
+TN:GCOVR_report
 SF:tests/filter/output/relative-from-unfiltered-tracefile/main.cpp
 VER:aa3e0bff9ee1c3840efb1be8065bab01
 FN:5,foo(int)

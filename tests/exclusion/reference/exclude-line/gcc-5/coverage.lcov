@@ -1,4 +1,4 @@
-TN:GCOVR report
+TN:GCOVR_report
 SF:tests/exclusion/output/exclude-line/main.cpp
 VER:66aceb0a241f4b80949ca5f212bf166f
 FN:4,foo(int)

@@ -1,4 +1,4 @@
-TN:GCOVR report
+TN:GCOVR_report
 SF:tests/exclusion/output/exclude-branch-without-hit/main.cpp
 VER:06a1ee25a1f3006863b6ccc5c0cb0575
 FN:3,_Z3fooi

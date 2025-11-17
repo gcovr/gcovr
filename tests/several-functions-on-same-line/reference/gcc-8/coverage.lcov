@@ -1,4 +1,4 @@
-TN:GCOVR report
+TN:GCOVR_report
 SF:tests/several-functions-on-same-line/output/function.hpp
 VER:85bc1e5211f215b6cd6a1b54bf4cfbac
 FN:2,func_a(int, int)

@@ -1,4 +1,4 @@
-TN:GCOVR report
+TN:GCOVR_report
 SF:tests/no-branch/output/main.cpp
 VER:e3e6a5d78e81ea389bb54b2bd6c04e7d
 FN:1,main
