@@ -40,6 +40,7 @@ Bug fixes and small improvements:
 - Fix text report for covered decisions. (:issue:`1192`)
 - Fix runtime problem introduced with 8.4. (:issue:`1194`)
 - Fix wrong entries in data source attribute of JSON report. (:issue:`1194`)
+- Fix nested HTML report without coverage data. (:issue:`1197`)
 
 Documentation:
 
@@ -80,6 +81,7 @@ Known bugs:
 - :ref:`fix_1192`
 - :ref:`fix_1194_1`
 - :ref:`fix_1194_2`
+- :ref:`fix_1197`
 
 Breaking changes:
 
@@ -192,6 +194,7 @@ Known bugs:
 - :ref:`fix_1138`
 - :ref:`fix_1171_1`
 - :ref:`fix_1176`
+- :ref:`fix_1197`
 
 Breaking changes:
 
@@ -255,6 +258,7 @@ Known bugs:
 - :ref:`fix_1130`
 - :ref:`fix_1138`
 - :ref:`fix_1171_1`
+- :ref:`fix_1197`
 
 Breaking changes:
 
@@ -283,6 +287,7 @@ Known bugs:
 - :ref:`fix_1130`
 - :ref:`fix_1138`
 - :ref:`fix_1171_1`
+- :ref:`fix_1197`
 
 Breaking changes:
 
@@ -315,6 +320,7 @@ Known bugs:
 - :ref:`fix_1130`
 - :ref:`fix_1138`
 - :ref:`fix_1171_1`
+- :ref:`fix_1197`
 
 Breaking changes:
 
@@ -395,6 +401,7 @@ Known bugs:
 - :ref:`fix_1037`
 - :ref:`fix_1089`.
 - :ref:`fix_1138`
+- :ref:`fix_1197`
 
 New features and notable changes:
 
@@ -429,6 +436,7 @@ Known bugs:
 - :ref:`fix_1022`
 - :ref:`fix_1037`
 - :ref:`fix_1089`
+- :ref:`fix_1197`
 
 Breaking changes:
 
@@ -530,6 +538,7 @@ Internal changes:
 Known bugs:
 
 - :ref:`fix_1037`
+- :ref:`fix_1197`
 
 Breaking changes:
 

@@ -9,6 +9,39 @@ Known bugs
 This list contains bugs for version 6.0 and newer, always check the latest
 version of this file available `here <https://gcovr.com/en/latest/known_bugs.html>`_.
 
+.. _fix_1197:
+
+Nested HTML report without data can't be generated
+--------------------------------------------------
+
+.. list-table::
+
+   * - Introduced
+     - :ref:`release_6_0`
+
+   * - Fixed
+     - :ref:`next_release`, :issue:`1197`
+
+When generating a nested HTML report but there is no coverage data
+for :ref:`release_6_0` to :ref:`release_8_2` no root page is generated
+and no error is raised. Starting with :ref:`release_8_3` the following error occurs:
+
+.. code-block::
+
+  (ERROR) Error occurred while printing reports:
+  Traceback (most recent call last):
+    File "/gcovr/src/gcovr/__main__.py", line 426, in main
+      gcovr_formats.write_reports(covdata, options)
+    File "/gcovr/src/gcovr/formats/__init__.py", line 311, in write_reports
+      format_writer(covdata, output.abspath)
+    File "/gcovr/src/gcovr/formats/html/__init__.py", line 282, in write_report
+      write_report(covdata, output_file, self.options)
+    File "/gcovr/src/gcovr/formats/html/write.py", line 484, in write_report
+      write_directory_pages(
+    File "/gcovr/src/gcovr/formats/html/write.py", line 610, in write_directory_pages
+      root_key = next(iter(sorted([d.dirname for d in covdata.directories])))
+  StopIteration
+
 .. _fix_1194_1:
 
 Drastic increase of runtime with large projects
