@@ -399,7 +399,7 @@ def main(args: Optional[list[str]] = None) -> int:  # pylint: disable=too-many-r
             "--exclude-branches-by-pattern", options.exclude_branches_by_pattern
         )
     except RuntimeError as e:
-        LOGGER.error("%s", str(e))
+        LOGGER.error("%s", e)
         return EXIT_CMDLINE_ERROR
 
     if options.fail_under_decision > 0.0 and not options.show_decision:

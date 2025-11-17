@@ -200,10 +200,9 @@ class Workers:
                 w.join(timeout=1)
         self.workers = []
 
-        for traceback in self.exceptions:
-            LOGGER.error(traceback)
-
         if self.exceptions:
+            for traceback in self.exceptions:
+                LOGGER.error(traceback)
             raise RuntimeError(
                 "Worker thread raised exception, workers canceled."
             ) from None

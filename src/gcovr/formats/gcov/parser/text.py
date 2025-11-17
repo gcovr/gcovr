@@ -305,6 +305,19 @@ def parse_coverage(
         except Exception as ex:  # pylint: disable=broad-except
             lines_with_errors.append((raw_line, ex))
 
+    if not any(isinstance(line, _FunctionLine) for line, _ in tokenized_lines):
+        file_for_message = (
+            "\n  ".join(" -> ".join(file_tuple) for file_tuple in sorted(data_filename))
+            if isinstance(data_filename, set)
+            else data_filename
+        )
+        raise RuntimeError(
+            f"No function line found in gcov file:\n   {file_for_message}\n"
+            "This may indicate that the file was generated without "
+            "the proper gcov options (especially --branch-probabilities)?\n"
+            "See <https://gcovr.com/en/stable/faq.html#which-options-are-used-for-calling-gcov>.",
+        )
+
     if (
         "negative_hits.warn_once_per_file" in persistent_states
         and persistent_states["negative_hits.warn_once_per_file"] > 1
@@ -611,7 +624,10 @@ def _report_lines_with_errors(
 
     lines_output = "\n\t  ".join(lines)
     LOGGER.warning(
-        "Unrecognized GCOV output for %s\n\t  %s\n\tThis is indicative of a gcov output parse error.\n\tPlease report this to the gcovr developers\n\tat <https://github.com/gcovr/gcovr/issues>.",
+        "Unrecognized GCOV output for %s\n\t  %s\n"
+        "\tThis is indicative of a gcov output parse error.\n"
+        "\tPlease report this to the gcovr developers\n"
+        "\tat <https://github.com/gcovr/gcovr/issues>.",
         filename,
         lines_output,
     )
