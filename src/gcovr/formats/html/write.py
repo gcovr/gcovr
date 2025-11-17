@@ -1071,7 +1071,7 @@ def source_row_branch(
 
     stats = linecov.branch_coverage()
     return {
-        "function_name": linecov.demangled_function_name or linecov.function_name,
+        "function_name": linecov.report_function_name,
         "taken": stats.covered,
         "total": stats.total_with_excluded,
         "branches": items,
@@ -1110,7 +1110,7 @@ def source_row_condition(
             )
     stats = linecov.condition_coverage()
     return {
-        "function_name": linecov.demangled_function_name or linecov.function_name,
+        "function_name": linecov.report_function_name,
         "count": stats.total_with_excluded,
         "covered": stats.covered,
         "condition": items,
@@ -1160,7 +1160,7 @@ def source_row_decision(
         raise RuntimeError(f"Unknown decision type {linecov.decision!r}")
 
     return {
-        "function_name": linecov.demangled_function_name or linecov.function_name,
+        "function_name": linecov.report_function_name,
         "taken": len([i for i in items if i.get("taken", False)]),
         "uncheckable": len([i for i in items if i["uncheckable"]]),
         "total": len(items),
@@ -1185,7 +1185,7 @@ def source_row_call(linecov: LineCoverage) -> dict[str, Any]:
 
     stats = linecov.call_coverage()
     return {
-        "function_name": linecov.demangled_function_name or linecov.function_name,
+        "function_name": linecov.report_function_name,
         "invoked": stats.covered,
         "total": stats.total_with_excluded,
         "calls": items,

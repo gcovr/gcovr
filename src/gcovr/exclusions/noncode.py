@@ -44,7 +44,7 @@ def remove_unreachable_branches(
 
         if activate_trace_logging:
             LOGGER.trace(
-                "%s Removing unreachable branch detected as compiler-generated code",
+                "%s: Removing unreachable branch detected as compiler-generated code",
                 linecov.location,
             )
         linecov.clear_branches()
@@ -76,7 +76,7 @@ def remove_noncode_lines(
         if linecov.count == 0 and _is_non_code(source_code):
             if activate_trace_logging:
                 LOGGER.trace(
-                    "%s Removing line detected as non code",
+                    "%s: Removing line detected as non code",
                     linecov.location,
                 )
             filecov.remove_line_coverage(linecov)

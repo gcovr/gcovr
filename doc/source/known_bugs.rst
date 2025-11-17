@@ -223,7 +223,7 @@ Multiple counters for same line are not merged in coveralls report
      - :ref:`release_8_4`
 
    * - Fixed
-     - :ref:`next_release`
+     - :ref:`next_release`, :issue:`1165`
 
 Since version 8.4 there can be several coverage elements for same line. This data
 isn't merged in coveralls report. The elements are added as several elements to the
@@ -241,7 +241,7 @@ Wrong data used in clover report
      - :ref:`release_7_1`
 
    * - Fixed
-     - :ref:`release_8_4`
+     - :ref:`release_8_4`, :issue:`1138`
 
 - ``loc`` contains the highest line number with coverage information instead of lines of the file.
 - ``ncloc`` contains the number of reportable lines instead of the lines of the file without comments.
@@ -259,7 +259,7 @@ Discrepancy between exclusion and removal of coverage data
      - :ref:`release_8_0`
 
    * - Fixed
-     - :ref:`release_8_4`
+     - :ref:`release_8_4`, :issue:`1137`
 
 - The internal functions where removed but the line coverage was only excluded. Now the line
   coverage data is also removed.

@@ -1432,6 +1432,11 @@ class LineCoverage(CoverageBase):
         return "" if self.function_name is None else self.function_name
 
     @property
+    def report_function_name(self) -> str:
+        """Get the function name for this line to be shown in reports and logs."""
+        return str(self.demangled_function_name or self.function_name)
+
+    @property
     def location(self) -> Optional[str]:
         """Get the source location of the coverage data."""
         return self.parent.location
@@ -1667,83 +1672,85 @@ class LineCoverageCollection(CoverageBase):
         else:
             yield from self.linecov(sort=sort)
 
-    def merge_lines(self) -> None:
+    def merge_lines(self) -> bool:
         """Merge line coverage if there are several items for same line."""
-        if len(self) > 1:
-            # Remember the line coverage objects and clear the dictionary
-            separate_linecov = list(self.linecov())
-            self.__linecov.clear()
-            # Merge the information, needed for line coverage
-            data_sources = set[tuple[str, ...]]()
-            block_ids = set[int]()
-            for linecov in separate_linecov:
-                data_sources.update(linecov.data_sources)
-                if linecov.block_ids is not None:
-                    block_ids.update(linecov.block_ids)
-            new_linecov = self.insert_line_coverage(
-                data_sources,
-                count=sum(linecov.count for linecov in separate_linecov),
-                function_name=None,
-                block_ids=list(sorted(block_ids)) if block_ids else None,
-                excluded=all(linecov.is_excluded for linecov in separate_linecov),
-            )
-            # ...and add the child objects
-            for linecov in separate_linecov:
-                self.__raw_linecov[linecov.key] = linecov
-                for branchcov in linecov.branches():
-                    new_linecov.insert_branch_coverage(
-                        branchcov.data_sources,
-                        branchno=branchcov.branchno,
-                        count=branchcov.count,
-                        fallthrough=branchcov.fallthrough,
-                        throw=branchcov.throw,
-                        source_block_id=branchcov.source_block_id,
-                        destination_block_id=branchcov.destination_block_id,
-                        excluded=branchcov.excluded,
+        if len(self) == 1:
+            return False
+
+        # Remember the line coverage objects and clear the dictionary
+        separate_linecov = list(self.linecov())
+        self.__linecov.clear()
+        # Merge the information, needed for line coverage
+        data_sources = set[tuple[str, ...]]()
+        block_ids = set[int]()
+        for linecov in separate_linecov:
+            data_sources.update(linecov.data_sources)
+            if linecov.block_ids is not None:
+                block_ids.update(linecov.block_ids)
+        new_linecov = self.insert_line_coverage(
+            data_sources,
+            count=sum(linecov.count for linecov in separate_linecov),
+            function_name=None,
+            block_ids=list(sorted(block_ids)) if block_ids else None,
+            excluded=all(linecov.is_excluded for linecov in separate_linecov),
+        )
+        # ...and add the child objects
+        for linecov in separate_linecov:
+            self.__raw_linecov[linecov.key] = linecov
+            for branchcov in linecov.branches():
+                new_linecov.insert_branch_coverage(
+                    branchcov.data_sources,
+                    branchno=branchcov.branchno,
+                    count=branchcov.count,
+                    fallthrough=branchcov.fallthrough,
+                    throw=branchcov.throw,
+                    source_block_id=branchcov.source_block_id,
+                    destination_block_id=branchcov.destination_block_id,
+                    excluded=branchcov.excluded,
+                )
+            for conditioncov in linecov.conditions():
+                new_linecov.insert_condition_coverage(
+                    conditioncov.data_sources,
+                    conditionno=conditioncov.conditionno,
+                    count=conditioncov.count,
+                    covered=conditioncov.covered,
+                    not_covered_true=list(conditioncov.not_covered_true),
+                    not_covered_false=list(conditioncov.not_covered_false),
+                    excluded=conditioncov.excluded,
+                )
+            if (decisioncov := linecov.decision) is not None:
+                if isinstance(decisioncov, DecisionCoverageUncheckable):
+                    decisioncov = DecisionCoverageUncheckable(
+                        new_linecov,
+                        decisioncov.data_sources,
                     )
-                for conditioncov in linecov.conditions():
-                    new_linecov.insert_condition_coverage(
-                        conditioncov.data_sources,
-                        conditionno=conditioncov.conditionno,
-                        count=conditioncov.count,
-                        covered=conditioncov.covered,
-                        not_covered_true=list(conditioncov.not_covered_true),
-                        not_covered_false=list(conditioncov.not_covered_false),
-                        excluded=conditioncov.excluded,
+                elif isinstance(decisioncov, DecisionCoverageConditional):
+                    decisioncov = DecisionCoverageConditional(
+                        new_linecov,
+                        decisioncov.data_sources,
+                        count_true=decisioncov.count_true,
+                        count_false=decisioncov.count_false,
                     )
-                if (decisioncov := linecov.decision) is not None:
-                    if isinstance(decisioncov, DecisionCoverageUncheckable):
-                        decisioncov = DecisionCoverageUncheckable(
-                            new_linecov,
-                            decisioncov.data_sources,
-                        )
-                    elif isinstance(decisioncov, DecisionCoverageConditional):
-                        decisioncov = DecisionCoverageConditional(
-                            new_linecov,
-                            decisioncov.data_sources,
-                            count_true=decisioncov.count_true,
-                            count_false=decisioncov.count_false,
-                        )
-                    elif isinstance(decisioncov, DecisionCoverageSwitch):
-                        decisioncov = DecisionCoverageSwitch(
-                            new_linecov,
-                            decisioncov.data_sources,
-                            count=decisioncov.count,
-                        )
-                    else:
-                        raise RuntimeError(
-                            "Sanity check failed, unknown decision type."
-                        )
-                    new_linecov.insert_decision_coverage(decisioncov)
-                for callcov in linecov.calls():
-                    new_linecov.insert_call_coverage(
-                        callcov.data_sources,
-                        callno=callcov.callno,
-                        source_block_id=callcov.source_block_id,
-                        destination_block_id=callcov.destination_block_id,
-                        returned=callcov.returned,
-                        excluded=callcov.excluded,
+                elif isinstance(decisioncov, DecisionCoverageSwitch):
+                    decisioncov = DecisionCoverageSwitch(
+                        new_linecov,
+                        decisioncov.data_sources,
+                        count=decisioncov.count,
                     )
+                else:
+                    raise RuntimeError("Sanity check failed, unknown decision type.")
+                new_linecov.insert_decision_coverage(decisioncov)
+            for callcov in linecov.calls():
+                new_linecov.insert_call_coverage(
+                    callcov.data_sources,
+                    callno=callcov.callno,
+                    source_block_id=callcov.source_block_id,
+                    destination_block_id=callcov.destination_block_id,
+                    returned=callcov.returned,
+                    excluded=callcov.excluded,
+                )
+
+        return True
 
     @property
     def key(self) -> LinecovCollectionKeyType:
@@ -2375,10 +2382,18 @@ class FileCoverage(CoverageBase):
             )
         del self.__lines[lineno]
 
-    def merge_lines(self) -> None:
+    def merge_lines(self, activate_trace_logging: bool) -> None:
         """Merge line coverage if there are several items for same line."""
-        for linecov_collection in self.lines():
-            linecov_collection.merge_lines()
+        merged_lines = []
+        for linecov_collection in self.lines(sort=True):
+            if linecov_collection.merge_lines():
+                merged_lines.append(linecov_collection.lineno)
+        if activate_trace_logging and merged_lines:
+            LOGGER.trace(
+                "%s: Merged line coverage objects for lines: %s",
+                self.location,
+                ", ".join(str(lineno) for lineno in merged_lines),
+            )
 
     def has_linecov(self) -> bool:
         """Test if there are line coverage objects available."""

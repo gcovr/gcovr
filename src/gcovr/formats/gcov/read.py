@@ -231,7 +231,9 @@ def process_gcov_json_data(
             decision_parser.parse_all_lines()
 
         if activate_trace_logging:
-            LOGGER.trace("Merge coverage data for %s", filecov.filename)
+            LOGGER.trace(
+                "Merge coverage data for %s using %s.", filecov.filename, merge_options
+            )
         covdata.insert_file_coverage(filecov, merge_options)
 
 
@@ -318,7 +320,7 @@ def process_gcov_text_data(
 
     merge_mode = get_merge_mode_from_options(options)
     if activate_trace_logging:
-        LOGGER.trace("Merge coverage data for %s using %s", fname, str(merge_mode))
+        LOGGER.trace("Merge coverage data for %s using %s.", fname, merge_mode)
     covdata.insert_file_coverage(filecov, merge_mode)
 
 

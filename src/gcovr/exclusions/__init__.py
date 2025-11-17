@@ -156,7 +156,7 @@ def remove_internal_functions(
         ):
             if activate_trace_logging:
                 LOGGER.trace(
-                    "%s Removing symbol %s detected as compiler generated functions, e.g. for static initialization",
+                    "%s: Removing symbol %s detected as compiler generated functions, e.g. for static initialization",
                     functioncov.location,
                     functioncov.name,
                 )
@@ -189,8 +189,9 @@ def remove_function_definition_lines(
         ) in known_function_lines:
             if activate_trace_logging:
                 LOGGER.trace(
-                    "%s Removing line of function definition",
+                    "%s: Removing line of function definition for function %s",
                     linecov.location,
+                    linecov.function_name,
                 )
             filecov.remove_line_coverage(linecov)
 
@@ -199,14 +200,18 @@ def remove_throw_branches(filecov: FileCoverage, activate_trace_logging: bool) -
     """Remove branches annotated as "throw"."""
     for linecov in filecov.linecov():
         # iterate over shallow copy
-        for branchcov in list(linecov.branches()):
+        branchcov_list = list(linecov.branches())
+        for branchcov in branchcov_list:
             if branchcov.throw:
-                if activate_trace_logging:
-                    LOGGER.trace(
-                        "%s Removing unreachable branch detected as exception-only code",
-                        linecov.location,
-                    )
                 linecov.remove_branch(branchcov)
+        if activate_trace_logging:
+            removed_items = len(branchcov_list) - len(list(linecov.branches()))
+            if removed_items > 0:
+                LOGGER.trace(
+                    "%s: Removing %d unreachable branch(es) detected as exception-only code",
+                    linecov.location,
+                    removed_items,
+                )
 
 
 def remove_functions(
