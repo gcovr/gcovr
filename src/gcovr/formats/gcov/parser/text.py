@@ -306,13 +306,15 @@ def parse_coverage(
             lines_with_errors.append((raw_line, ex))
 
     if not any(isinstance(line, _FunctionLine) for line, _ in tokenized_lines):
-        file_for_message = (
-            "\n  ".join(" -> ".join(file_tuple) for file_tuple in sorted(data_filename))
+        files_for_message = (
+            "\n   ".join(
+                " -> ".join(file_tuple) for file_tuple in sorted(data_filename)
+            )
             if isinstance(data_filename, set)
             else data_filename
         )
         raise RuntimeError(
-            f"No function line found in gcov file:\n   {file_for_message}\n"
+            f"No function line found in gcov file:\n   {files_for_message}\n"
             "This may indicate that the file was generated without "
             "the proper gcov options (especially --branch-probabilities)?\n"
             "See <https://gcovr.com/en/stable/faq.html#which-options-are-used-for-calling-gcov>.",
