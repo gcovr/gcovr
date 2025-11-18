@@ -18,6 +18,7 @@
 # ****************************************************************************
 
 from contextlib import ExitStack
+from contextlib import contextmanager
 import functools
 import io
 import os
@@ -31,6 +32,7 @@ import textwrap
 import time
 import shutil
 import subprocess  # nosec # Commands are trusted.
+from typing import Any, Iterator
 import zipfile
 
 import nox
@@ -97,6 +99,40 @@ CI_RUN = "GITHUB_ACTION" in os.environ
 GCOVR_CHANGELOG_RST = Path(__file__).parent / "CHANGELOG.rst"
 
 nox.options.sessions = ["qa"]
+
+
+@contextmanager
+def create_smoke_test_environment(
+    session: nox.Session,
+) -> Iterator[Any]:
+    """Create a temporary smoke test environment."""
+    with session.chdir(session.create_tmp()):
+        test_cpp = Path("test.cpp")
+        test_cpp.write_text(
+            textwrap.dedent("""\
+                int main() {
+                    return 0;
+                }
+                """),
+            encoding="UTF-8",
+        )
+        test_gcov = Path("test.gcov")
+        test_gcov.write_text(
+            textwrap.dedent("""\
+                    -:    0:Source:test.cpp
+                    -:    0:Graph:test.gcno
+                    -:    0:Data:test.gcda
+                    -:    0:Runs:1
+                    -:    0:Programs:1
+                function main() called 1 returned 100% blocks executed 100%
+                    1:    1:int main() {
+                    1:    2:    return 0;
+                    1:    3:}
+                """),
+            encoding="UTF-8",
+        )
+
+        yield
 
 
 def get_gcovr_version() -> str:
@@ -469,10 +505,14 @@ def check_distribution(session: nox.Session) -> None:
     session.run("python", "-m", "gcovr", "--help", external=True)
     session.run("gcovr", "--help", external=True)
     session.log("Run all transformations to check if all the modules are packed")
-    with session.chdir(session.create_tmp()):
-        for output_format in OUTPUT_FORMATS:
+    for output_format in OUTPUT_FORMATS:
+        with create_smoke_test_environment(session):
             session.run(
-                "gcovr", f"--{output_format}", f"out.{output_format}", external=True
+                "gcovr",
+                f"--{output_format}",
+                f"out.{output_format}",
+                "--gcov-use-existing-files",
+                external=True,
             )
 
 
@@ -499,7 +539,7 @@ def bundle_app(session: nox.Session) -> None:
     """Bundle a standalone executable."""
     install_dev_requirements(session, "pyinstaller")
     # This is needed if the virtual env is reused
-    session.run("pip", "uninstall", "gcovr")
+    session.run("pip", "uninstall", "--yes", "gcovr")
     # Do not install interactive to get the module resolved
     # with the needed data
     session.install(".")
@@ -534,12 +574,13 @@ def check_bundled_app(session: nox.Session) -> None:
         executable = get_executable_name().absolute()
         session.run(str(executable), "--help", external=True)
         session.log("Run all transformations to check if all the modules are packed")
-        with session.chdir(session.create_tmp()):
-            for output_format in OUTPUT_FORMATS:
+        for output_format in OUTPUT_FORMATS:
+            with create_smoke_test_environment(session):
                 session.run(
                     str(executable),
                     f"--{output_format}",
                     f"out.{output_format}",
+                    "--gcov-use-existing-files",
                     external=True,
                 )
 
