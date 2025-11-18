@@ -271,6 +271,13 @@ def test_encoding(
     gcovr_test_exec.compare_html(encoding=html_encoding)
 
 
+def test_empty_nested_report(gcovr_test_exec: "GcovrTestExec") -> None:
+    """Test HTML report generation without data files."""
+    gcovr_test_exec.gcovr(
+        "--html-nested=coverage.html",
+    )
+
+
 def test_file_not_found(gcovr_test_exec: "GcovrTestExec") -> None:
     """Test HTML output when file is not found, using tracefile."""
     # No compilation needed, just run gcovr with tracefile

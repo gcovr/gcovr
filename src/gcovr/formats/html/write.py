@@ -480,7 +480,7 @@ def write_report(
             data,
         )
     else:
-        if options.html_nested:
+        if options.html_nested and covdata.directories:
             write_directory_pages(
                 options,
                 root_info,
