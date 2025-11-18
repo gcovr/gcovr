@@ -259,6 +259,7 @@ def test_ignore_source_not_found(gcovr_test_exec: "GcovrTestExec", check) -> Non
             "--json=coverage.json",
             "--gcov-ignore-errors=source_not_found",
             "--root=src",
+            "--trace-include=/.*main.*",
             "build",
         )
         check.is_not_in(

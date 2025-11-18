@@ -305,7 +305,10 @@ def parse_coverage(
         except Exception as ex:  # pylint: disable=broad-except
             lines_with_errors.append((raw_line, ex))
 
-    if not any(isinstance(line, _FunctionLine) for line, _ in tokenized_lines):
+    # Only check for missing function lines if we have any non-metadata lines.
+    if any(
+        not isinstance(line, _MetadataLine) for line, _ in tokenized_lines
+    ) and not any(isinstance(line, _FunctionLine) for line, _ in tokenized_lines):
         files_for_message = (
             "\n   ".join(
                 " -> ".join(file_tuple) for file_tuple in sorted(data_filename)
