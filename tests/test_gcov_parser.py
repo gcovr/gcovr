@@ -356,14 +356,14 @@ def contains_phrases(string: str, *phrases: str) -> bool:
 
 @pytest.mark.parametrize("ignore_errors", [True, False])
 def test_unknown_tags(caplog: pytest.LogCaptureFixture, ignore_errors: bool) -> None:
-    source = r"bananas 7 times 3"
-    lines = source.splitlines()
-
     def run_the_parser() -> FileCoverage:
         coverage, _ = text.parse_coverage(
             "",
             filename="foo.c",
-            lines=lines,
+            lines=[
+                "function foo() called 1 returned 100% blocks executed 100%",
+                "bananas 7 times 3",
+            ],
             ignore_parse_errors=set(["all"]) if ignore_errors else None,
         )
         return coverage
@@ -401,14 +401,14 @@ def test_unknown_tags(caplog: pytest.LogCaptureFixture, ignore_errors: bool) -> 
 
 
 def test_pathologic_codeline(caplog: pytest.LogCaptureFixture) -> None:
-    source = r": 7:xxx"
-    lines = source.splitlines()
-
     with pytest.raises(text.UnknownLineType):
         text.parse_coverage(
             "",
             filename="foo.c",
-            lines=lines,
+            lines=[
+                "function foo() called 1 returned 100% blocks executed 100%",
+                ": 7:xxx",
+            ],
             ignore_parse_errors=None,
         )
 
@@ -890,6 +890,7 @@ def test_suspicious_branch_count() -> None:
 
     source = textwrap.dedent(
         """\
+        function foo() called 1 returned 100% blocks executed 100%
              1: 1:foo += 1;
             4294967296: 2:foo += 1;
              2: 3:foo += 1;
@@ -1069,16 +1070,16 @@ def test_noncode_lines() -> None:
         )
         apply_all_exclusions(filecov, lines=source, options=options)
 
-        for linecov in filecov.linecov():
-            return f"normal:{linecov.count}"
+        if list(filecov.linecov()):
+            return f"normal:{', '.join(str(linecov.count) for linecov in filecov.linecov())}"
 
         return "noncode"
 
     # First, handling of function lines
 
     # By itself, function lines have no special treatment.
-    status = get_line_status(["3: 32:void foo(){}"])
-    assert status == "noncode"
+    with pytest.raises(RuntimeError):
+        get_line_status(["3: 32:void foo(){}"])
 
     # If gcov reports a function, keep the line.
     status = get_line_status(
@@ -1099,10 +1100,23 @@ def test_noncode_lines() -> None:
     # Next, handling of noncode lines
 
     # Gcov says noncode but it looks like code: throw line away
-    assert get_line_status(["-: 32:this looks like code"]) == "noncode"
+    assert (
+        get_line_status(
+            [
+                "function foo called 3 returned 99% blocks executed 70%",
+                "-: 32:this looks like code",
+            ]
+        )
+        == "noncode"
+    )
 
     # Gcov says noncode and it doesn't look like code: discard
-    assert get_line_status(["-: 32:}"]) == "noncode"
+    assert (
+        get_line_status(
+            ["function foo called 3 returned 99% blocks executed 70%", "-: 32:}"]
+        )
+        == "noncode"
+    )
 
     # Uncovered line with code: keep
     assert (
@@ -1116,7 +1130,13 @@ def test_noncode_lines() -> None:
     )
 
     # Uncovered code that doesn't look like code: discard
-    assert get_line_status(["#####: 32:}"], exclude_noncode_lines=True) == "noncode"
+    assert (
+        get_line_status(
+            ["function foo called 3 returned 99% blocks executed 70%", "#####: 32:}"],
+            exclude_noncode_lines=True,
+        )
+        == "noncode"
+    )
 
 
 def check_and_raise(
