@@ -128,6 +128,9 @@ class Workers:
     1
     """
 
+    class WorkerThreadException(RuntimeError):
+        """Exception raised when a worker thread fails."""
+
     def __init__(self, number: int, context: Callable[[], dict[str, Any]]) -> None:
         if number <= 0:
             number = max(1, cpu_count() + number)
@@ -203,7 +206,7 @@ class Workers:
         if self.exceptions:
             for traceback in self.exceptions:
                 LOGGER.error(traceback)
-            raise RuntimeError(
+            raise self.WorkerThreadException(
                 "Worker thread raised exception, workers canceled."
             ) from None
         return self.contexts
