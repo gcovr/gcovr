@@ -43,6 +43,7 @@ Bug fixes and small improvements:
 - Fix runtime problem introduced with 8.4. (:issue:`1194`)
 - Fix wrong entries in data source attribute of JSON report. (:issue:`1194`)
 - Fix nested HTML report without coverage data. (:issue:`1197`)
+- Abort parsing of GCOV files with a hint to documentation if function lines are missing. (:issue:`1199`)
 
 Documentation:
 
