@@ -1,4 +1,3 @@
-import subprocess  # nosec
 import pytest
 
 from tests.conftest import (
@@ -90,15 +89,14 @@ def test_issue_1166(gcovr_test_exec: "GcovrTestExec", check) -> None:  # type: i
         "--branch-counts",
         "--preserve-paths",
     )
-    with pytest.raises(subprocess.CalledProcessError) as exc:
-        gcovr_test_exec.gcovr(
-            "--verbose",
-            "--gcov-use-existing-files",
-            "--json-pretty",
-            "--json=coverage.json",
-        )
-    check.is_in("RuntimeError: No function line found in gcov file:", exc.value.stderr)
-    check.is_in("/tests/use-existing/output/issue-1166/main.cpp.gcov", exc.value.stderr)
+    process = gcovr_test_exec.gcovr(
+        "--verbose",
+        "--gcov-use-existing-files",
+        "--json-pretty",
+        "--json=coverage.json",
+    )
+    check.is_in("(WARNING) No function line found in gcov file:", process.stderr)
+    check.is_in("/tests/use-existing/output/issue-1166/main.cpp.gcov", process.stderr)
 
 
 @pytest.mark.skipif(

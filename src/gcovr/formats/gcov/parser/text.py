@@ -263,6 +263,7 @@ def parse_coverage(
     ignore_parse_errors: Optional[set[str]],
     suspicious_hits_threshold: int = SUSPICIOUS_COUNTER,
     activate_trace_logging: bool = False,
+    use_existing_files: bool = False,
 ) -> tuple[FileCoverage, list[str]]:
     """
     Extract coverage data from a gcov report.
@@ -305,10 +306,16 @@ def parse_coverage(
         except Exception as ex:  # pylint: disable=broad-except
             lines_with_errors.append((raw_line, ex))
 
-    # Only check for missing function lines if we have any non-metadata lines.
-    if any(
-        not isinstance(line, _MetadataLine) for line, _ in tokenized_lines
-    ) and not any(isinstance(line, _FunctionLine) for line, _ in tokenized_lines):
+    missing_function_lines = not any(
+        isinstance(line, _FunctionLine) for line, _ in tokenized_lines
+    )
+
+    if (
+        use_existing_files
+        # Only check for missing function lines if we have any non-metadata lines.
+        and any(not isinstance(line, _MetadataLine) for line, _ in tokenized_lines)
+        and missing_function_lines
+    ):
         files_for_message = (
             "\n   ".join(
                 " -> ".join(file_tuple) for file_tuple in sorted(data_filename)
@@ -316,7 +323,7 @@ def parse_coverage(
             if isinstance(data_filename, set)
             else data_filename
         )
-        raise RuntimeError(
+        LOGGER.warning(
             f"No function line found in gcov file:\n   {files_for_message}\n"
             "This may indicate that the file was generated without "
             "the proper gcov options (especially --branch-probabilities)?\n"

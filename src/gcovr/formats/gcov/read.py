@@ -303,6 +303,7 @@ def process_gcov_text_data(
         ignore_parse_errors=options.gcov_ignore_parse_errors,
         suspicious_hits_threshold=options.gcov_suspicious_hits_threshold,
         activate_trace_logging=activate_trace_logging,
+        use_existing_files=options.gcov_use_existing_files,
     )
 
     if activate_trace_logging:
