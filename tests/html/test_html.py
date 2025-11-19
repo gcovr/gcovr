@@ -273,13 +273,8 @@ def test_encoding(
 
 def test_empty_nested_report(gcovr_test_exec: "GcovrTestExec") -> None:
     """Test HTML report generation without data files."""
-    with pytest.raises(subprocess.CalledProcessError) as exc:
-        gcovr_test_exec.gcovr(
-            "--html-nested=coverage.html",
-        )
-    assert (
-        "RuntimeError: All coverage data is filtered out. Please check your filters."
-        in exc.value.stderr
+    gcovr_test_exec.gcovr(
+        "--html-nested=coverage.html",
     )
 
 
