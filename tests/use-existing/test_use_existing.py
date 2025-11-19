@@ -97,6 +97,7 @@ def test_issue_1166(gcovr_test_exec: "GcovrTestExec", check) -> None:  # type: i
     )
     check.is_in("(WARNING) No function line found in gcov file:", process.stderr)
     check.is_in("/tests/use-existing/output/issue-1166/main.cpp.gcov", process.stderr)
+    gcovr_test_exec.compare_json()
 
 
 @pytest.mark.skipif(
