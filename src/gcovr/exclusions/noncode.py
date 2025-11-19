@@ -29,6 +29,7 @@ from ..logging import LOGGER
 
 _C_STYLE_COMMENT_PATTERN = re.compile(r"/\*.*?\*/")
 _CPP_STYLE_COMMENT_PATTERN = re.compile(r"//.*?$")
+_WHITESPACE_PATTERN = re.compile(r"\s+")
 
 
 def remove_unreachable_branches(
@@ -62,7 +63,7 @@ def _line_can_contain_branches(code: str) -> bool:
 
     code = _CPP_STYLE_COMMENT_PATTERN.sub("", code)
     code = _C_STYLE_COMMENT_PATTERN.sub("", code)
-    code = code.strip().replace(" ", "")
+    code = _WHITESPACE_PATTERN.subn("", code)[0]
     return code not in ["", "{", "}", "{}"]
 
 
@@ -107,9 +108,19 @@ def _is_non_code(code: str) -> bool:
     True
     >>> _is_non_code('return {};')
     False
+    >>> _is_non_code('[1]')
+    False
+    >>> _is_non_code('[')
+    True
+    >>> _is_non_code(']')
+    True
+    >>> _is_non_code('[  ]')
+    True
+    >>> _is_non_code('[] { // issue 1166')
+    True
     """
 
     code = _CPP_STYLE_COMMENT_PATTERN.sub("", code)
     code = _C_STYLE_COMMENT_PATTERN.sub("", code)
-    code = code.strip()
-    return len(code) == 0 or code in ["{", "}", "else"]
+    code = _WHITESPACE_PATTERN.subn("", code)[0]
+    return len(code) == 0 or code in ["{", "}", "else", "[", "]", "[]", "[]{"]

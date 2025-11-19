@@ -48,6 +48,7 @@ Bug fixes and small improvements:
 - Extend support for zipped reports. If last suffix is ``.xz`` then LZMA is used to compress the report. (:issue:`1201`)
 - Fix function exclusion in report generation. (:issue:`1206`)
 - Do not ignore lines without functions, e.g. from inlined code. (:issue:`1204`)
+- Extend patterns for detection of noncode lines with ``[``, ``]``, ``[]`` and ``[]{``. (:issue:`1208`)
 
 Documentation:
 
