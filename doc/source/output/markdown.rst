@@ -15,7 +15,8 @@ the :option:`--markdown` option::
 If you just need a summary of the coverage information, you can use
 :option:`--markdown-summary` instead (see :ref:`markdown_summary_output`).
 
-If the given name ends with the suffix ``.gz`` the report is compressed by gzip.
+If the given name ends with the suffix ``.gz`` the report is compressed by gzip,
+if it ends with ``.xz`` it is compressed by LZMA.
 
 .. _markdown_summary_output:
 

@@ -15,15 +15,15 @@ def test(gcovr_test_exec: "GcovrTestExec") -> None:
     )
 
     gcovr_test_exec.run("./testcase")
-    gcovr_test_exec.gcovr("-d", "--json-pretty", "--json=coverage.json.gz")
-    gcovr_test_exec.run("sh", "-c", "gunzip -c coverage.json.gz > coverage.json")
+    gcovr_test_exec.gcovr("-d", "--json-pretty", "--json=coverage.json.xz")
+    gcovr_test_exec.run("sh", "-c", "unxz -c coverage.json.xz > coverage.json")
     gcovr_test_exec.gcovr(
         "--json-add-tracefile=coverage.json",
         "--json-summary-pretty",
-        "--json-summary=coverage_summary.json.gz",
+        "--json-summary=coverage_summary.json.xz",
     )
     gcovr_test_exec.run(
-        "sh", "-c", "gunzip -c coverage_summary.json.gz > coverage_summary.json"
+        "sh", "-c", "unxz -c coverage_summary.json.xz > coverage_summary.json"
     )
     gcovr_test_exec.compare_json()
 
@@ -32,51 +32,51 @@ def test(gcovr_test_exec: "GcovrTestExec") -> None:
     )
     gcovr_test_exec.compare_html()
 
-    gcovr_test_exec.gcovr("--json-add-tracefile=coverage.json", "--txt=coverage.txt.gz")
-    gcovr_test_exec.run("sh", "-c", "gunzip -c coverage.txt.gz > coverage.txt")
+    gcovr_test_exec.gcovr("--json-add-tracefile=coverage.json", "--txt=coverage.txt.xz")
+    gcovr_test_exec.run("sh", "-c", "unxz -c coverage.txt.xz > coverage.txt")
     gcovr_test_exec.compare_txt()
 
     gcovr_test_exec.gcovr(
         "--json-add-tracefile=coverage.json",
         "--clover-pretty",
-        "--clover=clover.xml.gz",
+        "--clover=clover.xml.xz",
     )
-    gcovr_test_exec.run("sh", "-c", "gunzip -c clover.xml.gz > clover.xml")
+    gcovr_test_exec.run("sh", "-c", "unxz -c clover.xml.xz > clover.xml")
     gcovr_test_exec.compare_clover()
 
     gcovr_test_exec.gcovr(
         "--json-add-tracefile=coverage.json",
         "--cobertura-pretty",
-        "--cobertura=cobertura.xml.gz",
+        "--cobertura=cobertura.xml.xz",
     )
-    gcovr_test_exec.run("sh", "-c", "gunzip -c cobertura.xml.gz > cobertura.xml")
+    gcovr_test_exec.run("sh", "-c", "unxz -c cobertura.xml.xz > cobertura.xml")
     gcovr_test_exec.compare_cobertura()
 
     gcovr_test_exec.gcovr(
         "--json-add-tracefile=coverage.json",
         "--coveralls-pretty",
-        "--coveralls=coveralls.json.gz",
+        "--coveralls=coveralls.json.xz",
     )
-    gcovr_test_exec.run("sh", "-c", "gunzip -c coveralls.json.gz > coveralls.json")
+    gcovr_test_exec.run("sh", "-c", "unxz -c coveralls.json.xz > coveralls.json")
     gcovr_test_exec.compare_coveralls()
 
     gcovr_test_exec.gcovr(
         "--json-add-tracefile=coverage.json",
         "--jacoco-pretty",
-        "--jacoco=jacoco.xml.gz",
+        "--jacoco=jacoco.xml.xz",
     )
-    gcovr_test_exec.run("sh", "-c", "gunzip -c jacoco.xml.gz > jacoco.xml")
+    gcovr_test_exec.run("sh", "-c", "unxz -c jacoco.xml.xz > jacoco.xml")
     gcovr_test_exec.compare_jacoco()
 
     gcovr_test_exec.gcovr(
         "--json-add-tracefile=coverage.json",
-        "--lcov=coverage.lcov.gz",
+        "--lcov=coverage.lcov.xz",
     )
-    gcovr_test_exec.run("sh", "-c", "gunzip -c coverage.lcov.gz > coverage.lcov")
+    gcovr_test_exec.run("sh", "-c", "unxz -c coverage.lcov.xz > coverage.lcov")
     gcovr_test_exec.compare_lcov()
 
     gcovr_test_exec.gcovr(
-        "--json-add-tracefile=coverage.json", "--sonarqube=sonarqube.xml.gz"
+        "--json-add-tracefile=coverage.json", "--sonarqube=sonarqube.xml.xz"
     )
-    gcovr_test_exec.run("sh", "-c", "gunzip -c sonarqube.xml.gz > sonarqube.xml")
+    gcovr_test_exec.run("sh", "-c", "unxz -c sonarqube.xml.xz > sonarqube.xml")
     gcovr_test_exec.compare_sonarqube()

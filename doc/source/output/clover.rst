@@ -29,7 +29,8 @@ The :option:`--clover` option generates a denser XML output, and the
 :option:`--clover-pretty` option generates an indented
 XML output that is easier to read.
 
-If the given name ends with the suffix ``.gz`` the report is compressed by gzip.
+If the given name ends with the suffix ``.gz`` the report is compressed by gzip,
+if it ends with ``.xz`` it is compressed by LZMA.
 
 .. versionadded:: 7.1
 
