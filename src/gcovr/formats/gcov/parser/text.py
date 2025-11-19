@@ -350,6 +350,8 @@ def parse_coverage(
 
     filecov = FileCoverage(data_filename, filename=filename)
     state = _ParserState()
+    if use_existing_files and missing_function_lines:
+        state = state._replace(function_name="<unknown>")
     for line, raw_line in tokenized_lines:
         try:
             state = _gather_coverage_from_line(
