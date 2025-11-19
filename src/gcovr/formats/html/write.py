@@ -405,6 +405,8 @@ def write_report(
     data["theme"] = get_theme_color(options.html_theme)
 
     root_info.set_coverage(covdata)
+    if root_info.link_function_list and root_info.functions["total"] == 0:
+        root_info.link_function_list = False
 
     # Generate the coverage output (on a per-package basis)
     # source_dirs = set()

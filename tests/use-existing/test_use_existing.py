@@ -99,6 +99,13 @@ def test_issue_1166(gcovr_test_exec: "GcovrTestExec", check) -> None:  # type: i
     check.is_in("/tests/use-existing/output/issue-1166/main.cpp.gcov", process.stderr)
     gcovr_test_exec.compare_json()
 
+    gcovr_test_exec.gcovr(
+        "--verbose",
+        "--json-add-tracefile=coverage.json",
+        "--html-details=coverage.html",
+    )
+    gcovr_test_exec.compare_html()
+
 
 @pytest.mark.skipif(
     not IS_GCC,
