@@ -545,7 +545,8 @@ def test_multiple_output_formats_to_stdout(caplog: pytest.LogCaptureFixture) -> 
             ("JSON summary", "--json-summary"),
             ("SonarQube", "--sonarqube"),
             ("Text", "--txt"),
-        ]
+        ],
+        start=1,
     ):
         format_name, option = text_fragments
         message = c.record_tuples[index]
@@ -586,7 +587,8 @@ def test_multiple_output_formats_to_stdout_1(caplog: pytest.LogCaptureFixture) -
             ("JSON summary", "--json-summary"),
             ("SonarQube", "--sonarqube"),
             ("Text", "--txt"),
-        ]
+        ],
+        start=1,
     ):
         format_name, option = text_fragments
         message = c.record_tuples[index]

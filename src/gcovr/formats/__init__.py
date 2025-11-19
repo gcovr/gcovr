@@ -101,8 +101,8 @@ def read_reports(options: Options) -> CoverageContainer:
         covdata = GcovHandler(options).read_report()
 
     if not covdata:
-        raise RuntimeError(
-            "All coverage data is filtered out. Please check your filters."
+        LOGGER.warning(
+            "All coverage data is filtered out. Please check your paths and filters."
         )
 
     if options.include_search_filter:
