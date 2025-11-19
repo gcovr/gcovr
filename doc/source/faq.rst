@@ -137,6 +137,8 @@ To fix this, upgrade GCC to:
 * any version since 7.
 
 Note that the compiler may ignore ``inline`` functions that are never used.
+To force files to be included in the report even when they are not instrumented,
+you can use the :option:`--include` option.
 
 
 .. _used gcov options:

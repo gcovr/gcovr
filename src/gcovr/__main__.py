@@ -39,6 +39,7 @@ from .filter import (
     Filter,
 )
 from .formats.gcov.read import GcovProgram
+from .formats.gcov.workers import Workers
 from .logging import configure_logging, update_logging, LOGGER
 from .options import FilterOption
 from .version import __version__
@@ -399,7 +400,7 @@ def main(args: Optional[list[str]] = None) -> int:  # pylint: disable=too-many-r
             "--exclude-branches-by-pattern", options.exclude_branches_by_pattern
         )
     except RuntimeError as e:
-        LOGGER.error("%s", str(e))
+        LOGGER.error("%s", e)
         return EXIT_CMDLINE_ERROR
 
     if options.fail_under_decision > 0.0 and not options.show_decision:
@@ -415,6 +416,9 @@ def main(args: Optional[list[str]] = None) -> int:  # pylint: disable=too-many-r
     LOGGER.info("Reading coverage data...")
     try:
         covdata = gcovr_formats.read_reports(options)
+    except Workers.WorkerThreadException as exc:
+        LOGGER.error("Error occurred while reading reports: %s", exc)
+        return EXIT_READ_ERROR
     except Exception:  # pylint: disable=broad-exception-caught
         LOGGER.error(
             "Error occurred while reading reports:\n%s", traceback.format_exc()

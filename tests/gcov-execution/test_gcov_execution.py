@@ -60,7 +60,7 @@ def test_kill_by_signal(gcovr_test_exec: "GcovrTestExec", check) -> None:  # typ
         exc.value.stderr,
     )
     check.is_in(
-        "RuntimeError: Worker thread raised exception, workers canceled.",
+        "(ERROR) Error occurred while reading reports: Worker thread raised exception, workers canceled.",
         exc.value.stderr,
         "Workers canceled exception found in stderr.",
     )
@@ -94,7 +94,7 @@ def test_unknown_cla(gcovr_test_exec: "GcovrTestExec", check) -> None:  # type: 
         "Unknown CLA message found in stderr.",
     )
     check.is_in(
-        "RuntimeError: Worker thread raised exception, workers canceled.",
+        "(ERROR) Error occurred while reading reports: Worker thread raised exception, workers canceled.",
         exc.value.stderr,
         "Workers canceled exception found in stderr.",
     )
@@ -130,7 +130,7 @@ def test_wrong_version(gcovr_test_exec: "GcovrTestExec", check) -> None:  # type
         exc.value.stderr,
     )
     check.is_in(
-        "RuntimeError: Worker thread raised exception, workers canceled.",
+        "(ERROR) Error occurred while reading reports: Worker thread raised exception, workers canceled.",
         exc.value.stderr,
         "Workers canceled exception found in stderr.",
     )
@@ -259,6 +259,7 @@ def test_ignore_source_not_found(gcovr_test_exec: "GcovrTestExec", check) -> Non
             "--json=coverage.json",
             "--gcov-ignore-errors=source_not_found",
             "--root=src",
+            "--trace-include=/.*main.*",
             "build",
         )
         check.is_not_in(
@@ -350,7 +351,7 @@ def test_worker_exception(gcovr_test_exec: "GcovrTestExec", check) -> None:  # t
         "Sanity check exception found in stderr.",
     )
     check.is_in(
-        "RuntimeError: Worker thread raised exception, workers canceled.",
+        "(ERROR) Error occurred while reading reports: Worker thread raised exception, workers canceled.",
         exc.value.stderr,
         "Workers canceled exception found in stderr.",
     )

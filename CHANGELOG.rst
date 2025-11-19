@@ -44,6 +44,7 @@ Bug fixes and small improvements:
 - Fix wrong entries in data source attribute of JSON report. (:issue:`1194`)
 - Fix nested HTML report without coverage data. (:issue:`1197`)
 - Add warning if coverage data is empty. (:issue:`1200`)
+- Add warning if function lines are missing in external generated GCOV files. (:issue:`1199`)
 
 Documentation:
 
