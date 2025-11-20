@@ -23,7 +23,8 @@ following output:
 The default behavior of the :option:`--html` option is to generate
 HTML for a single webpage that summarizes the coverage for all files.
 
-If the given name ends with the suffix ``.gz`` the report is compressed by gzip.
+If the given name ends with the suffix ``.gz`` the report is compressed by gzip,
+if it ends with ``.xz`` it is compressed by LZMA.
 This only make sense for a self contained report with one page.
 
 The :option:`--html-details` option is used to create a separate web

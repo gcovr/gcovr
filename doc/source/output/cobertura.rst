@@ -35,8 +35,9 @@ of times that each line was covered. Consequently, XML output can be
 used to support performance optimization in the same manner that
 ``gcov`` does.
 
-If the given name ends with the suffix ``.gz`` the report is compressed by gzip
-and needs to be unzipped before using as input for other tools.
+If the given name ends with the suffix ``.gz`` the report is compressed by gzip,
+if it ends with ``.xz`` it is compressed by LZMA.
+The file needs to be unzipped before using as input for other tools.
 
 .. versionadded:: 5.1
 

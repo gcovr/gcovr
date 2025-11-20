@@ -20,6 +20,7 @@
 import gzip
 from hashlib import md5
 import json
+import lzma
 from typing import Any, Callable, Iterator, Optional
 import os
 import functools
@@ -34,6 +35,7 @@ from .version import __version__
 REGEX_VERSION_POSTFIX = re.compile(r"(.+?)(?:\.post\d+)?\.dev.+$")
 PRETTY_JSON_INDENT = 4
 GZIP_SUFFIX = ".gz"
+LZMA_SUFFIX = ".xz"
 
 
 class LoopChecker:
@@ -212,6 +214,9 @@ def open_text_for_writing(
         if filename.endswith(GZIP_SUFFIX):
             with gzip.open(filename, "wt", **kwargs) as fh_out:
                 yield fh_out
+        elif filename.endswith(LZMA_SUFFIX):
+            with lzma.open(filename, "wt", **kwargs) as fh_out:
+                yield fh_out
         else:
             with open(filename, "wt", **kwargs) as fh_out:  # pylint: disable=unspecified-encoding
                 yield fh_out
@@ -235,6 +240,9 @@ def open_binary_for_writing(
     if filename is not None and filename != "-":
         if filename.endswith(GZIP_SUFFIX):
             with gzip.open(filename, "wb", **kwargs) as fh_out:
+                yield fh_out
+        elif filename.endswith(LZMA_SUFFIX):
+            with lzma.open(filename, "wb", **kwargs) as fh_out:
                 yield fh_out
         else:
             # files in write binary mode for UTF-8

@@ -21,8 +21,9 @@ This generates an CSV:
 Be careful if you print the output of a CSV to STDOUT and redirect it to
 a file. According to :rfc:`4180`, the line endings must be CRLF.
 
-If the given name ends with the suffix ``.gz`` the report is compressed by gzip
-and needs to be unzipped before using as input for other tools.
+If the given name ends with the suffix ``.gz`` the report is compressed by gzip,
+if it ends with ``.xz`` it is compressed by LZMA.
+The file needs to be unzipped before using as input for other tools.
 
 .. versionadded:: 5.0
    Added :option:`--csv`.
