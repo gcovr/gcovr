@@ -37,7 +37,7 @@ used to support performance optimization in the same manner that
 
 If the given name ends with the suffix ``.gz`` the report is compressed by gzip,
 if it ends with ``.xz`` it is compressed by LZMA.
-The file need to be unzipped before using as input for other tools.
+The file needs to be unzipped before using as input for other tools.
 
 .. versionadded:: 5.1
 

@@ -23,7 +23,7 @@ a file. According to :rfc:`4180`, the line endings must be CRLF.
 
 If the given name ends with the suffix ``.gz`` the report is compressed by gzip,
 if it ends with ``.xz`` it is compressed by LZMA.
-The file need to be unzipped before using as input for other tools.
+The file needs to be unzipped before using as input for other tools.
 
 .. versionadded:: 5.0
    Added :option:`--csv`.
