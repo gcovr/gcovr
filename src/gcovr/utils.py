@@ -35,7 +35,7 @@ from .version import __version__
 REGEX_VERSION_POSTFIX = re.compile(r"(.+?)(?:\.post\d+)?\.dev.+$")
 PRETTY_JSON_INDENT = 4
 GZIP_SUFFIX = ".gz"
-XZ_SUFFIX = ".xz"
+LZMA_SUFFIX = ".xz"
 
 
 class LoopChecker:
@@ -214,7 +214,7 @@ def open_text_for_writing(
         if filename.endswith(GZIP_SUFFIX):
             with gzip.open(filename, "wt", **kwargs) as fh_out:
                 yield fh_out
-        elif filename.endswith(XZ_SUFFIX):
+        elif filename.endswith(LZMA_SUFFIX):
             with lzma.open(filename, "wt", **kwargs) as fh_out:
                 yield fh_out
         else:
@@ -241,7 +241,7 @@ def open_binary_for_writing(
         if filename.endswith(GZIP_SUFFIX):
             with gzip.open(filename, "wb", **kwargs) as fh_out:
                 yield fh_out
-        elif filename.endswith(XZ_SUFFIX):
+        elif filename.endswith(LZMA_SUFFIX):
             with lzma.open(filename, "wb", **kwargs) as fh_out:
                 yield fh_out
         else:
