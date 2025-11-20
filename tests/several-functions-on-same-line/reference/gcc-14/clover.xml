@@ -1,30 +1,24 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <coverage clover="1759082961" generated="1759082961">
   <project timestamp="1759082961">
-    <metrics complexity="0" elements="49" coveredelements="47" conditionals="0" coveredconditionals="0" statements="49" coveredstatements="47" methods="0" coveredmethods="0" packages="1" classes="2" files="2"/>
+    <metrics complexity="0" elements="43" coveredelements="41" conditionals="0" coveredconditionals="0" statements="43" coveredstatements="41" methods="0" coveredmethods="0" packages="1" classes="2" files="2"/>
     <package name="root">
-      <metrics complexity="0" elements="49" coveredelements="47" conditionals="0" coveredconditionals="0" statements="49" coveredstatements="47" methods="0" coveredmethods="0" classes="2" files="2"/>
+      <metrics complexity="0" elements="43" coveredelements="41" conditionals="0" coveredconditionals="0" statements="43" coveredstatements="41" methods="0" coveredmethods="0" classes="2" files="2"/>
       <file name="function.hpp" path="function.hpp">
-        <metrics complexity="0" elements="24" coveredelements="23" conditionals="0" coveredconditionals="0" statements="24" coveredstatements="23" methods="0" coveredmethods="0" classes="1"/>
+        <metrics complexity="0" elements="18" coveredelements="17" conditionals="0" coveredconditionals="0" statements="18" coveredstatements="17" methods="0" coveredmethods="0" classes="1"/>
         <class name="id$a8137fe20e1ee1dbd18324b7662115fa">
-          <metrics complexity="0" elements="24" coveredelements="23" conditionals="0" coveredconditionals="0" statements="24" coveredstatements="23" methods="0" coveredmethods="0"/>
+          <metrics complexity="0" elements="18" coveredelements="17" conditionals="0" coveredconditionals="0" statements="18" coveredstatements="17" methods="0" coveredmethods="0"/>
         </class>
-        <line num="2" type="stmt" count="5"/>
         <line num="2" type="stmt" count="4"/>
         <line num="2" type="stmt" count="1"/>
-        <line num="3" type="stmt" count="5"/>
         <line num="3" type="stmt" count="4"/>
         <line num="3" type="stmt" count="1"/>
-        <line num="4" type="stmt" count="3"/>
         <line num="4" type="stmt" count="2"/>
         <line num="4" type="stmt" count="1"/>
         <line num="7" type="stmt" count="2"/>
-        <line num="7" type="stmt" count="2"/>
         <line num="7" type="stmt" count="0"/>
-        <line num="9" type="stmt" count="5"/>
         <line num="9" type="stmt" count="4"/>
         <line num="9" type="stmt" count="1"/>
-        <line num="10" type="stmt" count="5"/>
         <line num="10" type="stmt" count="4"/>
         <line num="10" type="stmt" count="1"/>
         <line num="13" type="stmt" count="1"/>

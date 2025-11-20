@@ -5,6 +5,13 @@
             "file": "main.cpp",
             "lines": [
                 {
+                    "line_number": 4,
+                    "function_name": "",
+                    "count": 1,
+                    "branches": [],
+                    "gcovr/md5": "a7bbf2b3f95ced35987a3c13e01223da"
+                },
+                {
                     "line_number": 7,
                     "function_name": "main",
                     "count": 1,

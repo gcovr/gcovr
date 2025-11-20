@@ -5,20 +5,14 @@
     <sourcefile name="function.hpp">
       <line nr="2"/>
       <line nr="2"/>
-      <line nr="2"/>
-      <line nr="3"/>
       <line nr="3" mb="0" cb="4"/>
       <line nr="3" mb="2" cb="2"/>
       <line nr="4"/>
       <line nr="4"/>
-      <line nr="4"/>
-      <line nr="7"/>
       <line nr="7"/>
       <line nr="7"/>
       <line nr="9"/>
       <line nr="9"/>
-      <line nr="9"/>
-      <line nr="10"/>
       <line nr="10"/>
       <line nr="10"/>
       <line nr="13"/>
@@ -27,7 +21,7 @@
       <line nr="14"/>
       <line nr="15"/>
       <line nr="15"/>
-      <counter type="LINE" missed="1" covered="23"/>
+      <counter type="LINE" missed="1" covered="17"/>
       <counter type="BRANCH" missed="2" covered="6"/>
       <counter type="METHOD" missed="0" covered="4"/>
     </sourcefile>
@@ -61,11 +55,11 @@
       <counter type="BRANCH" missed="1" covered="3"/>
       <counter type="METHOD" missed="0" covered="4"/>
     </sourcefile>
-    <counter type="LINE" missed="2" covered="47"/>
+    <counter type="LINE" missed="2" covered="41"/>
     <counter type="BRANCH" missed="3" covered="9"/>
     <counter type="METHOD" missed="0" covered="8"/>
   </package>
-  <counter type="LINE" missed="2" covered="47"/>
+  <counter type="LINE" missed="2" covered="41"/>
   <counter type="BRANCH" missed="3" covered="9"/>
   <counter type="METHOD" missed="0" covered="8"/>
 </report>
