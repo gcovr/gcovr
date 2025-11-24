@@ -1,15 +1,17 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <coverage clover="1759082961" generated="1759082961">
   <project timestamp="1759082961">
-    <metrics complexity="0" elements="24" coveredelements="23" conditionals="0" coveredconditionals="0" statements="24" coveredstatements="23" methods="0" coveredmethods="0" packages="1" classes="1" files="1"/>
+    <metrics complexity="0" elements="26" coveredelements="25" conditionals="0" coveredconditionals="0" statements="26" coveredstatements="25" methods="0" coveredmethods="0" packages="1" classes="1" files="1"/>
     <package name="root">
-      <metrics complexity="0" elements="24" coveredelements="23" conditionals="0" coveredconditionals="0" statements="24" coveredstatements="23" methods="0" coveredmethods="0" classes="1" files="1"/>
+      <metrics complexity="0" elements="26" coveredelements="25" conditionals="0" coveredconditionals="0" statements="26" coveredstatements="25" methods="0" coveredmethods="0" classes="1" files="1"/>
       <file name="main.cpp" path="main.cpp">
-        <metrics complexity="0" elements="24" coveredelements="23" conditionals="0" coveredconditionals="0" statements="24" coveredstatements="23" methods="0" coveredmethods="0" classes="1"/>
+        <metrics complexity="0" elements="26" coveredelements="25" conditionals="0" coveredconditionals="0" statements="26" coveredstatements="25" methods="0" coveredmethods="0" classes="1"/>
         <class name="id$118fcbaaba162ba17933c7893247df3a">
-          <metrics complexity="0" elements="24" coveredelements="23" conditionals="0" coveredconditionals="0" statements="24" coveredstatements="23" methods="0" coveredmethods="0"/>
+          <metrics complexity="0" elements="26" coveredelements="25" conditionals="0" coveredconditionals="0" statements="26" coveredstatements="25" methods="0" coveredmethods="0"/>
         </class>
         <line num="8" type="stmt" count="3"/>
+        <line num="8" type="stmt" count="3"/>
+        <line num="9" type="stmt" count="3"/>
         <line num="9" type="stmt" count="3"/>
         <line num="10" type="stmt" count="3"/>
         <line num="11" type="stmt" count="3"/>

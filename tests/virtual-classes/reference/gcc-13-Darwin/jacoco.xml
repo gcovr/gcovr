@@ -4,6 +4,8 @@
   <package name="">
     <sourcefile name="main.cpp">
       <line nr="8"/>
+      <line nr="8"/>
+      <line nr="9"/>
       <line nr="9"/>
       <line nr="10"/>
       <line nr="11"/>
@@ -31,15 +33,15 @@
       <line nr="65"/>
       <line nr="66"/>
       <line nr="68"/>
-      <counter type="LINE" missed="1" covered="23"/>
+      <counter type="LINE" missed="1" covered="25"/>
       <counter type="BRANCH" missed="18" covered="18"/>
       <counter type="METHOD" missed="0" covered="7"/>
     </sourcefile>
-    <counter type="LINE" missed="1" covered="23"/>
+    <counter type="LINE" missed="1" covered="25"/>
     <counter type="BRANCH" missed="18" covered="18"/>
     <counter type="METHOD" missed="0" covered="7"/>
   </package>
-  <counter type="LINE" missed="1" covered="23"/>
+  <counter type="LINE" missed="1" covered="25"/>
   <counter type="BRANCH" missed="18" covered="18"/>
   <counter type="METHOD" missed="0" covered="7"/>
 </report>
