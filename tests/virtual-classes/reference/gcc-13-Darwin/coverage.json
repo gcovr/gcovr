@@ -6,7 +6,7 @@
             "lines": [
                 {
                     "line_number": 8,
-                    "function_name": "",
+                    "function_name": "<unknown function>",
                     "count": 3,
                     "branches": [],
                     "gcovr/md5": "601116bb7f972822f71830e1433951bd"
@@ -20,7 +20,7 @@
                 },
                 {
                     "line_number": 9,
-                    "function_name": "",
+                    "function_name": "<unknown function>",
                     "count": 3,
                     "branches": [],
                     "gcovr/md5": "78c3860abebb28f3bf72e51c4621fef3"

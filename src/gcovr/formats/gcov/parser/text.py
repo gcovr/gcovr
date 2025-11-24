@@ -56,6 +56,8 @@ from .common import (
     check_hits,
 )
 
+UNKNOWN_FUNCTION_NAME = "<unknown function>"
+
 
 def _line_pattern(pattern: str) -> Pattern[str]:
     """
@@ -350,9 +352,9 @@ def parse_coverage(
 
     filecov = FileCoverage(data_filename, filename=filename)
     state = _ParserState(
-        function_name="",
+        function_name=UNKNOWN_FUNCTION_NAME,
         deferred_functions=[
-            _FunctionLine("", 0, 0.0),
+            _FunctionLine(UNKNOWN_FUNCTION_NAME, 0, 0.0),
         ],
     )
     for line, raw_line in tokenized_lines:
@@ -371,7 +373,7 @@ def parse_coverage(
     # but the last line could theoretically contain pending function lines
     for function in state.deferred_functions:
         name, count, blocks = function
-        if name != "":
+        if name != UNKNOWN_FUNCTION_NAME:
             filecov.insert_function_coverage(
                 str(data_filename),
                 MergeOptions(func_opts=FUNCTION_MAX_LINE_MERGE_OPTIONS),
@@ -483,7 +485,7 @@ def _gather_coverage_from_line(
         if state.deferred_functions:
             for function in state.deferred_functions:
                 name, count, blocks = function
-                if name != "":
+                if name != UNKNOWN_FUNCTION_NAME:
                     filecov.insert_function_coverage(
                         filecov.data_sources,
                         MergeOptions(func_opts=FUNCTION_MAX_LINE_MERGE_OPTIONS),
@@ -542,7 +544,10 @@ def _gather_coverage_from_line(
     elif isinstance(line, _FunctionLine):
         # Defer handling of the function tag until the next source line.
         # This is important to get correct line number information.
-        if state.deferred_functions and state.deferred_functions[-1].name == "":
+        if (
+            state.deferred_functions
+            and state.deferred_functions[-1].name == UNKNOWN_FUNCTION_NAME
+        ):
             return state._replace(
                 deferred_functions=[line],
                 function_name=line.name,

@@ -6,7 +6,7 @@
             "lines": [
                 {
                     "line_number": 2,
-                    "function_name": "",
+                    "function_name": "<unknown function>",
                     "count": 5,
                     "branches": [],
                     "gcovr/md5": "c150c688cc2be0c33e969345b6e55a30"
@@ -27,7 +27,7 @@
                 },
                 {
                     "line_number": 3,
-                    "function_name": "",
+                    "function_name": "<unknown function>",
                     "count": 5,
                     "branches": [],
                     "gcovr/md5": "7c6be6f1b03d88e1aeb1a5da84d7b29c"
@@ -106,7 +106,7 @@
                 },
                 {
                     "line_number": 4,
-                    "function_name": "",
+                    "function_name": "<unknown function>",
                     "count": 3,
                     "branches": [],
                     "gcovr/md5": "f21dc0f51cdb8efdd8342542fdf74185"
@@ -141,7 +141,7 @@
                 },
                 {
                     "line_number": 7,
-                    "function_name": "",
+                    "function_name": "<unknown function>",
                     "count": 2,
                     "branches": [],
                     "gcovr/md5": "1db5729894b8021f205502133146e3fd"
@@ -176,7 +176,7 @@
                 },
                 {
                     "line_number": 9,
-                    "function_name": "",
+                    "function_name": "<unknown function>",
                     "count": 5,
                     "branches": [],
                     "gcovr/md5": "be4211c964ef649c710fd79d8c6acec0"
@@ -241,7 +241,7 @@
                 },
                 {
                     "line_number": 10,
-                    "function_name": "",
+                    "function_name": "<unknown function>",
                     "count": 5,
                     "branches": [],
                     "gcovr/md5": "cbb184dd8e05c9709e5dcaedaa0495cf"
