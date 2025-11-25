@@ -180,7 +180,7 @@ def remove_function_definition_lines(
     known_function_lines = set(
         (lineno, functioncov.name)
         for functioncov in filecov.functioncov()
-        for lineno in functioncov.count.keys()
+        for lineno in functioncov.linenos
     )
     for linecov in list(filecov.linecov()):
         if (linecov.lineno, linecov.function_name) in known_function_lines or (

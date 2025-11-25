@@ -48,7 +48,7 @@ def write_report(
         # TN:<test name>
         fh.write(f"TN:{options.lcov_test_name}\n")
 
-        def postfix() -> str:
+        def suffix() -> str:
             return f"_{lineno}" if len(linenos) > 1 else ""
 
         for key in sorted_keys:
@@ -69,17 +69,18 @@ def write_report(
             functions = 0
             function_hits = 0
             for functioncov in filecov.functioncov(sort=True):
-                linenos = list(functioncov.count)
+                linenos = functioncov.reportable_linenos
                 functions += len(linenos)
 
-                for lineno in sorted(linenos):
+                for lineno in linenos:
                     # FN:<line number of function start>,[<line number of function end>,]<function name>
-                    fh.write(f"FN:{lineno},{functioncov.name}{postfix()}\n")
-                for _, count in sorted(functioncov.count.items()):
+                    fh.write(f"FN:{lineno},{functioncov.name}{suffix()}\n")
+                for lineno in linenos:
+                    count = functioncov.count[lineno]
                     if count:
                         function_hits += 1
                     # FNDA:<execution count>,<function name>
-                    fh.write(f"FNDA:{count},{functioncov.name}{postfix()}\n")
+                    fh.write(f"FNDA:{count},{functioncov.name}{suffix()}\n")
             # FNF:<number of functions found>
             fh.write(f"FNF:{functions}\n")
             # FNH:<number of function hit>

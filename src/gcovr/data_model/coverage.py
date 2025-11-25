@@ -2163,6 +2163,24 @@ class FunctionCoverage(CoverageBase):
             lines_as_string += f" ({', '.join(str(line) for line in lines)})"
         return f"{self.parent.location}:{lines_as_string}"
 
+    def exclude(self, lineno: int) -> None:
+        """Exclude line from coverage statistic."""
+        if lineno not in self.excluded:
+            raise RuntimeError("Sanity check failed, lineno not present.")
+        self.excluded[lineno] = True
+
+    @property
+    def linenos(self) -> list[int]:
+        """Get the list of line numbers for this function which are not excluded."""
+        return list(sorted(self.excluded.keys()))
+
+    @property
+    def reportable_linenos(self) -> list[int]:
+        """Get the list of line numbers for this function which are not excluded."""
+        return list(
+            sorted(lineno for lineno, excluded in self.excluded.items() if not excluded)
+        )
+
     @property
     def name(self) -> str:
         """Get the function name. This is the demangled name if present, else the mangled name."""
@@ -2247,8 +2265,8 @@ class FileCoverage(CoverageBase):
             ],
             "functions": [
                 f
-                for function in self.functioncov(sort=True)
-                for f in function.serialize(get_data_sources)
+                for functioncov in self.functioncov(sort=True)
+                for f in functioncov.serialize(get_data_sources)
             ],
         }
         data_dict.update(get_data_sources(self))
