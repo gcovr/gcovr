@@ -863,7 +863,7 @@
                     "name": "_Z3fooi",
                     "demangled_name": "foo(int)",
                     "lineno": 9,
-                    "execution_count": 0,
+                    "execution_count": 1,
                     "blocks_percent": 80.0,
                     "pos": [
                         "9:31",
@@ -875,7 +875,7 @@
                     "name": "_Z3bari",
                     "demangled_name": "bar(int)",
                     "lineno": 19,
-                    "execution_count": 0,
+                    "execution_count": 1,
                     "blocks_percent": 80.0,
                     "pos": [
                         "19:5",
@@ -942,7 +942,7 @@
                     "name": "_ZZ20sort_lambda_excludedvENKUliiE0_clEii",
                     "demangled_name": "sort_lambda_excluded()::{lambda(int, int)#2}::operator()(int, int) const",
                     "lineno": 57,
-                    "execution_count": 0,
+                    "execution_count": 41,
                     "blocks_percent": 100.0,
                     "pos": [
                         "57:7",
@@ -954,7 +954,7 @@
                     "name": "_Z18sort_excluded_bothv",
                     "demangled_name": "sort_excluded_both()",
                     "lineno": 66,
-                    "execution_count": 0,
+                    "execution_count": 1,
                     "blocks_percent": 100.0,
                     "pos": [
                         "66:6",
@@ -966,7 +966,7 @@
                     "name": "_ZZ18sort_excluded_bothvENKUliiE_clEii",
                     "demangled_name": "sort_excluded_both()::{lambda(int, int)#1}::operator()(int, int) const",
                     "lineno": 73,
-                    "execution_count": 0,
+                    "execution_count": 41,
                     "blocks_percent": 100.0,
                     "pos": [
                         "73:7",
@@ -978,7 +978,7 @@
                     "name": "_ZZ18sort_excluded_bothvENKUliiE0_clEii",
                     "demangled_name": "sort_excluded_both()::{lambda(int, int)#2}::operator()(int, int) const",
                     "lineno": 84,
-                    "execution_count": 0,
+                    "execution_count": 18,
                     "blocks_percent": 75.0,
                     "pos": [
                         "84:7",

@@ -111,7 +111,7 @@
                 {
                     "name": "_Z3barv",
                     "lineno": 20,
-                    "execution_count": 0,
+                    "execution_count": 1,
                     "blocks_percent": 100.0,
                     "gcovr/excluded": true
                 },
