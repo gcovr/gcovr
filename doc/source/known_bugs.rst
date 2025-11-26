@@ -40,7 +40,7 @@ Fix LCOV report if function is defined in multiple lines
 
 The created postfix for ``FNDA`` entry always contains the last line of the function.
 
-.. code_block::
+.. code-block::
   :caption: Snippet of LCOV report
 
   FN:3,foo(int)_3

@@ -1737,7 +1737,7 @@ class LineCoverageCollection(CoverageBase):
                         decisioncov.data_sources,
                         count=decisioncov.count,
                     )
-                else:
+                else:  # pragma: no cover
                     raise RuntimeError("Sanity check failed, unknown decision type.")
                 new_linecov.insert_decision_coverage(decisioncov)
             for callcov in linecov.calls():
@@ -2120,8 +2120,8 @@ class FunctionCoverage(CoverageBase):
                 lineno = min(*self.count.keys(), *other.count.keys())
             elif options.func_opts.merge_function_use_line_max:
                 lineno = max(*self.count.keys(), *other.count.keys())
-            else:
-                raise AssertionError("Sanity check, unknown merge mode")
+            else:  # pragma: no cover
+                raise RuntimeError("Sanity check, unknown merge mode")
 
             # Overwrite data with the sum at the desired line
             self.count = CoverageDict[int, int](
@@ -2165,7 +2165,7 @@ class FunctionCoverage(CoverageBase):
 
     def exclude(self, lineno: int) -> None:
         """Exclude line from coverage statistic."""
-        if lineno not in self.excluded:
+        if lineno not in self.excluded:  # pragma: no cover
             raise RuntimeError("Sanity check failed, lineno not present.")
         self.excluded[lineno] = True
 
@@ -2394,7 +2394,7 @@ class FileCoverage(CoverageBase):
 
     def remove_line(self, lineno: int) -> None:
         """Remove the line coverage collection for the given line."""
-        if self.__lines[lineno]:  # pragma: no cover
+        if lineno not in self.__lines:  # pragma: no cover
             raise RuntimeError(
                 "Sanity check, only lines without coverage can be removed."
             )
