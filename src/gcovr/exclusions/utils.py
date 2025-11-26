@@ -157,10 +157,9 @@ def apply_exclusion_ranges(
             linecov_collection.exclude_branches()
 
     for functioncov in filecov.functioncov():
-        for lineno in functioncov.excluded.keys():
+        for lineno in functioncov.reportable_linenos:
             if line_is_excluded(lineno):
-                functioncov.count[lineno] = 0
-                functioncov.excluded[lineno] = True
+                functioncov.exclude(lineno)
 
 
 def make_is_in_any_range_inclusive(

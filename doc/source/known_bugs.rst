@@ -9,6 +9,45 @@ Known bugs
 This list contains bugs for version 6.0 and newer, always check the latest
 version of this file available `here <https://gcovr.com/en/latest/known_bugs.html>`_.
 
+.. _fix_1206_1:
+
+Fix excluded functions in HTML report
+-------------------------------------
+
+.. list-table::
+
+   * - Introduced
+     - :ref:`release_8_4`
+
+   * - Fixed
+     - :ref:`next_release`, :issue:`1206`
+
+The excluded functions where marked as ``not called`` instead of ``excluded`` in
+the HTML report.
+
+.. _fix_1206_2:
+
+Fix LCOV report if function is defined in multiple lines
+--------------------------------------------------------
+
+.. list-table::
+
+   * - Introduced
+     - :ref:`release_8_4`
+
+   * - Fixed
+     - :ref:`next_release`, :issue:`1206`
+
+The created postfix for ``FNDA`` entry always contains the last line of the function.
+
+.. code-block::
+  :caption: Snippet of LCOV report
+
+  FN:3,foo(int)_3
+  FN:5,foo(int)_5
+  FNDA:1,foo(int)_5
+  FNDA:1,foo(int)_5
+
 .. _fix_1197:
 
 Nested HTML report without data can't be generated

@@ -74,6 +74,7 @@
         "filecov",
         "filelist",
         "FIPS",
+        "FNDA",
         "fprofile",
         "fstring",
         "functioncov",

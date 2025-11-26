@@ -160,7 +160,7 @@
                     "name": "_Z3barv",
                     "demangled_name": "bar()",
                     "lineno": 20,
-                    "execution_count": 0,
+                    "execution_count": 1,
                     "blocks_percent": 100.0,
                     "pos": [
                         "20:5",

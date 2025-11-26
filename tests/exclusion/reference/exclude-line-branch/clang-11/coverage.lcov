@@ -1,9 +1,7 @@
 TN:GCOVR_report
 SF:tests/exclusion/output/exclude-line-branch/bar.cpp
 VER:7c2adb8c2d04277ae316f0bc581968cc
-FN:14,_Z3bari
-FNDA:0,_Z3bari
-FNF:1
+FNF:0
 FNH:0
 BRF:0
 BRH:0

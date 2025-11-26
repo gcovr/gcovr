@@ -46,6 +46,7 @@ Bug fixes and small improvements:
 - Add warning if coverage data is empty. (:issue:`1200`)
 - Add warning if function lines are missing in external generated GCOV files. (:issue:`1199`)
 - Extend support for zipped reports. If last suffix is ``.xz`` then LZMA is used to compress the report. (:issue:`1201`)
+- Fix function exclusion in report generation. (:issue:`1206`)
 
 Documentation:
 
@@ -87,6 +88,8 @@ Known bugs:
 - :ref:`fix_1194_1`
 - :ref:`fix_1194_2`
 - :ref:`fix_1197`
+- :ref:`fix_1206_1`
+- :ref:`fix_1206_2`
 
 Breaking changes:
 

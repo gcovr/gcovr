@@ -159,7 +159,10 @@ no_implicit_reexport = true
 strict_equality = true
 extra_checks = true
 disable_error_code = "attr-defined"
-exclude = ["build/.*"]
+exclude = [
+    "build/.*",
+    "debug/.*",
+]
 
 [tool.pyright]
 reportAttributeAccessIssue = false
