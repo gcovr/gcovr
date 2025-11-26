@@ -217,5 +217,5 @@ class Workers:
     def __exit__(self, exc_type: Any, exc_val: Any, exc_tb: Any) -> None:
         if self.size() != 0:
             raise AssertionError(
-                "Sanity check, you must call wait on the contextmanager to get the context of the workers."
+                "Sanity check failed, you must call wait on the contextmanager to get the context of the workers."
             )

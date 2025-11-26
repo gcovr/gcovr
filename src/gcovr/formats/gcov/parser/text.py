@@ -434,7 +434,7 @@ class _ParserState(NamedTuple):
     >>> restored_state.restore_state()
     Traceback (most recent call last):
     ...
-    RuntimeError: Sanity check failed, previous_state of _ParserState is None.
+    AssertionError: Sanity check failed, previous_state of _ParserState is None.
     """
 
     deferred_functions: list[_FunctionLine] = []
@@ -455,7 +455,7 @@ class _ParserState(NamedTuple):
     def restore_state(self) -> "_ParserState":
         """Restore the previous parser state with the current line coverage list."""
         if self.previous_state is None:
-            raise RuntimeError(
+            raise AssertionError(
                 f"Sanity check failed, previous_state of {type(self).__name__} is None."
             )
         return self.previous_state._replace(linecov_list=self.linecov_list)

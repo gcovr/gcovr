@@ -122,7 +122,7 @@ def write_report(
     def run_git_cmd(*args: str) -> str:
         if git is None:
             raise AssertionError(
-                "Sanity check failed. Function must only be executed if git is found."
+                "Sanity check failed, function must only be executed if git is found."
             )
         process = subprocess.run(  # nosec # We execute git
             [git] + list(args),
