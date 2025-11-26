@@ -161,8 +161,8 @@ class _FunctionLine(NamedTuple):
     """
 
     name: str
-    call_count: int
-    blocks_covered: float
+    call_count: Optional[int]
+    blocks_covered: Optional[float]
 
 
 class _FunctionSpecializationNameLine(NamedTuple):
@@ -354,7 +354,7 @@ def parse_coverage(
     state = _ParserState(
         function_name=UNKNOWN_FUNCTION_NAME,
         deferred_functions=[
-            _FunctionLine(UNKNOWN_FUNCTION_NAME, 0, 0.0),
+            _FunctionLine(UNKNOWN_FUNCTION_NAME, None, None),
         ],
     )
     for line, raw_line in tokenized_lines:
@@ -485,7 +485,7 @@ def _gather_coverage_from_line(
         if state.deferred_functions:
             for function in state.deferred_functions:
                 name, count, blocks = function
-                if name != UNKNOWN_FUNCTION_NAME:
+                if name != UNKNOWN_FUNCTION_NAME or not extra_info & _ExtraInfo.NONCODE:
                     filecov.insert_function_coverage(
                         filecov.data_sources,
                         MergeOptions(func_opts=FUNCTION_MAX_LINE_MERGE_OPTIONS),
@@ -494,6 +494,7 @@ def _gather_coverage_from_line(
                         lineno=lineno,
                         count=count,
                         blocks=blocks,
+                        excluded=name == UNKNOWN_FUNCTION_NAME,
                     )
 
             # If a specialized function is following a normal one the overall lines were added
@@ -546,7 +547,7 @@ def _gather_coverage_from_line(
         # This is important to get correct line number information.
         if (
             state.deferred_functions
-            and state.deferred_functions[-1].name == UNKNOWN_FUNCTION_NAME
+            and state.deferred_functions[0].name == UNKNOWN_FUNCTION_NAME
         ):
             return state._replace(
                 deferred_functions=[line],

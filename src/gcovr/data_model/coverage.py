@@ -1921,16 +1921,16 @@ class FunctionCoverage(CoverageBase):
         mangled_name: Optional[str],
         demangled_name: Optional[str],
         lineno: int,
-        count: int,
-        blocks: float,
+        count: Optional[int],
+        blocks: Optional[float],
         start: Optional[tuple[int, int]] = None,
         end: Optional[tuple[int, int]] = None,
         excluded: bool = False,
     ) -> None:
         super().__init__(data_sources)
         self.parent = parent
-        self.count = CoverageDict[int, int]({lineno: count})
-        self.blocks = CoverageDict[int, float]({lineno: blocks})
+        self.count = CoverageDict[int, Optional[int]]({lineno: count})
+        self.blocks = CoverageDict[int, Optional[float]]({lineno: blocks})
         self.excluded = CoverageDict[int, bool]({lineno: excluded})
         self.start: Optional[CoverageDict[int, tuple[int, int]]] = (
             None
@@ -1957,7 +1957,7 @@ class FunctionCoverage(CoverageBase):
 
         if lineno < 0:
             self.raise_data_error("lineno must not be a negative value.")
-        if count < 0:
+        if count is not None and count < 0:
             self.raise_data_error("count must not be a negative value.")
 
     def serialize(
@@ -1972,13 +1972,11 @@ class FunctionCoverage(CoverageBase):
                 data_dict["name"] = self.mangled_name
             if self.demangled_name is not None:
                 data_dict["demangled_name"] = self.demangled_name
-            data_dict.update(
-                {
-                    "lineno": lineno,
-                    "execution_count": count,
-                    "blocks_percent": self.blocks[lineno],
-                }
-            )
+            data_dict["lineno"] = lineno
+            if count is not None:
+                data_dict["execution_count"] = count
+            if self.blocks[lineno] is not None:
+                data_dict["blocks_percent"] = self.blocks[lineno]
             if self.start is not None and self.end is not None:
                 data_dict["pos"] = (
                     ":".join([str(e) for e in self.start[lineno]]),
@@ -2014,8 +2012,8 @@ class FunctionCoverage(CoverageBase):
             mangled_name=data_dict.get("name"),
             demangled_name=data_dict.get("demangled_name"),
             lineno=data_dict["lineno"],
-            count=data_dict["execution_count"],
-            blocks=data_dict["blocks_percent"],
+            count=data_dict.get("execution_count"),
+            blocks=data_dict.get("blocks_percent"),
             start=start,
             end=end,
             excluded=data_dict.get(GCOVR_EXCLUDED, False),
@@ -2083,14 +2081,18 @@ class FunctionCoverage(CoverageBase):
         if options.func_opts.separate_function:
             for lineno, count in other.count.items():
                 try:
-                    self.count[lineno] += count
+                    self.count[lineno] += count  # type: ignore [operator]
+                except TypeError:
+                    self.count[lineno] = None
                 except KeyError:
                     self.count[lineno] = count
             for lineno, blocks in other.blocks.items():
                 try:
                     # Take the maximum value for this line
-                    if self.blocks[lineno] < blocks:
+                    if self.blocks[lineno] < blocks:  # type: ignore [operator]
                         self.blocks[lineno] = blocks
+                except TypeError:
+                    self.count[lineno] = None
                 except KeyError:
                     self.blocks[lineno] = blocks
             for lineno, excluded in other.excluded.items():
@@ -2124,12 +2126,26 @@ class FunctionCoverage(CoverageBase):
                 raise AssertionError("Sanity check failed, unknown merge mode")
 
             # Overwrite data with the sum at the desired line
-            self.count = CoverageDict[int, int](
-                {lineno: sum(self.count.values()) + sum(other.count.values())}
+            self.count = CoverageDict[int, Optional[int]](
+                {
+                    lineno: None
+                    if None in self.count.values() or None in other.count.values()
+                    else sum(
+                        int(value or 0)
+                        for value in [*self.count.values(), *other.count.values()]
+                    )
+                }
             )
             # or the max value at the desired line
-            self.blocks = CoverageDict[int, float](
-                {lineno: max(*self.blocks.values(), *other.blocks.values())}
+            self.blocks = CoverageDict[int, Optional[float]](
+                {
+                    lineno: None
+                    if None in self.blocks.values() or None in other.blocks.values()
+                    else max(
+                        float(value or 0)
+                        for value in [*self.blocks.values(), *other.blocks.values()]
+                    )
+                }
             )
             # or the logical or of all values
             self.excluded = CoverageDict[int, bool](
@@ -2495,8 +2511,8 @@ class FileCoverage(CoverageBase):
         mangled_name: Optional[str],
         demangled_name: Optional[str],
         lineno: int,
-        count: int,
-        blocks: float,
+        count: Optional[int],
+        blocks: Optional[float],
         start: Optional[tuple[int, int]] = None,
         end: Optional[tuple[int, int]] = None,
         excluded: bool = False,
@@ -2575,7 +2591,7 @@ class FileCoverage(CoverageBase):
                 if excluded_function:
                     excluded += 1
                 else:
-                    if functioncov.count[lineno] > 0:
+                    if (functioncov.count[lineno] or 0) > 0:
                         covered += 1
 
         return CoverageStat(

@@ -462,7 +462,7 @@ Each **function** entry describes a line in the source file::
       "demangled_name": demangled_name,
       "lineno": lineno,
       "execution_count": count,
-      "branch_percent": percent,
+      "blocks_percent": percent,
       "pos": [
         "<start line>:<start column>",
         "<end line>:<end column>"
@@ -486,10 +486,10 @@ lineno: int
   Incompatible with GCC gcov JSON.
 
 execution_count: int
-  How often this function was called.
+  How often this function was called. Is absent for ``<unknown function>``.
 
-branch_percent: float
-  The branch coverage in percent (0.0 to 100.0).
+blocks_percent: float
+  The branch coverage in percent (0.0 to 100.0). Is absent for ``<unknown function>``.
 
 pos: list
   A list with start and end position of function (1-based). Both entries are string with
@@ -510,6 +510,9 @@ gcovr/data_sources: list
 .. versionadded:: NEXT
    Change :option:`--verbose` to :option:`--json-trace-data-source` for ``gcovr/data_sources``.
 
+.. versionadded:: NEXT
+   Key ``execution_count`` and ``blocks_percent`` are optional.
+
 .. versionadded:: 8.4
    The ``gcovr/data_sources`` is added.
 
@@ -524,7 +527,7 @@ gcovr/data_sources: list
    Removed ``returned_count`` field because missing in ``gcov`` JSON format.
 
 .. versionadded:: 7.0
-   New ``returned_count`` and ``branch_percent`` field.
+   New ``returned_count`` and ``blocks_percent`` field.
 
 .. versionadded:: 6.0
    New ``gcovr/excluded`` field.
