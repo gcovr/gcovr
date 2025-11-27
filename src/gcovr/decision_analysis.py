@@ -29,6 +29,7 @@ from .data_model.coverage import (
     FileCoverage,
     LineCoverage,
 )
+from .exceptions import SanityCheckError
 from .logging import LOGGER
 
 _CHARACTERS_TO_ADD_SPACES = re.compile(r"([;:\(\)\{\}])")
@@ -264,8 +265,8 @@ class DecisionParser:
         exec_count = 0 if linecov is None else linecov.count
         last_decision_linecov = self.linecov_by_line.get(self.last_decision_line)
         if last_decision_linecov is None:
-            raise AssertionError(
-                "Sanity check failed, last decision must be present for multi line analysis."
+            raise SanityCheckError(
+                "Last decision must be present for multi line analysis."
             )
 
         # check, if the branch statement was finished in the last line

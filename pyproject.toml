@@ -225,6 +225,7 @@ patch = [
 exclude_lines = [
     "[#]\\s*pragma: no cover",
 
+    "^\\s*raise SanityCheckError\\b",
     "^\\s*raise AssertionError\\b",
     "^\\s*raise NotImplementedError\\b",
 ]

@@ -78,6 +78,11 @@ from typing import (
     Union,
 )
 
+from ..exceptions import (
+    GcovrDataAssertionError,
+    GcovrMergeAssertionError,
+    SanityCheckError,
+)
 from ..filter import is_file_excluded
 from ..logging import LOGGER
 from ..utils import force_unix_separator
@@ -100,14 +105,6 @@ GCOVR_DATA_SOURCES = "gcovr/data_sources"
 GCOVR_EXCLUDED = "gcovr/excluded"
 
 _T = TypeVar("_T")
-
-
-class GcovrDataAssertionError(AssertionError):
-    """Exception for data merge errors."""
-
-
-class GcovrMergeAssertionError(AssertionError):
-    """Exception for data merge errors."""
 
 
 def _presentable_filename(filename: str, root_filter: re.Pattern[str]) -> str:
@@ -230,19 +227,19 @@ class BranchCoverage(CoverageBase):
         >>> BranchCoverage(linecov, "call.gcov", branchno=None, count=-1)
         Traceback (most recent call last):
           ...
-        gcovr.data_model.coverage.GcovrDataAssertionError: file.c:11 count must not be a negative value.
+        gcovr.exceptions.GcovrDataAssertionError: file.c:11 count must not be a negative value.
         GCOV data file is:
            call.gcov
         >>> BranchCoverage(linecov, "call.gcov", branchno=None, count=-1)
         Traceback (most recent call last):
           ...
-        gcovr.data_model.coverage.GcovrDataAssertionError: file.c:11 count must not be a negative value.
+        gcovr.exceptions.GcovrDataAssertionError: file.c:11 count must not be a negative value.
         GCOV data file is:
            call.gcov
         >>> BranchCoverage(linecov, "call.gcov", branchno=None, source_block_id=1, destination_block_id=2, count=-1)
         Traceback (most recent call last):
           ...
-        gcovr.data_model.coverage.GcovrDataAssertionError: file.c:11 (source block 1, destination block 2) count must not be a negative value.
+        gcovr.exceptions.GcovrDataAssertionError: file.c:11 (source block 1, destination block 2) count must not be a negative value.
         GCOV data file is:
            call.gcov
     """
@@ -349,7 +346,7 @@ class BranchCoverage(CoverageBase):
         >>> left.merge(right, DEFAULT_MERGE_OPTIONS)
         Traceback (most recent call last):
           ...
-        gcovr.data_model.coverage.GcovrMergeAssertionError: file.cpp:100 (branch 0, source block 2) Source block ID must be equal, got 2 and 3.
+        gcovr.exceptions.GcovrMergeAssertionError: file.cpp:100 (branch 0, source block 2) Source block ID must be equal, got 2 and 3.
         GCOV data file of merge source is:
            right.gcov
         and of merge target is:
@@ -458,20 +455,20 @@ class ConditionCoverage(CoverageBase):
         >>> ConditionCoverage(linecov, "call.gcov", conditionno=1, count=-1, covered=2, not_covered_true=[1], not_covered_false=[2])
         Traceback (most recent call last):
           ...
-        gcovr.data_model.coverage.GcovrDataAssertionError: file.c:11 (condition 1) count must not be a negative value.
+        gcovr.exceptions.GcovrDataAssertionError: file.c:11 (condition 1) count must not be a negative value.
         GCOV data file is:
            call.gcov
         >>> ConditionCoverage(linecov, [["call_1.gcov"], ["call_2.gcov"]], conditionno=1, count=2, covered=4, not_covered_true=[1], not_covered_false=[2])
         Traceback (most recent call last):
           ...
-        gcovr.data_model.coverage.GcovrDataAssertionError: file.c:11 (condition 1) count must not be less than covered.
+        gcovr.exceptions.GcovrDataAssertionError: file.c:11 (condition 1) count must not be less than covered.
         GCOV data files are:
            call_1.gcov
            call_2.gcov
         >>> ConditionCoverage(linecov, "call.gcov", conditionno=1, count=4, covered=2, not_covered_true=[1], not_covered_false=[1, 2])
         Traceback (most recent call last):
           ...
-        gcovr.data_model.coverage.GcovrDataAssertionError: file.c:11 (condition 1) The sum of the covered conditions (2), the uncovered true conditions (1) and the uncovered false conditions (2) must be equal to the count of conditions (4).
+        gcovr.exceptions.GcovrDataAssertionError: file.c:11 (condition 1) The sum of the covered conditions (2), the uncovered true conditions (1) and the uncovered false conditions (2) must be equal to the count of conditions (4).
         GCOV data file is:
            call.gcov
     """
@@ -574,7 +571,7 @@ class ConditionCoverage(CoverageBase):
         >>> left.merge(right, DEFAULT_MERGE_OPTIONS)
         Traceback (most recent call last):
           ...
-        gcovr.data_model.coverage.GcovrMergeAssertionError: file.c:10 (condition 1) The condition number must be equal, got 2 and expected 1.
+        gcovr.exceptions.GcovrMergeAssertionError: file.c:10 (condition 1) The condition number must be equal, got 2 and expected 1.
         GCOV data file of merge source is:
            right.gcov
         and of merge target is:
@@ -911,13 +908,13 @@ class CallCoverage(CoverageBase):
         >>> CallCoverage(linecov, "call.gcov", callno=None, destination_block_id=None, returned=0, source_block_id=12)
         Traceback (most recent call last):
           ...
-        gcovr.data_model.coverage.GcovrDataAssertionError: file.c:11 (call 12->None) Either callno or destination_block_id must be set.
+        gcovr.exceptions.GcovrDataAssertionError: file.c:11 (call 12->None) Either callno or destination_block_id must be set.
         GCOV data file is:
            call.gcov
         >>> CallCoverage(linecov, [["call_1.gcov"], ["call_2.gcov"]], callno=1, destination_block_id=1, returned=0, source_block_id=0)
         Traceback (most recent call last):
           ...
-        gcovr.data_model.coverage.GcovrDataAssertionError: file.c:11 (call 1) One of callno or destination_block_id must be set.
+        gcovr.exceptions.GcovrDataAssertionError: file.c:11 (call 1) One of callno or destination_block_id must be set.
         GCOV data files are:
            call_1.gcov
            call_2.gcov
@@ -1009,7 +1006,7 @@ class CallCoverage(CoverageBase):
         >>> left.merge(right, DEFAULT_MERGE_OPTIONS)
         Traceback (most recent call last):
           ...
-        gcovr.data_model.coverage.GcovrMergeAssertionError: file.c:10 (call 1) Call number must be equal, got 1 and 2.
+        gcovr.exceptions.GcovrMergeAssertionError: file.c:10 (call 1) Call number must be equal, got 1 and 2.
         GCOV data file of merge source is:
            right.gcov
         and of merge target is:
@@ -1018,7 +1015,7 @@ class CallCoverage(CoverageBase):
         >>> left.merge(right, DEFAULT_MERGE_OPTIONS)
         Traceback (most recent call last):
           ...
-        gcovr.data_model.coverage.GcovrMergeAssertionError: file.c:10 (call 1) Source block ID must be equal, got 1 and 10.
+        gcovr.exceptions.GcovrMergeAssertionError: file.c:10 (call 1) Source block ID must be equal, got 1 and 10.
         GCOV data file of merge source is:
            right.gcov
         and of merge target is:
@@ -1040,7 +1037,7 @@ class CallCoverage(CoverageBase):
         >>> left.merge(right, DEFAULT_MERGE_OPTIONS)
         Traceback (most recent call last):
           ...
-        gcovr.data_model.coverage.GcovrMergeAssertionError: file.c:10 (call 1->2) Destination block ID must be equal, got 2 and 3.
+        gcovr.exceptions.GcovrMergeAssertionError: file.c:10 (call 1->2) Destination block ID must be equal, got 2 and 3.
         GCOV data file of merge source is:
            right.gcov
         and of merge target is:
@@ -1120,7 +1117,7 @@ class LineCoverage(CoverageBase):
     >>> linecov = LineCoverage(linecov_list, "line.gcov", count=-1, function_name=None)
     Traceback (most recent call last):
         ...
-    gcovr.data_model.coverage.GcovrDataAssertionError: file.c:1 count must not be a negative value.
+    gcovr.exceptions.GcovrDataAssertionError: file.c:1 count must not be a negative value.
     GCOV data file is:
        line.gcov
     """
@@ -1619,7 +1616,7 @@ class LineCoverageCollection(CoverageBase):
     >>> linecov_list = LineCoverageCollection(filecov, "line.gcov", lineno=0)
     Traceback (most recent call last):
         ...
-    gcovr.data_model.coverage.GcovrDataAssertionError: file.c:0 lineno must be a positive value.
+    gcovr.exceptions.GcovrDataAssertionError: file.c:0 lineno must be a positive value.
     GCOV data file is:
        line.gcov
     """
@@ -1738,7 +1735,7 @@ class LineCoverageCollection(CoverageBase):
                         count=decisioncov.count,
                     )
                 else:  # pragma: no cover
-                    raise AssertionError("Sanity check failed, unknown decision type.")
+                    raise AssertionError("Unknown decision type.")
                 new_linecov.insert_decision_coverage(decisioncov)
             for callcov in linecov.calls():
                 new_linecov.insert_call_coverage(
@@ -1885,19 +1882,19 @@ class FunctionCoverage(CoverageBase):
         >>> FunctionCoverage(filecov, "func.gcov", mangled_name="foo()", demangled_name="bar()", lineno=5, count=3, blocks=0.5)
         Traceback (most recent call last):
           ...
-        gcovr.data_model.coverage.GcovrDataAssertionError: file.c:5 Got foo() as 'mangled_name', in this case 'demangled_name' must be None.
+        gcovr.exceptions.GcovrDataAssertionError: file.c:5 Got foo() as 'mangled_name', in this case 'demangled_name' must be None.
         GCOV data file is:
            func.gcov
         >>> FunctionCoverage(filecov, "func.gcov", mangled_name="foo()", demangled_name=None, lineno=-1, count=1, blocks=0.5)
         Traceback (most recent call last):
           ...
-        gcovr.data_model.coverage.GcovrDataAssertionError: file.c:-1 lineno must not be a negative value.
+        gcovr.exceptions.GcovrDataAssertionError: file.c:-1 lineno must not be a negative value.
         GCOV data file is:
            func.gcov
         >>> FunctionCoverage(filecov, "func.gcov", mangled_name="foo()", demangled_name=None, lineno=1, count=-1, blocks=0.5)
         Traceback (most recent call last):
           ...
-        gcovr.data_model.coverage.GcovrDataAssertionError: file.c:1 count must not be a negative value.
+        gcovr.exceptions.GcovrDataAssertionError: file.c:1 count must not be a negative value.
         GCOV data file is:
            func.gcov
     """
@@ -2081,18 +2078,19 @@ class FunctionCoverage(CoverageBase):
         if options.func_opts.separate_function:
             for lineno, count in other.count.items():
                 try:
-                    self.count[lineno] += count  # type: ignore [operator]
-                except TypeError:
-                    self.count[lineno] = None
+                    if self.count[lineno] is None:
+                        self.count[lineno] = count
+                    elif count is not None:
+                        self.count[lineno] += count  # type: ignore [operator]
                 except KeyError:
                     self.count[lineno] = count
             for lineno, blocks in other.blocks.items():
                 try:
                     # Take the maximum value for this line
-                    if self.blocks[lineno] < blocks:  # type: ignore [operator]
+                    if self.blocks[lineno] is None:
                         self.blocks[lineno] = blocks
-                except TypeError:
-                    self.count[lineno] = None
+                    elif blocks is not None and self.blocks[lineno] < blocks:  # type: ignore [operator]
+                        self.blocks[lineno] = blocks
                 except KeyError:
                     self.blocks[lineno] = blocks
             for lineno, excluded in other.excluded.items():
@@ -2123,7 +2121,7 @@ class FunctionCoverage(CoverageBase):
             elif options.func_opts.merge_function_use_line_max:
                 lineno = max(*self.count.keys(), *other.count.keys())
             else:  # pragma: no cover
-                raise AssertionError("Sanity check failed, unknown merge mode")
+                raise AssertionError("Unknown merge mode")
 
             # Overwrite data with the sum at the desired line
             self.count = CoverageDict[int, Optional[int]](
@@ -2182,7 +2180,7 @@ class FunctionCoverage(CoverageBase):
     def exclude(self, lineno: int) -> None:
         """Exclude line from coverage statistic."""
         if lineno not in self.excluded:  # pragma: no cover
-            raise AssertionError("Sanity check failed, lineno not present.")
+            raise SanityCheckError("Unknown lineno to exclude.")
         self.excluded[lineno] = True
 
     @property
@@ -2386,9 +2384,9 @@ class FileCoverage(CoverageBase):
         else:
             yield from self.__functions.values()
 
-    def get_functioncov(self, name: str) -> Optional[FunctionCoverage]:
+    def get_functioncov(self, name: str) -> FunctionCoverage:
         """Get the function coverage object of a function."""
-        return self.__functions.get(name)
+        return self.__functions[name]
 
     def has_lines(self) -> bool:
         """Test if there are line coverage collections."""
@@ -2411,9 +2409,7 @@ class FileCoverage(CoverageBase):
     def remove_line(self, lineno: int) -> None:
         """Remove the line coverage collection for the given line."""
         if lineno not in self.__lines:  # pragma: no cover
-            raise AssertionError(
-                "Sanity check failed, only lines without coverage can be removed."
-            )
+            raise SanityCheckError("Unknown line to remove.")
         del self.__lines[lineno]
 
     def merge_lines(self, activate_trace_logging: bool) -> None:

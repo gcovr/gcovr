@@ -48,6 +48,7 @@ from typing import (
 
 from ....data_model.coverage import FileCoverage, LineCoverage
 from ....data_model.merging import FUNCTION_MAX_LINE_MERGE_OPTIONS, MergeOptions
+from ....exceptions import SanityCheckError
 from ....logging import LOGGER
 from ....utils import get_md5_hexdigest
 
@@ -353,7 +354,9 @@ def parse_coverage(
     filecov = FileCoverage(data_filename, filename=filename)
     state = _ParserState(
         function_name=UNKNOWN_FUNCTION_NAME,
-        deferred_functions=[
+        deferred_functions=[]
+        if missing_function_lines
+        else [
             _FunctionLine(UNKNOWN_FUNCTION_NAME, None, None),
         ],
     )
@@ -434,7 +437,7 @@ class _ParserState(NamedTuple):
     >>> restored_state.restore_state()
     Traceback (most recent call last):
     ...
-    AssertionError: Sanity check failed, previous_state of _ParserState is None.
+    gcovr.exceptions.SanityCheckError: Previous_state of _ParserState is None.
     """
 
     deferred_functions: list[_FunctionLine] = []
@@ -455,9 +458,7 @@ class _ParserState(NamedTuple):
     def restore_state(self) -> "_ParserState":
         """Restore the previous parser state with the current line coverage list."""
         if self.previous_state is None:
-            raise AssertionError(
-                f"Sanity check failed, previous_state of {type(self).__name__} is None."
-            )
+            raise SanityCheckError(f"Previous_state of {type(self).__name__} is None.")
         return self.previous_state._replace(linecov_list=self.linecov_list)
 
 
@@ -481,21 +482,24 @@ def _gather_coverage_from_line(
     if isinstance(line, _SourceLine):
         raw_count, lineno, source_code, extra_info = line
 
+        is_noncode = extra_info & _ExtraInfo.NONCODE
+        if is_noncode:
+            return state  # skip noncode lines
+
         # handle deferred functions
         if state.deferred_functions:
             for function in state.deferred_functions:
                 name, count, blocks = function
-                if name != UNKNOWN_FUNCTION_NAME or not extra_info & _ExtraInfo.NONCODE:
-                    filecov.insert_function_coverage(
-                        filecov.data_sources,
-                        MergeOptions(func_opts=FUNCTION_MAX_LINE_MERGE_OPTIONS),
-                        mangled_name=name,
-                        demangled_name=None,
-                        lineno=lineno,
-                        count=count,
-                        blocks=blocks,
-                        excluded=name == UNKNOWN_FUNCTION_NAME,
-                    )
+                filecov.insert_function_coverage(
+                    filecov.data_sources,
+                    MergeOptions(func_opts=FUNCTION_MAX_LINE_MERGE_OPTIONS),
+                    mangled_name=name,
+                    demangled_name=None,
+                    lineno=lineno,
+                    count=count,
+                    blocks=blocks,
+                    excluded=name == UNKNOWN_FUNCTION_NAME,
+                )
 
             # If a specialized function is following a normal one the overall lines were added
             # already to the previous function and we need to remove them again.
@@ -521,21 +525,28 @@ def _gather_coverage_from_line(
                     )
                 for linecov in to_remove:
                     filecov.remove_line_coverage(linecov)
+                # If the function was unknown, and we removed all linecovs we need to remove the function too.
+                if (
+                    state.function_name == UNKNOWN_FUNCTION_NAME
+                    and not filecov.linecov()
+                ):
+                    filecov.remove_function_coverage(
+                        filecov.get_functioncov(UNKNOWN_FUNCTION_NAME)
+                    )
+
             state = state._replace(
                 deferred_functions=[],
                 linecov_list=[],
             )
 
-        is_noncode = extra_info & _ExtraInfo.NONCODE
-        if not is_noncode:
-            linecov = filecov.insert_line_coverage(
-                filecov.data_sources,
-                lineno=lineno,
-                count=raw_count,
-                function_name=state.function_name,
-                md5=get_md5_hexdigest(source_code.encode("UTF-8")),
-            )
-            state.linecov_list.append(linecov)
+        linecov = filecov.insert_line_coverage(
+            filecov.data_sources,
+            lineno=lineno,
+            count=raw_count,
+            function_name=state.function_name,
+            md5=get_md5_hexdigest(source_code.encode("UTF-8")),
+        )
+        state.linecov_list.append(linecov)
 
         return state
 

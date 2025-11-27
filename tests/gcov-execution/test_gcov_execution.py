@@ -345,7 +345,7 @@ def test_worker_exception(gcovr_test_exec: "GcovrTestExec", check) -> None:  # t
     )
     check.is_true(
         re.search(
-            r"AssertionError: Sanity check failed, output file .+does#not#exist.gcov doesn't exist but no error from GCOV detected.",
+            r"SanityCheckError: Output file .+does#not#exist.gcov doesn't exist but no error from GCOV detected.",
             exc.value.stderr,
         ),
         "Sanity check exception found in stderr.",
