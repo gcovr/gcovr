@@ -1,13 +1,13 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <!DOCTYPE coverage SYSTEM 'http://cobertura.sourceforge.net/xml/coverage-04.dtd'>
-<coverage line-rate="0.95918" branch-rate="0.75" lines-covered="47" lines-valid="49" branches-covered="9" branches-valid="12" complexity="0.0" timestamp="1759082961" version="gcovr 8.4+main">
+<coverage line-rate="0.95349" branch-rate="0.75" lines-covered="41" lines-valid="43" branches-covered="9" branches-valid="12" complexity="0.0" timestamp="1759082961" version="gcovr 8.4+main">
   <sources>
     <source>tests/several-functions-on-same-line/output</source>
   </sources>
   <packages>
-    <package name="" line-rate="0.95918" branch-rate="0.75" complexity="0.0">
+    <package name="" line-rate="0.95349" branch-rate="0.75" complexity="0.0">
       <classes>
-        <class name="function_hpp" filename="function.hpp" line-rate="0.95833" branch-rate="0.75" complexity="0.0">
+        <class name="function_hpp" filename="function.hpp" line-rate="0.94444" branch-rate="0.75" complexity="0.0">
           <methods>
             <method name="func_a" signature="(int, int)" line-rate="1.0" branch-rate="1.0" complexity="0.0">
               <lines>
@@ -53,10 +53,8 @@
             </method>
           </methods>
           <lines>
-            <line number="2" hits="5" branch="false"/>
             <line number="2" hits="4" branch="false"/>
             <line number="2" hits="1" branch="false"/>
-            <line number="3" hits="5" branch="false"/>
             <line number="3" hits="4" branch="true" condition-coverage="100% (4/4)">
               <conditions>
                 <condition number="0" type="jump" coverage="100%"/>
@@ -67,16 +65,12 @@
                 <condition number="0" type="jump" coverage="50%"/>
               </conditions>
             </line>
-            <line number="4" hits="3" branch="false"/>
             <line number="4" hits="2" branch="false"/>
             <line number="4" hits="1" branch="false"/>
             <line number="7" hits="2" branch="false"/>
-            <line number="7" hits="2" branch="false"/>
             <line number="7" hits="0" branch="false"/>
-            <line number="9" hits="5" branch="false"/>
             <line number="9" hits="4" branch="false"/>
             <line number="9" hits="1" branch="false"/>
-            <line number="10" hits="5" branch="false"/>
             <line number="10" hits="4" branch="false"/>
             <line number="10" hits="1" branch="false"/>
             <line number="13" hits="1" branch="false"/>

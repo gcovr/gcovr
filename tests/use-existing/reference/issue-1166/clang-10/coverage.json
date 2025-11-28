@@ -82,7 +82,13 @@
                     "gcovr/md5": "c26ba559a5f34d46a49fafed87946fb7"
                 }
             ],
-            "functions": []
+            "functions": [
+                {
+                    "name": "<unknown function>",
+                    "lineno": 4,
+                    "gcovr/excluded": true
+                }
+            ]
         }
     ]
 }

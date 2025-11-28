@@ -43,6 +43,11 @@
             ],
             "functions": [
                 {
+                    "name": "<unknown function>",
+                    "lineno": 4,
+                    "gcovr/excluded": true
+                },
+                {
                     "name": "main",
                     "lineno": 7,
                     "execution_count": 1,

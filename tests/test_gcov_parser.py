@@ -288,7 +288,7 @@ GCOV_8_SOURCES = dict(
 GCOV_8_EXPECTED_UNCOVERED_LINES = dict(
     gcov_8_example=[7, 8, 33],
     gcov_8_exclude_throw=[7, 8, 33],
-    nautilus_example=[51, 51, 51, 52, 54],
+    nautilus_example=[51, 51, 52, 54],
     gcov_8_example_2=[7, 8, 33],
 )
 
@@ -324,6 +324,7 @@ def test_gcov_8(capsys: pytest.CaptureFixture[str], source_filename: str) -> Non
         filename="tmp.cpp",
         lines=lines,
         ignore_parse_errors=None,
+        activate_trace_logging=True,
     )
 
     apply_all_exclusions(
