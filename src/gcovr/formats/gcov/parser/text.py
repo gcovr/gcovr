@@ -304,8 +304,6 @@ def parse_coverage(
                 persistent_states,
             )
             tokenized_lines.append((parsed_line, raw_line))
-            if activate_trace_logging:
-                LOGGER.trace("Parsed line: %s", parsed_line)
         except Exception as ex:  # pylint: disable=broad-except
             lines_with_errors.append((raw_line, ex))
 
@@ -352,16 +350,13 @@ def parse_coverage(
         )
 
     filecov = FileCoverage(data_filename, filename=filename)
-    state = _ParserState(
+    state = _ParserState.new(
         function_name=UNKNOWN_FUNCTION_NAME,
-        deferred_functions=[]
-        if missing_function_lines
-        else [
-            _FunctionLine(UNKNOWN_FUNCTION_NAME, None, None),
-        ],
     )
     for line, raw_line in tokenized_lines:
         try:
+            if activate_trace_logging:
+                LOGGER.trace("Processing line: %s", line)
             state = _gather_coverage_from_line(
                 state,
                 line,
@@ -370,22 +365,38 @@ def parse_coverage(
             )
         except Exception as ex:  # pylint: disable=broad-except
             lines_with_errors.append((raw_line, ex))
-            state = _ParserState(is_recovering=True)
+            state = _ParserState.new(is_recovering=True)
 
     # Clean up the final state. This shouldn't happen,
     # but the last line could theoretically contain pending function lines
     for function in state.deferred_functions:
         name, count, blocks = function
-        if name != UNKNOWN_FUNCTION_NAME:
-            filecov.insert_function_coverage(
-                str(data_filename),
-                MergeOptions(func_opts=FUNCTION_MAX_LINE_MERGE_OPTIONS),
-                mangled_name=name,
-                demangled_name=None,
-                lineno=(state.linecov_list[-1].lineno + 1) if state.linecov_list else 0,
-                count=count,
-                blocks=blocks,
-            )
+        filecov.insert_function_coverage(
+            str(data_filename),
+            MergeOptions(func_opts=FUNCTION_MAX_LINE_MERGE_OPTIONS),
+            mangled_name=name,
+            demangled_name=None,
+            lineno=(state.last_linecov.lineno + 1) if state.last_linecov else 0,
+            count=count,
+            blocks=blocks,
+        )
+
+    unknown_function_linecovs = [
+        linecov
+        for linecov in filecov.linecov()
+        if linecov.function_name == UNKNOWN_FUNCTION_NAME
+    ]
+    if unknown_function_linecovs:
+        filecov.insert_function_coverage(
+            str(data_filename),
+            MergeOptions(func_opts=FUNCTION_MAX_LINE_MERGE_OPTIONS),
+            mangled_name=UNKNOWN_FUNCTION_NAME,
+            demangled_name=None,
+            lineno=unknown_function_linecovs[0].lineno,
+            count=None,
+            blocks=None,
+            excluded=True,
+        )
 
     _report_lines_with_errors(
         lines_with_errors,
@@ -411,7 +422,7 @@ def _reconstruct_source_code(tokens: Iterable[_Line]) -> list[str]:
 class _ParserState(NamedTuple):
     """State information while parsing gcov lines.
 
-    >>> state = _ParserState()
+    >>> state = _ParserState.new()
     >>> state.previous_state is None
     True
     >>> state = state._replace(linecov_list=["x"])
@@ -443,14 +454,33 @@ class _ParserState(NamedTuple):
     deferred_functions: list[_FunctionLine] = []
     function_name: Optional[str] = None
     function_specialization: bool = False
+    last_linecov: Optional[LineCoverage] = None
     linecov_list: list[LineCoverage] = []
     block_id: Optional[int] = None
     is_recovering: bool = False
     previous_state: Optional["_ParserState"] = None
 
+    @classmethod
+    def new(cls, **kwargs: Any) -> "_ParserState":
+        """Reset the parser state to initial values."""
+        return (
+            cls()
+            ._replace(
+                deferred_functions=[],
+                function_name=None,
+                function_specialization=False,
+                last_linecov=None,
+                linecov_list=[],
+                block_id=None,
+                is_recovering=False,
+                previous_state=None,
+            )
+            ._replace(**kwargs)
+        )
+
     def save_state(self) -> "_ParserState":
         """Save the current parser state and return a new one with the current line coverage list."""
-        return _ParserState(
+        return _ParserState.new(
             previous_state=self,
             linecov_list=self.linecov_list,
         )
@@ -498,46 +528,30 @@ def _gather_coverage_from_line(
                     lineno=lineno,
                     count=count,
                     blocks=blocks,
-                    excluded=name == UNKNOWN_FUNCTION_NAME,
                 )
+            state.deferred_functions.clear()
 
-            # If a specialized function is following a normal one the overall lines were added
-            # already to the previous function and we need to remove them again.
-            if (
-                state.function_specialization
-                and state.linecov_list
-                and state.linecov_list[0].lineno
-                < lineno
-                <= state.linecov_list[-1].lineno
-            ):
-                to_remove = [
-                    linecov
-                    for linecov in state.linecov_list
-                    if linecov.lineno >= lineno
-                ]
+        # If a specialized function is following a normal one the overall lines were added
+        # already to the previous function and we need to remove them again.
+        if (
+            state.function_specialization
+            and state.linecov_list
+            and state.linecov_list[0].lineno <= lineno <= state.linecov_list[-1].lineno
+        ):
+            to_remove = [
+                linecov for linecov in state.linecov_list if linecov.lineno >= lineno
+            ]
+
+            for linecov in to_remove:
                 if activate_trace_logging:
                     LOGGER.trace(
-                        "Removing line coverage for line %s%s from previous function.",
-                        to_remove[0].lineno,
-                        ""
-                        if len(to_remove) == 1
-                        else f" to line {to_remove[-1].lineno}",
+                        "%s: Removing line coverage of function %s.",
+                        linecov.location,
+                        linecov.report_function_name,
                     )
-                for linecov in to_remove:
-                    filecov.remove_line_coverage(linecov)
-                # If the function was unknown, and we removed all linecovs we need to remove the function too.
-                if (
-                    state.function_name == UNKNOWN_FUNCTION_NAME
-                    and not filecov.linecov()
-                ):
-                    filecov.remove_function_coverage(
-                        filecov.get_functioncov(UNKNOWN_FUNCTION_NAME)
-                    )
+                filecov.remove_line_coverage(linecov)
 
-            state = state._replace(
-                deferred_functions=[],
-                linecov_list=[],
-            )
+            state.linecov_list.clear()
 
         linecov = filecov.insert_line_coverage(
             filecov.data_sources,
@@ -546,7 +560,9 @@ def _gather_coverage_from_line(
             function_name=state.function_name,
             md5=get_md5_hexdigest(source_code.encode("UTF-8")),
         )
-        state.linecov_list.append(linecov)
+        state = state._replace(last_linecov=linecov)
+        if not state.function_specialization:
+            state.linecov_list.append(linecov)
 
         return state
 
@@ -556,15 +572,6 @@ def _gather_coverage_from_line(
     elif isinstance(line, _FunctionLine):
         # Defer handling of the function tag until the next source line.
         # This is important to get correct line number information.
-        if (
-            state.deferred_functions
-            and state.deferred_functions[0].name == UNKNOWN_FUNCTION_NAME
-        ):
-            return state._replace(
-                deferred_functions=[line],
-                function_name=line.name,
-            )
-
         if state.deferred_functions and activate_trace_logging:
             LOGGER.trace(
                 "Several function definitions for the next coverage lines, function %s will not contain line coverage.",
@@ -591,8 +598,8 @@ def _gather_coverage_from_line(
     elif isinstance(line, _BranchLine):
         branchno, hits, annotation = line
 
-        if state.linecov_list:
-            state.linecov_list[-1].insert_branch_coverage(
+        if state.last_linecov is not None:
+            state.last_linecov.insert_branch_coverage(
                 filecov.data_sources,
                 branchno=branchno,
                 count=hits,
@@ -608,8 +615,8 @@ def _gather_coverage_from_line(
         callno, returned = line
 
         # linecov won't exist if it was considered noncode
-        if state.linecov_list:
-            state.linecov_list[-1].insert_call_coverage(
+        if state.last_linecov is not None:
+            state.last_linecov.insert_call_coverage(
                 filecov.data_sources,
                 callno=callno,
                 source_block_id=state.block_id,  # type: ignore [arg-type]

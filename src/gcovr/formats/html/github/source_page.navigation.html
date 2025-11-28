@@ -35,7 +35,7 @@
       {%- if SHOW_CONDITION_COVERAGE %}
       {#- #}<td>{{ entry["condition_coverage"] }}%</td>
       {%- endif %}
-      {#- #}<td>{{ entry["blocks"] }}%</td>
+      {#- #}<td>{{ '-' if entry["blocks"] is none else entry["blocks"] }}%</td>
       {#- -#}
     </tr>
 {% endfor %}

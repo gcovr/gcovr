@@ -523,7 +523,6 @@ def test_trailing_function_tag() -> None:
         "example",
     ]
     functioncov = coverage.get_functioncov("example")
-    assert functioncov is not None
     assert list(functioncov.count.keys()) == [3]  # previous lineno + 1
     assert functioncov.mangled_name == "example"
     assert functioncov.demangled_name is None

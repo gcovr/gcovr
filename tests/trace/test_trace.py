@@ -89,7 +89,7 @@ def test(gcovr_test_exec: "GcovrTestExec", check, activate_trace: bool) -> None:
                 )
             else:
                 regex = re.compile(
-                    rf"^\(TRACE\) Parsed line: _FunctionLine\(name='.*?{function}.*', call_count=\d+, blocks_covered=\d+\.\d+\)$",
+                    rf"^\(TRACE\) Processing line: _FunctionLine\(name='.*?{function}.*', call_count=\d+, blocks_covered=\d+\.\d+\)$",
                     re.MULTILINE,
                 )
             check.is_true(
