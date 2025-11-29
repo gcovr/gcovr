@@ -57,7 +57,6 @@ dev = [
     "cmake",
     "coverage",
     "mypy",
-    "mypy!=1.19.0 ; platform_python_implementation == 'PyPy'",
     "nox",
     "pre-commit",
     "pygments==2.19.2",     # For reference compare

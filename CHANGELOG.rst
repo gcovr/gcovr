@@ -71,6 +71,7 @@ Internal changes:
 - Use pyenv to install python independent from OS version in docker image for testing. (:issue:`1181`)
 - Reorganize docker images. Create one image per OS which contains several compiler versions to
   improve image build time and build cache size on local and CI systems. (:issue:`1184`, :issue:`1186`)
+- Do not run ``mypy`` on ``PyPy`` implementation of python. (:issue:`1209`)
 
 .. _release_8_4:
 
