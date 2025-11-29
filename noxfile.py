@@ -257,6 +257,11 @@ def pylint(session: nox.Session) -> None:
 @nox.session
 def mypy(session: nox.Session) -> None:
     """Run mypy command."""
+    if platform.python_implementation() == "PyPy":
+        session.skip(
+            "Skip mypy on PyPy due to https://github.com/python/mypy/issues/20329."
+        )
+
     install_dev_requirements(session, "mypy", "nox", "requests", "pytest", "yaxmldiff")
     session.install("-e", ".")
     if session.posargs:
