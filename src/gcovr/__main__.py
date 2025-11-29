@@ -33,6 +33,7 @@ from .configuration import (
     parse_config_into_dict,
 )
 from .data_model.container import CoverageContainer
+from .exceptions import SanityCheckError
 from .filter import (
     AlwaysMatchFilter,
     DirectoryPrefixFilter,
@@ -228,7 +229,7 @@ def main(args: Optional[list[str]] = None) -> int:  # pylint: disable=too-many-r
         cli_options = parser.parse_args(args=args)
     except SystemExit as e:
         if e.code != 0:
-            raise AssertionError("Sanity check failed, exitcode must be 0.") from e
+            raise SanityCheckError("Exitcode must be 0.") from e
         return EXIT_SUCCESS
     except ArgumentError as e:
         sys.stderr.write(f"gcovr: error: {e}\n")

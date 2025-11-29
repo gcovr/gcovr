@@ -76,6 +76,6 @@ def get_merge_mode_from_options(options: Options) -> MergeOptions:
     elif options.merge_mode_functions == "separate":
         merge_opts.func_opts = SEPARATE_FUNCTION_MERGE_OPTIONS
     else:
-        raise AssertionError("Sanity check: Unknown functions merge mode.")
+        raise AssertionError("Unknown functions merge mode.")
 
     return merge_opts

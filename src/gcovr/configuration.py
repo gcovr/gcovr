@@ -29,7 +29,9 @@ import datetime
 import os
 import re
 
+
 from . import formats
+from .exceptions import SanityCheckError
 from .logging import LOGGER
 from .options import (
     FilterOption,
@@ -151,7 +153,7 @@ def argument_parser_setup(
             group.add_argument(opt.name, **kwargs)
 
         else:
-            raise AssertionError("Oops, sanity check failed: Unexpected option.")
+            raise SanityCheckError("Unexpected option.")
 
 
 def parse_config_into_dict(
@@ -209,7 +211,7 @@ def _get_value_from_config_entry(
     if use_const is False:
         return option.default
     if use_const is not None:
-        raise AssertionError("Oops, sanity check failed: Unexpected entry type.")
+        raise SanityCheckError("Unexpected entry type.")
 
     # parse the value
     value: object

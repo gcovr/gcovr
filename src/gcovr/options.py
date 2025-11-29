@@ -477,6 +477,4 @@ def _derive_configuration_key(
     if isinstance(config, str):
         return [config]
 
-    raise AssertionError(
-        f"Sanity check failed, unexpected config entry type {config!r}"
-    )
+    raise AssertionError(f"Unexpected config entry type {config!r}")

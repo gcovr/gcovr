@@ -28,6 +28,7 @@ from typing import Any, Optional
 
 from ...data_model.container import CoverageContainer
 from ...data_model.coverage import FileCoverage
+from ...exceptions import SanityCheckError
 from ...options import Options
 from ...utils import get_md5_hexdigest, write_json_output
 
@@ -121,9 +122,7 @@ def write_report(
 
     def run_git_cmd(*args: str) -> str:
         if git is None:
-            raise AssertionError(
-                "Sanity check failed. Function must only be executed if git is found."
-            )
+            raise SanityCheckError("Function must only be executed if git is found.")
         process = subprocess.run(  # nosec # We execute git
             [git] + list(args),
             stdout=subprocess.PIPE,

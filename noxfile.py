@@ -472,7 +472,11 @@ def check_distribution(session: nox.Session) -> None:
     with session.chdir(session.create_tmp()):
         for output_format in OUTPUT_FORMATS:
             session.run(
-                "gcovr", f"--{output_format}", f"out.{output_format}", external=True
+                "gcovr",
+                f"--{output_format}",
+                f"out.{output_format}",
+                external=True,
+                silent=True,
             )
 
 
@@ -499,7 +503,7 @@ def bundle_app(session: nox.Session) -> None:
     """Bundle a standalone executable."""
     install_dev_requirements(session, "pyinstaller")
     # This is needed if the virtual env is reused
-    session.run("pip", "uninstall", "gcovr")
+    session.run("pip", "uninstall", "--yes", "gcovr")
     # Do not install interactive to get the module resolved
     # with the needed data
     session.install(".")
@@ -541,6 +545,7 @@ def check_bundled_app(session: nox.Session) -> None:
                     f"--{output_format}",
                     f"out.{output_format}",
                     external=True,
+                    silent=True,
                 )
 
 

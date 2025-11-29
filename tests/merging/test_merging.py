@@ -105,7 +105,7 @@ def test_different_functions(  # type: ignore[no-untyped-def]
             assert messages[0][1] == logging.ERROR
             for line in messages[0][2].splitlines():
                 if re.match(
-                    r"gcovr.data_model.coverage.GcovrMergeAssertionError: .+func.h:5 Got function .*foo.* on multiple lines: 3, 5\.",
+                    r"gcovr.exceptions.GcovrMergeAssertionError: .+func.h:5 Got function .*foo.* on multiple lines: 3, 5\.",
                     line,
                 ):
                     break

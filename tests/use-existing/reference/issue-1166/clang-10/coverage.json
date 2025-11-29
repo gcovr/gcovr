@@ -6,83 +6,89 @@
             "lines": [
                 {
                     "line_number": 4,
-                    "function_name": "<unknown>",
+                    "function_name": "<unknown function>",
                     "count": 1,
                     "branches": [],
                     "gcovr/md5": "bb4aae5e443f387349849f9a5a813e31"
                 },
                 {
                     "line_number": 5,
-                    "function_name": "<unknown>",
+                    "function_name": "<unknown function>",
                     "count": 1,
                     "branches": [],
                     "gcovr/md5": "81fff94209b659e33b1459a477e1e747"
                 },
                 {
                     "line_number": 6,
-                    "function_name": "<unknown>",
+                    "function_name": "<unknown function>",
                     "count": 0,
                     "branches": [],
                     "gcovr/md5": "b4b831953973cd241268abf30a147d62"
                 },
                 {
                     "line_number": 8,
-                    "function_name": "<unknown>",
+                    "function_name": "<unknown function>",
                     "count": 1,
                     "branches": [],
                     "gcovr/md5": "724220bfbbc70e6d7982787bca056c38"
                 },
                 {
                     "line_number": 10,
-                    "function_name": "<unknown>",
+                    "function_name": "<unknown function>",
                     "count": 1,
                     "branches": [],
                     "gcovr/md5": "cbb184dd8e05c9709e5dcaedaa0495cf"
                 },
                 {
                     "line_number": 13,
-                    "function_name": "<unknown>",
+                    "function_name": "<unknown function>",
                     "count": 1,
                     "branches": [],
                     "gcovr/md5": "2a787a1309f19379bb0e3d8434d2a18d"
                 },
                 {
                     "line_number": 14,
-                    "function_name": "<unknown>",
+                    "function_name": "<unknown function>",
                     "count": 1,
                     "branches": [],
                     "gcovr/md5": "63a5debf41301fd02d9a35ac94ce77eb"
                 },
                 {
                     "line_number": 18,
-                    "function_name": "<unknown>",
+                    "function_name": "<unknown function>",
                     "count": 1,
                     "branches": [],
                     "gcovr/md5": "f76596e8617a28d4318178b2b6834627"
                 },
                 {
                     "line_number": 19,
-                    "function_name": "<unknown>",
+                    "function_name": "<unknown function>",
                     "count": 0,
                     "branches": [],
                     "gcovr/md5": "0c83f378d1eda6b258d0e7a718f9da96"
                 },
                 {
                     "line_number": 23,
-                    "function_name": "<unknown>",
+                    "function_name": "<unknown function>",
                     "count": 0,
                     "branches": [],
                     "gcovr/md5": "8c63687f3353fc809165fd84e730e1e5"
                 },
                 {
                     "line_number": 25,
-                    "function_name": "<unknown>",
+                    "function_name": "<unknown function>",
                     "count": 1,
                     "branches": [],
                     "gcovr/md5": "c26ba559a5f34d46a49fafed87946fb7"
                 }
             ],
-            "functions": []
+            "functions": [
+                {
+                    "name": "<unknown function>",
+                    "lineno": 4,
+                    "gcovr/excluded": true
+                }
+            ]
         }
     ]
 }

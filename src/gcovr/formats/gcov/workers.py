@@ -25,6 +25,7 @@ from contextlib import contextmanager
 from queue import Queue, Empty
 from typing import Any, Callable, Iterator, Optional
 
+from ...exceptions import SanityCheckError
 from ...logging import LOGGER
 
 
@@ -216,6 +217,6 @@ class Workers:
 
     def __exit__(self, exc_type: Any, exc_val: Any, exc_tb: Any) -> None:
         if self.size() != 0:
-            raise AssertionError(
-                "Sanity check, you must call wait on the contextmanager to get the context of the workers."
+            raise SanityCheckError(
+                "You must call wait on the contextmanager to get the context of the workers."
             )

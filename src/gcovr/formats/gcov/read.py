@@ -28,6 +28,7 @@ from typing import Any, Callable, Optional
 
 from ...data_model.container import CoverageContainer
 from ...data_model.merging import get_merge_mode_from_options
+from ...exceptions import SanityCheckError
 from ...decision_analysis import DecisionParser
 from ...exclusions import (
     apply_all_exclusions,
@@ -938,8 +939,8 @@ def run_gcov_and_process_files(
             # Process *.gcov files
             for gcov_filename in active_gcov_files:
                 if not os.path.exists(gcov_filename):  # pragma: no cover
-                    raise AssertionError(
-                        f"Sanity check failed, output file {gcov_filename} doesn't exist but no error from GCOV detected."
+                    raise SanityCheckError(
+                        f"Output file {gcov_filename} doesn't exist but no error from GCOV detected."
                     )
                 if gcov_filename.endswith(".gcov"):
                     process_gcov_text_data(

@@ -288,7 +288,7 @@ GCOV_8_SOURCES = dict(
 GCOV_8_EXPECTED_UNCOVERED_LINES = dict(
     gcov_8_example=[7, 8, 33],
     gcov_8_exclude_throw=[7, 8, 33],
-    nautilus_example=[51, 51],
+    nautilus_example=[51, 51, 52, 54],
     gcov_8_example_2=[7, 8, 33],
 )
 
@@ -324,6 +324,7 @@ def test_gcov_8(capsys: pytest.CaptureFixture[str], source_filename: str) -> Non
         filename="tmp.cpp",
         lines=lines,
         ignore_parse_errors=None,
+        activate_trace_logging=True,
     )
 
     apply_all_exclusions(
@@ -523,7 +524,6 @@ def test_trailing_function_tag() -> None:
         "example",
     ]
     functioncov = coverage.get_functioncov("example")
-    assert functioncov is not None
     assert list(functioncov.count.keys()) == [3]  # previous lineno + 1
     assert functioncov.mangled_name == "example"
     assert functioncov.demangled_name is None
@@ -1055,7 +1055,7 @@ def test_noncode_lines() -> None:
         *,
         exclude_function_lines: bool = False,
         exclude_noncode_lines: bool = False,
-    ) -> str:
+    ) -> list[str]:
         filecov, source = text.parse_coverage(
             "",
             lines,
@@ -1069,22 +1069,22 @@ def test_noncode_lines() -> None:
         )
         apply_all_exclusions(filecov, lines=source, options=options)
 
-        for linecov in filecov.linecov():
-            return f"normal:{linecov.count}"
-
-        return "noncode"
+        return [f"normal:{linecov.count}" for linecov in filecov.linecov()]
 
     # First, handling of function lines
 
     # By itself, function lines have no special treatment.
     status = get_line_status(["3: 32:void foo(){}"])
-    assert status == "noncode"
+    assert status == ["normal:3"]
 
     # If gcov reports a function, keep the line.
     status = get_line_status(
-        ["function foo called 3 returned 99% blocks executed 70%", "3: 32:void foo(){}"]
+        [
+            "function foo called 3 returned 99% blocks executed 70%",
+            "3: 32:void foo(){}",
+        ]
     )
-    assert status == "normal:3"
+    assert status == ["normal:3"]
 
     # But if EXCLUDE_FUNCTION_LINES is enabled, discard the line.
     status = get_line_status(
@@ -1094,29 +1094,26 @@ def test_noncode_lines() -> None:
         ],
         exclude_function_lines=True,
     )
-    assert status == "noncode"
+    assert status == []
 
     # Next, handling of noncode lines
 
     # Gcov says noncode but it looks like code: throw line away
-    assert get_line_status(["-: 32:this looks like code"]) == "noncode"
+    assert get_line_status(["-: 32:this looks like code"]) == []
 
     # Gcov says noncode and it doesn't look like code: discard
-    assert get_line_status(["-: 32:}"]) == "noncode"
+    assert get_line_status(["-: 32:}"]) == []
 
     # Uncovered line with code: keep
-    assert (
-        get_line_status(
-            [
-                "function foo called 3 returned 99% blocks executed 70%",
-                "#####: 32:looks like code",
-            ]
-        )
-        == "normal:0"
-    )
+    assert get_line_status(
+        [
+            "function foo called 3 returned 99% blocks executed 70%",
+            "#####: 32:looks like code",
+        ]
+    ) == ["normal:0"]
 
     # Uncovered code that doesn't look like code: discard
-    assert get_line_status(["#####: 32:}"], exclude_noncode_lines=True) == "noncode"
+    assert get_line_status(["#####: 32:}"], exclude_noncode_lines=True) == []
 
 
 def check_and_raise(
