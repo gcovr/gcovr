@@ -462,18 +462,14 @@ class _ParserState(NamedTuple):
 
     @classmethod
     def new(cls, **kwargs: Any) -> "_ParserState":
-        """Reset the parser state to initial values."""
+        """Return a newly initialized parser state object."""
+        # We need to overwrite the list values because the default values are shared
+        # and changed.
         return (
             cls()
             ._replace(
                 deferred_functions=[],
-                function_name=None,
-                function_specialization=False,
-                last_linecov=None,
                 linecov_list=[],
-                block_id=None,
-                is_recovering=False,
-                previous_state=None,
             )
             ._replace(**kwargs)
         )
