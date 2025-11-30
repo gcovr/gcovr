@@ -30,8 +30,7 @@ from gcovr.__main__ import main
 from gcovr.version import __version__
 from gcovr.data_model.version import FORMAT_VERSION
 
-
-GCOVR_ISOLATED_TEST = os.getenv("GCOVR_ISOLATED_TEST") == "zkQEVaBpXF1i"
+from tests.conftest import GCOVR_ISOLATED_TEST
 
 
 # The CaptureObject class holds the capture method result

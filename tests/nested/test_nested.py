@@ -1,8 +1,12 @@
+import os
 from pathlib import Path
+import shutil
+from sys import stderr
+from unittest import mock
 
 import pytest
 
-from tests.conftest import USE_PROFDATA_POSSIBLE, GcovrTestExec
+from tests.conftest import GCOVR_ISOLATED_TEST, USE_PROFDATA_POSSIBLE, GcovrTestExec
 
 
 def test_standard(gcovr_test_exec: "GcovrTestExec") -> None:
@@ -95,6 +99,55 @@ def test_standard(gcovr_test_exec: "GcovrTestExec") -> None:
         "--sonarqube=sonarqube.xml",
     )
     gcovr_test_exec.compare_sonarqube()
+
+
+@pytest.mark.skipif(
+    not GCOVR_ISOLATED_TEST,
+    reason="Only available in isolated docker test.",
+)
+def test_standard_ccache(gcovr_test_exec: "GcovrTestExec") -> None:
+    """Test nested coverage report generation."""
+    build_dir = gcovr_test_exec.output_dir / "build"
+    for run in range(2):
+        print(f"***** Build with ccache ({run}) *****", file=stderr)
+        with mock.patch.dict(
+            "os.environ",
+            {
+                "CCACHE_DIR": str(gcovr_test_exec.output_dir / "ccache"),
+                "PATH": os.sep.join([".", os.environ["PATH"]]),
+            },
+        ):
+            if build_dir.exists():
+                shutil.rmtree(build_dir)
+            build_dir.mkdir()
+            gcovr_test_exec.cxx_link(
+                "subdir/testcase",
+                *[
+                    gcovr_test_exec.cxx_compile(
+                        source,
+                        target=str(build_dir / (Path(source).name + ".o")),
+                        launcher="ccache",
+                    )
+                    for source in [
+                        "subdir/A/file1.cpp",
+                        "subdir/A/File2.cpp",
+                        "subdir/A/file3.cpp",
+                        "subdir/A/File4.cpp",
+                        "subdir/A/file7.cpp",
+                        "subdir/A/C/file5.cpp",
+                        "subdir/A/C/D/File6.cpp",
+                        "subdir/B/main.cpp",
+                    ]
+                ],
+                launcher="ccache",
+            )
+            gcovr_test_exec.run("ccache", "--show-stats", cwd=build_dir)
+
+    gcovr_test_exec.run("./subdir/testcase")
+    gcovr_test_exec.gcovr(
+        "--root=subdir", "--json-pretty", "--json=coverage.json", str(build_dir)
+    )
+    gcovr_test_exec.compare_json()
 
 
 @pytest.mark.skipif(
