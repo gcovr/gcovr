@@ -1,4 +1,3 @@
-import os
 from pathlib import Path
 import shutil
 from sys import stderr
@@ -105,17 +104,14 @@ def test_standard(gcovr_test_exec: "GcovrTestExec") -> None:
     not GCOVR_ISOLATED_TEST,
     reason="Only available in isolated docker test.",
 )
-def test_standard_ccache(gcovr_test_exec: "GcovrTestExec") -> None:
+def test_standard_ccache(gcovr_test_exec: "GcovrTestExec", check) -> None:  # type: ignore[no-untyped-def]
     """Test nested coverage report generation."""
     build_dir = gcovr_test_exec.output_dir / "build"
     for run in range(2):
         print(f"***** Build with ccache ({run}) *****", file=stderr)
         with mock.patch.dict(
             "os.environ",
-            {
-                "CCACHE_DIR": str(gcovr_test_exec.output_dir / "ccache"),
-                "PATH": os.sep.join([".", os.environ["PATH"]]),
-            },
+            {"CCACHE_DIR": str(gcovr_test_exec.output_dir / "ccache")},
         ):
             if build_dir.exists():
                 shutil.rmtree(build_dir)
@@ -141,13 +137,22 @@ def test_standard_ccache(gcovr_test_exec: "GcovrTestExec") -> None:
                 ],
                 launcher="ccache",
             )
-            gcovr_test_exec.run("ccache", "--show-stats", cwd=build_dir)
+            process = gcovr_test_exec.run("ccache", "--show-stats", cwd=build_dir)
+            check.is_in(
+                f"cache hit rate                    {'  0' if run == 0 else '100'}.00 %",
+                process.stdout,
+            )
+            gcovr_test_exec.run("ccache", "--zero-stats", cwd=build_dir)
 
-    gcovr_test_exec.run("./subdir/testcase")
-    gcovr_test_exec.gcovr(
-        "--root=subdir", "--json-pretty", "--json=coverage.json", str(build_dir)
-    )
+            gcovr_test_exec.run("./subdir/testcase")
+            gcovr_test_exec.gcovr(
+                "--root=subdir",
+                "--json-pretty",
+                f"--json=coverage{'' if run == 0 else '.cached'}.json",
+                str(build_dir),
+            )
     gcovr_test_exec.compare_json()
+    gcovr_test_exec.run("diff", "-U", "1", "coverage.json", "coverage.cached.json")
 
 
 @pytest.mark.skipif(

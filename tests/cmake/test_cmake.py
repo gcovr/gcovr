@@ -77,7 +77,7 @@ def test_oos_makefile(gcovr_test_exec: "GcovrTestExec") -> None:
     not GCOVR_ISOLATED_TEST,
     reason="Only available in isolated docker test.",
 )
-def test_oos_makefile_ccache(gcovr_test_exec: "GcovrTestExec") -> None:
+def test_oos_makefile_ccache(gcovr_test_exec: "GcovrTestExec", check) -> None:  # type: ignore[no-untyped-def]
     """Test CMake out of source build with makefile."""
     for file in (gcovr_test_exec.output_dir / "simple_main").glob("*"):
         file.rename(gcovr_test_exec.output_dir / file.name)
@@ -107,17 +107,23 @@ def test_oos_makefile_ccache(gcovr_test_exec: "GcovrTestExec") -> None:
                 "make",
                 cwd=build_dir,
             )
-            gcovr_test_exec.run("ccache", "--show-stats", cwd=build_dir)
+            process = gcovr_test_exec.run("ccache", "--show-stats", cwd=build_dir)
+            check.is_in(
+                f"cache hit rate                    {'  0' if run == 0 else '100'}.00 %",
+                process.stdout,
+            )
+            gcovr_test_exec.run("ccache", "--zero-stats", cwd=build_dir)
 
-    gcovr_test_exec.run(
-        build_dir / "testcase",
-        cwd=build_dir,
-    )
-    gcovr_test_exec.gcovr(
-        "--json-pretty",
-        "--json=coverage.json",
-    )
+            gcovr_test_exec.run(
+                build_dir / "testcase",
+                cwd=build_dir,
+            )
+            gcovr_test_exec.gcovr(
+                "--json-pretty",
+                f"--json=coverage{'' if run == 0 else '.cached'}.json",
+            )
     gcovr_test_exec.compare_json()
+    gcovr_test_exec.run("diff", "-U", "1", "coverage.json", "coverage.cached.json")
 
 
 def test_oos_ninja(gcovr_test_exec: "GcovrTestExec") -> None:
@@ -154,7 +160,7 @@ def test_oos_ninja(gcovr_test_exec: "GcovrTestExec") -> None:
     not GCOVR_ISOLATED_TEST,
     reason="Only available in isolated docker test.",
 )
-def test_oos_ninja_ccache(gcovr_test_exec: "GcovrTestExec") -> None:
+def test_oos_ninja_ccache(gcovr_test_exec: "GcovrTestExec", check) -> None:  # type: ignore[no-untyped-def]
     """Test CMake out of source build with ninja."""
     for file in (gcovr_test_exec.output_dir / "simple_main").glob("*"):
         file.rename(gcovr_test_exec.output_dir / file.name)
@@ -181,14 +187,20 @@ def test_oos_ninja_ccache(gcovr_test_exec: "GcovrTestExec") -> None:
                 cwd=build_dir,
             )
             gcovr_test_exec.run("cmake", "--build", build_dir, "--", "-v")
-            gcovr_test_exec.run("ccache", "--show-stats", cwd=build_dir)
+            process = gcovr_test_exec.run("ccache", "--show-stats", cwd=build_dir)
+            check.is_in(
+                f"cache hit rate                    {'  0' if run == 0 else '100'}.00 %",
+                process.stdout,
+            )
+            gcovr_test_exec.run("ccache", "--zero-stats", cwd=build_dir)
 
-    gcovr_test_exec.run(
-        build_dir / "testcase",
-        cwd=build_dir,
-    )
-    gcovr_test_exec.gcovr(
-        "--json-pretty",
-        "--json=coverage.json",
-    )
+            gcovr_test_exec.run(
+                build_dir / "testcase",
+                cwd=build_dir,
+            )
+            gcovr_test_exec.gcovr(
+                "--json-pretty",
+                f"--json=coverage{'' if run == 0 else '.cached'}.json",
+            )
     gcovr_test_exec.compare_json()
+    gcovr_test_exec.run("diff", "-U", "1", "coverage.json", "coverage.cached.json")
