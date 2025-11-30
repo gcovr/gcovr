@@ -73,6 +73,7 @@ Internal changes:
 - Reorganize docker images. Create one image per OS which contains several compiler versions to
   improve image build time and build cache size on local and CI systems. (:issue:`1184`, :issue:`1186`)
 - Do not run ``mypy`` on ``PyPy`` implementation of python. (:issue:`1209`)
+- Add test with ``ccache``. (:issue:`1211`)
 
 .. _release_8_4:
 
