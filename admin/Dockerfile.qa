@@ -22,38 +22,41 @@ export DEBIAN_FRONTEND=noninteractive
 
 apt-get update
 # Install base requirements
-apt-get install -y software-properties-common \
-                   sudo \
-                   make \
-                   cmake \
-                   ninja-build \
-                   libxml2-utils \
-                   git \
-                   apt-transport-https \
-                   curl \
-                   gnupg \
-                   latexmk \
-                   texlive-fonts-recommended \
-                   texlive-latex-recommended \
-                   texlive-latex-extra
+apt-get install -y \
+  software-properties-common \
+  sudo \
+  make \
+  cmake \
+  ninja-build \
+  ccache \
+  libxml2-utils \
+  git \
+  apt-transport-https \
+  curl \
+  gnupg \
+  latexmk \
+  texlive-fonts-recommended \
+  texlive-latex-recommended \
+  texlive-latex-extra
 
 # cspell:disable
 # Install python build dependencies
-apt-get install -y --no-install-recommends --no-install-suggests \
-                   libssl-dev \
-                   zlib1g-dev \
-                   libbz2-dev \
-                   libreadline-dev \
-                   libsqlite3-dev \
-                   curl \
-                   git \
-                   libncursesw5-dev \
-                   xz-utils \
-                   tk-dev \
-                   libxml2-dev \
-                   libxmlsec1-dev \
-                   libffi-dev \
-                   liblzma-dev
+apt-get install -y \
+  --no-install-recommends --no-install-suggests \
+  libssl-dev \
+  zlib1g-dev \
+  libbz2-dev \
+  libreadline-dev \
+  libsqlite3-dev \
+  curl \
+  git \
+  libncursesw5-dev \
+  xz-utils \
+  tk-dev \
+  libxml2-dev \
+  libxmlsec1-dev \
+  libffi-dev \
+  liblzma-dev
 # cspell:enable
 
 # Install bazel
@@ -122,22 +125,30 @@ for cc in $COMPILER_VERSIONS ; do
   fi
 done
 
+apt-get remove -y \
+  gcc \
+  g++
 apt-get autoremove -y
 apt-get clean -y
 rm -rf /var/lib/apt/lists/*
+
+export CC="$(echo "$COMPILER_VERSIONS" | sed 's/.* //')"
+export CXX="$(echo "$COMPILER_VERSIONS" | sed 's/.* // ; s/gcc/g++/ ; s/clang/clang++/')"
 
 # Install googletest
 git clone -q \
     --branch=release-1.12.1 \
     --depth=1 \
     https://github.com/google/googletest.git /tmp/googletest
-cd /tmp/googletest
-mkdir build
-cd build
-CC=$(echo "$COMPILER_VERSIONS" | sed 's/ .*//') CXX=$(echo "$COMPILER_VERSIONS" | sed 's/ .*// ; s/gcc/g++/ ; s/clang/clang++/') cmake -DGTEST_CREATE_SHARED_LIBRARY=1 .. \
-  || ( cat CMakeFiles/*.log && exit 1 )
-make
-make install
+(
+  cd /tmp/googletest
+  mkdir build
+  cd build
+  cmake -DGTEST_CREATE_SHARED_LIBRARY=1 .. \
+    || ( cat CMakeFiles/*.log && exit 1 )
+  make
+  make install
+)
 rm -rf /tmp/googletest
 
 # Make entrypoint executable
