@@ -29,6 +29,7 @@ from ..logging import LOGGER
 
 _C_STYLE_COMMENT_PATTERN = re.compile(r"/\*.*?\*/")
 _CPP_STYLE_COMMENT_PATTERN = re.compile(r"//.*?$")
+_WHITESPACE_PATTERN = re.compile(r"\s+")
 
 
 def remove_unreachable_branches(
@@ -56,13 +57,15 @@ def _line_can_contain_branches(code: str) -> bool:
 
     >>> _line_can_contain_branches('} // end something')
     False
+    >>> _line_can_contain_branches('\t /* comment 1 */  } /* comment 2 */ // comment 3')
+    False
     >>> _line_can_contain_branches('foo();')
     True
     """
 
     code = _CPP_STYLE_COMMENT_PATTERN.sub("", code)
     code = _C_STYLE_COMMENT_PATTERN.sub("", code)
-    code = code.strip().replace(" ", "")
+    code = _WHITESPACE_PATTERN.sub("", code)
     return code not in ["", "{", "}", "{}"]
 
 
@@ -87,15 +90,15 @@ def _is_non_code(code: str) -> bool:
     Check for patterns that indicate that this line doesn't contain useful code.
 
     Examples:
-    >>> _is_non_code('  // some comment!')
+    >>> _is_non_code('// some comment!')
     True
-    >>> _is_non_code('  /* some comment! */')
+    >>> _is_non_code('  /* comment 1 */ /* comment 2 */ // comment 3')
     True
     >>> _is_non_code('} else {')  # could be easily made detectable
     False
     >>> _is_non_code('}else{')
     False
-    >>> _is_non_code('else')
+    >>> _is_non_code('/* comment 1 */ else /* comment 2 */')
     True
     >>> _is_non_code('{')
     True
@@ -111,5 +114,5 @@ def _is_non_code(code: str) -> bool:
 
     code = _CPP_STYLE_COMMENT_PATTERN.sub("", code)
     code = _C_STYLE_COMMENT_PATTERN.sub("", code)
-    code = code.strip()
+    code = _WHITESPACE_PATTERN.sub("", code)
     return len(code) == 0 or code in ["{", "}", "else"]
