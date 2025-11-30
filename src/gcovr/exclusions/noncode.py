@@ -29,6 +29,7 @@ from ..logging import LOGGER
 
 _C_STYLE_COMMENT_PATTERN = re.compile(r"/\*.*?\*/")
 _CPP_STYLE_COMMENT_PATTERN = re.compile(r"//.*?$")
+_WHITESPACE_PATTERN = re.compile(r"\s+")
 
 
 def remove_unreachable_branches(
@@ -54,7 +55,7 @@ def _line_can_contain_branches(code: str) -> bool:
     """
     False if the line looks empty except for braces.
 
-    >>> _line_can_contain_branches('} // end something')
+    >>> _line_can_contain_branches('\t} // end something')
     False
     >>> _line_can_contain_branches('foo();')
     True
@@ -62,7 +63,7 @@ def _line_can_contain_branches(code: str) -> bool:
 
     code = _CPP_STYLE_COMMENT_PATTERN.sub("", code)
     code = _C_STYLE_COMMENT_PATTERN.sub("", code)
-    code = code.strip().replace(" ", "")
+    code = _WHITESPACE_PATTERN.sub("", code)
     return code not in ["", "{", "}", "{}"]
 
 
@@ -87,7 +88,7 @@ def _is_non_code(code: str) -> bool:
     Check for patterns that indicate that this line doesn't contain useful code.
 
     Examples:
-    >>> _is_non_code('  // some comment!')
+    >>> _is_non_code('\t// some comment!')
     True
     >>> _is_non_code('  /* some comment! */')
     True
@@ -111,5 +112,5 @@ def _is_non_code(code: str) -> bool:
 
     code = _CPP_STYLE_COMMENT_PATTERN.sub("", code)
     code = _C_STYLE_COMMENT_PATTERN.sub("", code)
-    code = code.strip()
+    code = _WHITESPACE_PATTERN.sub("", code)
     return len(code) == 0 or code in ["{", "}", "else"]
