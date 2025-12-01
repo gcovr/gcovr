@@ -1753,8 +1753,8 @@ class LineCoverageCollection(CoverageBase):
                 )
 
         if replace:
-            self.__linecov = merged_linecov_collection._linecov  # pylint: disable=protected-access
-            self.__raw_linecov = merged_linecov_collection._raw_linecov  # pylint: disable=protected-access
+            self.__linecov = merged_linecov_collection.__linecov  # pylint: disable=protected-access
+            self.__raw_linecov = merged_linecov_collection.__raw_linecov  # pylint: disable=protected-access
 
         return merged_linecov_collection
 
