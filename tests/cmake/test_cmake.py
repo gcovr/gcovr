@@ -1,3 +1,4 @@
+import re
 import shutil
 from sys import stderr
 from unittest import mock
@@ -108,9 +109,12 @@ def test_oos_makefile_ccache(gcovr_test_exec: "GcovrTestExec", check) -> None:  
                 cwd=build_dir,
             )
             process = gcovr_test_exec.run("ccache", "--show-stats", cwd=build_dir)
-            check.is_in(
-                f"cache hit rate                    {'  0' if run == 0 else '100'}.00 %",
-                process.stdout,
+            rate = 0 if run == 0 else 100
+            check.is_true(
+                re.search(
+                    rf"(?:cache hit rate\s+{rate}.00 %|Hits:.+\(\s*{rate}.0{'' if rate else '0'}\s*%\))",
+                    process.stdout,
+                )
             )
             gcovr_test_exec.run("ccache", "--zero-stats", cwd=build_dir)
 
@@ -188,9 +192,12 @@ def test_oos_ninja_ccache(gcovr_test_exec: "GcovrTestExec", check) -> None:  # t
             )
             gcovr_test_exec.run("cmake", "--build", build_dir, "--", "-v")
             process = gcovr_test_exec.run("ccache", "--show-stats", cwd=build_dir)
-            check.is_in(
-                f"cache hit rate                    {'  0' if run == 0 else '100'}.00 %",
-                process.stdout,
+            rate = 0 if run == 0 else 100
+            check.is_true(
+                re.search(
+                    rf"(?:cache hit rate\s+{rate}.00 %|Hits:.+\(\s*{rate}.0{'' if rate else '0'}\s*%\))",
+                    process.stdout,
+                )
             )
             gcovr_test_exec.run("ccache", "--zero-stats", cwd=build_dir)
 
