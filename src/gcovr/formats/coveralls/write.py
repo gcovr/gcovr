@@ -201,28 +201,23 @@ def _make_source_file(filecov: FileCoverage, options: Options) -> dict[str, Any]
         # Comment lines are not collected in `covdata`, but must
         # be reported to coveralls (fill missing lines)
         _extend_with_none(coverage, linecov_collection.lineno - 1)
+        linecov_collection = linecov_collection.merge_lines()
+        linecov = list(linecov_collection.linecov())[0]
         if linecov_collection.is_reportable:
-            coverage.append(
-                sum(
-                    linecov.count
-                    for linecov in linecov_collection.linecov()
-                    if linecov.is_reportable
-                )
-            )
+            coverage.append(linecov.count)
         else:
             coverage.append(None)
 
-        for linecov in linecov_collection.linecov(sort=True):
-            # Record branch information (INCOMPLETE/OMITTED)
-            for branchno, branchcov in enumerate(
-                branchcov
-                for branchcov in linecov.branches(sort=True)
-                if branchcov.is_reportable
-            ):
-                branches.append(linecov.lineno)
-                branches.append(branchcov.source_block_id_or_0)
-                branches.append(branchno)
-                branches.append(branchcov.count)
+        # Record branch information (INCOMPLETE/OMITTED)
+        for branchno, branchcov in enumerate(
+            branchcov
+            for branchcov in linecov.branches(sort=True)
+            if branchcov.is_reportable
+        ):
+            branches.append(linecov.lineno)
+            branches.append(branchcov.source_block_id_or_0)
+            branches.append(branchno)
+            branches.append(branchcov.count)
 
     if branches:
         source_file["branches"] = branches
