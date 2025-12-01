@@ -806,27 +806,33 @@ class GcovrTestExec:
         self,
         *args: Union[str, Path],
         cwd: Optional[Path] = None,
+        launcher: Optional[str] = None,
     ) -> None:
         """Run CC with the given arguments."""
-        self.run(
+        args = (
             CC,
             *(_CFLAGS_PROFDATA if self.use_llvm_profdata else _CFLAGS),
             *args,
-            cwd=cwd,
         )
+        if launcher is not None:
+            args = (launcher, *args)
+        self.run(*args, cwd=cwd)
 
     def cxx(
         self,
         *args: Union[str, Path],
         cwd: Optional[Path] = None,
+        launcher: Optional[str] = None,
     ) -> None:
         """Run CXX with the given arguments."""
-        self.run(
+        args = (
             CXX,
             *(_CXXFLAGS_PROFDATA if self.use_llvm_profdata else _CXXFLAGS),
             *args,
-            cwd=cwd,
         )
+        if launcher is not None:
+            args = (launcher, *args)
+        self.run(*args, cwd=cwd)
 
     def cc_compile(
         self,
@@ -835,12 +841,13 @@ class GcovrTestExec:
         target: Optional[str] = None,
         options: Optional[List[str]] = None,
         cwd: Optional[Path] = None,
+        launcher: Optional[str] = None,
     ) -> str:
         """Compile the given source and return the target."""
         target = str(Path(source).with_suffix(".o")) if target is None else target
         if options is None:
             options = []
-        self.cc(*options, "-c", source, "-o", target, cwd=cwd)
+        self.cc(*options, "-c", source, "-o", target, cwd=cwd, launcher=launcher)
         return target
 
     def cxx_compile(
@@ -850,12 +857,13 @@ class GcovrTestExec:
         target: Optional[str] = None,
         options: Optional[List[str]] = None,
         cwd: Optional[Path] = None,
+        launcher: Optional[str] = None,
     ) -> str:
         """Compile the given source and return the target."""
         target = str(Path(source).with_suffix(".o")) if target is None else target
         if options is None:
             options = []
-        self.cxx(*options, "-c", source, "-o", target, cwd=cwd)
+        self.cxx(*options, "-c", source, "-o", target, cwd=cwd, launcher=launcher)
         return target
 
     def cc_link(
@@ -863,18 +871,20 @@ class GcovrTestExec:
         executable: Union[str, Path],
         *args: Union[str, Path],
         cwd: Optional[Path] = None,
+        launcher: Optional[str] = None,
     ) -> None:
         """Link the given objects and return the full path of the executable."""
-        self.cc(*args, "-o", executable, cwd=cwd)
+        self.cc(*args, "-o", executable, cwd=cwd, launcher=launcher)
 
     def cxx_link(
         self,
         executable: str,
         *args: Union[str, Path],
         cwd: Optional[Path] = None,
+        launcher: Optional[str] = None,
     ) -> None:
         """Link the given objects and return the full path of the executable."""
-        self.cxx(*args, "-o", executable, cwd=cwd)
+        self.cxx(*args, "-o", executable, cwd=cwd, launcher=launcher)
 
     def gcovr(
         self,
