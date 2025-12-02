@@ -49,6 +49,7 @@ Bug fixes and small improvements:
 - Fix function exclusion in report generation. (:issue:`1206`)
 - Do not ignore lines without functions, e.g. from inlined code. (:issue:`1204`)
 - Ignore all whitespaces instead of only spaces for detection of noncode lines. (:issue:`1210`)
+- Ensure that all functions have a line coverage element in LCOV report. (:issue:`1212`)
 
 Documentation:
 
