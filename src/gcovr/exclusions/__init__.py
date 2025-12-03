@@ -133,13 +133,13 @@ def apply_all_exclusions(
             filecov, lines=lines, activate_trace_logging=activate_trace_logging
         )
 
-    if options.exclude_function_lines:
-        remove_function_definition_lines(
+    if options.exclude_internal_functions:
+        remove_internal_functions(
             filecov, activate_trace_logging=activate_trace_logging
         )
 
-    if options.exclude_internal_functions:
-        remove_internal_functions(
+    if options.exclude_function_lines:
+        exclude_function_definition_lines(
             filecov, activate_trace_logging=activate_trace_logging
         )
 
@@ -172,7 +172,7 @@ def _function_can_be_excluded(*names: Optional[str]) -> bool:
     )
 
 
-def remove_function_definition_lines(
+def exclude_function_definition_lines(
     filecov: FileCoverage, activate_trace_logging: bool
 ) -> None:
     """Remove coverage for lines that contain a function definition."""
@@ -193,7 +193,7 @@ def remove_function_definition_lines(
                     linecov.location,
                     linecov.function_name,
                 )
-            filecov.remove_line_coverage(linecov)
+            linecov.exclude()
 
 
 def remove_throw_branches(filecov: FileCoverage, activate_trace_logging: bool) -> None:

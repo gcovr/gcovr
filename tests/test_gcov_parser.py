@@ -1069,7 +1069,11 @@ def test_noncode_lines() -> None:
         )
         apply_all_exclusions(filecov, lines=source, options=options)
 
-        return [f"normal:{linecov.count}" for linecov in filecov.linecov()]
+        return [
+            f"normal:{linecov.count}"
+            for linecov in filecov.linecov()
+            if linecov.is_reportable
+        ]
 
     # First, handling of function lines
 
