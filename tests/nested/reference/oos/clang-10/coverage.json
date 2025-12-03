@@ -5,6 +5,14 @@
             "file": "A/C/D/File6.cpp",
             "lines": [
                 {
+                    "line_number": 1,
+                    "function_name": "_Z4foo6i",
+                    "count": 1,
+                    "branches": [],
+                    "gcovr/md5": "abb3720e6b8a9cf7dc926235f89cc801",
+                    "gcovr/excluded": true
+                },
+                {
                     "line_number": 3,
                     "function_name": "_Z4foo6i",
                     "count": 1,
@@ -60,6 +68,14 @@
         {
             "file": "A/C/file5.cpp",
             "lines": [
+                {
+                    "line_number": 1,
+                    "function_name": "_Z4foo5i",
+                    "count": 1,
+                    "branches": [],
+                    "gcovr/md5": "326f108928b04264c1f3d79bf4ca248b",
+                    "gcovr/excluded": true
+                },
                 {
                     "line_number": 3,
                     "function_name": "_Z4foo5i",
@@ -117,6 +133,14 @@
             "file": "A/File2.cpp",
             "lines": [
                 {
+                    "line_number": 1,
+                    "function_name": "_Z3barv",
+                    "count": 1,
+                    "branches": [],
+                    "gcovr/md5": "4beba7179d45a57456569f6941093571",
+                    "gcovr/excluded": true
+                },
+                {
                     "line_number": 3,
                     "function_name": "_Z3barv",
                     "count": 1,
@@ -136,6 +160,14 @@
                     "count": 1,
                     "branches": [],
                     "gcovr/md5": "c745797c27df531f2e2d3d23f80088c9"
+                },
+                {
+                    "line_number": 8,
+                    "function_name": "_Z4bar_v",
+                    "count": 0,
+                    "branches": [],
+                    "gcovr/md5": "99fb4f6f9391300edd09b8f8a586e881",
+                    "gcovr/excluded": true
                 },
                 {
                     "line_number": 10,
@@ -170,6 +202,14 @@
         {
             "file": "A/File4.cpp",
             "lines": [
+                {
+                    "line_number": 1,
+                    "function_name": "_Z6foobari",
+                    "count": 1,
+                    "branches": [],
+                    "gcovr/md5": "12ad0375e88bc9a7418a8d84c0757032",
+                    "gcovr/excluded": true
+                },
                 {
                     "line_number": 3,
                     "function_name": "_Z6foobari",
@@ -227,6 +267,14 @@
             "file": "A/file1.cpp",
             "lines": [
                 {
+                    "line_number": 1,
+                    "function_name": "_Z3fooi",
+                    "count": 1,
+                    "branches": [],
+                    "gcovr/md5": "2cfc07b9a0f8cdd3eb4553562d5875b6",
+                    "gcovr/excluded": true
+                },
+                {
                     "line_number": 3,
                     "function_name": "_Z3fooi",
                     "count": 1,
@@ -283,6 +331,14 @@
             "file": "A/file3.cpp",
             "lines": [
                 {
+                    "line_number": 1,
+                    "function_name": "_Z8four_barv",
+                    "count": 1,
+                    "branches": [],
+                    "gcovr/md5": "8ce3c51d6f9f0f061d9e9b30994b92de",
+                    "gcovr/excluded": true
+                },
+                {
                     "line_number": 3,
                     "function_name": "_Z8four_barv",
                     "count": 1,
@@ -302,6 +358,14 @@
                     "count": 1,
                     "branches": [],
                     "gcovr/md5": "c745797c27df531f2e2d3d23f80088c9"
+                },
+                {
+                    "line_number": 8,
+                    "function_name": "_Z9four_bar_v",
+                    "count": 0,
+                    "branches": [],
+                    "gcovr/md5": "3ed9b59dcb4cd2fd0dd6bb519068f77a",
+                    "gcovr/excluded": true
                 },
                 {
                     "line_number": 10,
@@ -373,6 +437,14 @@
             "file": "A/file7.cpp",
             "lines": [
                 {
+                    "line_number": 1,
+                    "function_name": "_Z9uncoveredv",
+                    "count": 0,
+                    "branches": [],
+                    "gcovr/md5": "ec6fe56e89ba9f33e08f0cd30c7597ec",
+                    "gcovr/excluded": true
+                },
+                {
                     "line_number": 3,
                     "function_name": "_Z9uncoveredv",
                     "count": 0,
@@ -392,6 +464,14 @@
         {
             "file": "B/main.cpp",
             "lines": [
+                {
+                    "line_number": 12,
+                    "function_name": "main",
+                    "count": 1,
+                    "branches": [],
+                    "gcovr/md5": "2a787a1309f19379bb0e3d8434d2a18d",
+                    "gcovr/excluded": true
+                },
                 {
                     "line_number": 13,
                     "function_name": "main",
