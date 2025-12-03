@@ -1669,33 +1669,38 @@ class LineCoverageCollection(CoverageBase):
         else:
             yield from self.linecov(sort=sort)
 
-    def merge_lines(self) -> bool:
+    def merge_lines(self, *, replace: bool = False) -> LineCoverageCollection:
         """Merge line coverage if there are several items for same line."""
         if len(self) == 1:
-            return False
+            return self
 
-        # Remember the line coverage objects and clear the dictionary
-        separate_linecov = list(self.linecov())
-        self.__linecov.clear()
         # Merge the information, needed for line coverage
         data_sources = set[tuple[str, ...]]()
         block_ids = set[int]()
-        for linecov in separate_linecov:
+        for linecov in self.linecov():
             data_sources.update(linecov.data_sources)
             if linecov.block_ids is not None:
                 block_ids.update(linecov.block_ids)
-        new_linecov = self.insert_line_coverage(
+        merged_linecov_collection = LineCoverageCollection(
+            self.parent,
             data_sources,
-            count=sum(linecov.count for linecov in separate_linecov),
+            lineno=self.lineno,
+            md5=self.md5,
+        )
+        merged_linecov = merged_linecov_collection.insert_line_coverage(
+            data_sources,
+            count=sum(
+                linecov.count for linecov in self.linecov() if linecov.is_reportable
+            ),
             function_name=None,
             block_ids=list(sorted(block_ids)) if block_ids else None,
-            excluded=all(linecov.is_excluded for linecov in separate_linecov),
+            excluded=all(linecov.is_excluded for linecov in self.linecov()),
         )
         # ...and add the child objects
-        for linecov in separate_linecov:
-            self.__raw_linecov[linecov.key] = linecov
+        for linecov in self.linecov():
+            merged_linecov_collection.__raw_linecov[linecov.key] = linecov  # pylint: disable=protected-access
             for branchcov in linecov.branches():
-                new_linecov.insert_branch_coverage(
+                merged_linecov.insert_branch_coverage(
                     branchcov.data_sources,
                     branchno=branchcov.branchno,
                     count=branchcov.count,
@@ -1706,7 +1711,7 @@ class LineCoverageCollection(CoverageBase):
                     excluded=branchcov.excluded,
                 )
             for conditioncov in linecov.conditions():
-                new_linecov.insert_condition_coverage(
+                merged_linecov.insert_condition_coverage(
                     conditioncov.data_sources,
                     conditionno=conditioncov.conditionno,
                     count=conditioncov.count,
@@ -1718,27 +1723,27 @@ class LineCoverageCollection(CoverageBase):
             if (decisioncov := linecov.decision) is not None:
                 if isinstance(decisioncov, DecisionCoverageUncheckable):
                     decisioncov = DecisionCoverageUncheckable(
-                        new_linecov,
+                        merged_linecov,
                         decisioncov.data_sources,
                     )
                 elif isinstance(decisioncov, DecisionCoverageConditional):
                     decisioncov = DecisionCoverageConditional(
-                        new_linecov,
+                        merged_linecov,
                         decisioncov.data_sources,
                         count_true=decisioncov.count_true,
                         count_false=decisioncov.count_false,
                     )
                 elif isinstance(decisioncov, DecisionCoverageSwitch):
                     decisioncov = DecisionCoverageSwitch(
-                        new_linecov,
+                        merged_linecov,
                         decisioncov.data_sources,
                         count=decisioncov.count,
                     )
                 else:  # pragma: no cover
                     raise AssertionError("Unknown decision type.")
-                new_linecov.insert_decision_coverage(decisioncov)
+                merged_linecov.insert_decision_coverage(decisioncov)
             for callcov in linecov.calls():
-                new_linecov.insert_call_coverage(
+                merged_linecov.insert_call_coverage(
                     callcov.data_sources,
                     callno=callcov.callno,
                     source_block_id=callcov.source_block_id,
@@ -1747,7 +1752,11 @@ class LineCoverageCollection(CoverageBase):
                     excluded=callcov.excluded,
                 )
 
-        return True
+        if replace:
+            self.__linecov = merged_linecov_collection.__linecov  # pylint: disable=protected-access
+            self.__raw_linecov = merged_linecov_collection.__raw_linecov  # pylint: disable=protected-access
+
+        return merged_linecov_collection
 
     @property
     def key(self) -> LinecovCollectionKeyType:
@@ -2416,7 +2425,8 @@ class FileCoverage(CoverageBase):
         """Merge line coverage if there are several items for same line."""
         merged_lines = []
         for linecov_collection in self.lines(sort=True):
-            if linecov_collection.merge_lines():
+            merged_linecov = linecov_collection.merge_lines(replace=True)
+            if merged_linecov is not linecov_collection:
                 merged_lines.append(linecov_collection.lineno)
         if activate_trace_logging and merged_lines:
             LOGGER.trace(
