@@ -33,7 +33,7 @@ Bug fixes and small improvements:
 - Remove generated gcov files on error and catch additional gcov error message. (:issue:`1182`)
 - Change default HTML theme excluded line color. (:issue:`1179`)
 - Move theme colors to a separate CSS file so they can be overridden with a simple
-  `--html-template-directory` directory with only the style.colors.css file (:issue:`1179`)
+  :option:`--html-template-dir` directory with only the style.colors.css file (:issue:`1179`)
 - Fix regular expression for detecting a version mismatch between ``gcc`` and ``gcov``. (:issue:`1187`)
 - Improve logging messages for GCOV execution errors to not print information twice and add trace
   messages for gcov execution. (:issue:`1187`)
@@ -50,6 +50,8 @@ Bug fixes and small improvements:
 - Do not ignore lines without functions, e.g. from inlined code. (:issue:`1204`)
 - Ignore all whitespaces instead of only spaces for detection of noncode lines. (:issue:`1210`)
 - Add support for temporary merging line coverage objects without modifying the data model. (:issue:`1213`)
+- Change internal behavior of :option:`--exclude-function-lines` to exclude the line of function definition
+  instead of removing it completely. (:issue:`1214`)
 
 Documentation:
 
