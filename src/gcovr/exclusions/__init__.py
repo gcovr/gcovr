@@ -102,6 +102,19 @@ def apply_all_exclusions(
     Modifies the FileCoverage in place.
     """
 
+    if options.exclude_internal_functions:
+        remove_internal_functions(
+            filecov, activate_trace_logging=activate_trace_logging
+        )
+
+    if options.exclude_throw_branches:
+        remove_throw_branches(filecov, activate_trace_logging=activate_trace_logging)
+
+    if options.exclude_unreachable_branches:
+        remove_unreachable_branches(
+            filecov, lines=lines, activate_trace_logging=activate_trace_logging
+        )
+
     if options.exclude_noncode_lines:
         remove_noncode_lines(
             filecov, lines=lines, activate_trace_logging=activate_trace_logging
@@ -118,58 +131,17 @@ def apply_all_exclusions(
             activate_trace_logging=activate_trace_logging,
         )
 
-    if options.exclude_function:
-        remove_functions(
-            filecov,
-            options.exclude_function,
-            activate_trace_logging=activate_trace_logging,
-        )
-
-    if options.exclude_throw_branches:
-        remove_throw_branches(filecov, activate_trace_logging=activate_trace_logging)
-
-    if options.exclude_unreachable_branches:
-        remove_unreachable_branches(
-            filecov, lines=lines, activate_trace_logging=activate_trace_logging
-        )
-
-    if options.exclude_internal_functions:
-        remove_internal_functions(
-            filecov, activate_trace_logging=activate_trace_logging
-        )
-
     if options.exclude_function_lines:
         exclude_function_definition_lines(
             filecov, activate_trace_logging=activate_trace_logging
         )
 
-
-def remove_internal_functions(
-    filecov: FileCoverage, activate_trace_logging: bool
-) -> None:
-    """Remove compiler-generated functions, e.g. for static initialization."""
-
-    # Get all the functions first because we want to remove some of them which will else result in an error.
-    for functioncov in list(filecov.functioncov()):
-        if _function_can_be_excluded(
-            functioncov.mangled_name, functioncov.demangled_name
-        ):
-            if activate_trace_logging:
-                LOGGER.trace(
-                    "%s: Removing symbol %s detected as compiler generated functions, e.g. for static initialization",
-                    functioncov.location,
-                    functioncov.name,
-                )
-            filecov.remove_function_coverage(functioncov)
-
-
-def _function_can_be_excluded(*names: Optional[str]) -> bool:
-    """Special names for construction/destruction of static objects will be ignored"""
-    return any(
-        name is not None
-        and (name.startswith("__") or name.startswith("_GLOBAL__sub_I_"))
-        for name in names
-    )
+    if options.exclude_function:
+        exclude_functions(
+            filecov,
+            options.exclude_function,
+            activate_trace_logging=activate_trace_logging,
+        )
 
 
 def exclude_function_definition_lines(
@@ -196,25 +168,7 @@ def exclude_function_definition_lines(
             linecov.exclude()
 
 
-def remove_throw_branches(filecov: FileCoverage, activate_trace_logging: bool) -> None:
-    """Remove branches annotated as "throw"."""
-    for linecov in filecov.linecov():
-        # iterate over shallow copy
-        branchcov_list = list(linecov.branches())
-        for branchcov in branchcov_list:
-            if branchcov.throw:
-                linecov.remove_branch(branchcov)
-        if activate_trace_logging:
-            removed_items = len(branchcov_list) - len(list(linecov.branches()))
-            if removed_items > 0:
-                LOGGER.trace(
-                    "%s: Removing %d unreachable branch(es) detected as exception-only code",
-                    linecov.location,
-                    removed_items,
-                )
-
-
-def remove_functions(
+def exclude_functions(
     filecov: FileCoverage, patterns: list[re.Pattern[str]], activate_trace_logging: bool
 ) -> None:
     """Remove matching functions"""
@@ -262,3 +216,49 @@ def remove_functions(
             branch_is_excluded=exclusion_predicate,
             warn_excluded_lines_with_hits=False,
         )
+
+
+def remove_internal_functions(
+    filecov: FileCoverage, activate_trace_logging: bool
+) -> None:
+    """Remove compiler-generated functions, e.g. for static initialization."""
+
+    # Get all the functions first because we want to remove some of them which will else result in an error.
+    for functioncov in list(filecov.functioncov()):
+        if _function_can_be_excluded(
+            functioncov.mangled_name, functioncov.demangled_name
+        ):
+            if activate_trace_logging:
+                LOGGER.trace(
+                    "%s: Removing symbol %s detected as compiler generated functions, e.g. for static initialization",
+                    functioncov.location,
+                    functioncov.name,
+                )
+            filecov.remove_function_coverage(functioncov)
+
+
+def _function_can_be_excluded(*names: Optional[str]) -> bool:
+    """Special names for construction/destruction of static objects will be ignored"""
+    return any(
+        name is not None
+        and (name.startswith("__") or name.startswith("_GLOBAL__sub_I_"))
+        for name in names
+    )
+
+
+def remove_throw_branches(filecov: FileCoverage, activate_trace_logging: bool) -> None:
+    """Remove branches annotated as "throw"."""
+    for linecov in filecov.linecov():
+        # iterate over shallow copy
+        branchcov_list = list(linecov.branches())
+        for branchcov in branchcov_list:
+            if branchcov.throw:
+                linecov.remove_branch(branchcov)
+        if activate_trace_logging:
+            removed_items = len(branchcov_list) - len(list(linecov.branches()))
+            if removed_items > 0:
+                LOGGER.trace(
+                    "%s: Removing %d unreachable branch(es) detected as exception-only code",
+                    linecov.location,
+                    removed_items,
+                )
