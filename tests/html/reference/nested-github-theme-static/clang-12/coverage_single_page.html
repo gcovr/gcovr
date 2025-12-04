@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <link rel="stylesheet" href="coverage_single_page.css"/>
   </head>
-  <body class="js-disabled">
+  <body>
     <div class="Layout-main">
       <div class="Layout-main-centered-lg" style="max-width: 1280px;">
         <div class="d-flex flex-justify-center">
@@ -57,38 +57,10 @@
         <nav>
         </nav>
         <main>
-<main id="functions.html" class="js-enabled-hidden js-disabled-hidden">
-  <details>
-    <summary>Overall list of functions</summary>
-    <nav class="function_page">
-<table class="m-3 text-mono text-small listOfFunctions" style="width:100%;">
-  <tr class="text-left">
-    <th>Function (File:Line)</th>
-    <th>Call count</th>
-    <th>Line coverage</th>
-    <th>Branch coverage</th>
-    <th>Block coverage</th>
-  </tr>
-  <tr><td><a href="#File2.cpp.79143a710ebe69deafa175a1453e33cd.html|l1">bar() (A/File2.cpp:1)</a></td><td>called 1 time</td><td>100.0%</td><td>-%</td><td>100.0%</td></tr>
-  <tr><td><a href="#File2.cpp.79143a710ebe69deafa175a1453e33cd.html|l8">bar_() (A/File2.cpp:8)</a></td><td>not called</td><td>0.0%</td><td>-%</td><td>0.0%</td></tr>
-  <tr><td><a href="#file1.cpp.11975e1ce5d9c157e76130f444523bea.html|l1">foo(int) (A/file1.cpp:1)</a></td><td>called 1 time</td><td>80.0%</td><td>50.0%</td><td>75.0%</td></tr>
-  <tr><td><a href="#file5.cpp.4f0be33a4dcfe398ba897b87f58ca7ce.html|l1">foo5(int) (A/C/file5.cpp:1)</a></td><td>called 1 time</td><td>80.0%</td><td>50.0%</td><td>75.0%</td></tr>
-  <tr><td><a href="#File6.cpp.73326d74f2aeb2719dd6d8a9bcc3e582.html|l1">foo6(int) (A/C/D/File6.cpp:1)</a></td><td>called 1 time</td><td>80.0%</td><td>50.0%</td><td>75.0%</td></tr>
-  <tr><td><a href="#File4.cpp.1d7a80554861eb8b5c21bc2e26ff8f70.html|l1">foobar(int) (A/File4.cpp:1)</a></td><td>called 1 time</td><td>80.0%</td><td>50.0%</td><td>75.0%</td></tr>
-  <tr><td><a href="#file3.cpp.bcfa344b5512d8cd5857f2fe86511d71.html|l1">four_bar() (A/file3.cpp:1)</a></td><td>called 1 time</td><td>100.0%</td><td>-%</td><td>100.0%</td></tr>
-  <tr><td><a href="#file3.cpp.bcfa344b5512d8cd5857f2fe86511d71.html|l8">four_bar_() (A/file3.cpp:8)</a></td><td>not called</td><td>0.0%</td><td>0.0%</td><td>0.0%</td></tr>
-  <tr><td><a href="#file7.cpp.fa9d180b71a3402bed7d24bb1966eaf5.html|l1">uncovered() (A/file7.cpp:1)</a></td><td>not called</td><td>0.0%</td><td>-%</td><td>0.0%</td></tr>
-</table>
-    </nav>
-  </details>
-  <hr class="js-enabled-hidden"/>
-</main>
 
 <main id="/" class="js-enabled-hidden">
   <nav>
-<div class="m-3">
-<a href="#functions.html" class="js-disabled-hidden">List of functions</a>
-</div>  </nav>
+  </nav>
 <div class="filelist Box m-3">
     <div class="Box-header d-flex flex-space-between">
         <div role="gridcell" class="mr-3 flex-shrink-0" style="width: 16px;">
@@ -1350,72 +1322,6 @@
     </div>
 </div></main>
 
-<script>
-  document.body.classList.add("js-enabled")
-  document.body.classList.remove("js-disabled")
-
-  var global_summary = document.getElementById("summary")
-  var global_content = document.getElementById("/")
-  var function_list = document.getElementById("functions.html")
-
-  // Move the summaries in the tree
-  summaries = document.body.querySelectorAll(".summary")
-  for (var i = 0; i < summaries.length; i++) {
-    if (summaries[i].id != summary) {
-      global_summary.parentNode.insertBefore(summaries[i], global_summary)
-    }
-  }
-
-  // Remove the details element of the function list
-  function_list_details = function_list.querySelector("details")
-  function_list_details.parentNode.insertBefore(function_list.querySelector("nav"), function_list_details)
-  function_list_details.parentNode.removeChild(function_list_details)
-
-  var old_hash = null
-  var enabled_elements = [global_summary, global_content]
-  function activateElement() {
-    if (old_hash != location.hash) {
-      old_hash = location.hash
-      hash_parts =
-        (location.hash == "")
-        ? ["/"]
-        : decodeURIComponent(location.hash.substring(1)).split("|")
-
-      for (var i = 0; i < enabled_elements.length; i++) {
-        enabled_elements[i].classList.add("js-enabled-hidden")
-      }
-
-      enabled_elements = []
-      element = document.getElementById(hash_parts[0])
-      if (element == null) {
-        enabled_elements.push(global_summary)
-        enabled_elements.push(global_content)
-      }
-      else
-      {
-        enabled_elements.push(element)
-        var summary = document.getElementById("summary-" + hash_parts[0])
-        if (summary == null) {
-          enabled_elements.push(global_summary)
-        }
-        else {
-          enabled_elements.push(summary)
-        }
-      }
-      for (var i = 0; i < enabled_elements.length; i++) {
-        enabled_elements[i].classList.remove("js-enabled-hidden")
-      }
-      window.scrollTo(0, 0)
-
-      // We need to scroll to the element
-      if (hash_parts.length > 1) {
-        document.getElementById(hash_parts[0]).scrollIntoView()
-      }
-    }
-  }
-  activateElement()
-  window.addEventListener("hashchange", activateElement)
-</script>
 
           <hr/>
         </main>

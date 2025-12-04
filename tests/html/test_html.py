@@ -366,9 +366,8 @@ PARAMETERS_NESTED = [
             "--filter",
             "subdir/A",
             "--html-details=./",
-            "--html-single-page",
-            "--html-theme",
-            "github.blue",
+            "--html-single-page=static",
+            "--html-theme=github.blue",
             "--no-html-self-contained",
         ),
     ),
@@ -378,9 +377,8 @@ PARAMETERS_NESTED = [
             "--filter",
             "subdir/A",
             "--html-details=./",
-            "--html-single-page=static",
-            "--html-theme",
-            "github.blue",
+            "--html-single-page",
+            "--html-theme=github.blue",
         ),
     ),
 ]
@@ -391,12 +389,12 @@ PARAMETERS_NESTED = [
     reason="The nested report generation is independent of OS and we do not want to have separate data for Windows and Darwin.",
 )
 @pytest.mark.parametrize(
-    "_test_id,options",
+    "test_id,options",
     PARAMETERS_NESTED,
     ids=[p[0] for p in PARAMETERS_NESTED],
 )
 def test_nested(
-    gcovr_test_exec: "GcovrTestExec", _test_id: str, options: typing.List[str]
+    gcovr_test_exec: "GcovrTestExec", test_id: str, options: typing.List[str]
 ) -> None:
     """This test case tests the output of cascaded html coverage
     reports.
@@ -409,10 +407,17 @@ def test_nested(
     In this case, the directory listings should be unsorted.
     """
 
+    file2_cpp = gcovr_test_exec.output_dir / "subdir" / "A" / "File2.cpp"
+    if "-theme-js" in test_id:
+        deep_dir = file2_cpp.parent.joinpath(*[f"subdir_{i}" for i in range(0, 10)])
+        deep_dir.mkdir(parents=True, exist_ok=True)
+        file2_cpp = file2_cpp.rename(deep_dir / file2_cpp.name)
     gcovr_test_exec.cxx_link(
         "subdir/testcase",
         gcovr_test_exec.cxx_compile("subdir/A/file1.cpp"),
-        gcovr_test_exec.cxx_compile("subdir/A/File2.cpp"),
+        gcovr_test_exec.cxx_compile(
+            file2_cpp.relative_to(gcovr_test_exec.output_dir).as_posix()
+        ),
         gcovr_test_exec.cxx_compile("subdir/A/file3.cpp"),
         gcovr_test_exec.cxx_compile("subdir/A/File4.cpp"),
         gcovr_test_exec.cxx_compile("subdir/A/file7.cpp"),
