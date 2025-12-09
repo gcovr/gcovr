@@ -4,7 +4,7 @@
 meter {
   -moz-appearance: none;
 
-  width: 30vw;
+  width: 200px;
   min-width: 4em;
   max-width: 15em;
   height: 0.75em;

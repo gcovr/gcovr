@@ -52,6 +52,11 @@ table.legend td.warning_text
   color: var(--warning_color);
 }
 
+table.coverage
+{
+  border-collapse: collapse
+}
+
 table.coverage td,
 table.coverage th
 {
@@ -59,6 +64,8 @@ table.coverage th
   color: black;
   font-weight: normal;
   white-space: nowrap;
+  padding-top: 3px;
+  padding-bottom: 3px;
   padding-left: 5px;
   padding-right: 4px;
 }
@@ -99,8 +106,7 @@ table.legend span.coverage-high
 }
 
 table.legend span.coverage-unknown,
-table.coverage td.coverage-unknown,
-table.file-list td.coverage-unknown
+table.coverage td.coverage-unknown
 {
   background-color: var(--unknown_color) !important;
 }
@@ -108,24 +114,21 @@ table.file-list td.coverage-unknown
 table.legend span.coverage-none,
 table.legend span.coverage-low,
 table.coverage td.coverage-none,
-table.coverage td.coverage-low,
-table.file-list td.coverage-none,
-table.file-list td.coverage-low
+table.coverage td.coverage-low
 {
   background-color: var(--low_color) !important;
 }
 
 table.legend span.coverage-medium,
-table.coverage td.coverage-medium,
-table.file-list td.coverage-medium
+table.coverage td.coverage-medium
 {
   background-color: var(--medium_color) !important;
 }
 
 table.legend span.coverage-high,
-table.coverage td.coverage-high,
-table.file-list td.coverage-high
+table.coverage td.coverage-high
 {
   background-color: var(--high_color) !important;
 }
+
 /*** End of Summary formats ***/

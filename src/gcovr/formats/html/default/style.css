@@ -68,15 +68,16 @@ footer
   position: relative !important
 }
 
-.Box, .Box-row {
+.color-fg-muted {
+  color: var(--color-fg-muted) !important
+}
+
+.Box {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
   font-size: var(--body-font-size, 14px);
   line-height: 1.5;
   color: var(--color-fg-default);
-  background-color:var(--color-canvas-default)
-}
-
-.Box {
+  background-color:var(--color-canvas-default);
   border-color: var(--color-border-default);
   border-radius: var(--borderRadius-medium, 6px);
   border-style: solid;
@@ -156,6 +157,10 @@ footer
   margin: var(--base-size-16, 16px) !important
 }
 
+.mr-2 {
+  margin-right: var(--base-size-8, 8px) !important;
+}
+
 .mr-3 {
   margin-right: var(--base-size-16, 16px) !important
 }
@@ -165,17 +170,25 @@ footer
   padding-bottom: var(--base-size-8, 8px) !important;
 }
 
-@media(min-width: 768px) {
-  .col-md-2 {
-    width: 16.66666666%
-  }
+.col-2,
+.col-md-2
+{
+  width: 10%
 }
 
-.color-fg-muted {
-  color: var(--color-fg-muted) !important
+.css-truncate.css-truncate-target {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  display: inline-block;
+  max-width: 125px;
+  vertical-align: top
 }
 
-.col-2 {
-  width: 16.66666666%
+.d-block {
+  display: block !important
 }
 
+.width-fit {
+  max-width: 100% !important
+}
