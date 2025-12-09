@@ -15,7 +15,8 @@
     {# If javascript is enabled this details content is moved one level up and the details is removed #}
     <summary>Overall list of functions</summary>
     <nav class="function_page">
-      {%  include "functions_page.content.html" %}
+      {%- set function_list = all_functions %}
+      {% include "functions_page.content.html" %}
     </nav>
   </details>
   <hr class="js-enabled-hidden"/>
