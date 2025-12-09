@@ -140,3 +140,14 @@ td.linenos .normal {
     display: none !important;
   }
 }
+
+{% if single_page == "js-enabled" %}
+.js-enabled .js-enabled-hidden {
+  display: none
+}
+
+.js-disabled .js-disabled-hidden {
+  display: none
+}
+
+{% endif %}
