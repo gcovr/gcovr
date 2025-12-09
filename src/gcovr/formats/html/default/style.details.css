@@ -44,14 +44,29 @@ span.excludedLine
   text-align: right;
 }
 
-.linebranchDetails, .lineconditionDetails, .linedecisionDetails, .linecallDetails
+details summary {
+  cursor:pointer;
+}
+
+.linebranchDetails[open]>summary::before,
+.lineconditionDetails[open]>summary::before,
+.linedecisionDetails[open]>summary::before,
+.linecallDetails[open]>summary::before
 {
-  position: relative;
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 80;
+  display: block;
+  cursor: default;
+  content: " ";
+  background: rgba(0, 0, 0, 0);
 }
 
 .linebranchSummary, .lineconditionSummary, .linedecisionSummary, .linecallSummary
 {
-  cursor: help;
   white-space: nowrap;
 }
 
