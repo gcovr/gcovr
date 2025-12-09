@@ -639,32 +639,32 @@ def html2jpeg(session: nox.Session) -> None:
             (800, 600),
         )
         screenshot(
-            "tests/html-themes/reference/gcc-5/coverage.green.main.cpp.118fcbaaba162ba17933c7893247df3a.html",
+            "tests/html/reference/theme-default-green/gcc-5/coverage.main.cpp.118fcbaaba162ba17933c7893247df3a.html",
             "doc/images/screenshot-html-default-green-src.jpeg",
             (800, 290),
         )
         screenshot(
-            "tests/html-themes/reference/gcc-5/coverage.blue.main.cpp.118fcbaaba162ba17933c7893247df3a.html",
+            "tests/html/reference/theme-default-blue/gcc-5/coverage.main.cpp.118fcbaaba162ba17933c7893247df3a.html",
             "doc/images/screenshot-html-default-blue-src.jpeg",
             (800, 290),
         )
         screenshot(
-            "tests/html-themes-github/reference/gcc-5/coverage.green.main.cpp.118fcbaaba162ba17933c7893247df3a.html",
+            "tests/html/reference/theme-github-green/gcc-5/coverage.main.cpp.118fcbaaba162ba17933c7893247df3a.html",
             "doc/images/screenshot-html-github-green-src.jpeg",
             (800, 500),
         )
         screenshot(
-            "tests/html-themes-github/reference/gcc-5/coverage.blue.main.cpp.118fcbaaba162ba17933c7893247df3a.html",
+            "tests/html/reference/theme-github-blue/gcc-5/coverage.main.cpp.118fcbaaba162ba17933c7893247df3a.html",
             "doc/images/screenshot-html-github-blue-src.jpeg",
             (800, 500),
         )
         screenshot(
-            "tests/html-themes-github/reference/gcc-5/coverage.dark-green.main.cpp.118fcbaaba162ba17933c7893247df3a.html",
+            "tests/html/reference/theme-github-dark-green/gcc-5/coverage.main.cpp.118fcbaaba162ba17933c7893247df3a.html",
             "doc/images/screenshot-html-github-dark-green-src.jpeg",
             (800, 500),
         )
         screenshot(
-            "tests/html-themes-github/reference/gcc-5/coverage.dark-blue.main.cpp.118fcbaaba162ba17933c7893247df3a.html",
+            "tests/html/reference/theme-github-dark-blue/gcc-5/coverage.main.cpp.118fcbaaba162ba17933c7893247df3a.html",
             "doc/images/screenshot-html-github-dark-blue-src.jpeg",
             (800, 500),
         )
