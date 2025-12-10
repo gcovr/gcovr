@@ -258,6 +258,14 @@
                 "transy"
                 // cspell:enable
             ]
+        },
+        {
+            "languageId": "html",
+            "ignoreWords": [
+                // cspell:disable
+                "functionslist"
+                // cspell:enable
+            ]
         }
     ]
 }
