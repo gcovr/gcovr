@@ -72,6 +72,14 @@ footer
   color: var(--color-fg-muted) !important
 }
 
+.text-mono {
+  font-family: ui-monospace, SFMono-Regular, SF Mono, Menlo, Consolas, Liberation Mono, monospace !important
+}
+.text-small {
+  font-size: 12px !important
+}
+
+
 .Box {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
   font-size: var(--body-font-size, 14px);
@@ -82,6 +90,17 @@ footer
   border-radius: var(--borderRadius-medium, 6px);
   border-style: solid;
   border-width: var(--borderWidth-thin, 1px)
+}
+
+.Box-header {
+  background-color: var(--color-canvas-subtle);
+  border-color: var(--color-border-default);
+  border-style: solid;
+  border-top-left-radius: 6px;
+  border-top-right-radius: 6px;
+  border-width: 1px;
+  margin: -1px -1px 0;
+  padding: 16px;
 }
 
 .Box-row {
@@ -147,6 +166,10 @@ footer
 
 .flex-items-baseline {
   align-items: baseline !important
+}
+
+.flex-space-between {
+  justify-content: space-between !important
 }
 
 .min-width-0 {
