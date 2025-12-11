@@ -1,69 +1,69 @@
 {# -*- engine: jinja -*- #}
-<table class="file-list">
-  <col/>
-  <colgroup span="3"/>
-  <colgroup span="2"/>
-  <colgroup span="2"/>
-  {% if SHOW_CONDITION_COVERAGE %}
-  <colgroup span="2"/>
-  {% endif %}
-  {% if SHOW_DECISION %}
-  <colgroup span="2"/>
-  {% endif %}
-  {% if SHOW_CALLS %}
-  <colgroup span="2"/>
-  {% endif %}
-
-  <tr>
-    <th scope="col">File</th>
-    <th scope="colgroup" colspan=3>Lines</th>
-    <th scope="colgroup" colspan=2>Functions</th>
-    <th scope="colgroup" colspan=2>Branches</th>
+<div class="filelist Box m-3">
+  <div class="Box-row py-2 d-flex position-relative">
+    <div role="rowheader" class="color-fg-muted flex-auto min-width-0 mr-3 col-md-2">File</div>
+    <div role="rowheader" class="color-fg-muted flex-auto min-width-0 mr-3 d-flex flex-justify-end flex-wrap flex-items-baseline">Lines</div>
+    <div role="rowheader" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">Functions</div>
+    <div role="rowheader" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">Branches</div>
     {% if SHOW_CONDITION_COVERAGE %}
-    <th scope="colgroup" colspan=2>Conditions</th>
+    <div role="rowheader" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">Conditions</div>
     {% endif %}
     {% if SHOW_DECISION %}
-    <th scope="colgroup" colspan=2>Decisions</th>
+    <div role="rowheader" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">Decisions</div>
     {% endif %}
     {% if SHOW_CALLS %}
-    <th scope="colgroup" colspan=2>Calls</th>
+    <div role="rowheader" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">Calls</div>
     {% endif %}
-  </tr>
-
+  </div>
   {% for row in entries %}
-
-  <tr>
-    <th scope="row">
-      {% if row.link is not none %}
-      <a href="{% if info.single_page %}#{% endif %}{{row.link}}">{{row.filename}}</a>
-      {% else %}
-      {{row.filename}}
-      {% endif %}
-    </th>
-    <td>
-      {% if row.lines.coverage != "-" %}
-      <meter class="{{row.lines.class}}" min="0" max="100" value="{{row.lines.coverage}}" title="{{row.lines.coverage}}%">{{row.lines.coverage}}</meter>
-      {% endif %}
-    </td>
-    <td class="CoverValue line-coverage {{row.lines.class}}">{{row.lines.coverage}}%</td>
-    <td class="CoverValue line-coverage {{row.lines.class}}" title="Exec / Excl / Total">{{row.lines.exec}} / {{row.lines.excluded}} / {{row.lines.total}}</td>
-    <td class="CoverValue function-coverage {{row.functions.class}}">{{row.functions.coverage}}%</td>
-    <td class="CoverValue function-coverage {{row.functions.class}}" title="Exec / Excl / Total">{{row.functions.exec}} / {{row.functions.excluded}} / {{row.functions.total}}</td>
-    <td class="CoverValue branch-coverage {{row.branches.class}}">{{row.branches.coverage}}%</td>
-    <td class="CoverValue branch-coverage {{row.branches.class}}" title="Exec / Excl / Total">{{row.branches.exec}} / {{row.branches.excluded}} / {{row.branches.total}}</td>
+  <div class="Box-row Box-row--focus-gray py-2 d-flex position-relative">
+    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 mr-3 col-md-2">
+      <div class="d-flex">
+        <span class="css-truncate css-truncate-target d-block width-fit">
+          {% if row.link is not none %}
+          <a class="" title="{{row.filename}}" href="{% if info.single_page %}#{% endif %}{{row.link}}">{{row.filename}}</a>
+          {% else %}
+          {{row.filename}}
+          {% endif %}
+        </span>
+      </div>
+    </div>
+    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 mr-3 d-flex flex-justify-end flex-wrap flex-items-baseline file-list {{row.lines.class}}">
+      <span style="width: 200px;">
+        {% if row.lines.coverage != "-" %}
+        <meter class="{{row.lines.class}}" min="0" max="100" value="{{row.lines.coverage}}" title="{{row.lines.coverage}}%">{{row.lines.coverage}}</meter>
+        {% endif %}
+      </span>
+      <span>{{row.lines.coverage}}%</span>
+      <span title="Exec / Excl / Total">{{row.lines.exec}} / {{row.lines.excluded}} / {{row.lines.total}}</span>
+    </div>
+    <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2 file-list {{row.functions.class}}">
+      <span>{{row.functions.coverage}}%</span>
+      <span title="Exec / Excl / Total">{{row.functions.exec}} / {{row.functions.excluded}} / {{row.functions.total}}</span>
+    </div>
+    <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2 file-list {{row.branches.class}}">
+      <span>{{row.branches.coverage}}%</span>
+      <span title="Exec / Excl / Total">{{row.branches.exec}} / {{row.branches.excluded}} / {{row.branches.total}}</span>
+    </div>
     {% if SHOW_CONDITION_COVERAGE %}
-    <td class="CoverValue decision-coverage {{row.conditions.class}}">{{row.conditions.coverage}}%</td>
-    <td class="CoverValue decision-coverage {{row.conditions.class}}" title="Exec / Excl / Total">{{row.conditions.exec}} / {{row.conditions.excluded}} / {{row.conditions.total}}</td>
+    <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2 file-list {{row.conditions.class}}">
+      <span>{{row.conditions.coverage}}%</span>
+      <span title="Exec / Excl / Total">{{row.conditions.exec}} / {{row.conditions.excluded}} / {{row.conditions.total}}</span>
+    </div>
     {% endif %}
     {% if SHOW_DECISION %}
-    <td class="CoverValue decision-coverage {{row.decisions.class}}">{{row.decisions.coverage}}%</td>
-    <td class="CoverValue decision-coverage {{row.decisions.class}}" title="Exec / Excl / Total">{{row.decisions.exec}} / - / {{row.decisions.total}}</td>
+    <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2 file-list {{row.decisions.class}}">
+      <span>{{row.decisions.coverage}}%</span>
+      <span title="Exec / Excl / Total">{{row.decisions.exec}} / {{row.decisions.excluded}} / {{row.decisions.total}}</span>
+    </div>
     {% endif %}
     {% if SHOW_CALLS %}
-    <td class="CoverValue branch-coverage {{row.branches.class}}">{{row.calls.coverage}}%</td>
-    <td class="CoverValue branch-coverage {{row.branches.class}}" title="Exec / Excl / Total">{{row.calls.exec}} / {{row.calls.excluded}} / {{row.calls.total}}</td>
+    <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2 file-list {{row.calls.class}}">
+      <span>{{row.calls.coverage}}%</span>
+      <span title="Exec / Excl / Total">{{row.calls.exec}} / {{row.calls.excluded}} / {{row.calls.total}}</span>
+    </div>
     {% endif %}
-  </tr>
+  </div>
+{% endfor %}
+</div>
 
-  {% endfor %}
-</table>

@@ -4,157 +4,150 @@
 
 
 .transy-2 {
-    transform: translateY(-2px);
-}
-
-.listOfFunctions tr > td > a {
-    text-decoration: none;
-    color: inherit;
-}
-
-.listOfFunctions tr:hover > td
-{
-    background-color: #ddd;
+  transform: translateY(-2px);
 }
 
 td.linenos .normal {
-    color: inherit;
-    background-color: transparent;
-    padding-left: 5px;
-    padding-right: 5px;
+  color: inherit;
+  background-color: transparent;
+  padding-left: 5px;
+  padding-right: 5px;
 }
 
 .src {
-    white-space: pre;
+  white-space: pre;
 }
 
 .ws-unset {
-    white-space: unset;
+  white-space: unset;
 }
 
 .style-function-name
 {
-    font-style: italic !important;
-    font-weight: bolder !important;
+  font-style: italic !important;
+  font-weight: bolder !important;
 }
 
 .color-excluded-branch, .color-taken-branch, .color-excluded-condition, .color-taken-condition, .color-taken-decision, .color-excluded-call, .color-invoked-call {
-    color: var(--taken_color) !important;
+  color: var(--taken_color) !important;
 }
 
 .coveredLine {
-    background-color: var(--covered_color) !important;
+  background-color: var(--covered_color) !important;
 }
 
 .partialCoveredLine {
-    background-color: var(--partial_covered_color) !important;
+  background-color: var(--partial_covered_color) !important;
 }
 
 .uncoveredLine {
-    background-color: var(--uncovered_color) !important;
+  background-color: var(--uncovered_color) !important;
 }
 
 .excludedLine {
-    background-color: var(--excluded_color) !important;
+  background-color: var(--excluded_color) !important;
 }
 
 .coverage-unknown {
-    visibility: hidden;
-    min-width: 43px;
+  visibility: hidden;
+  min-width: 43px;
 }
 
 .coverage-none {
-    background-color: var(--unknown_color) !important;
+  background-color: var(--unknown_color) !important;
 }
 
 .coverage-low {
-    background-color: var(--low_color) !important;
+  background-color: var(--low_color) !important;
 }
 
 .coverage-medium {
-    background-color: var(--medium_color) !important;
+  background-color: var(--medium_color) !important;
 }
 
 .coverage-high {
-    background-color: var(--high_color) !important;
+  background-color: var(--high_color) !important;
 }
 
 .Label--minw {
-    min-width: 61px;
-    text-align: right;
+  min-width: 61px;
+  text-align: right;
 }
 
 .Label--minw > span {
-    min-width: 57px;
-    width: 57px;
+  min-width: 57px;
+  width: 57px;
 }
 
 .Label--coverage-unknown {
-    visibility: hidden;
+  visibility: hidden;
 }
 
 .Label--coverage-none {
-    border-color: var(--color-fg-muted) !important;
-    color: var(--color-fg-muted) !important;
+  border-color: var(--color-fg-muted) !important;
+  color: var(--color-fg-muted) !important;
 }
 
 .Label--coverage-low {
-    border-color: var(--low_color);
-    color: var(--low_color_fg);
+  border-color: var(--low_color);
+  color: var(--low_color_fg);
 }
 
 .Label--coverage-medium {
-    border-color: var(--medium_color);
-    color: var(--medium_color_fg);
+  border-color: var(--medium_color);
+  color: var(--medium_color_fg);
 }
 
 .Label--coverage-high{
-    border-color: var(--high_color);
-    color: var(--high_color_fg);
+  border-color: var(--high_color);
+  color: var(--high_color_fg);
 }
 
 .Box-row--focus-gray:hover {
-    background-color: var(--color-canvas-subtle) !important;
+  background-color: var(--color-canvas-subtle) !important;
 }
 
 .filelist .Box-row:nth-child(2n+3){
-    background-color: var(--color-accent-subtle);
+  background-color: var(--color-accent-subtle);
 }
 
-.functionslist {
-    width: 50%;
+.functionslist .Box-row:nth-child(2n+3){
+  background-color: var(--color-accent-subtle);
 }
 
 @media (max-width: 544px) {
-    .filelist .Box-row {
-        flex-direction: column;
-    }
+  .filelist .Box-row {
+    flex-direction: column;
+  }
+  .functionslist .Box-row {
+    flex-direction: column;
+  }
 
-    .filelist .Box-row > div{
-        width: 100%;
-    }
-    .functionslist {
-        width: 100%;
-    }
+  .filelist .Box-row > div {
+    width: 100%;
+  }
+  .functionslist .Box-row > div {
+    width: 100%;
+  }
 
-    .meter {
-        display: none !important;
-    }
-    .meter-label {
-        display: block !important;
-    }
-    .line-percentage-text {
-        display: none !important;
-    }
+  .meter {
+    display: none !important;
+  }
+  .meter-label {
+    display: block !important;
+  }
+  .line-percentage-text {
+    display: none !important;
+  }
 }
 
 {% if single_page == "js-enabled" %}
 .js-enabled .js-enabled-hidden {
-    display: none
+  display: none
 }
 
 .js-disabled .js-disabled-hidden {
-    display: none
+  display: none
 }
 
 {% endif %}
