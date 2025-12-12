@@ -186,10 +186,6 @@ footer
   margin-right: var(--base-size-8, 8px) !important;
 }
 
-.mr-3 {
-  margin-right: var(--base-size-16, 16px) !important
-}
-
 .py-2 {
   padding-top: var(--base-size-8, 8px) !important;
   padding-bottom: var(--base-size-8, 8px) !important;
@@ -198,7 +194,7 @@ footer
 .col-2,
 .col-md-2
 {
-  width: 10%
+  width: 12.5%
 }
 
 .css-truncate.css-truncate-target {
