@@ -30,7 +30,7 @@
   --color-border-default: #d0d7de;
   --color-border-muted: hsla(210, 18%, 87%, 1);
   --color-fg-muted: #656d76;
-  --color-canvas-subtle: rgba(31, 35, 40, 0.15);
+  --color-canvas-subtle: #f6f8fa;
   --color-accent-subtle: #ddf4ff;;
 }
 
@@ -67,11 +67,13 @@ h1
   font-weight: bold;
 }
 
-hr
-{
-  background-color: navy;
-  height: 2px;
+hr {
+  height: 0;
+  margin: 15px 0;
+  overflow: hidden;
+  background: rgba(0,0,0,0);
   border: 0;
+  border-bottom: 1px solid var(--color-border-muted);
 }
 
 /* Link formats: use maroon w/underlines */
@@ -333,12 +335,21 @@ div.file-list > span:has(meter)
 div.file-list > span:not(:has(meter))
 {
   color: black !important;
-  min-width: 4em !important;
   padding-left: 5px !important;
   padding-right: 5px !important;
   margin-left: 0px !important;
   margin-right: 0px !important;
   text-align: right
+}
+
+div.file-list > span:first-child
+{
+  min-width: 3.5em !important;
+}
+
+div.file-list > span:last-child
+{
+  min-width: 4.5em !important;
 }
 td.CoverValue
 {
@@ -619,6 +630,14 @@ footer
   color: var(--color-fg-muted) !important
 }
 
+.text-mono {
+  font-family: ui-monospace, SFMono-Regular, SF Mono, Menlo, Consolas, Liberation Mono, monospace !important
+}
+.text-small {
+  font-size: 12px !important
+}
+
+
 .Box {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
   font-size: var(--body-font-size, 14px);
@@ -629,6 +648,17 @@ footer
   border-radius: var(--borderRadius-medium, 6px);
   border-style: solid;
   border-width: var(--borderWidth-thin, 1px)
+}
+
+.Box-header {
+  background-color: var(--color-canvas-subtle);
+  border-color: var(--color-border-default);
+  border-style: solid;
+  border-top-left-radius: 6px;
+  border-top-right-radius: 6px;
+  border-width: 1px;
+  margin: -1px -1px 0;
+  padding: 16px;
 }
 
 .Box-row {
@@ -696,6 +726,10 @@ footer
   align-items: baseline !important
 }
 
+.flex-space-between {
+  justify-content: space-between !important
+}
+
 .min-width-0 {
   min-width: 0 !important
 }
@@ -708,10 +742,6 @@ footer
   margin-right: var(--base-size-8, 8px) !important;
 }
 
-.mr-3 {
-  margin-right: var(--base-size-16, 16px) !important
-}
-
 .py-2 {
   padding-top: var(--base-size-8, 8px) !important;
   padding-bottom: var(--base-size-8, 8px) !important;
@@ -720,7 +750,7 @@ footer
 .col-2,
 .col-md-2
 {
-  width: 10%
+  width: 12.5%
 }
 
 .css-truncate.css-truncate-target {
@@ -831,10 +861,6 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
       <td>A/</td>
     </tr>
     <tr>
-      <th scope="row">Date:</th>
-      <td>2025-09-28 18:09:21+00:00</td>
-    </tr>
-    <tr>
       <th scope="row">Coverage:</th>
       <td class="legend">
         <span class="coverage-low">low: &ge; 0%</span>
@@ -875,76 +901,76 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
     <nav>
     </nav>
     <main>
-<main id="functions.html" class="js-enabled-hidden js-disabled-hidden">
+<main id="functions.html" class="js-enabled-hidden js-disabled-hidden" data-title="Functions">
   <details>
     <summary>Overall list of functions</summary>
     <nav class="function_page"><div class="functionslist Box m-3">
   <div class="Box-row py-2 d-flex position-relative">
-    <div role="rowheader" class="color-fg-muted flex-auto min-width-0 mr-3 col-md-2">Function (File:Line)</div>
-    <div role="rowheader" class="color-fg-muted flex-auto min-width-0 mr-3 d-flex flex-justify-end flex-wrap flex-items-baseline">Calls</div>
+    <div role="rowheader" class="color-fg-muted flex-auto min-width-0 col-md-2">Function (File:Line)</div>
+    <div role="rowheader" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline">Calls</div>
     <div role="rowheader" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">Lines</div>
     <div role="rowheader" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">Branches</div>
     <div role="rowheader" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">Blocks</div>
   </div>
   <div class="Box-row Box-row--focus-gray py-2 d-flex position-relative">
-    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 mr-3 col-md-2"><a href="#File2.cpp.1aed42bd33fceec1188f2f95c6e8946c.html|l1">bar() (A/subdir_0/subdir_1/subdir_2/subdir_3/subdir_4/subdir_5/subdir_6/subdir_7/subdir_8/subdir_9/File2.cpp:1)</a>    </div>
-    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 mr-3 d-flex flex-justify-end flex-wrap flex-items-baseline">called 1 time</div>
+    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 col-md-2"><a href="#File2.cpp.1aed42bd33fceec1188f2f95c6e8946c.html|l1">bar() (A/subdir_0/subdir_1/subdir_2/subdir_3/subdir_4/subdir_5/subdir_6/subdir_7/subdir_8/subdir_9/File2.cpp:1)</a>    </div>
+    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline">called 1 time</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">100.0%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">-%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">100.0%</div>
   </div>
   <div class="Box-row Box-row--focus-gray py-2 d-flex position-relative">
-    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 mr-3 col-md-2"><a href="#File2.cpp.1aed42bd33fceec1188f2f95c6e8946c.html|l8">bar_() (A/subdir_0/subdir_1/subdir_2/subdir_3/subdir_4/subdir_5/subdir_6/subdir_7/subdir_8/subdir_9/File2.cpp:8)</a>    </div>
-    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 mr-3 d-flex flex-justify-end flex-wrap flex-items-baseline">not called</div>
+    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 col-md-2"><a href="#File2.cpp.1aed42bd33fceec1188f2f95c6e8946c.html|l8">bar_() (A/subdir_0/subdir_1/subdir_2/subdir_3/subdir_4/subdir_5/subdir_6/subdir_7/subdir_8/subdir_9/File2.cpp:8)</a>    </div>
+    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline">not called</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">0.0%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">-%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">0.0%</div>
   </div>
   <div class="Box-row Box-row--focus-gray py-2 d-flex position-relative">
-    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 mr-3 col-md-2"><a href="#file1.cpp.11975e1ce5d9c157e76130f444523bea.html|l1">foo(int) (A/file1.cpp:1)</a>    </div>
-    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 mr-3 d-flex flex-justify-end flex-wrap flex-items-baseline">called 1 time</div>
+    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 col-md-2"><a href="#file1.cpp.11975e1ce5d9c157e76130f444523bea.html|l1">foo(int) (A/file1.cpp:1)</a>    </div>
+    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline">called 1 time</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">80.0%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">50.0%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">75.0%</div>
   </div>
   <div class="Box-row Box-row--focus-gray py-2 d-flex position-relative">
-    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 mr-3 col-md-2"><a href="#file5.cpp.4f0be33a4dcfe398ba897b87f58ca7ce.html|l1">foo5(int) (A/C/file5.cpp:1)</a>    </div>
-    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 mr-3 d-flex flex-justify-end flex-wrap flex-items-baseline">called 1 time</div>
+    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 col-md-2"><a href="#file5.cpp.4f0be33a4dcfe398ba897b87f58ca7ce.html|l1">foo5(int) (A/C/file5.cpp:1)</a>    </div>
+    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline">called 1 time</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">80.0%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">50.0%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">75.0%</div>
   </div>
   <div class="Box-row Box-row--focus-gray py-2 d-flex position-relative">
-    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 mr-3 col-md-2"><a href="#File6.cpp.73326d74f2aeb2719dd6d8a9bcc3e582.html|l1">foo6(int) (A/C/D/File6.cpp:1)</a>    </div>
-    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 mr-3 d-flex flex-justify-end flex-wrap flex-items-baseline">called 1 time</div>
+    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 col-md-2"><a href="#File6.cpp.73326d74f2aeb2719dd6d8a9bcc3e582.html|l1">foo6(int) (A/C/D/File6.cpp:1)</a>    </div>
+    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline">called 1 time</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">80.0%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">50.0%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">75.0%</div>
   </div>
   <div class="Box-row Box-row--focus-gray py-2 d-flex position-relative">
-    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 mr-3 col-md-2"><a href="#File4.cpp.1d7a80554861eb8b5c21bc2e26ff8f70.html|l1">foobar(int) (A/File4.cpp:1)</a>    </div>
-    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 mr-3 d-flex flex-justify-end flex-wrap flex-items-baseline">called 1 time</div>
+    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 col-md-2"><a href="#File4.cpp.1d7a80554861eb8b5c21bc2e26ff8f70.html|l1">foobar(int) (A/File4.cpp:1)</a>    </div>
+    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline">called 1 time</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">80.0%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">50.0%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">75.0%</div>
   </div>
   <div class="Box-row Box-row--focus-gray py-2 d-flex position-relative">
-    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 mr-3 col-md-2"><a href="#file3.cpp.bcfa344b5512d8cd5857f2fe86511d71.html|l1">four_bar() (A/file3.cpp:1)</a>    </div>
-    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 mr-3 d-flex flex-justify-end flex-wrap flex-items-baseline">called 1 time</div>
+    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 col-md-2"><a href="#file3.cpp.bcfa344b5512d8cd5857f2fe86511d71.html|l1">four_bar() (A/file3.cpp:1)</a>    </div>
+    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline">called 1 time</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">100.0%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">-%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">100.0%</div>
   </div>
   <div class="Box-row Box-row--focus-gray py-2 d-flex position-relative">
-    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 mr-3 col-md-2"><a href="#file3.cpp.bcfa344b5512d8cd5857f2fe86511d71.html|l8">four_bar_() (A/file3.cpp:8)</a>    </div>
-    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 mr-3 d-flex flex-justify-end flex-wrap flex-items-baseline">not called</div>
+    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 col-md-2"><a href="#file3.cpp.bcfa344b5512d8cd5857f2fe86511d71.html|l8">four_bar_() (A/file3.cpp:8)</a>    </div>
+    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline">not called</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">0.0%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">0.0%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">0.0%</div>
   </div>
   <div class="Box-row Box-row--focus-gray py-2 d-flex position-relative">
-    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 mr-3 col-md-2"><a href="#file7.cpp.fa9d180b71a3402bed7d24bb1966eaf5.html|l1">uncovered() (A/file7.cpp:1)</a>    </div>
-    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 mr-3 d-flex flex-justify-end flex-wrap flex-items-baseline">not called</div>
+    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 col-md-2"><a href="#file7.cpp.fa9d180b71a3402bed7d24bb1966eaf5.html|l1">uncovered() (A/file7.cpp:1)</a>    </div>
+    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline">not called</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">0.0%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">-%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">0.0%</div>
@@ -954,25 +980,25 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
   <hr class="js-enabled-hidden"/>
 </main>
 
-<main id="/" class="js-enabled-hidden">
+<main id="/" class="js-enabled-hidden" data-title="">
   <nav>
 <a href="#functions.html" class="js-disabled-hidden">List of functions</a>  </nav>
 <div class="filelist Box m-3">
   <div class="Box-row py-2 d-flex position-relative">
-    <div role="rowheader" class="color-fg-muted flex-auto min-width-0 mr-3 col-md-2">File</div>
-    <div role="rowheader" class="color-fg-muted flex-auto min-width-0 mr-3 d-flex flex-justify-end flex-wrap flex-items-baseline">Lines</div>
+    <div role="rowheader" class="color-fg-muted flex-auto min-width-0 mr-2 col-md-2">File</div>
+    <div role="rowheader" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline">Lines</div>
     <div role="rowheader" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">Functions</div>
     <div role="rowheader" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">Branches</div>
   </div>
   <div class="Box-row Box-row--focus-gray py-2 d-flex position-relative">
-    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 mr-3 col-md-2">
+    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 mr-2 col-md-2">
       <div class="d-flex">
         <span class="css-truncate css-truncate-target d-block width-fit">
           <a class="" title="C/D/File6.cpp" href="#File6.cpp.73326d74f2aeb2719dd6d8a9bcc3e582.html">C/D/File6.cpp</a>
         </span>
       </div>
     </div>
-    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 mr-3 d-flex flex-justify-end flex-wrap flex-items-baseline file-list coverage-medium">
+    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline file-list coverage-medium">
       <span style="width: 200px;">
         <meter class="coverage-medium" min="0" max="100" value="80.0" title="80.0%">80.0</meter>
       </span>
@@ -989,14 +1015,14 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
     </div>
   </div>
   <div class="Box-row Box-row--focus-gray py-2 d-flex position-relative">
-    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 mr-3 col-md-2">
+    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 mr-2 col-md-2">
       <div class="d-flex">
         <span class="css-truncate css-truncate-target d-block width-fit">
           <a class="" title="C/file5.cpp" href="#file5.cpp.4f0be33a4dcfe398ba897b87f58ca7ce.html">C/file5.cpp</a>
         </span>
       </div>
     </div>
-    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 mr-3 d-flex flex-justify-end flex-wrap flex-items-baseline file-list coverage-medium">
+    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline file-list coverage-medium">
       <span style="width: 200px;">
         <meter class="coverage-medium" min="0" max="100" value="80.0" title="80.0%">80.0</meter>
       </span>
@@ -1013,14 +1039,14 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
     </div>
   </div>
   <div class="Box-row Box-row--focus-gray py-2 d-flex position-relative">
-    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 mr-3 col-md-2">
+    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 mr-2 col-md-2">
       <div class="d-flex">
         <span class="css-truncate css-truncate-target d-block width-fit">
           <a class="" title="file1.cpp" href="#file1.cpp.11975e1ce5d9c157e76130f444523bea.html">file1.cpp</a>
         </span>
       </div>
     </div>
-    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 mr-3 d-flex flex-justify-end flex-wrap flex-items-baseline file-list coverage-medium">
+    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline file-list coverage-medium">
       <span style="width: 200px;">
         <meter class="coverage-medium" min="0" max="100" value="80.0" title="80.0%">80.0</meter>
       </span>
@@ -1037,14 +1063,14 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
     </div>
   </div>
   <div class="Box-row Box-row--focus-gray py-2 d-flex position-relative">
-    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 mr-3 col-md-2">
+    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 mr-2 col-md-2">
       <div class="d-flex">
         <span class="css-truncate css-truncate-target d-block width-fit">
           <a class="" title="file3.cpp" href="#file3.cpp.bcfa344b5512d8cd5857f2fe86511d71.html">file3.cpp</a>
         </span>
       </div>
     </div>
-    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 mr-3 d-flex flex-justify-end flex-wrap flex-items-baseline file-list coverage-low">
+    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline file-list coverage-low">
       <span style="width: 200px;">
         <meter class="coverage-low" min="0" max="100" value="40.0" title="40.0%">40.0</meter>
       </span>
@@ -1061,14 +1087,14 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
     </div>
   </div>
   <div class="Box-row Box-row--focus-gray py-2 d-flex position-relative">
-    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 mr-3 col-md-2">
+    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 mr-2 col-md-2">
       <div class="d-flex">
         <span class="css-truncate css-truncate-target d-block width-fit">
           <a class="" title="File4.cpp" href="#File4.cpp.1d7a80554861eb8b5c21bc2e26ff8f70.html">File4.cpp</a>
         </span>
       </div>
     </div>
-    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 mr-3 d-flex flex-justify-end flex-wrap flex-items-baseline file-list coverage-medium">
+    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline file-list coverage-medium">
       <span style="width: 200px;">
         <meter class="coverage-medium" min="0" max="100" value="80.0" title="80.0%">80.0</meter>
       </span>
@@ -1085,14 +1111,14 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
     </div>
   </div>
   <div class="Box-row Box-row--focus-gray py-2 d-flex position-relative">
-    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 mr-3 col-md-2">
+    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 mr-2 col-md-2">
       <div class="d-flex">
         <span class="css-truncate css-truncate-target d-block width-fit">
           <a class="" title="file7.cpp" href="#file7.cpp.fa9d180b71a3402bed7d24bb1966eaf5.html">file7.cpp</a>
         </span>
       </div>
     </div>
-    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 mr-3 d-flex flex-justify-end flex-wrap flex-items-baseline file-list coverage-none">
+    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline file-list coverage-none">
       <span style="width: 200px;">
         <meter class="coverage-none" min="0" max="100" value="0.0" title="0.0%">0.0</meter>
       </span>
@@ -1109,14 +1135,14 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
     </div>
   </div>
   <div class="Box-row Box-row--focus-gray py-2 d-flex position-relative">
-    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 mr-3 col-md-2">
+    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 mr-2 col-md-2">
       <div class="d-flex">
         <span class="css-truncate css-truncate-target d-block width-fit">
           <a class="" title="subdir_0/subdir_1/subdir_2/subdir_3/subdir_4/subdir_5/subdir_6/subdir_7/subdir_8/subdir_9/File2.cpp" href="#File2.cpp.1aed42bd33fceec1188f2f95c6e8946c.html">subdir_0/subdir_1/subdir_2/subdir_3/subdir_4/subdir_5/subdir_6/subdir_7/subdir_8/subdir_9/File2.cpp</a>
         </span>
       </div>
     </div>
-    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 mr-3 d-flex flex-justify-end flex-wrap flex-items-baseline file-list coverage-low">
+    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline file-list coverage-low">
       <span style="width: 200px;">
         <meter class="coverage-low" min="0" max="100" value="57.1" title="57.1%">57.1</meter>
       </span>
@@ -1136,7 +1162,7 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
   <hr class="js-enabled-hidden"/>
 </main>
 
-<main id="File6.cpp.73326d74f2aeb2719dd6d8a9bcc3e582.html" class="js-enabled-hidden">
+<main id="File6.cpp.73326d74f2aeb2719dd6d8a9bcc3e582.html" class="js-enabled-hidden" data-title="C/D/File6.cpp">
   <div id="summary-File6.cpp.73326d74f2aeb2719dd6d8a9bcc3e582.html" class="summary js-enabled-hidden">
 <div>
   <table class="legend">
@@ -1145,12 +1171,12 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
       <td>A/</td>
     </tr>
     <tr>
-      <th scope="row">File:</th>
-      <td>C/D/File6.cpp</td>
-    </tr>
-    <tr>
-      <th scope="row">Date:</th>
-      <td>2025-09-28 18:09:21+00:00</td>
+      <th scope="row">Coverage:</th>
+      <td class="legend">
+        <span class="coverage-low">low: &ge; 0%</span>
+        <span class="coverage-medium">medium: &ge; 75.0%</span>
+        <span class="coverage-high">high: &ge; 90.0%</span>
+      </td>
     </tr>
   </table>
 </div>
@@ -1184,15 +1210,15 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
     <summary>List of functions</summary>
 <div class="functionslist Box m-3">
   <div class="Box-row py-2 d-flex position-relative">
-    <div role="rowheader" class="color-fg-muted flex-auto min-width-0 mr-3 col-md-2">Function (File:Line)</div>
-    <div role="rowheader" class="color-fg-muted flex-auto min-width-0 mr-3 d-flex flex-justify-end flex-wrap flex-items-baseline">Calls</div>
+    <div role="rowheader" class="color-fg-muted flex-auto min-width-0 col-md-2">Function (File:Line)</div>
+    <div role="rowheader" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline">Calls</div>
     <div role="rowheader" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">Lines</div>
     <div role="rowheader" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">Branches</div>
     <div role="rowheader" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">Blocks</div>
   </div>
   <div class="Box-row Box-row--focus-gray py-2 d-flex position-relative">
-    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 mr-3 col-md-2"><a href="#File6.cpp.73326d74f2aeb2719dd6d8a9bcc3e582.html|l1">foo6(int) (A/C/D/File6.cpp:1)</a>    </div>
-    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 mr-3 d-flex flex-justify-end flex-wrap flex-items-baseline">called 1 time</div>
+    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 col-md-2"><a href="#File6.cpp.73326d74f2aeb2719dd6d8a9bcc3e582.html|l1">foo6(int) (A/C/D/File6.cpp:1)</a>    </div>
+    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline">called 1 time</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">80.0%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">50.0%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">75.0%</div>
@@ -1200,88 +1226,93 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 </div>  </details>
 </div>
   </nav>
-<div class="file-source">
-  <table>
-    <tr>
-      <th align="right">Line</th>
-      <th align="right">Branch</th>
-      <th align="right">Exec</th>
-      <th align="left" style="width: 100%;">Source</th>
-    </tr>
-    <tr class="source-line">
-      <td class="lineno"><a id="File6.cpp.73326d74f2aeb2719dd6d8a9bcc3e582.html|l1" href="#File6.cpp.73326d74f2aeb2719dd6d8a9bcc3e582.html|l1">1</a></td>
-      <td class="linebranch">
-      </td>
-      <td class="linecount coveredLine">1</td>
-      <td class="src coveredLine"><span class="kt">int</span><span class="w"> </span><span class="nf">foo6</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">param</span><span class="p">)</span></td>
-    </tr>
-    <tr class="source-line">
-      <td class="lineno"><a id="File6.cpp.73326d74f2aeb2719dd6d8a9bcc3e582.html|l2" href="#File6.cpp.73326d74f2aeb2719dd6d8a9bcc3e582.html|l2">2</a></td>
-      <td class="linebranch">
-      </td>
-      <td class="linecount "></td>
-      <td class="src "><span class="p">{</span></td>
-    </tr>
-    <tr class="source-line">
-      <td class="lineno"><a id="File6.cpp.73326d74f2aeb2719dd6d8a9bcc3e582.html|l3" href="#File6.cpp.73326d74f2aeb2719dd6d8a9bcc3e582.html|l3">3</a></td>
-      <td class="linebranch">
-        <details class="linebranchDetails">
-          <summary class="linebranchSummary">1/2</summary>
-          <div class="linebranchContents">
-            <div class="notTakenBranch">&cross; Branch 0 not taken.</div>
-            <div class="takenBranch">&check; Branch 1 taken 1 time.</div>
-          </div>
-        </details>
-      </td>
-      <td class="linecount partialCoveredLine">1</td>
-      <td class="src partialCoveredLine"><span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">param</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
-    </tr>
-    <tr class="source-line">
-      <td class="lineno"><a id="File6.cpp.73326d74f2aeb2719dd6d8a9bcc3e582.html|l4" href="#File6.cpp.73326d74f2aeb2719dd6d8a9bcc3e582.html|l4">4</a></td>
-      <td class="linebranch">
-      </td>
-      <td class="linecount uncoveredLine">&cross;</td>
-      <td class="src uncoveredLine"><span class="w">     </span><span class="k">return</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span></td>
-    </tr>
-    <tr class="source-line">
-      <td class="lineno"><a id="File6.cpp.73326d74f2aeb2719dd6d8a9bcc3e582.html|l5" href="#File6.cpp.73326d74f2aeb2719dd6d8a9bcc3e582.html|l5">5</a></td>
-      <td class="linebranch">
-      </td>
-      <td class="linecount "></td>
-      <td class="src "><span class="w">  </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span></td>
-    </tr>
-    <tr class="source-line">
-      <td class="lineno"><a id="File6.cpp.73326d74f2aeb2719dd6d8a9bcc3e582.html|l6" href="#File6.cpp.73326d74f2aeb2719dd6d8a9bcc3e582.html|l6">6</a></td>
-      <td class="linebranch">
-      </td>
-      <td class="linecount coveredLine">1</td>
-      <td class="src coveredLine"><span class="w">     </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span></td>
-    </tr>
-    <tr class="source-line">
-      <td class="lineno"><a id="File6.cpp.73326d74f2aeb2719dd6d8a9bcc3e582.html|l7" href="#File6.cpp.73326d74f2aeb2719dd6d8a9bcc3e582.html|l7">7</a></td>
-      <td class="linebranch">
-      </td>
-      <td class="linecount "></td>
-      <td class="src "><span class="w">  </span><span class="p">}</span></td>
-    </tr>
-    <tr class="source-line">
-      <td class="lineno"><a id="File6.cpp.73326d74f2aeb2719dd6d8a9bcc3e582.html|l8" href="#File6.cpp.73326d74f2aeb2719dd6d8a9bcc3e582.html|l8">8</a></td>
-      <td class="linebranch">
-      </td>
-      <td class="linecount coveredLine">1</td>
-      <td class="src coveredLine"><span class="p">}</span></td>
-    </tr>
-    <tr class="source-line">
-      <td class="lineno"><a id="File6.cpp.73326d74f2aeb2719dd6d8a9bcc3e582.html|l9" href="#File6.cpp.73326d74f2aeb2719dd6d8a9bcc3e582.html|l9">9</a></td>
-      <td class="linebranch">
-      </td>
-      <td class="linecount "></td>
-      <td class="src "></td>
-    </tr>
-  </table>
+<div class="Box m-3 file-source">
+  <div class="Box-header d-flex flex-space-between">
+    C/D/File6.cpp
+  </div>
+  <div style="overflow-x: auto;">
+    <table class="text-mono text-small">
+      <tr>
+        <th align="right">Line</th>
+        <th align="right">Branch</th>
+        <th align="right">Exec</th>
+        <th align="left" style="width: 100%;">Source</th>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="File6.cpp.73326d74f2aeb2719dd6d8a9bcc3e582.html|l1" href="#File6.cpp.73326d74f2aeb2719dd6d8a9bcc3e582.html|l1">1</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecount coveredLine">1</td>
+        <td class="src coveredLine"><span class="kt">int</span><span class="w"> </span><span class="nf">foo6</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">param</span><span class="p">)</span></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="File6.cpp.73326d74f2aeb2719dd6d8a9bcc3e582.html|l2" href="#File6.cpp.73326d74f2aeb2719dd6d8a9bcc3e582.html|l2">2</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecount "></td>
+        <td class="src "><span class="p">{</span></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="File6.cpp.73326d74f2aeb2719dd6d8a9bcc3e582.html|l3" href="#File6.cpp.73326d74f2aeb2719dd6d8a9bcc3e582.html|l3">3</a></td>
+        <td class="linebranch">
+          <details class="linebranchDetails">
+            <summary class="linebranchSummary">1/2</summary>
+            <div class="linebranchContents">
+              <div class="notTakenBranch">&cross; Branch 0 not taken.</div>
+              <div class="takenBranch">&check; Branch 1 taken 1 time.</div>
+            </div>
+          </details>
+        </td>
+        <td class="linecount partialCoveredLine">1</td>
+        <td class="src partialCoveredLine"><span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">param</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="File6.cpp.73326d74f2aeb2719dd6d8a9bcc3e582.html|l4" href="#File6.cpp.73326d74f2aeb2719dd6d8a9bcc3e582.html|l4">4</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecount uncoveredLine">&cross;</td>
+        <td class="src uncoveredLine"><span class="w">     </span><span class="k">return</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="File6.cpp.73326d74f2aeb2719dd6d8a9bcc3e582.html|l5" href="#File6.cpp.73326d74f2aeb2719dd6d8a9bcc3e582.html|l5">5</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecount "></td>
+        <td class="src "><span class="w">  </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="File6.cpp.73326d74f2aeb2719dd6d8a9bcc3e582.html|l6" href="#File6.cpp.73326d74f2aeb2719dd6d8a9bcc3e582.html|l6">6</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecount coveredLine">1</td>
+        <td class="src coveredLine"><span class="w">     </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="File6.cpp.73326d74f2aeb2719dd6d8a9bcc3e582.html|l7" href="#File6.cpp.73326d74f2aeb2719dd6d8a9bcc3e582.html|l7">7</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecount "></td>
+        <td class="src "><span class="w">  </span><span class="p">}</span></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="File6.cpp.73326d74f2aeb2719dd6d8a9bcc3e582.html|l8" href="#File6.cpp.73326d74f2aeb2719dd6d8a9bcc3e582.html|l8">8</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecount coveredLine">1</td>
+        <td class="src coveredLine"><span class="p">}</span></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="File6.cpp.73326d74f2aeb2719dd6d8a9bcc3e582.html|l9" href="#File6.cpp.73326d74f2aeb2719dd6d8a9bcc3e582.html|l9">9</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecount "></td>
+        <td class="src "></td>
+      </tr>
+    </table>
+  </div>
 </div>  <hr class="js-enabled-hidden"/>
 </main>
-<main id="file5.cpp.4f0be33a4dcfe398ba897b87f58ca7ce.html" class="js-enabled-hidden">
+<main id="file5.cpp.4f0be33a4dcfe398ba897b87f58ca7ce.html" class="js-enabled-hidden" data-title="C/file5.cpp">
   <div id="summary-file5.cpp.4f0be33a4dcfe398ba897b87f58ca7ce.html" class="summary js-enabled-hidden">
 <div>
   <table class="legend">
@@ -1290,12 +1321,12 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
       <td>A/</td>
     </tr>
     <tr>
-      <th scope="row">File:</th>
-      <td>C/file5.cpp</td>
-    </tr>
-    <tr>
-      <th scope="row">Date:</th>
-      <td>2025-09-28 18:09:21+00:00</td>
+      <th scope="row">Coverage:</th>
+      <td class="legend">
+        <span class="coverage-low">low: &ge; 0%</span>
+        <span class="coverage-medium">medium: &ge; 75.0%</span>
+        <span class="coverage-high">high: &ge; 90.0%</span>
+      </td>
     </tr>
   </table>
 </div>
@@ -1329,15 +1360,15 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
     <summary>List of functions</summary>
 <div class="functionslist Box m-3">
   <div class="Box-row py-2 d-flex position-relative">
-    <div role="rowheader" class="color-fg-muted flex-auto min-width-0 mr-3 col-md-2">Function (File:Line)</div>
-    <div role="rowheader" class="color-fg-muted flex-auto min-width-0 mr-3 d-flex flex-justify-end flex-wrap flex-items-baseline">Calls</div>
+    <div role="rowheader" class="color-fg-muted flex-auto min-width-0 col-md-2">Function (File:Line)</div>
+    <div role="rowheader" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline">Calls</div>
     <div role="rowheader" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">Lines</div>
     <div role="rowheader" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">Branches</div>
     <div role="rowheader" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">Blocks</div>
   </div>
   <div class="Box-row Box-row--focus-gray py-2 d-flex position-relative">
-    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 mr-3 col-md-2"><a href="#file5.cpp.4f0be33a4dcfe398ba897b87f58ca7ce.html|l1">foo5(int) (A/C/file5.cpp:1)</a>    </div>
-    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 mr-3 d-flex flex-justify-end flex-wrap flex-items-baseline">called 1 time</div>
+    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 col-md-2"><a href="#file5.cpp.4f0be33a4dcfe398ba897b87f58ca7ce.html|l1">foo5(int) (A/C/file5.cpp:1)</a>    </div>
+    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline">called 1 time</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">80.0%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">50.0%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">75.0%</div>
@@ -1345,88 +1376,93 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 </div>  </details>
 </div>
   </nav>
-<div class="file-source">
-  <table>
-    <tr>
-      <th align="right">Line</th>
-      <th align="right">Branch</th>
-      <th align="right">Exec</th>
-      <th align="left" style="width: 100%;">Source</th>
-    </tr>
-    <tr class="source-line">
-      <td class="lineno"><a id="file5.cpp.4f0be33a4dcfe398ba897b87f58ca7ce.html|l1" href="#file5.cpp.4f0be33a4dcfe398ba897b87f58ca7ce.html|l1">1</a></td>
-      <td class="linebranch">
-      </td>
-      <td class="linecount coveredLine">1</td>
-      <td class="src coveredLine"><span class="kt">int</span><span class="w"> </span><span class="nf">foo5</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">param</span><span class="p">)</span></td>
-    </tr>
-    <tr class="source-line">
-      <td class="lineno"><a id="file5.cpp.4f0be33a4dcfe398ba897b87f58ca7ce.html|l2" href="#file5.cpp.4f0be33a4dcfe398ba897b87f58ca7ce.html|l2">2</a></td>
-      <td class="linebranch">
-      </td>
-      <td class="linecount "></td>
-      <td class="src "><span class="p">{</span></td>
-    </tr>
-    <tr class="source-line">
-      <td class="lineno"><a id="file5.cpp.4f0be33a4dcfe398ba897b87f58ca7ce.html|l3" href="#file5.cpp.4f0be33a4dcfe398ba897b87f58ca7ce.html|l3">3</a></td>
-      <td class="linebranch">
-        <details class="linebranchDetails">
-          <summary class="linebranchSummary">1/2</summary>
-          <div class="linebranchContents">
-            <div class="notTakenBranch">&cross; Branch 0 not taken.</div>
-            <div class="takenBranch">&check; Branch 1 taken 1 time.</div>
-          </div>
-        </details>
-      </td>
-      <td class="linecount partialCoveredLine">1</td>
-      <td class="src partialCoveredLine"><span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">param</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
-    </tr>
-    <tr class="source-line">
-      <td class="lineno"><a id="file5.cpp.4f0be33a4dcfe398ba897b87f58ca7ce.html|l4" href="#file5.cpp.4f0be33a4dcfe398ba897b87f58ca7ce.html|l4">4</a></td>
-      <td class="linebranch">
-      </td>
-      <td class="linecount uncoveredLine">&cross;</td>
-      <td class="src uncoveredLine"><span class="w">     </span><span class="k">return</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span></td>
-    </tr>
-    <tr class="source-line">
-      <td class="lineno"><a id="file5.cpp.4f0be33a4dcfe398ba897b87f58ca7ce.html|l5" href="#file5.cpp.4f0be33a4dcfe398ba897b87f58ca7ce.html|l5">5</a></td>
-      <td class="linebranch">
-      </td>
-      <td class="linecount "></td>
-      <td class="src "><span class="w">  </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span></td>
-    </tr>
-    <tr class="source-line">
-      <td class="lineno"><a id="file5.cpp.4f0be33a4dcfe398ba897b87f58ca7ce.html|l6" href="#file5.cpp.4f0be33a4dcfe398ba897b87f58ca7ce.html|l6">6</a></td>
-      <td class="linebranch">
-      </td>
-      <td class="linecount coveredLine">1</td>
-      <td class="src coveredLine"><span class="w">     </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span></td>
-    </tr>
-    <tr class="source-line">
-      <td class="lineno"><a id="file5.cpp.4f0be33a4dcfe398ba897b87f58ca7ce.html|l7" href="#file5.cpp.4f0be33a4dcfe398ba897b87f58ca7ce.html|l7">7</a></td>
-      <td class="linebranch">
-      </td>
-      <td class="linecount "></td>
-      <td class="src "><span class="w">  </span><span class="p">}</span></td>
-    </tr>
-    <tr class="source-line">
-      <td class="lineno"><a id="file5.cpp.4f0be33a4dcfe398ba897b87f58ca7ce.html|l8" href="#file5.cpp.4f0be33a4dcfe398ba897b87f58ca7ce.html|l8">8</a></td>
-      <td class="linebranch">
-      </td>
-      <td class="linecount coveredLine">1</td>
-      <td class="src coveredLine"><span class="p">}</span></td>
-    </tr>
-    <tr class="source-line">
-      <td class="lineno"><a id="file5.cpp.4f0be33a4dcfe398ba897b87f58ca7ce.html|l9" href="#file5.cpp.4f0be33a4dcfe398ba897b87f58ca7ce.html|l9">9</a></td>
-      <td class="linebranch">
-      </td>
-      <td class="linecount "></td>
-      <td class="src "></td>
-    </tr>
-  </table>
+<div class="Box m-3 file-source">
+  <div class="Box-header d-flex flex-space-between">
+    C/file5.cpp
+  </div>
+  <div style="overflow-x: auto;">
+    <table class="text-mono text-small">
+      <tr>
+        <th align="right">Line</th>
+        <th align="right">Branch</th>
+        <th align="right">Exec</th>
+        <th align="left" style="width: 100%;">Source</th>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="file5.cpp.4f0be33a4dcfe398ba897b87f58ca7ce.html|l1" href="#file5.cpp.4f0be33a4dcfe398ba897b87f58ca7ce.html|l1">1</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecount coveredLine">1</td>
+        <td class="src coveredLine"><span class="kt">int</span><span class="w"> </span><span class="nf">foo5</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">param</span><span class="p">)</span></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="file5.cpp.4f0be33a4dcfe398ba897b87f58ca7ce.html|l2" href="#file5.cpp.4f0be33a4dcfe398ba897b87f58ca7ce.html|l2">2</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecount "></td>
+        <td class="src "><span class="p">{</span></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="file5.cpp.4f0be33a4dcfe398ba897b87f58ca7ce.html|l3" href="#file5.cpp.4f0be33a4dcfe398ba897b87f58ca7ce.html|l3">3</a></td>
+        <td class="linebranch">
+          <details class="linebranchDetails">
+            <summary class="linebranchSummary">1/2</summary>
+            <div class="linebranchContents">
+              <div class="notTakenBranch">&cross; Branch 0 not taken.</div>
+              <div class="takenBranch">&check; Branch 1 taken 1 time.</div>
+            </div>
+          </details>
+        </td>
+        <td class="linecount partialCoveredLine">1</td>
+        <td class="src partialCoveredLine"><span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">param</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="file5.cpp.4f0be33a4dcfe398ba897b87f58ca7ce.html|l4" href="#file5.cpp.4f0be33a4dcfe398ba897b87f58ca7ce.html|l4">4</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecount uncoveredLine">&cross;</td>
+        <td class="src uncoveredLine"><span class="w">     </span><span class="k">return</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="file5.cpp.4f0be33a4dcfe398ba897b87f58ca7ce.html|l5" href="#file5.cpp.4f0be33a4dcfe398ba897b87f58ca7ce.html|l5">5</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecount "></td>
+        <td class="src "><span class="w">  </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="file5.cpp.4f0be33a4dcfe398ba897b87f58ca7ce.html|l6" href="#file5.cpp.4f0be33a4dcfe398ba897b87f58ca7ce.html|l6">6</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecount coveredLine">1</td>
+        <td class="src coveredLine"><span class="w">     </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="file5.cpp.4f0be33a4dcfe398ba897b87f58ca7ce.html|l7" href="#file5.cpp.4f0be33a4dcfe398ba897b87f58ca7ce.html|l7">7</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecount "></td>
+        <td class="src "><span class="w">  </span><span class="p">}</span></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="file5.cpp.4f0be33a4dcfe398ba897b87f58ca7ce.html|l8" href="#file5.cpp.4f0be33a4dcfe398ba897b87f58ca7ce.html|l8">8</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecount coveredLine">1</td>
+        <td class="src coveredLine"><span class="p">}</span></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="file5.cpp.4f0be33a4dcfe398ba897b87f58ca7ce.html|l9" href="#file5.cpp.4f0be33a4dcfe398ba897b87f58ca7ce.html|l9">9</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecount "></td>
+        <td class="src "></td>
+      </tr>
+    </table>
+  </div>
 </div>  <hr class="js-enabled-hidden"/>
 </main>
-<main id="File4.cpp.1d7a80554861eb8b5c21bc2e26ff8f70.html" class="js-enabled-hidden">
+<main id="File4.cpp.1d7a80554861eb8b5c21bc2e26ff8f70.html" class="js-enabled-hidden" data-title="File4.cpp">
   <div id="summary-File4.cpp.1d7a80554861eb8b5c21bc2e26ff8f70.html" class="summary js-enabled-hidden">
 <div>
   <table class="legend">
@@ -1435,12 +1471,12 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
       <td>A/</td>
     </tr>
     <tr>
-      <th scope="row">File:</th>
-      <td>File4.cpp</td>
-    </tr>
-    <tr>
-      <th scope="row">Date:</th>
-      <td>2025-09-28 18:09:21+00:00</td>
+      <th scope="row">Coverage:</th>
+      <td class="legend">
+        <span class="coverage-low">low: &ge; 0%</span>
+        <span class="coverage-medium">medium: &ge; 75.0%</span>
+        <span class="coverage-high">high: &ge; 90.0%</span>
+      </td>
     </tr>
   </table>
 </div>
@@ -1474,15 +1510,15 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
     <summary>List of functions</summary>
 <div class="functionslist Box m-3">
   <div class="Box-row py-2 d-flex position-relative">
-    <div role="rowheader" class="color-fg-muted flex-auto min-width-0 mr-3 col-md-2">Function (File:Line)</div>
-    <div role="rowheader" class="color-fg-muted flex-auto min-width-0 mr-3 d-flex flex-justify-end flex-wrap flex-items-baseline">Calls</div>
+    <div role="rowheader" class="color-fg-muted flex-auto min-width-0 col-md-2">Function (File:Line)</div>
+    <div role="rowheader" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline">Calls</div>
     <div role="rowheader" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">Lines</div>
     <div role="rowheader" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">Branches</div>
     <div role="rowheader" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">Blocks</div>
   </div>
   <div class="Box-row Box-row--focus-gray py-2 d-flex position-relative">
-    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 mr-3 col-md-2"><a href="#File4.cpp.1d7a80554861eb8b5c21bc2e26ff8f70.html|l1">foobar(int) (A/File4.cpp:1)</a>    </div>
-    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 mr-3 d-flex flex-justify-end flex-wrap flex-items-baseline">called 1 time</div>
+    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 col-md-2"><a href="#File4.cpp.1d7a80554861eb8b5c21bc2e26ff8f70.html|l1">foobar(int) (A/File4.cpp:1)</a>    </div>
+    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline">called 1 time</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">80.0%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">50.0%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">75.0%</div>
@@ -1490,88 +1526,93 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 </div>  </details>
 </div>
   </nav>
-<div class="file-source">
-  <table>
-    <tr>
-      <th align="right">Line</th>
-      <th align="right">Branch</th>
-      <th align="right">Exec</th>
-      <th align="left" style="width: 100%;">Source</th>
-    </tr>
-    <tr class="source-line">
-      <td class="lineno"><a id="File4.cpp.1d7a80554861eb8b5c21bc2e26ff8f70.html|l1" href="#File4.cpp.1d7a80554861eb8b5c21bc2e26ff8f70.html|l1">1</a></td>
-      <td class="linebranch">
-      </td>
-      <td class="linecount coveredLine">1</td>
-      <td class="src coveredLine"><span class="kt">int</span><span class="w"> </span><span class="nf">foobar</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">param</span><span class="p">)</span></td>
-    </tr>
-    <tr class="source-line">
-      <td class="lineno"><a id="File4.cpp.1d7a80554861eb8b5c21bc2e26ff8f70.html|l2" href="#File4.cpp.1d7a80554861eb8b5c21bc2e26ff8f70.html|l2">2</a></td>
-      <td class="linebranch">
-      </td>
-      <td class="linecount "></td>
-      <td class="src "><span class="p">{</span></td>
-    </tr>
-    <tr class="source-line">
-      <td class="lineno"><a id="File4.cpp.1d7a80554861eb8b5c21bc2e26ff8f70.html|l3" href="#File4.cpp.1d7a80554861eb8b5c21bc2e26ff8f70.html|l3">3</a></td>
-      <td class="linebranch">
-        <details class="linebranchDetails">
-          <summary class="linebranchSummary">1/2</summary>
-          <div class="linebranchContents">
-            <div class="takenBranch">&check; Branch 0 taken 1 time.</div>
-            <div class="notTakenBranch">&cross; Branch 1 not taken.</div>
-          </div>
-        </details>
-      </td>
-      <td class="linecount partialCoveredLine">1</td>
-      <td class="src partialCoveredLine"><span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">param</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
-    </tr>
-    <tr class="source-line">
-      <td class="lineno"><a id="File4.cpp.1d7a80554861eb8b5c21bc2e26ff8f70.html|l4" href="#File4.cpp.1d7a80554861eb8b5c21bc2e26ff8f70.html|l4">4</a></td>
-      <td class="linebranch">
-      </td>
-      <td class="linecount coveredLine">1</td>
-      <td class="src coveredLine"><span class="w">     </span><span class="k">return</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span></td>
-    </tr>
-    <tr class="source-line">
-      <td class="lineno"><a id="File4.cpp.1d7a80554861eb8b5c21bc2e26ff8f70.html|l5" href="#File4.cpp.1d7a80554861eb8b5c21bc2e26ff8f70.html|l5">5</a></td>
-      <td class="linebranch">
-      </td>
-      <td class="linecount "></td>
-      <td class="src "><span class="w">  </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span></td>
-    </tr>
-    <tr class="source-line">
-      <td class="lineno"><a id="File4.cpp.1d7a80554861eb8b5c21bc2e26ff8f70.html|l6" href="#File4.cpp.1d7a80554861eb8b5c21bc2e26ff8f70.html|l6">6</a></td>
-      <td class="linebranch">
-      </td>
-      <td class="linecount uncoveredLine">&cross;</td>
-      <td class="src uncoveredLine"><span class="w">     </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span></td>
-    </tr>
-    <tr class="source-line">
-      <td class="lineno"><a id="File4.cpp.1d7a80554861eb8b5c21bc2e26ff8f70.html|l7" href="#File4.cpp.1d7a80554861eb8b5c21bc2e26ff8f70.html|l7">7</a></td>
-      <td class="linebranch">
-      </td>
-      <td class="linecount "></td>
-      <td class="src "><span class="w">  </span><span class="p">}</span></td>
-    </tr>
-    <tr class="source-line">
-      <td class="lineno"><a id="File4.cpp.1d7a80554861eb8b5c21bc2e26ff8f70.html|l8" href="#File4.cpp.1d7a80554861eb8b5c21bc2e26ff8f70.html|l8">8</a></td>
-      <td class="linebranch">
-      </td>
-      <td class="linecount coveredLine">1</td>
-      <td class="src coveredLine"><span class="p">}</span></td>
-    </tr>
-    <tr class="source-line">
-      <td class="lineno"><a id="File4.cpp.1d7a80554861eb8b5c21bc2e26ff8f70.html|l9" href="#File4.cpp.1d7a80554861eb8b5c21bc2e26ff8f70.html|l9">9</a></td>
-      <td class="linebranch">
-      </td>
-      <td class="linecount "></td>
-      <td class="src "></td>
-    </tr>
-  </table>
+<div class="Box m-3 file-source">
+  <div class="Box-header d-flex flex-space-between">
+    File4.cpp
+  </div>
+  <div style="overflow-x: auto;">
+    <table class="text-mono text-small">
+      <tr>
+        <th align="right">Line</th>
+        <th align="right">Branch</th>
+        <th align="right">Exec</th>
+        <th align="left" style="width: 100%;">Source</th>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="File4.cpp.1d7a80554861eb8b5c21bc2e26ff8f70.html|l1" href="#File4.cpp.1d7a80554861eb8b5c21bc2e26ff8f70.html|l1">1</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecount coveredLine">1</td>
+        <td class="src coveredLine"><span class="kt">int</span><span class="w"> </span><span class="nf">foobar</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">param</span><span class="p">)</span></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="File4.cpp.1d7a80554861eb8b5c21bc2e26ff8f70.html|l2" href="#File4.cpp.1d7a80554861eb8b5c21bc2e26ff8f70.html|l2">2</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecount "></td>
+        <td class="src "><span class="p">{</span></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="File4.cpp.1d7a80554861eb8b5c21bc2e26ff8f70.html|l3" href="#File4.cpp.1d7a80554861eb8b5c21bc2e26ff8f70.html|l3">3</a></td>
+        <td class="linebranch">
+          <details class="linebranchDetails">
+            <summary class="linebranchSummary">1/2</summary>
+            <div class="linebranchContents">
+              <div class="takenBranch">&check; Branch 0 taken 1 time.</div>
+              <div class="notTakenBranch">&cross; Branch 1 not taken.</div>
+            </div>
+          </details>
+        </td>
+        <td class="linecount partialCoveredLine">1</td>
+        <td class="src partialCoveredLine"><span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">param</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="File4.cpp.1d7a80554861eb8b5c21bc2e26ff8f70.html|l4" href="#File4.cpp.1d7a80554861eb8b5c21bc2e26ff8f70.html|l4">4</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecount coveredLine">1</td>
+        <td class="src coveredLine"><span class="w">     </span><span class="k">return</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="File4.cpp.1d7a80554861eb8b5c21bc2e26ff8f70.html|l5" href="#File4.cpp.1d7a80554861eb8b5c21bc2e26ff8f70.html|l5">5</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecount "></td>
+        <td class="src "><span class="w">  </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="File4.cpp.1d7a80554861eb8b5c21bc2e26ff8f70.html|l6" href="#File4.cpp.1d7a80554861eb8b5c21bc2e26ff8f70.html|l6">6</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecount uncoveredLine">&cross;</td>
+        <td class="src uncoveredLine"><span class="w">     </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="File4.cpp.1d7a80554861eb8b5c21bc2e26ff8f70.html|l7" href="#File4.cpp.1d7a80554861eb8b5c21bc2e26ff8f70.html|l7">7</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecount "></td>
+        <td class="src "><span class="w">  </span><span class="p">}</span></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="File4.cpp.1d7a80554861eb8b5c21bc2e26ff8f70.html|l8" href="#File4.cpp.1d7a80554861eb8b5c21bc2e26ff8f70.html|l8">8</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecount coveredLine">1</td>
+        <td class="src coveredLine"><span class="p">}</span></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="File4.cpp.1d7a80554861eb8b5c21bc2e26ff8f70.html|l9" href="#File4.cpp.1d7a80554861eb8b5c21bc2e26ff8f70.html|l9">9</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecount "></td>
+        <td class="src "></td>
+      </tr>
+    </table>
+  </div>
 </div>  <hr class="js-enabled-hidden"/>
 </main>
-<main id="file1.cpp.11975e1ce5d9c157e76130f444523bea.html" class="js-enabled-hidden">
+<main id="file1.cpp.11975e1ce5d9c157e76130f444523bea.html" class="js-enabled-hidden" data-title="file1.cpp">
   <div id="summary-file1.cpp.11975e1ce5d9c157e76130f444523bea.html" class="summary js-enabled-hidden">
 <div>
   <table class="legend">
@@ -1580,12 +1621,12 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
       <td>A/</td>
     </tr>
     <tr>
-      <th scope="row">File:</th>
-      <td>file1.cpp</td>
-    </tr>
-    <tr>
-      <th scope="row">Date:</th>
-      <td>2025-09-28 18:09:21+00:00</td>
+      <th scope="row">Coverage:</th>
+      <td class="legend">
+        <span class="coverage-low">low: &ge; 0%</span>
+        <span class="coverage-medium">medium: &ge; 75.0%</span>
+        <span class="coverage-high">high: &ge; 90.0%</span>
+      </td>
     </tr>
   </table>
 </div>
@@ -1619,15 +1660,15 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
     <summary>List of functions</summary>
 <div class="functionslist Box m-3">
   <div class="Box-row py-2 d-flex position-relative">
-    <div role="rowheader" class="color-fg-muted flex-auto min-width-0 mr-3 col-md-2">Function (File:Line)</div>
-    <div role="rowheader" class="color-fg-muted flex-auto min-width-0 mr-3 d-flex flex-justify-end flex-wrap flex-items-baseline">Calls</div>
+    <div role="rowheader" class="color-fg-muted flex-auto min-width-0 col-md-2">Function (File:Line)</div>
+    <div role="rowheader" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline">Calls</div>
     <div role="rowheader" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">Lines</div>
     <div role="rowheader" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">Branches</div>
     <div role="rowheader" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">Blocks</div>
   </div>
   <div class="Box-row Box-row--focus-gray py-2 d-flex position-relative">
-    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 mr-3 col-md-2"><a href="#file1.cpp.11975e1ce5d9c157e76130f444523bea.html|l1">foo(int) (A/file1.cpp:1)</a>    </div>
-    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 mr-3 d-flex flex-justify-end flex-wrap flex-items-baseline">called 1 time</div>
+    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 col-md-2"><a href="#file1.cpp.11975e1ce5d9c157e76130f444523bea.html|l1">foo(int) (A/file1.cpp:1)</a>    </div>
+    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline">called 1 time</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">80.0%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">50.0%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">75.0%</div>
@@ -1635,88 +1676,93 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 </div>  </details>
 </div>
   </nav>
-<div class="file-source">
-  <table>
-    <tr>
-      <th align="right">Line</th>
-      <th align="right">Branch</th>
-      <th align="right">Exec</th>
-      <th align="left" style="width: 100%;">Source</th>
-    </tr>
-    <tr class="source-line">
-      <td class="lineno"><a id="file1.cpp.11975e1ce5d9c157e76130f444523bea.html|l1" href="#file1.cpp.11975e1ce5d9c157e76130f444523bea.html|l1">1</a></td>
-      <td class="linebranch">
-      </td>
-      <td class="linecount coveredLine">1</td>
-      <td class="src coveredLine"><span class="kt">int</span><span class="w"> </span><span class="nf">foo</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">param</span><span class="p">)</span></td>
-    </tr>
-    <tr class="source-line">
-      <td class="lineno"><a id="file1.cpp.11975e1ce5d9c157e76130f444523bea.html|l2" href="#file1.cpp.11975e1ce5d9c157e76130f444523bea.html|l2">2</a></td>
-      <td class="linebranch">
-      </td>
-      <td class="linecount "></td>
-      <td class="src "><span class="p">{</span></td>
-    </tr>
-    <tr class="source-line">
-      <td class="lineno"><a id="file1.cpp.11975e1ce5d9c157e76130f444523bea.html|l3" href="#file1.cpp.11975e1ce5d9c157e76130f444523bea.html|l3">3</a></td>
-      <td class="linebranch">
-        <details class="linebranchDetails">
-          <summary class="linebranchSummary">1/2</summary>
-          <div class="linebranchContents">
-            <div class="notTakenBranch">&cross; Branch 0 not taken.</div>
-            <div class="takenBranch">&check; Branch 1 taken 1 time.</div>
-          </div>
-        </details>
-      </td>
-      <td class="linecount partialCoveredLine">1</td>
-      <td class="src partialCoveredLine"><span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">param</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
-    </tr>
-    <tr class="source-line">
-      <td class="lineno"><a id="file1.cpp.11975e1ce5d9c157e76130f444523bea.html|l4" href="#file1.cpp.11975e1ce5d9c157e76130f444523bea.html|l4">4</a></td>
-      <td class="linebranch">
-      </td>
-      <td class="linecount uncoveredLine">&cross;</td>
-      <td class="src uncoveredLine"><span class="w">     </span><span class="k">return</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span></td>
-    </tr>
-    <tr class="source-line">
-      <td class="lineno"><a id="file1.cpp.11975e1ce5d9c157e76130f444523bea.html|l5" href="#file1.cpp.11975e1ce5d9c157e76130f444523bea.html|l5">5</a></td>
-      <td class="linebranch">
-      </td>
-      <td class="linecount "></td>
-      <td class="src "><span class="w">  </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span></td>
-    </tr>
-    <tr class="source-line">
-      <td class="lineno"><a id="file1.cpp.11975e1ce5d9c157e76130f444523bea.html|l6" href="#file1.cpp.11975e1ce5d9c157e76130f444523bea.html|l6">6</a></td>
-      <td class="linebranch">
-      </td>
-      <td class="linecount coveredLine">1</td>
-      <td class="src coveredLine"><span class="w">     </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span></td>
-    </tr>
-    <tr class="source-line">
-      <td class="lineno"><a id="file1.cpp.11975e1ce5d9c157e76130f444523bea.html|l7" href="#file1.cpp.11975e1ce5d9c157e76130f444523bea.html|l7">7</a></td>
-      <td class="linebranch">
-      </td>
-      <td class="linecount "></td>
-      <td class="src "><span class="w">  </span><span class="p">}</span></td>
-    </tr>
-    <tr class="source-line">
-      <td class="lineno"><a id="file1.cpp.11975e1ce5d9c157e76130f444523bea.html|l8" href="#file1.cpp.11975e1ce5d9c157e76130f444523bea.html|l8">8</a></td>
-      <td class="linebranch">
-      </td>
-      <td class="linecount coveredLine">1</td>
-      <td class="src coveredLine"><span class="p">}</span></td>
-    </tr>
-    <tr class="source-line">
-      <td class="lineno"><a id="file1.cpp.11975e1ce5d9c157e76130f444523bea.html|l9" href="#file1.cpp.11975e1ce5d9c157e76130f444523bea.html|l9">9</a></td>
-      <td class="linebranch">
-      </td>
-      <td class="linecount "></td>
-      <td class="src "></td>
-    </tr>
-  </table>
+<div class="Box m-3 file-source">
+  <div class="Box-header d-flex flex-space-between">
+    file1.cpp
+  </div>
+  <div style="overflow-x: auto;">
+    <table class="text-mono text-small">
+      <tr>
+        <th align="right">Line</th>
+        <th align="right">Branch</th>
+        <th align="right">Exec</th>
+        <th align="left" style="width: 100%;">Source</th>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="file1.cpp.11975e1ce5d9c157e76130f444523bea.html|l1" href="#file1.cpp.11975e1ce5d9c157e76130f444523bea.html|l1">1</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecount coveredLine">1</td>
+        <td class="src coveredLine"><span class="kt">int</span><span class="w"> </span><span class="nf">foo</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">param</span><span class="p">)</span></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="file1.cpp.11975e1ce5d9c157e76130f444523bea.html|l2" href="#file1.cpp.11975e1ce5d9c157e76130f444523bea.html|l2">2</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecount "></td>
+        <td class="src "><span class="p">{</span></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="file1.cpp.11975e1ce5d9c157e76130f444523bea.html|l3" href="#file1.cpp.11975e1ce5d9c157e76130f444523bea.html|l3">3</a></td>
+        <td class="linebranch">
+          <details class="linebranchDetails">
+            <summary class="linebranchSummary">1/2</summary>
+            <div class="linebranchContents">
+              <div class="notTakenBranch">&cross; Branch 0 not taken.</div>
+              <div class="takenBranch">&check; Branch 1 taken 1 time.</div>
+            </div>
+          </details>
+        </td>
+        <td class="linecount partialCoveredLine">1</td>
+        <td class="src partialCoveredLine"><span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">param</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="file1.cpp.11975e1ce5d9c157e76130f444523bea.html|l4" href="#file1.cpp.11975e1ce5d9c157e76130f444523bea.html|l4">4</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecount uncoveredLine">&cross;</td>
+        <td class="src uncoveredLine"><span class="w">     </span><span class="k">return</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="file1.cpp.11975e1ce5d9c157e76130f444523bea.html|l5" href="#file1.cpp.11975e1ce5d9c157e76130f444523bea.html|l5">5</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecount "></td>
+        <td class="src "><span class="w">  </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="file1.cpp.11975e1ce5d9c157e76130f444523bea.html|l6" href="#file1.cpp.11975e1ce5d9c157e76130f444523bea.html|l6">6</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecount coveredLine">1</td>
+        <td class="src coveredLine"><span class="w">     </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="file1.cpp.11975e1ce5d9c157e76130f444523bea.html|l7" href="#file1.cpp.11975e1ce5d9c157e76130f444523bea.html|l7">7</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecount "></td>
+        <td class="src "><span class="w">  </span><span class="p">}</span></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="file1.cpp.11975e1ce5d9c157e76130f444523bea.html|l8" href="#file1.cpp.11975e1ce5d9c157e76130f444523bea.html|l8">8</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecount coveredLine">1</td>
+        <td class="src coveredLine"><span class="p">}</span></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="file1.cpp.11975e1ce5d9c157e76130f444523bea.html|l9" href="#file1.cpp.11975e1ce5d9c157e76130f444523bea.html|l9">9</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecount "></td>
+        <td class="src "></td>
+      </tr>
+    </table>
+  </div>
 </div>  <hr class="js-enabled-hidden"/>
 </main>
-<main id="file3.cpp.bcfa344b5512d8cd5857f2fe86511d71.html" class="js-enabled-hidden">
+<main id="file3.cpp.bcfa344b5512d8cd5857f2fe86511d71.html" class="js-enabled-hidden" data-title="file3.cpp">
   <div id="summary-file3.cpp.bcfa344b5512d8cd5857f2fe86511d71.html" class="summary js-enabled-hidden">
 <div>
   <table class="legend">
@@ -1725,12 +1771,12 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
       <td>A/</td>
     </tr>
     <tr>
-      <th scope="row">File:</th>
-      <td>file3.cpp</td>
-    </tr>
-    <tr>
-      <th scope="row">Date:</th>
-      <td>2025-09-28 18:09:21+00:00</td>
+      <th scope="row">Coverage:</th>
+      <td class="legend">
+        <span class="coverage-low">low: &ge; 0%</span>
+        <span class="coverage-medium">medium: &ge; 75.0%</span>
+        <span class="coverage-high">high: &ge; 90.0%</span>
+      </td>
     </tr>
   </table>
 </div>
@@ -1764,22 +1810,22 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
     <summary>List of functions</summary>
 <div class="functionslist Box m-3">
   <div class="Box-row py-2 d-flex position-relative">
-    <div role="rowheader" class="color-fg-muted flex-auto min-width-0 mr-3 col-md-2">Function (File:Line)</div>
-    <div role="rowheader" class="color-fg-muted flex-auto min-width-0 mr-3 d-flex flex-justify-end flex-wrap flex-items-baseline">Calls</div>
+    <div role="rowheader" class="color-fg-muted flex-auto min-width-0 col-md-2">Function (File:Line)</div>
+    <div role="rowheader" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline">Calls</div>
     <div role="rowheader" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">Lines</div>
     <div role="rowheader" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">Branches</div>
     <div role="rowheader" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">Blocks</div>
   </div>
   <div class="Box-row Box-row--focus-gray py-2 d-flex position-relative">
-    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 mr-3 col-md-2"><a href="#file3.cpp.bcfa344b5512d8cd5857f2fe86511d71.html|l1">four_bar() (A/file3.cpp:1)</a>    </div>
-    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 mr-3 d-flex flex-justify-end flex-wrap flex-items-baseline">called 1 time</div>
+    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 col-md-2"><a href="#file3.cpp.bcfa344b5512d8cd5857f2fe86511d71.html|l1">four_bar() (A/file3.cpp:1)</a>    </div>
+    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline">called 1 time</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">100.0%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">-%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">100.0%</div>
   </div>
   <div class="Box-row Box-row--focus-gray py-2 d-flex position-relative">
-    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 mr-3 col-md-2"><a href="#file3.cpp.bcfa344b5512d8cd5857f2fe86511d71.html|l8">four_bar_() (A/file3.cpp:8)</a>    </div>
-    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 mr-3 d-flex flex-justify-end flex-wrap flex-items-baseline">not called</div>
+    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 col-md-2"><a href="#file3.cpp.bcfa344b5512d8cd5857f2fe86511d71.html|l8">four_bar_() (A/file3.cpp:8)</a>    </div>
+    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline">not called</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">0.0%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">0.0%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">0.0%</div>
@@ -1787,130 +1833,135 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 </div>  </details>
 </div>
   </nav>
-<div class="file-source">
-  <table>
-    <tr>
-      <th align="right">Line</th>
-      <th align="right">Branch</th>
-      <th align="right">Exec</th>
-      <th align="left" style="width: 100%;">Source</th>
-    </tr>
-    <tr class="source-line">
-      <td class="lineno"><a id="file3.cpp.bcfa344b5512d8cd5857f2fe86511d71.html|l1" href="#file3.cpp.bcfa344b5512d8cd5857f2fe86511d71.html|l1">1</a></td>
-      <td class="linebranch">
-      </td>
-      <td class="linecount coveredLine">1</td>
-      <td class="src coveredLine"><span class="kt">int</span><span class="w"> </span><span class="nf">four_bar</span><span class="p">()</span></td>
-    </tr>
-    <tr class="source-line">
-      <td class="lineno"><a id="file3.cpp.bcfa344b5512d8cd5857f2fe86511d71.html|l2" href="#file3.cpp.bcfa344b5512d8cd5857f2fe86511d71.html|l2">2</a></td>
-      <td class="linebranch">
-      </td>
-      <td class="linecount "></td>
-      <td class="src "><span class="p">{</span></td>
-    </tr>
-    <tr class="source-line">
-      <td class="lineno"><a id="file3.cpp.bcfa344b5512d8cd5857f2fe86511d71.html|l3" href="#file3.cpp.bcfa344b5512d8cd5857f2fe86511d71.html|l3">3</a></td>
-      <td class="linebranch">
-      </td>
-      <td class="linecount coveredLine">1</td>
-      <td class="src coveredLine"><span class="kt">int</span><span class="w"> </span><span class="n">x</span><span class="o">=</span><span class="mi">1</span><span class="p">;</span></td>
-    </tr>
-    <tr class="source-line">
-      <td class="lineno"><a id="file3.cpp.bcfa344b5512d8cd5857f2fe86511d71.html|l4" href="#file3.cpp.bcfa344b5512d8cd5857f2fe86511d71.html|l4">4</a></td>
-      <td class="linebranch">
-      </td>
-      <td class="linecount coveredLine">1</td>
-      <td class="src coveredLine"><span class="kt">int</span><span class="w"> </span><span class="n">y</span><span class="o">=</span><span class="mi">2</span><span class="p">;</span></td>
-    </tr>
-    <tr class="source-line">
-      <td class="lineno"><a id="file3.cpp.bcfa344b5512d8cd5857f2fe86511d71.html|l5" href="#file3.cpp.bcfa344b5512d8cd5857f2fe86511d71.html|l5">5</a></td>
-      <td class="linebranch">
-      </td>
-      <td class="linecount coveredLine">1</td>
-      <td class="src coveredLine"><span class="k">return</span><span class="w"> </span><span class="n">x</span><span class="o">+</span><span class="n">y</span><span class="p">;</span></td>
-    </tr>
-    <tr class="source-line">
-      <td class="lineno"><a id="file3.cpp.bcfa344b5512d8cd5857f2fe86511d71.html|l6" href="#file3.cpp.bcfa344b5512d8cd5857f2fe86511d71.html|l6">6</a></td>
-      <td class="linebranch">
-      </td>
-      <td class="linecount "></td>
-      <td class="src "><span class="p">}</span></td>
-    </tr>
-    <tr class="source-line">
-      <td class="lineno"><a id="file3.cpp.bcfa344b5512d8cd5857f2fe86511d71.html|l7" href="#file3.cpp.bcfa344b5512d8cd5857f2fe86511d71.html|l7">7</a></td>
-      <td class="linebranch">
-      </td>
-      <td class="linecount "></td>
-      <td class="src "></td>
-    </tr>
-    <tr class="source-line">
-      <td class="lineno"><a id="file3.cpp.bcfa344b5512d8cd5857f2fe86511d71.html|l8" href="#file3.cpp.bcfa344b5512d8cd5857f2fe86511d71.html|l8">8</a></td>
-      <td class="linebranch">
-      </td>
-      <td class="linecount uncoveredLine">&cross;</td>
-      <td class="src uncoveredLine"><span class="kt">int</span><span class="w"> </span><span class="nf">four_bar_</span><span class="p">()</span></td>
-    </tr>
-    <tr class="source-line">
-      <td class="lineno"><a id="file3.cpp.bcfa344b5512d8cd5857f2fe86511d71.html|l9" href="#file3.cpp.bcfa344b5512d8cd5857f2fe86511d71.html|l9">9</a></td>
-      <td class="linebranch">
-      </td>
-      <td class="linecount "></td>
-      <td class="src "><span class="p">{</span></td>
-    </tr>
-    <tr class="source-line">
-      <td class="lineno"><a id="file3.cpp.bcfa344b5512d8cd5857f2fe86511d71.html|l10" href="#file3.cpp.bcfa344b5512d8cd5857f2fe86511d71.html|l10">10</a></td>
-      <td class="linebranch">
-      </td>
-      <td class="linecount uncoveredLine">&cross;</td>
-      <td class="src uncoveredLine"><span class="kt">int</span><span class="w"> </span><span class="n">x</span><span class="o">=</span><span class="mi">1</span><span class="p">;</span></td>
-    </tr>
-    <tr class="source-line">
-      <td class="lineno"><a id="file3.cpp.bcfa344b5512d8cd5857f2fe86511d71.html|l11" href="#file3.cpp.bcfa344b5512d8cd5857f2fe86511d71.html|l11">11</a></td>
-      <td class="linebranch">
-      </td>
-      <td class="linecount uncoveredLine">&cross;</td>
-      <td class="src uncoveredLine"><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">x</span><span class="p">)</span></td>
-    </tr>
-    <tr class="source-line">
-      <td class="lineno"><a id="file3.cpp.bcfa344b5512d8cd5857f2fe86511d71.html|l12" href="#file3.cpp.bcfa344b5512d8cd5857f2fe86511d71.html|l12">12</a></td>
-      <td class="linebranch">
-      </td>
-      <td class="linecount uncoveredLine">&cross;</td>
-      <td class="src uncoveredLine"><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="mi">2</span><span class="o">*</span><span class="n">x</span><span class="p">;</span><span class="w">     </span><span class="cm">/* This is a really long comment that confirms whether gcovr colors lines that exceed normal expectations. */</span></td>
-    </tr>
-    <tr class="source-line">
-      <td class="lineno"><a id="file3.cpp.bcfa344b5512d8cd5857f2fe86511d71.html|l13" href="#file3.cpp.bcfa344b5512d8cd5857f2fe86511d71.html|l13">13</a></td>
-      <td class="linebranch">
-      </td>
-      <td class="linecount "></td>
-      <td class="src "><span class="k">else</span></td>
-    </tr>
-    <tr class="source-line">
-      <td class="lineno"><a id="file3.cpp.bcfa344b5512d8cd5857f2fe86511d71.html|l14" href="#file3.cpp.bcfa344b5512d8cd5857f2fe86511d71.html|l14">14</a></td>
-      <td class="linebranch">
-      </td>
-      <td class="linecount uncoveredLine">&cross;</td>
-      <td class="src uncoveredLine"><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">x</span><span class="p">;</span></td>
-    </tr>
-    <tr class="source-line">
-      <td class="lineno"><a id="file3.cpp.bcfa344b5512d8cd5857f2fe86511d71.html|l15" href="#file3.cpp.bcfa344b5512d8cd5857f2fe86511d71.html|l15">15</a></td>
-      <td class="linebranch">
-      </td>
-      <td class="linecount uncoveredLine">&cross;</td>
-      <td class="src uncoveredLine"><span class="p">}</span></td>
-    </tr>
-    <tr class="source-line">
-      <td class="lineno"><a id="file3.cpp.bcfa344b5512d8cd5857f2fe86511d71.html|l16" href="#file3.cpp.bcfa344b5512d8cd5857f2fe86511d71.html|l16">16</a></td>
-      <td class="linebranch">
-      </td>
-      <td class="linecount "></td>
-      <td class="src "></td>
-    </tr>
-  </table>
+<div class="Box m-3 file-source">
+  <div class="Box-header d-flex flex-space-between">
+    file3.cpp
+  </div>
+  <div style="overflow-x: auto;">
+    <table class="text-mono text-small">
+      <tr>
+        <th align="right">Line</th>
+        <th align="right">Branch</th>
+        <th align="right">Exec</th>
+        <th align="left" style="width: 100%;">Source</th>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="file3.cpp.bcfa344b5512d8cd5857f2fe86511d71.html|l1" href="#file3.cpp.bcfa344b5512d8cd5857f2fe86511d71.html|l1">1</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecount coveredLine">1</td>
+        <td class="src coveredLine"><span class="kt">int</span><span class="w"> </span><span class="nf">four_bar</span><span class="p">()</span></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="file3.cpp.bcfa344b5512d8cd5857f2fe86511d71.html|l2" href="#file3.cpp.bcfa344b5512d8cd5857f2fe86511d71.html|l2">2</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecount "></td>
+        <td class="src "><span class="p">{</span></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="file3.cpp.bcfa344b5512d8cd5857f2fe86511d71.html|l3" href="#file3.cpp.bcfa344b5512d8cd5857f2fe86511d71.html|l3">3</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecount coveredLine">1</td>
+        <td class="src coveredLine"><span class="kt">int</span><span class="w"> </span><span class="n">x</span><span class="o">=</span><span class="mi">1</span><span class="p">;</span></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="file3.cpp.bcfa344b5512d8cd5857f2fe86511d71.html|l4" href="#file3.cpp.bcfa344b5512d8cd5857f2fe86511d71.html|l4">4</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecount coveredLine">1</td>
+        <td class="src coveredLine"><span class="kt">int</span><span class="w"> </span><span class="n">y</span><span class="o">=</span><span class="mi">2</span><span class="p">;</span></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="file3.cpp.bcfa344b5512d8cd5857f2fe86511d71.html|l5" href="#file3.cpp.bcfa344b5512d8cd5857f2fe86511d71.html|l5">5</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecount coveredLine">1</td>
+        <td class="src coveredLine"><span class="k">return</span><span class="w"> </span><span class="n">x</span><span class="o">+</span><span class="n">y</span><span class="p">;</span></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="file3.cpp.bcfa344b5512d8cd5857f2fe86511d71.html|l6" href="#file3.cpp.bcfa344b5512d8cd5857f2fe86511d71.html|l6">6</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecount "></td>
+        <td class="src "><span class="p">}</span></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="file3.cpp.bcfa344b5512d8cd5857f2fe86511d71.html|l7" href="#file3.cpp.bcfa344b5512d8cd5857f2fe86511d71.html|l7">7</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecount "></td>
+        <td class="src "></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="file3.cpp.bcfa344b5512d8cd5857f2fe86511d71.html|l8" href="#file3.cpp.bcfa344b5512d8cd5857f2fe86511d71.html|l8">8</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecount uncoveredLine">&cross;</td>
+        <td class="src uncoveredLine"><span class="kt">int</span><span class="w"> </span><span class="nf">four_bar_</span><span class="p">()</span></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="file3.cpp.bcfa344b5512d8cd5857f2fe86511d71.html|l9" href="#file3.cpp.bcfa344b5512d8cd5857f2fe86511d71.html|l9">9</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecount "></td>
+        <td class="src "><span class="p">{</span></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="file3.cpp.bcfa344b5512d8cd5857f2fe86511d71.html|l10" href="#file3.cpp.bcfa344b5512d8cd5857f2fe86511d71.html|l10">10</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecount uncoveredLine">&cross;</td>
+        <td class="src uncoveredLine"><span class="kt">int</span><span class="w"> </span><span class="n">x</span><span class="o">=</span><span class="mi">1</span><span class="p">;</span></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="file3.cpp.bcfa344b5512d8cd5857f2fe86511d71.html|l11" href="#file3.cpp.bcfa344b5512d8cd5857f2fe86511d71.html|l11">11</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecount uncoveredLine">&cross;</td>
+        <td class="src uncoveredLine"><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">x</span><span class="p">)</span></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="file3.cpp.bcfa344b5512d8cd5857f2fe86511d71.html|l12" href="#file3.cpp.bcfa344b5512d8cd5857f2fe86511d71.html|l12">12</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecount uncoveredLine">&cross;</td>
+        <td class="src uncoveredLine"><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="mi">2</span><span class="o">*</span><span class="n">x</span><span class="p">;</span><span class="w">     </span><span class="cm">/* This is a really long comment that confirms whether gcovr colors lines that exceed normal expectations. */</span></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="file3.cpp.bcfa344b5512d8cd5857f2fe86511d71.html|l13" href="#file3.cpp.bcfa344b5512d8cd5857f2fe86511d71.html|l13">13</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecount "></td>
+        <td class="src "><span class="k">else</span></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="file3.cpp.bcfa344b5512d8cd5857f2fe86511d71.html|l14" href="#file3.cpp.bcfa344b5512d8cd5857f2fe86511d71.html|l14">14</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecount uncoveredLine">&cross;</td>
+        <td class="src uncoveredLine"><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">x</span><span class="p">;</span></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="file3.cpp.bcfa344b5512d8cd5857f2fe86511d71.html|l15" href="#file3.cpp.bcfa344b5512d8cd5857f2fe86511d71.html|l15">15</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecount uncoveredLine">&cross;</td>
+        <td class="src uncoveredLine"><span class="p">}</span></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="file3.cpp.bcfa344b5512d8cd5857f2fe86511d71.html|l16" href="#file3.cpp.bcfa344b5512d8cd5857f2fe86511d71.html|l16">16</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecount "></td>
+        <td class="src "></td>
+      </tr>
+    </table>
+  </div>
 </div>  <hr class="js-enabled-hidden"/>
 </main>
-<main id="file7.cpp.fa9d180b71a3402bed7d24bb1966eaf5.html" class="js-enabled-hidden">
+<main id="file7.cpp.fa9d180b71a3402bed7d24bb1966eaf5.html" class="js-enabled-hidden" data-title="file7.cpp">
   <div id="summary-file7.cpp.fa9d180b71a3402bed7d24bb1966eaf5.html" class="summary js-enabled-hidden">
 <div>
   <table class="legend">
@@ -1919,12 +1970,12 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
       <td>A/</td>
     </tr>
     <tr>
-      <th scope="row">File:</th>
-      <td>file7.cpp</td>
-    </tr>
-    <tr>
-      <th scope="row">Date:</th>
-      <td>2025-09-28 18:09:21+00:00</td>
+      <th scope="row">Coverage:</th>
+      <td class="legend">
+        <span class="coverage-low">low: &ge; 0%</span>
+        <span class="coverage-medium">medium: &ge; 75.0%</span>
+        <span class="coverage-high">high: &ge; 90.0%</span>
+      </td>
     </tr>
   </table>
 </div>
@@ -1958,15 +2009,15 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
     <summary>List of functions</summary>
 <div class="functionslist Box m-3">
   <div class="Box-row py-2 d-flex position-relative">
-    <div role="rowheader" class="color-fg-muted flex-auto min-width-0 mr-3 col-md-2">Function (File:Line)</div>
-    <div role="rowheader" class="color-fg-muted flex-auto min-width-0 mr-3 d-flex flex-justify-end flex-wrap flex-items-baseline">Calls</div>
+    <div role="rowheader" class="color-fg-muted flex-auto min-width-0 col-md-2">Function (File:Line)</div>
+    <div role="rowheader" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline">Calls</div>
     <div role="rowheader" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">Lines</div>
     <div role="rowheader" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">Branches</div>
     <div role="rowheader" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">Blocks</div>
   </div>
   <div class="Box-row Box-row--focus-gray py-2 d-flex position-relative">
-    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 mr-3 col-md-2"><a href="#file7.cpp.fa9d180b71a3402bed7d24bb1966eaf5.html|l1">uncovered() (A/file7.cpp:1)</a>    </div>
-    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 mr-3 d-flex flex-justify-end flex-wrap flex-items-baseline">not called</div>
+    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 col-md-2"><a href="#file7.cpp.fa9d180b71a3402bed7d24bb1966eaf5.html|l1">uncovered() (A/file7.cpp:1)</a>    </div>
+    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline">not called</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">0.0%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">-%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">0.0%</div>
@@ -1974,53 +2025,58 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 </div>  </details>
 </div>
   </nav>
-<div class="file-source">
-  <table>
-    <tr>
-      <th align="right">Line</th>
-      <th align="right">Branch</th>
-      <th align="right">Exec</th>
-      <th align="left" style="width: 100%;">Source</th>
-    </tr>
-    <tr class="source-line">
-      <td class="lineno"><a id="file7.cpp.fa9d180b71a3402bed7d24bb1966eaf5.html|l1" href="#file7.cpp.fa9d180b71a3402bed7d24bb1966eaf5.html|l1">1</a></td>
-      <td class="linebranch">
-      </td>
-      <td class="linecount uncoveredLine">&cross;</td>
-      <td class="src uncoveredLine"><span class="kt">int</span><span class="w"> </span><span class="nf">uncovered</span><span class="p">()</span></td>
-    </tr>
-    <tr class="source-line">
-      <td class="lineno"><a id="file7.cpp.fa9d180b71a3402bed7d24bb1966eaf5.html|l2" href="#file7.cpp.fa9d180b71a3402bed7d24bb1966eaf5.html|l2">2</a></td>
-      <td class="linebranch">
-      </td>
-      <td class="linecount "></td>
-      <td class="src "><span class="p">{</span></td>
-    </tr>
-    <tr class="source-line">
-      <td class="lineno"><a id="file7.cpp.fa9d180b71a3402bed7d24bb1966eaf5.html|l3" href="#file7.cpp.fa9d180b71a3402bed7d24bb1966eaf5.html|l3">3</a></td>
-      <td class="linebranch">
-      </td>
-      <td class="linecount uncoveredLine">&cross;</td>
-      <td class="src uncoveredLine"><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span></td>
-    </tr>
-    <tr class="source-line">
-      <td class="lineno"><a id="file7.cpp.fa9d180b71a3402bed7d24bb1966eaf5.html|l4" href="#file7.cpp.fa9d180b71a3402bed7d24bb1966eaf5.html|l4">4</a></td>
-      <td class="linebranch">
-      </td>
-      <td class="linecount "></td>
-      <td class="src "><span class="p">}</span></td>
-    </tr>
-    <tr class="source-line">
-      <td class="lineno"><a id="file7.cpp.fa9d180b71a3402bed7d24bb1966eaf5.html|l5" href="#file7.cpp.fa9d180b71a3402bed7d24bb1966eaf5.html|l5">5</a></td>
-      <td class="linebranch">
-      </td>
-      <td class="linecount "></td>
-      <td class="src "></td>
-    </tr>
-  </table>
+<div class="Box m-3 file-source">
+  <div class="Box-header d-flex flex-space-between">
+    file7.cpp
+  </div>
+  <div style="overflow-x: auto;">
+    <table class="text-mono text-small">
+      <tr>
+        <th align="right">Line</th>
+        <th align="right">Branch</th>
+        <th align="right">Exec</th>
+        <th align="left" style="width: 100%;">Source</th>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="file7.cpp.fa9d180b71a3402bed7d24bb1966eaf5.html|l1" href="#file7.cpp.fa9d180b71a3402bed7d24bb1966eaf5.html|l1">1</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecount uncoveredLine">&cross;</td>
+        <td class="src uncoveredLine"><span class="kt">int</span><span class="w"> </span><span class="nf">uncovered</span><span class="p">()</span></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="file7.cpp.fa9d180b71a3402bed7d24bb1966eaf5.html|l2" href="#file7.cpp.fa9d180b71a3402bed7d24bb1966eaf5.html|l2">2</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecount "></td>
+        <td class="src "><span class="p">{</span></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="file7.cpp.fa9d180b71a3402bed7d24bb1966eaf5.html|l3" href="#file7.cpp.fa9d180b71a3402bed7d24bb1966eaf5.html|l3">3</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecount uncoveredLine">&cross;</td>
+        <td class="src uncoveredLine"><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="file7.cpp.fa9d180b71a3402bed7d24bb1966eaf5.html|l4" href="#file7.cpp.fa9d180b71a3402bed7d24bb1966eaf5.html|l4">4</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecount "></td>
+        <td class="src "><span class="p">}</span></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="file7.cpp.fa9d180b71a3402bed7d24bb1966eaf5.html|l5" href="#file7.cpp.fa9d180b71a3402bed7d24bb1966eaf5.html|l5">5</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecount "></td>
+        <td class="src "></td>
+      </tr>
+    </table>
+  </div>
 </div>  <hr class="js-enabled-hidden"/>
 </main>
-<main id="File2.cpp.1aed42bd33fceec1188f2f95c6e8946c.html" class="js-enabled-hidden">
+<main id="File2.cpp.1aed42bd33fceec1188f2f95c6e8946c.html" class="js-enabled-hidden" data-title="subdir_0/subdir_1/subdir_2/subdir_3/subdir_4/subdir_5/subdir_6/subdir_7/subdir_8/subdir_9/File2.cpp">
   <div id="summary-File2.cpp.1aed42bd33fceec1188f2f95c6e8946c.html" class="summary js-enabled-hidden">
 <div>
   <table class="legend">
@@ -2029,12 +2085,12 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
       <td>A/</td>
     </tr>
     <tr>
-      <th scope="row">File:</th>
-      <td>subdir_0/subdir_1/subdir_2/subdir_3/subdir_4/subdir_5/subdir_6/subdir_7/subdir_8/subdir_9/File2.cpp</td>
-    </tr>
-    <tr>
-      <th scope="row">Date:</th>
-      <td>2025-09-28 18:09:21+00:00</td>
+      <th scope="row">Coverage:</th>
+      <td class="legend">
+        <span class="coverage-low">low: &ge; 0%</span>
+        <span class="coverage-medium">medium: &ge; 75.0%</span>
+        <span class="coverage-high">high: &ge; 90.0%</span>
+      </td>
     </tr>
   </table>
 </div>
@@ -2068,22 +2124,22 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
     <summary>List of functions</summary>
 <div class="functionslist Box m-3">
   <div class="Box-row py-2 d-flex position-relative">
-    <div role="rowheader" class="color-fg-muted flex-auto min-width-0 mr-3 col-md-2">Function (File:Line)</div>
-    <div role="rowheader" class="color-fg-muted flex-auto min-width-0 mr-3 d-flex flex-justify-end flex-wrap flex-items-baseline">Calls</div>
+    <div role="rowheader" class="color-fg-muted flex-auto min-width-0 col-md-2">Function (File:Line)</div>
+    <div role="rowheader" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline">Calls</div>
     <div role="rowheader" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">Lines</div>
     <div role="rowheader" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">Branches</div>
     <div role="rowheader" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">Blocks</div>
   </div>
   <div class="Box-row Box-row--focus-gray py-2 d-flex position-relative">
-    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 mr-3 col-md-2"><a href="#File2.cpp.1aed42bd33fceec1188f2f95c6e8946c.html|l1">bar() (A/subdir_0/subdir_1/subdir_2/subdir_3/subdir_4/subdir_5/subdir_6/subdir_7/subdir_8/subdir_9/File2.cpp:1)</a>    </div>
-    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 mr-3 d-flex flex-justify-end flex-wrap flex-items-baseline">called 1 time</div>
+    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 col-md-2"><a href="#File2.cpp.1aed42bd33fceec1188f2f95c6e8946c.html|l1">bar() (A/subdir_0/subdir_1/subdir_2/subdir_3/subdir_4/subdir_5/subdir_6/subdir_7/subdir_8/subdir_9/File2.cpp:1)</a>    </div>
+    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline">called 1 time</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">100.0%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">-%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">100.0%</div>
   </div>
   <div class="Box-row Box-row--focus-gray py-2 d-flex position-relative">
-    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 mr-3 col-md-2"><a href="#File2.cpp.1aed42bd33fceec1188f2f95c6e8946c.html|l8">bar_() (A/subdir_0/subdir_1/subdir_2/subdir_3/subdir_4/subdir_5/subdir_6/subdir_7/subdir_8/subdir_9/File2.cpp:8)</a>    </div>
-    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 mr-3 d-flex flex-justify-end flex-wrap flex-items-baseline">not called</div>
+    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 col-md-2"><a href="#File2.cpp.1aed42bd33fceec1188f2f95c6e8946c.html|l8">bar_() (A/subdir_0/subdir_1/subdir_2/subdir_3/subdir_4/subdir_5/subdir_6/subdir_7/subdir_8/subdir_9/File2.cpp:8)</a>    </div>
+    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline">not called</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">0.0%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">-%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">0.0%</div>
@@ -2091,106 +2147,111 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 </div>  </details>
 </div>
   </nav>
-<div class="file-source">
-  <table>
-    <tr>
-      <th align="right">Line</th>
-      <th align="right">Branch</th>
-      <th align="right">Exec</th>
-      <th align="left" style="width: 100%;">Source</th>
-    </tr>
-    <tr class="source-line">
-      <td class="lineno"><a id="File2.cpp.1aed42bd33fceec1188f2f95c6e8946c.html|l1" href="#File2.cpp.1aed42bd33fceec1188f2f95c6e8946c.html|l1">1</a></td>
-      <td class="linebranch">
-      </td>
-      <td class="linecount coveredLine">1</td>
-      <td class="src coveredLine"><span class="kt">int</span><span class="w"> </span><span class="nf">bar</span><span class="p">()</span></td>
-    </tr>
-    <tr class="source-line">
-      <td class="lineno"><a id="File2.cpp.1aed42bd33fceec1188f2f95c6e8946c.html|l2" href="#File2.cpp.1aed42bd33fceec1188f2f95c6e8946c.html|l2">2</a></td>
-      <td class="linebranch">
-      </td>
-      <td class="linecount "></td>
-      <td class="src "><span class="p">{</span></td>
-    </tr>
-    <tr class="source-line">
-      <td class="lineno"><a id="File2.cpp.1aed42bd33fceec1188f2f95c6e8946c.html|l3" href="#File2.cpp.1aed42bd33fceec1188f2f95c6e8946c.html|l3">3</a></td>
-      <td class="linebranch">
-      </td>
-      <td class="linecount coveredLine">1</td>
-      <td class="src coveredLine"><span class="kt">int</span><span class="w"> </span><span class="n">x</span><span class="o">=</span><span class="mi">1</span><span class="p">;</span></td>
-    </tr>
-    <tr class="source-line">
-      <td class="lineno"><a id="File2.cpp.1aed42bd33fceec1188f2f95c6e8946c.html|l4" href="#File2.cpp.1aed42bd33fceec1188f2f95c6e8946c.html|l4">4</a></td>
-      <td class="linebranch">
-      </td>
-      <td class="linecount coveredLine">1</td>
-      <td class="src coveredLine"><span class="kt">int</span><span class="w"> </span><span class="n">y</span><span class="o">=</span><span class="mi">2</span><span class="p">;</span></td>
-    </tr>
-    <tr class="source-line">
-      <td class="lineno"><a id="File2.cpp.1aed42bd33fceec1188f2f95c6e8946c.html|l5" href="#File2.cpp.1aed42bd33fceec1188f2f95c6e8946c.html|l5">5</a></td>
-      <td class="linebranch">
-      </td>
-      <td class="linecount coveredLine">1</td>
-      <td class="src coveredLine"><span class="k">return</span><span class="w"> </span><span class="n">x</span><span class="o">+</span><span class="n">y</span><span class="p">;</span></td>
-    </tr>
-    <tr class="source-line">
-      <td class="lineno"><a id="File2.cpp.1aed42bd33fceec1188f2f95c6e8946c.html|l6" href="#File2.cpp.1aed42bd33fceec1188f2f95c6e8946c.html|l6">6</a></td>
-      <td class="linebranch">
-      </td>
-      <td class="linecount "></td>
-      <td class="src "><span class="p">}</span></td>
-    </tr>
-    <tr class="source-line">
-      <td class="lineno"><a id="File2.cpp.1aed42bd33fceec1188f2f95c6e8946c.html|l7" href="#File2.cpp.1aed42bd33fceec1188f2f95c6e8946c.html|l7">7</a></td>
-      <td class="linebranch">
-      </td>
-      <td class="linecount "></td>
-      <td class="src "></td>
-    </tr>
-    <tr class="source-line">
-      <td class="lineno"><a id="File2.cpp.1aed42bd33fceec1188f2f95c6e8946c.html|l8" href="#File2.cpp.1aed42bd33fceec1188f2f95c6e8946c.html|l8">8</a></td>
-      <td class="linebranch">
-      </td>
-      <td class="linecount uncoveredLine">&cross;</td>
-      <td class="src uncoveredLine"><span class="kt">int</span><span class="w"> </span><span class="nf">bar_</span><span class="p">()</span></td>
-    </tr>
-    <tr class="source-line">
-      <td class="lineno"><a id="File2.cpp.1aed42bd33fceec1188f2f95c6e8946c.html|l9" href="#File2.cpp.1aed42bd33fceec1188f2f95c6e8946c.html|l9">9</a></td>
-      <td class="linebranch">
-      </td>
-      <td class="linecount "></td>
-      <td class="src "><span class="p">{</span></td>
-    </tr>
-    <tr class="source-line">
-      <td class="lineno"><a id="File2.cpp.1aed42bd33fceec1188f2f95c6e8946c.html|l10" href="#File2.cpp.1aed42bd33fceec1188f2f95c6e8946c.html|l10">10</a></td>
-      <td class="linebranch">
-      </td>
-      <td class="linecount uncoveredLine">&cross;</td>
-      <td class="src uncoveredLine"><span class="kt">int</span><span class="w"> </span><span class="n">x</span><span class="o">=</span><span class="mi">1</span><span class="p">;</span></td>
-    </tr>
-    <tr class="source-line">
-      <td class="lineno"><a id="File2.cpp.1aed42bd33fceec1188f2f95c6e8946c.html|l11" href="#File2.cpp.1aed42bd33fceec1188f2f95c6e8946c.html|l11">11</a></td>
-      <td class="linebranch">
-      </td>
-      <td class="linecount uncoveredLine">&cross;</td>
-      <td class="src uncoveredLine"><span class="k">return</span><span class="w"> </span><span class="mi">2</span><span class="o">*</span><span class="n">x</span><span class="p">;</span></td>
-    </tr>
-    <tr class="source-line">
-      <td class="lineno"><a id="File2.cpp.1aed42bd33fceec1188f2f95c6e8946c.html|l12" href="#File2.cpp.1aed42bd33fceec1188f2f95c6e8946c.html|l12">12</a></td>
-      <td class="linebranch">
-      </td>
-      <td class="linecount "></td>
-      <td class="src "><span class="p">}</span></td>
-    </tr>
-    <tr class="source-line">
-      <td class="lineno"><a id="File2.cpp.1aed42bd33fceec1188f2f95c6e8946c.html|l13" href="#File2.cpp.1aed42bd33fceec1188f2f95c6e8946c.html|l13">13</a></td>
-      <td class="linebranch">
-      </td>
-      <td class="linecount "></td>
-      <td class="src "></td>
-    </tr>
-  </table>
+<div class="Box m-3 file-source">
+  <div class="Box-header d-flex flex-space-between">
+    subdir_0/subdir_1/subdir_2/subdir_3/subdir_4/subdir_5/subdir_6/subdir_7/subdir_8/subdir_9/File2.cpp
+  </div>
+  <div style="overflow-x: auto;">
+    <table class="text-mono text-small">
+      <tr>
+        <th align="right">Line</th>
+        <th align="right">Branch</th>
+        <th align="right">Exec</th>
+        <th align="left" style="width: 100%;">Source</th>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="File2.cpp.1aed42bd33fceec1188f2f95c6e8946c.html|l1" href="#File2.cpp.1aed42bd33fceec1188f2f95c6e8946c.html|l1">1</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecount coveredLine">1</td>
+        <td class="src coveredLine"><span class="kt">int</span><span class="w"> </span><span class="nf">bar</span><span class="p">()</span></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="File2.cpp.1aed42bd33fceec1188f2f95c6e8946c.html|l2" href="#File2.cpp.1aed42bd33fceec1188f2f95c6e8946c.html|l2">2</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecount "></td>
+        <td class="src "><span class="p">{</span></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="File2.cpp.1aed42bd33fceec1188f2f95c6e8946c.html|l3" href="#File2.cpp.1aed42bd33fceec1188f2f95c6e8946c.html|l3">3</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecount coveredLine">1</td>
+        <td class="src coveredLine"><span class="kt">int</span><span class="w"> </span><span class="n">x</span><span class="o">=</span><span class="mi">1</span><span class="p">;</span></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="File2.cpp.1aed42bd33fceec1188f2f95c6e8946c.html|l4" href="#File2.cpp.1aed42bd33fceec1188f2f95c6e8946c.html|l4">4</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecount coveredLine">1</td>
+        <td class="src coveredLine"><span class="kt">int</span><span class="w"> </span><span class="n">y</span><span class="o">=</span><span class="mi">2</span><span class="p">;</span></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="File2.cpp.1aed42bd33fceec1188f2f95c6e8946c.html|l5" href="#File2.cpp.1aed42bd33fceec1188f2f95c6e8946c.html|l5">5</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecount coveredLine">1</td>
+        <td class="src coveredLine"><span class="k">return</span><span class="w"> </span><span class="n">x</span><span class="o">+</span><span class="n">y</span><span class="p">;</span></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="File2.cpp.1aed42bd33fceec1188f2f95c6e8946c.html|l6" href="#File2.cpp.1aed42bd33fceec1188f2f95c6e8946c.html|l6">6</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecount "></td>
+        <td class="src "><span class="p">}</span></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="File2.cpp.1aed42bd33fceec1188f2f95c6e8946c.html|l7" href="#File2.cpp.1aed42bd33fceec1188f2f95c6e8946c.html|l7">7</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecount "></td>
+        <td class="src "></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="File2.cpp.1aed42bd33fceec1188f2f95c6e8946c.html|l8" href="#File2.cpp.1aed42bd33fceec1188f2f95c6e8946c.html|l8">8</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecount uncoveredLine">&cross;</td>
+        <td class="src uncoveredLine"><span class="kt">int</span><span class="w"> </span><span class="nf">bar_</span><span class="p">()</span></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="File2.cpp.1aed42bd33fceec1188f2f95c6e8946c.html|l9" href="#File2.cpp.1aed42bd33fceec1188f2f95c6e8946c.html|l9">9</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecount "></td>
+        <td class="src "><span class="p">{</span></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="File2.cpp.1aed42bd33fceec1188f2f95c6e8946c.html|l10" href="#File2.cpp.1aed42bd33fceec1188f2f95c6e8946c.html|l10">10</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecount uncoveredLine">&cross;</td>
+        <td class="src uncoveredLine"><span class="kt">int</span><span class="w"> </span><span class="n">x</span><span class="o">=</span><span class="mi">1</span><span class="p">;</span></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="File2.cpp.1aed42bd33fceec1188f2f95c6e8946c.html|l11" href="#File2.cpp.1aed42bd33fceec1188f2f95c6e8946c.html|l11">11</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecount uncoveredLine">&cross;</td>
+        <td class="src uncoveredLine"><span class="k">return</span><span class="w"> </span><span class="mi">2</span><span class="o">*</span><span class="n">x</span><span class="p">;</span></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="File2.cpp.1aed42bd33fceec1188f2f95c6e8946c.html|l12" href="#File2.cpp.1aed42bd33fceec1188f2f95c6e8946c.html|l12">12</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecount "></td>
+        <td class="src "><span class="p">}</span></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="File2.cpp.1aed42bd33fceec1188f2f95c6e8946c.html|l13" href="#File2.cpp.1aed42bd33fceec1188f2f95c6e8946c.html|l13">13</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecount "></td>
+        <td class="src "></td>
+      </tr>
+    </table>
+  </div>
 </div></main>
 
 <script>
@@ -2237,6 +2298,14 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
       else
       {
         enabled_elements.push(element)
+        title = element.getAttribute("data-title")
+        if (title == "") {
+          title = "GCC Code Coverage Report"
+        }
+        else {
+          title += " - GCC Code Coverage Report"
+        }
+        document.title = title
         var summary = document.getElementById("summary-" + hash_parts[0])
         if (summary == null) {
           enabled_elements.push(global_summary)
@@ -2263,7 +2332,8 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
       <hr/>
     </main>
     <footer>
-      Generated by: <a href="http://gcovr.com/en/main">GCOVR (Version 8.4+main)</a>
+      Created using <a href="http://gcovr.com/en/main">GCOVR (Version 8.4+main)</a>
+      at 2025-09-28 18:09:21+00:00
     </footer>
   </body>
 </html>

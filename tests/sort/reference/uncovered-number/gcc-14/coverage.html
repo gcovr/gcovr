@@ -30,7 +30,7 @@
   --color-border-default: #d0d7de;
   --color-border-muted: hsla(210, 18%, 87%, 1);
   --color-fg-muted: #656d76;
-  --color-canvas-subtle: rgba(31, 35, 40, 0.15);
+  --color-canvas-subtle: #f6f8fa;
   --color-accent-subtle: #ddf4ff;;
 }
 
@@ -67,11 +67,13 @@ h1
   font-weight: bold;
 }
 
-hr
-{
-  background-color: navy;
-  height: 2px;
+hr {
+  height: 0;
+  margin: 15px 0;
+  overflow: hidden;
+  background: rgba(0,0,0,0);
   border: 0;
+  border-bottom: 1px solid var(--color-border-muted);
 }
 
 /* Link formats: use maroon w/underlines */
@@ -333,12 +335,21 @@ div.file-list > span:has(meter)
 div.file-list > span:not(:has(meter))
 {
   color: black !important;
-  min-width: 4em !important;
   padding-left: 5px !important;
   padding-right: 5px !important;
   margin-left: 0px !important;
   margin-right: 0px !important;
   text-align: right
+}
+
+div.file-list > span:first-child
+{
+  min-width: 3.5em !important;
+}
+
+div.file-list > span:last-child
+{
+  min-width: 4.5em !important;
 }
 td.CoverValue
 {
@@ -611,6 +622,14 @@ footer
   color: var(--color-fg-muted) !important
 }
 
+.text-mono {
+  font-family: ui-monospace, SFMono-Regular, SF Mono, Menlo, Consolas, Liberation Mono, monospace !important
+}
+.text-small {
+  font-size: 12px !important
+}
+
+
 .Box {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
   font-size: var(--body-font-size, 14px);
@@ -621,6 +640,17 @@ footer
   border-radius: var(--borderRadius-medium, 6px);
   border-style: solid;
   border-width: var(--borderWidth-thin, 1px)
+}
+
+.Box-header {
+  background-color: var(--color-canvas-subtle);
+  border-color: var(--color-border-default);
+  border-style: solid;
+  border-top-left-radius: 6px;
+  border-top-right-radius: 6px;
+  border-width: 1px;
+  margin: -1px -1px 0;
+  padding: 16px;
 }
 
 .Box-row {
@@ -688,6 +718,10 @@ footer
   align-items: baseline !important
 }
 
+.flex-space-between {
+  justify-content: space-between !important
+}
+
 .min-width-0 {
   min-width: 0 !important
 }
@@ -700,10 +734,6 @@ footer
   margin-right: var(--base-size-8, 8px) !important;
 }
 
-.mr-3 {
-  margin-right: var(--base-size-16, 16px) !important
-}
-
 .py-2 {
   padding-top: var(--base-size-8, 8px) !important;
   padding-bottom: var(--base-size-8, 8px) !important;
@@ -712,7 +742,7 @@ footer
 .col-2,
 .col-md-2
 {
-  width: 10%
+  width: 12.5%
 }
 
 .css-truncate.css-truncate-target {
@@ -823,10 +853,6 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
       <td>./</td>
     </tr>
     <tr>
-      <th scope="row">Date:</th>
-      <td>2025-09-28 18:09:21+00:00</td>
-    </tr>
-    <tr>
       <th scope="row">Coverage:</th>
       <td class="legend">
         <span class="coverage-low">low: &ge; 0%</span>
@@ -875,21 +901,21 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
     <main>
 <div class="filelist Box m-3">
   <div class="Box-row py-2 d-flex position-relative">
-    <div role="rowheader" class="color-fg-muted flex-auto min-width-0 mr-3 col-md-2">File</div>
-    <div role="rowheader" class="color-fg-muted flex-auto min-width-0 mr-3 d-flex flex-justify-end flex-wrap flex-items-baseline">Lines</div>
+    <div role="rowheader" class="color-fg-muted flex-auto min-width-0 mr-2 col-md-2">File</div>
+    <div role="rowheader" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline">Lines</div>
     <div role="rowheader" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">Functions</div>
     <div role="rowheader" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">Branches</div>
     <div role="rowheader" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">Conditions</div>
   </div>
   <div class="Box-row Box-row--focus-gray py-2 d-flex position-relative">
-    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 mr-3 col-md-2">
+    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 mr-2 col-md-2">
       <div class="d-flex">
         <span class="css-truncate css-truncate-target d-block width-fit">
           main.cpp
         </span>
       </div>
     </div>
-    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 mr-3 d-flex flex-justify-end flex-wrap flex-items-baseline file-list coverage-high">
+    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline file-list coverage-high">
       <span style="width: 200px;">
         <meter class="coverage-high" min="0" max="100" value="100.0" title="100.0%">100.0</meter>
       </span>
@@ -910,14 +936,14 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
     </div>
   </div>
   <div class="Box-row Box-row--focus-gray py-2 d-flex position-relative">
-    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 mr-3 col-md-2">
+    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 mr-2 col-md-2">
       <div class="d-flex">
         <span class="css-truncate css-truncate-target d-block width-fit">
           file1.cpp
         </span>
       </div>
     </div>
-    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 mr-3 d-flex flex-justify-end flex-wrap flex-items-baseline file-list coverage-medium">
+    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline file-list coverage-medium">
       <span style="width: 200px;">
         <meter class="coverage-medium" min="0" max="100" value="75.0" title="75.0%">75.0</meter>
       </span>
@@ -938,14 +964,14 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
     </div>
   </div>
   <div class="Box-row Box-row--focus-gray py-2 d-flex position-relative">
-    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 mr-3 col-md-2">
+    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 mr-2 col-md-2">
       <div class="d-flex">
         <span class="css-truncate css-truncate-target d-block width-fit">
           file4.cpp
         </span>
       </div>
     </div>
-    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 mr-3 d-flex flex-justify-end flex-wrap flex-items-baseline file-list coverage-none">
+    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline file-list coverage-none">
       <span style="width: 200px;">
         <meter class="coverage-none" min="0" max="100" value="0.0" title="0.0%">0.0</meter>
       </span>
@@ -966,14 +992,14 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
     </div>
   </div>
   <div class="Box-row Box-row--focus-gray py-2 d-flex position-relative">
-    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 mr-3 col-md-2">
+    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 mr-2 col-md-2">
       <div class="d-flex">
         <span class="css-truncate css-truncate-target d-block width-fit">
           file2.cpp
         </span>
       </div>
     </div>
-    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 mr-3 d-flex flex-justify-end flex-wrap flex-items-baseline file-list coverage-low">
+    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline file-list coverage-low">
       <span style="width: 200px;">
         <meter class="coverage-low" min="0" max="100" value="57.1" title="57.1%">57.1</meter>
       </span>
@@ -994,14 +1020,14 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
     </div>
   </div>
   <div class="Box-row Box-row--focus-gray py-2 d-flex position-relative">
-    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 mr-3 col-md-2">
+    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 mr-2 col-md-2">
       <div class="d-flex">
         <span class="css-truncate css-truncate-target d-block width-fit">
           file3.cpp
         </span>
       </div>
     </div>
-    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 mr-3 d-flex flex-justify-end flex-wrap flex-items-baseline file-list coverage-low">
+    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline file-list coverage-low">
       <span style="width: 200px;">
         <meter class="coverage-low" min="0" max="100" value="44.4" title="44.4%">44.4</meter>
       </span>
@@ -1026,7 +1052,8 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
       <hr/>
     </main>
     <footer>
-      Generated by: <a href="http://gcovr.com/en/main">GCOVR (Version 8.4+main)</a>
+      Created using <a href="http://gcovr.com/en/main">GCOVR (Version 8.4+main)</a>
+      at 2025-09-28 18:09:21+00:00
     </footer>
   </body>
 </html>

@@ -670,42 +670,42 @@ def html2jpeg(session: nox.Session) -> None:
         screenshot(
             "doc/examples/example_html.html",
             "doc/images/screenshot-html.jpeg",
-            (1000, 375),
+            (1150, 375),
         )
         screenshot(
             "doc/examples/example_html.details.example.cpp.9597a7a3397b8e3a48116e2a3afb4154.html",
             "doc/images/screenshot-html-details.example.cpp.jpeg",
-            (1000, 660),
+            (1150, 825),
         )
         screenshot(
             "tests/html/reference/theme-default-green/gcc-5/coverage.main.cpp.118fcbaaba162ba17933c7893247df3a.html",
             "doc/images/screenshot-html-default-green-src.jpeg",
-            (1000, 390),
+            (1150, 500),
         )
         screenshot(
             "tests/html/reference/theme-default-blue/gcc-5/coverage.main.cpp.118fcbaaba162ba17933c7893247df3a.html",
             "doc/images/screenshot-html-default-blue-src.jpeg",
-            (1000, 390),
+            (1150, 500),
         )
         screenshot(
             "tests/html/reference/theme-github-green/gcc-5/coverage.main.cpp.118fcbaaba162ba17933c7893247df3a.html",
             "doc/images/screenshot-html-github-green-src.jpeg",
-            (1150, 460),
+            (1150, 480),
         )
         screenshot(
             "tests/html/reference/theme-github-blue/gcc-5/coverage.main.cpp.118fcbaaba162ba17933c7893247df3a.html",
             "doc/images/screenshot-html-github-blue-src.jpeg",
-            (1150, 460),
+            (1150, 480),
         )
         screenshot(
             "tests/html/reference/theme-github-dark-green/gcc-5/coverage.main.cpp.118fcbaaba162ba17933c7893247df3a.html",
             "doc/images/screenshot-html-github-dark-green-src.jpeg",
-            (1150, 460),
+            (1150, 480),
         )
         screenshot(
             "tests/html/reference/theme-github-dark-blue/gcc-5/coverage.main.cpp.118fcbaaba162ba17933c7893247df3a.html",
             "doc/images/screenshot-html-github-dark-blue-src.jpeg",
-            (1150, 460),
+            (1150, 480),
         )
 
 

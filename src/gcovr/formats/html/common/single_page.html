@@ -10,7 +10,7 @@
 
 {% block content %}
 {% if info.single_page == "js-enabled" %}
-<main id="{{ FUNCTIONS_FNAME }}" class="js-enabled-hidden js-disabled-hidden">
+<main id="{{ FUNCTIONS_FNAME }}" class="js-enabled-hidden js-disabled-hidden" data-title="Functions">
   <details>
     {# If javascript is enabled this details content is moved one level up and the details is removed #}
     <summary>Overall list of functions</summary>
@@ -24,7 +24,7 @@
 {% endif %}
 
 {%  for directory in directories %}
-<main id="{{ directory.dirname }}" class="js-enabled-hidden{% if not loop.first %} js-disabled-hidden{% endif %}">
+<main id="{{ directory.dirname }}" class="js-enabled-hidden{% if not loop.first %} js-disabled-hidden{% endif %}" data-title="{{ directory.relative_path }}">
   <nav>
     {% include "directory_page.navigation.html" | indent(2) %}
   </nav>
@@ -35,7 +35,7 @@
 {%  endfor %}
 
 {%  for file in files %}
-<main id="{{ file.link }}" class="js-enabled-hidden">
+<main id="{{ file.link }}" class="js-enabled-hidden" data-title="{{ file.filename }}">
   <div id="summary-{{ file.link }}" class="summary js-enabled-hidden">
     {# If javascript is enabled this summary is moved to the summary block at the top #}
     {% set filename = file.filename %}
@@ -105,6 +105,14 @@
       else
       {
         enabled_elements.push(element)
+        title = element.getAttribute("data-title")
+        if (title == "") {
+          title = "{{info.head}}"
+        }
+        else {
+          title += " - {{info.head}}"
+        }
+        document.title = title
         var summary = document.getElementById("summary-" + hash_parts[0])
         if (summary == null) {
           enabled_elements.push(global_summary)

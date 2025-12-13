@@ -30,7 +30,7 @@
   --color-border-default: #d0d7de;
   --color-border-muted: hsla(210, 18%, 87%, 1);
   --color-fg-muted: #656d76;
-  --color-canvas-subtle: rgba(31, 35, 40, 0.15);
+  --color-canvas-subtle: #f6f8fa;
   --color-accent-subtle: #ddf4ff;;
 }
 
@@ -67,11 +67,13 @@ h1
   font-weight: bold;
 }
 
-hr
-{
-  background-color: navy;
-  height: 2px;
+hr {
+  height: 0;
+  margin: 15px 0;
+  overflow: hidden;
+  background: rgba(0,0,0,0);
   border: 0;
+  border-bottom: 1px solid var(--color-border-muted);
 }
 
 /* Link formats: use maroon w/underlines */
@@ -333,12 +335,21 @@ div.file-list > span:has(meter)
 div.file-list > span:not(:has(meter))
 {
   color: black !important;
-  min-width: 4em !important;
   padding-left: 5px !important;
   padding-right: 5px !important;
   margin-left: 0px !important;
   margin-right: 0px !important;
   text-align: right
+}
+
+div.file-list > span:first-child
+{
+  min-width: 3.5em !important;
+}
+
+div.file-list > span:last-child
+{
+  min-width: 4.5em !important;
 }
 td.CoverValue
 {
@@ -619,6 +630,14 @@ footer
   color: var(--color-fg-muted) !important
 }
 
+.text-mono {
+  font-family: ui-monospace, SFMono-Regular, SF Mono, Menlo, Consolas, Liberation Mono, monospace !important
+}
+.text-small {
+  font-size: 12px !important
+}
+
+
 .Box {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
   font-size: var(--body-font-size, 14px);
@@ -629,6 +648,17 @@ footer
   border-radius: var(--borderRadius-medium, 6px);
   border-style: solid;
   border-width: var(--borderWidth-thin, 1px)
+}
+
+.Box-header {
+  background-color: var(--color-canvas-subtle);
+  border-color: var(--color-border-default);
+  border-style: solid;
+  border-top-left-radius: 6px;
+  border-top-right-radius: 6px;
+  border-width: 1px;
+  margin: -1px -1px 0;
+  padding: 16px;
 }
 
 .Box-row {
@@ -696,6 +726,10 @@ footer
   align-items: baseline !important
 }
 
+.flex-space-between {
+  justify-content: space-between !important
+}
+
 .min-width-0 {
   min-width: 0 !important
 }
@@ -708,10 +742,6 @@ footer
   margin-right: var(--base-size-8, 8px) !important;
 }
 
-.mr-3 {
-  margin-right: var(--base-size-16, 16px) !important
-}
-
 .py-2 {
   padding-top: var(--base-size-8, 8px) !important;
   padding-bottom: var(--base-size-8, 8px) !important;
@@ -720,7 +750,7 @@ footer
 .col-2,
 .col-md-2
 {
-  width: 10%
+  width: 12.5%
 }
 
 .css-truncate.css-truncate-target {
@@ -831,10 +861,6 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
       <td>.</td>
     </tr>
     <tr>
-      <th scope="row">Date:</th>
-      <td>2025-09-28 18:09:21+00:00</td>
-    </tr>
-    <tr>
       <th scope="row">Coverage:</th>
       <td class="legend">
         <span class="coverage-low">low: &ge; 0%</span>
@@ -887,45 +913,45 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
     <nav>
     </nav>
     <main>
-<main id="merged.functions.html" class="js-enabled-hidden js-disabled-hidden">
+<main id="merged.functions.html" class="js-enabled-hidden js-disabled-hidden" data-title="Functions">
   <details>
     <summary>Overall list of functions</summary>
     <nav class="function_page"><div class="functionslist Box m-3">
   <div class="Box-row py-2 d-flex position-relative">
-    <div role="rowheader" class="color-fg-muted flex-auto min-width-0 mr-3 col-md-2">Function (File:Line)</div>
-    <div role="rowheader" class="color-fg-muted flex-auto min-width-0 mr-3 d-flex flex-justify-end flex-wrap flex-items-baseline">Calls</div>
+    <div role="rowheader" class="color-fg-muted flex-auto min-width-0 col-md-2">Function (File:Line)</div>
+    <div role="rowheader" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline">Calls</div>
     <div role="rowheader" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">Lines</div>
     <div role="rowheader" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">Branches</div>
     <div role="rowheader" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">Conditions</div>
     <div role="rowheader" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">Blocks</div>
   </div>
   <div class="Box-row Box-row--focus-gray py-2 d-flex position-relative">
-    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 mr-3 col-md-2"><a href="#merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l20">bar() (main.cpp:20)</a>    </div>
-    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 mr-3 d-flex flex-justify-end flex-wrap flex-items-baseline">called 4 times</div>
+    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 col-md-2"><a href="#merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l20">bar() (main.cpp:20)</a>    </div>
+    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline">called 4 times</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">87.5%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">70.0%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2" >70.0%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">80.0%</div>
   </div>
   <div class="Box-row Box-row--focus-gray py-2 d-flex position-relative">
-    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 mr-3 col-md-2"><a href="#merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l35">main (main.cpp:35)</a>    </div>
-    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 mr-3 d-flex flex-justify-end flex-wrap flex-items-baseline">called 1 time</div>
+    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 col-md-2"><a href="#merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l35">main (main.cpp:35)</a>    </div>
+    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline">called 1 time</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">100.0%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">-%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2" >-%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">100.0%</div>
   </div>
   <div class="Box-row Box-row--focus-gray py-2 d-flex position-relative">
-    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 mr-3 col-md-2"><a href="#merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l5">void foo&lt;double&gt;(double) (main.cpp:5)</a>    </div>
-    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 mr-3 d-flex flex-justify-end flex-wrap flex-items-baseline">called 4 times</div>
+    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 col-md-2"><a href="#merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l5">void foo&lt;double&gt;(double) (main.cpp:5)</a>    </div>
+    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline">called 4 times</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">87.5%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">70.0%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2" >70.0%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">77.8%</div>
   </div>
   <div class="Box-row Box-row--focus-gray py-2 d-flex position-relative">
-    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 mr-3 col-md-2"><a href="#merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l5">void foo&lt;int&gt;(int) (main.cpp:5)</a>    </div>
-    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 mr-3 d-flex flex-justify-end flex-wrap flex-items-baseline">called 6 times</div>
+    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 col-md-2"><a href="#merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l5">void foo&lt;int&gt;(int) (main.cpp:5)</a>    </div>
+    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline">called 6 times</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">100.0%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">90.0%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2" >90.0%</div>
@@ -936,27 +962,27 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
   <hr class="js-enabled-hidden"/>
 </main>
 
-<main id="/" class="js-enabled-hidden">
+<main id="/" class="js-enabled-hidden" data-title="">
   <nav>
 <a href="#merged.functions.html" class="js-disabled-hidden">List of functions</a>  </nav>
 <div class="filelist Box m-3">
   <div class="Box-row py-2 d-flex position-relative">
-    <div role="rowheader" class="color-fg-muted flex-auto min-width-0 mr-3 col-md-2">File</div>
-    <div role="rowheader" class="color-fg-muted flex-auto min-width-0 mr-3 d-flex flex-justify-end flex-wrap flex-items-baseline">Lines</div>
+    <div role="rowheader" class="color-fg-muted flex-auto min-width-0 mr-2 col-md-2">File</div>
+    <div role="rowheader" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline">Lines</div>
     <div role="rowheader" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">Functions</div>
     <div role="rowheader" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">Branches</div>
     <div role="rowheader" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">Conditions</div>
     <div role="rowheader" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">Decisions</div>
   </div>
   <div class="Box-row Box-row--focus-gray py-2 d-flex position-relative">
-    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 mr-3 col-md-2">
+    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 mr-2 col-md-2">
       <div class="d-flex">
         <span class="css-truncate css-truncate-target d-block width-fit">
           <a class="" title="main.cpp" href="#merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html">main.cpp</a>
         </span>
       </div>
     </div>
-    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 mr-3 d-flex flex-justify-end flex-wrap flex-items-baseline file-list coverage-high">
+    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline file-list coverage-high">
       <span style="width: 200px;">
         <meter class="coverage-high" min="0" max="100" value="96.9" title="96.9%">96.9</meter>
       </span>
@@ -984,7 +1010,7 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
   <hr class="js-enabled-hidden"/>
 </main>
 
-<main id="merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html" class="js-enabled-hidden">
+<main id="merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html" class="js-enabled-hidden" data-title="main.cpp">
   <div id="summary-merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html" class="summary js-enabled-hidden">
 <div>
   <table class="legend">
@@ -993,12 +1019,12 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
       <td>.</td>
     </tr>
     <tr>
-      <th scope="row">File:</th>
-      <td>main.cpp</td>
-    </tr>
-    <tr>
-      <th scope="row">Date:</th>
-      <td>2025-09-28 18:09:21+00:00</td>
+      <th scope="row">Coverage:</th>
+      <td class="legend">
+        <span class="coverage-low">low: &ge; 0%</span>
+        <span class="coverage-medium">medium: &ge; 75.0%</span>
+        <span class="coverage-high">high: &ge; 90.0%</span>
+      </td>
     </tr>
   </table>
 </div>
@@ -1042,40 +1068,40 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
     <summary>List of functions</summary>
 <div class="functionslist Box m-3">
   <div class="Box-row py-2 d-flex position-relative">
-    <div role="rowheader" class="color-fg-muted flex-auto min-width-0 mr-3 col-md-2">Function (File:Line)</div>
-    <div role="rowheader" class="color-fg-muted flex-auto min-width-0 mr-3 d-flex flex-justify-end flex-wrap flex-items-baseline">Calls</div>
+    <div role="rowheader" class="color-fg-muted flex-auto min-width-0 col-md-2">Function (File:Line)</div>
+    <div role="rowheader" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline">Calls</div>
     <div role="rowheader" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">Lines</div>
     <div role="rowheader" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">Branches</div>
     <div role="rowheader" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">Conditions</div>
     <div role="rowheader" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">Blocks</div>
   </div>
   <div class="Box-row Box-row--focus-gray py-2 d-flex position-relative">
-    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 mr-3 col-md-2"><a href="#merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l20">bar() (main.cpp:20)</a>    </div>
-    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 mr-3 d-flex flex-justify-end flex-wrap flex-items-baseline">called 4 times</div>
+    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 col-md-2"><a href="#merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l20">bar() (main.cpp:20)</a>    </div>
+    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline">called 4 times</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">87.5%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">70.0%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2" >70.0%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">80.0%</div>
   </div>
   <div class="Box-row Box-row--focus-gray py-2 d-flex position-relative">
-    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 mr-3 col-md-2"><a href="#merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l35">main (main.cpp:35)</a>    </div>
-    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 mr-3 d-flex flex-justify-end flex-wrap flex-items-baseline">called 1 time</div>
+    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 col-md-2"><a href="#merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l35">main (main.cpp:35)</a>    </div>
+    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline">called 1 time</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">100.0%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">-%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2" >-%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">100.0%</div>
   </div>
   <div class="Box-row Box-row--focus-gray py-2 d-flex position-relative">
-    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 mr-3 col-md-2"><a href="#merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l5">void foo&lt;double&gt;(double) (main.cpp:5)</a>    </div>
-    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 mr-3 d-flex flex-justify-end flex-wrap flex-items-baseline">called 4 times</div>
+    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 col-md-2"><a href="#merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l5">void foo&lt;double&gt;(double) (main.cpp:5)</a>    </div>
+    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline">called 4 times</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">87.5%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">70.0%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2" >70.0%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">77.8%</div>
   </div>
   <div class="Box-row Box-row--focus-gray py-2 d-flex position-relative">
-    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 mr-3 col-md-2"><a href="#merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l5">void foo&lt;int&gt;(int) (main.cpp:5)</a>    </div>
-    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 mr-3 d-flex flex-justify-end flex-wrap flex-items-baseline">called 6 times</div>
+    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 col-md-2"><a href="#merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l5">void foo&lt;int&gt;(int) (main.cpp:5)</a>    </div>
+    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline">called 6 times</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">100.0%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">90.0%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2" >90.0%</div>
@@ -1084,733 +1110,738 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 </div>  </details>
 </div>
   </nav>
-<div class="file-source">
-  <table>
-    <tr>
-      <th align="right">Line</th>
-      <th align="right">Branch</th>
-      <th align="right">Condition</th>
-      <th align="right">Decision</th>
-      <th align="right">Exec</th>
-      <th align="left" style="width: 100%;">Source</th>
-    </tr>
-    <tr class="source-line">
-      <td class="lineno"><a id="merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l1" href="#merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l1">1</a></td>
-      <td class="linebranch">
-      </td>
-      <td class="linecondition">
-      </td>
-      <td class="linedecision">
-      </td>
-      <td class="linecount "></td>
-      <td class="src "></td>
-    </tr>
-    <tr class="source-line">
-      <td class="lineno"><a id="merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l2" href="#merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l2">2</a></td>
-      <td class="linebranch">
-      </td>
-      <td class="linecondition">
-      </td>
-      <td class="linedecision">
-      </td>
-      <td class="linecount "></td>
-      <td class="src "><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;iostream&gt;</span></td>
-    </tr>
-    <tr class="source-line">
-      <td class="lineno"><a id="merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l3" href="#merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l3">3</a></td>
-      <td class="linebranch">
-      </td>
-      <td class="linecondition">
-      </td>
-      <td class="linedecision">
-      </td>
-      <td class="linecount "></td>
-      <td class="src "></td>
-    </tr>
-    <tr class="source-line">
-      <td class="lineno"><a id="merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l4" href="#merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l4">4</a></td>
-      <td class="linebranch">
-      </td>
-      <td class="linecondition">
-      </td>
-      <td class="linedecision">
-      </td>
-      <td class="linecount "></td>
-      <td class="src "><span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span><span class="w"> </span><span class="nc">T</span><span class="o">&gt;</span></td>
-    </tr>
-    <tr class="source-line">
-      <td class="lineno"><a id="merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l5" href="#merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l5">5</a></td>
-      <td class="linebranch">
-      </td>
-      <td class="linecondition">
-      </td>
-      <td class="linedecision">
-      </td>
-      <td class="linecount coveredLine">10</td>
-      <td class="src coveredLine"><span class="kt">void</span><span class="w"> </span><span class="n">foo</span><span class="p">(</span><span class="n">T</span><span class="w"> </span><span class="n">s</span><span class="p">)</span></td>
-    </tr>
-    <tr class="source-line">
-      <td class="lineno"><a id="merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l6" href="#merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l6">6</a></td>
-      <td class="linebranch">
-      </td>
-      <td class="linecondition">
-      </td>
-      <td class="linedecision">
-      </td>
-      <td class="linecount "></td>
-      <td class="src "><span class="p">{</span></td>
-    </tr>
-    <tr class="source-line">
-      <td class="lineno"><a id="merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l7" href="#merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l7">7</a></td>
-      <td class="linebranch">
-      </td>
-      <td class="linecondition">
-      </td>
-      <td class="linedecision">
-      </td>
-      <td class="linecount "></td>
-      <td class="src "><span class="w">  </span><span class="k">static</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span></td>
-    </tr>
-    <tr class="source-line">
-      <td class="lineno"><a id="merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l8" href="#merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l8">8</a></td>
-      <td class="linebranch">
-      </td>
-      <td class="linecondition">
-      </td>
-      <td class="linedecision">
-      </td>
-      <td class="linecount "></td>
-      <td class="src "></td>
-    </tr>
-    <tr class="source-line">
-      <td class="lineno"><a id="merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l9" href="#merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l9">9</a></td>
-      <td class="linebranch">
-        <details class="linebranchDetails">
-          <summary class="linebranchSummary">1/2</summary>
-          <div class="linebranchContents">
-            <div class="takenBranch">&check; Branch 2 &rightarrow; 3 taken 10 times.</div>
-            <div class="notTakenBranch">&cross; Branch 2 &rightarrow; 7 not taken.</div>
-          </div>
-        </details>
-      </td>
-      <td class="linecondition">
-          <details class="lineconditionDetails">
-            <summary class="lineconditionSummary">1/2</summary>
-            <div class="lineconditionContents">
-              <div class="notTakenCondition">&cross; False not covered.</div>
+<div class="Box m-3 file-source">
+  <div class="Box-header d-flex flex-space-between">
+    main.cpp
+  </div>
+  <div style="overflow-x: auto;">
+    <table class="text-mono text-small">
+      <tr>
+        <th align="right">Line</th>
+        <th align="right">Branch</th>
+        <th align="right">Condition</th>
+        <th align="right">Decision</th>
+        <th align="right">Exec</th>
+        <th align="left" style="width: 100%;">Source</th>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l1" href="#merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l1">1</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecondition">
+        </td>
+        <td class="linedecision">
+        </td>
+        <td class="linecount "></td>
+        <td class="src "></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l2" href="#merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l2">2</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecondition">
+        </td>
+        <td class="linedecision">
+        </td>
+        <td class="linecount "></td>
+        <td class="src "><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;iostream&gt;</span></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l3" href="#merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l3">3</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecondition">
+        </td>
+        <td class="linedecision">
+        </td>
+        <td class="linecount "></td>
+        <td class="src "></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l4" href="#merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l4">4</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecondition">
+        </td>
+        <td class="linedecision">
+        </td>
+        <td class="linecount "></td>
+        <td class="src "><span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span><span class="w"> </span><span class="nc">T</span><span class="o">&gt;</span></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l5" href="#merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l5">5</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecondition">
+        </td>
+        <td class="linedecision">
+        </td>
+        <td class="linecount coveredLine">10</td>
+        <td class="src coveredLine"><span class="kt">void</span><span class="w"> </span><span class="n">foo</span><span class="p">(</span><span class="n">T</span><span class="w"> </span><span class="n">s</span><span class="p">)</span></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l6" href="#merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l6">6</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecondition">
+        </td>
+        <td class="linedecision">
+        </td>
+        <td class="linecount "></td>
+        <td class="src "><span class="p">{</span></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l7" href="#merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l7">7</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecondition">
+        </td>
+        <td class="linedecision">
+        </td>
+        <td class="linecount "></td>
+        <td class="src "><span class="w">  </span><span class="k">static</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l8" href="#merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l8">8</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecondition">
+        </td>
+        <td class="linedecision">
+        </td>
+        <td class="linecount "></td>
+        <td class="src "></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l9" href="#merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l9">9</a></td>
+        <td class="linebranch">
+          <details class="linebranchDetails">
+            <summary class="linebranchSummary">1/2</summary>
+            <div class="linebranchContents">
+              <div class="takenBranch">&check; Branch 2 &rightarrow; 3 taken 10 times.</div>
+              <div class="notTakenBranch">&cross; Branch 2 &rightarrow; 7 not taken.</div>
             </div>
-            </details>
-      </td>
-      <td class="linedecision">
-      </td>
-      <td class="linecount partialCoveredLine">10</td>
-      <td class="src partialCoveredLine"><span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">i</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
-    </tr>
-    <tr class="source-line">
-      <td class="lineno"><a id="merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l10" href="#merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l10">10</a></td>
-      <td class="linebranch">
-      </td>
-      <td class="linecondition">
-      </td>
-      <td class="linedecision">
-      </td>
-      <td class="linecount coveredLine">10</td>
-      <td class="src coveredLine"><span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot; is greater or equal 0: &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">s</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span></td>
-    </tr>
-    <tr class="source-line">
-      <td class="lineno"><a id="merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l11" href="#merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l11">11</a></td>
-      <td class="linebranch">
-      </td>
-      <td class="linecondition">
-      </td>
-      <td class="linedecision">
-      </td>
-      <td class="linecount "></td>
-      <td class="src "><span class="w">  </span><span class="p">}</span></td>
-    </tr>
-    <tr class="source-line">
-      <td class="lineno"><a id="merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l12" href="#merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l12">12</a></td>
-      <td class="linebranch">
-        <details class="linebranchDetails">
-          <summary class="linebranchSummary">6/6</summary>
-          <div class="linebranchContents">
-            <div class="takenBranch">&check; Branch 7 &rightarrow; 8 taken 8 times.</div>
-            <div class="takenBranch">&check; Branch 7 &rightarrow; 14 taken 2 times.</div>
-            <div class="takenBranch">&check; Branch 8 &rightarrow; 9 taken 6 times.</div>
-            <div class="takenBranch">&check; Branch 8 &rightarrow; 10 taken 2 times.</div>
-            <div class="takenBranch">&check; Branch 9 &rightarrow; 10 taken 1 time.</div>
-            <div class="takenBranch">&check; Branch 9 &rightarrow; 14 taken 5 times.</div>
-          </div>
-        </details>
-      </td>
-      <td class="linecondition">
-          <details class="lineconditionDetails">
-            <summary class="lineconditionSummary">6/6</summary>
-            <div class="lineconditionContents">
-              <div class="takenCondition">&check; Condition 0: Fully covered.</div>
-              <div class="takenCondition">&check; Condition 1.0: Fully covered.</div>
-              <div class="takenCondition">&check; Condition 1.1: Fully covered.</div>
+          </details>
+        </td>
+        <td class="linecondition">
+            <details class="lineconditionDetails">
+              <summary class="lineconditionSummary">1/2</summary>
+              <div class="lineconditionContents">
+                <div class="notTakenCondition">&cross; False not covered.</div>
+              </div>
+              </details>
+        </td>
+        <td class="linedecision">
+        </td>
+        <td class="linecount partialCoveredLine">10</td>
+        <td class="src partialCoveredLine"><span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">i</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l10" href="#merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l10">10</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecondition">
+        </td>
+        <td class="linedecision">
+        </td>
+        <td class="linecount coveredLine">10</td>
+        <td class="src coveredLine"><span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot; is greater or equal 0: &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">s</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l11" href="#merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l11">11</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecondition">
+        </td>
+        <td class="linedecision">
+        </td>
+        <td class="linecount "></td>
+        <td class="src "><span class="w">  </span><span class="p">}</span></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l12" href="#merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l12">12</a></td>
+        <td class="linebranch">
+          <details class="linebranchDetails">
+            <summary class="linebranchSummary">6/6</summary>
+            <div class="linebranchContents">
+              <div class="takenBranch">&check; Branch 7 &rightarrow; 8 taken 8 times.</div>
+              <div class="takenBranch">&check; Branch 7 &rightarrow; 14 taken 2 times.</div>
+              <div class="takenBranch">&check; Branch 8 &rightarrow; 9 taken 6 times.</div>
+              <div class="takenBranch">&check; Branch 8 &rightarrow; 10 taken 2 times.</div>
+              <div class="takenBranch">&check; Branch 9 &rightarrow; 10 taken 1 time.</div>
+              <div class="takenBranch">&check; Branch 9 &rightarrow; 14 taken 5 times.</div>
             </div>
-            </details>
-      </td>
-      <td class="linedecision">
-      </td>
-      <td class="linecount coveredLine">10</td>
-      <td class="src coveredLine"><span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">i</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">2</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">4</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot; is between 0 and 2 or greater 4: &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">s</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span></td>
-    </tr>
-    <tr class="source-line">
-      <td class="lineno"><a id="merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l13" href="#merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l13">13</a></td>
-      <td class="linebranch">
-        <details class="linebranchDetails">
-          <summary class="linebranchSummary">2/2</summary>
-          <div class="linebranchContents">
-            <div class="takenBranch">&check; Branch 14 &rightarrow; 15 taken 1 time.</div>
-            <div class="takenBranch">&check; Branch 14 &rightarrow; 19 taken 9 times.</div>
-          </div>
-        </details>
-      </td>
-      <td class="linecondition">
-          <details class="lineconditionDetails">
-            <summary class="lineconditionSummary">2/2</summary>
-            <div class="lineconditionContents">
-              <div class="takenCondition">&check; Fully covered.</div>
+          </details>
+        </td>
+        <td class="linecondition">
+            <details class="lineconditionDetails">
+              <summary class="lineconditionSummary">6/6</summary>
+              <div class="lineconditionContents">
+                <div class="takenCondition">&check; Condition 0: Fully covered.</div>
+                <div class="takenCondition">&check; Condition 1.0: Fully covered.</div>
+                <div class="takenCondition">&check; Condition 1.1: Fully covered.</div>
+              </div>
+              </details>
+        </td>
+        <td class="linedecision">
+        </td>
+        <td class="linecount coveredLine">10</td>
+        <td class="src coveredLine"><span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">i</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">2</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">4</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot; is between 0 and 2 or greater 4: &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">s</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l13" href="#merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l13">13</a></td>
+        <td class="linebranch">
+          <details class="linebranchDetails">
+            <summary class="linebranchSummary">2/2</summary>
+            <div class="linebranchContents">
+              <div class="takenBranch">&check; Branch 14 &rightarrow; 15 taken 1 time.</div>
+              <div class="takenBranch">&check; Branch 14 &rightarrow; 19 taken 9 times.</div>
             </div>
-            </details>
-      </td>
-      <td class="linedecision">
-      </td>
-      <td class="linecount coveredLine">10</td>
-      <td class="src coveredLine"><span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">i</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="mi">5</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
-    </tr>
-    <tr class="source-line">
-      <td class="lineno"><a id="merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l14" href="#merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l14">14</a></td>
-      <td class="linebranch">
-      </td>
-      <td class="linecondition">
-      </td>
-      <td class="linedecision">
-      </td>
-      <td class="linecount coveredLine">1</td>
-      <td class="src coveredLine"><span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot; is greater 5: &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">s</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span></td>
-    </tr>
-    <tr class="source-line">
-      <td class="lineno"><a id="merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l15" href="#merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l15">15</a></td>
-      <td class="linebranch">
-      </td>
-      <td class="linecondition">
-      </td>
-      <td class="linedecision">
-      </td>
-      <td class="linecount "></td>
-      <td class="src "><span class="w">  </span><span class="p">}</span></td>
-    </tr>
-    <tr class="source-line">
-      <td class="lineno"><a id="merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l16" href="#merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l16">16</a></td>
-      <td class="linebranch">
-      </td>
-      <td class="linecondition">
-      </td>
-      <td class="linedecision">
-      </td>
-      <td class="linecount "></td>
-      <td class="src "></td>
-    </tr>
-    <tr class="source-line">
-      <td class="lineno"><a id="merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l17" href="#merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l17">17</a></td>
-      <td class="linebranch">
-      </td>
-      <td class="linecondition">
-      </td>
-      <td class="linedecision">
-      </td>
-      <td class="linecount coveredLine">10</td>
-      <td class="src coveredLine"><span class="w">  </span><span class="o">++</span><span class="n">i</span><span class="p">;</span></td>
-    </tr>
-    <tr class="source-line">
-      <td class="lineno"><a id="merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l18" href="#merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l18">18</a></td>
-      <td class="linebranch">
-      </td>
-      <td class="linecondition">
-      </td>
-      <td class="linedecision">
-      </td>
-      <td class="linecount coveredLine">10</td>
-      <td class="src coveredLine"><span class="p">}</span></td>
-    </tr>
-    <tr class="source-line">
-      <td class="lineno"><a id="merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l19" href="#merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l19">19</a></td>
-      <td class="linebranch">
-      </td>
-      <td class="linecondition">
-      </td>
-      <td class="linedecision">
-      </td>
-      <td class="linecount "></td>
-      <td class="src "></td>
-    </tr>
-    <tr class="source-line">
-      <td class="lineno"><a id="merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l20" href="#merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l20">20</a></td>
-      <td class="linebranch">
-      </td>
-      <td class="linecondition">
-      </td>
-      <td class="linedecision">
-      </td>
-      <td class="linecount coveredLine">4</td>
-      <td class="src coveredLine"><span class="kt">void</span><span class="w"> </span><span class="n">bar</span><span class="p">()</span></td>
-    </tr>
-    <tr class="source-line">
-      <td class="lineno"><a id="merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l21" href="#merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l21">21</a></td>
-      <td class="linebranch">
-      </td>
-      <td class="linecondition">
-      </td>
-      <td class="linedecision">
-      </td>
-      <td class="linecount "></td>
-      <td class="src "><span class="p">{</span></td>
-    </tr>
-    <tr class="source-line">
-      <td class="lineno"><a id="merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l22" href="#merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l22">22</a></td>
-      <td class="linebranch">
-      </td>
-      <td class="linecondition">
-      </td>
-      <td class="linedecision">
-      </td>
-      <td class="linecount "></td>
-      <td class="src "><span class="w">  </span><span class="k">static</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span></td>
-    </tr>
-    <tr class="source-line">
-      <td class="lineno"><a id="merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l23" href="#merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l23">23</a></td>
-      <td class="linebranch">
-      </td>
-      <td class="linecondition">
-      </td>
-      <td class="linedecision">
-      </td>
-      <td class="linecount "></td>
-      <td class="src "></td>
-    </tr>
-    <tr class="source-line">
-      <td class="lineno"><a id="merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l24" href="#merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l24">24</a></td>
-      <td class="linebranch">
-        <details class="linebranchDetails">
-          <summary class="linebranchSummary">1/2</summary>
-          <div class="linebranchContents">
-            <div class="takenBranch">&check; Branch 2 &rightarrow; 3 taken 4 times.</div>
-            <div class="notTakenBranch">&cross; Branch 2 &rightarrow; 6 not taken.</div>
-          </div>
-        </details>
-      </td>
-      <td class="linecondition">
-          <details class="lineconditionDetails">
-            <summary class="lineconditionSummary">1/2</summary>
-            <div class="lineconditionContents">
-              <div class="notTakenCondition">&cross; False not covered.</div>
+          </details>
+        </td>
+        <td class="linecondition">
+            <details class="lineconditionDetails">
+              <summary class="lineconditionSummary">2/2</summary>
+              <div class="lineconditionContents">
+                <div class="takenCondition">&check; Fully covered.</div>
+              </div>
+              </details>
+        </td>
+        <td class="linedecision">
+        </td>
+        <td class="linecount coveredLine">10</td>
+        <td class="src coveredLine"><span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">i</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="mi">5</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l14" href="#merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l14">14</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecondition">
+        </td>
+        <td class="linedecision">
+        </td>
+        <td class="linecount coveredLine">1</td>
+        <td class="src coveredLine"><span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot; is greater 5: &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">s</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l15" href="#merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l15">15</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecondition">
+        </td>
+        <td class="linedecision">
+        </td>
+        <td class="linecount "></td>
+        <td class="src "><span class="w">  </span><span class="p">}</span></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l16" href="#merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l16">16</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecondition">
+        </td>
+        <td class="linedecision">
+        </td>
+        <td class="linecount "></td>
+        <td class="src "></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l17" href="#merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l17">17</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecondition">
+        </td>
+        <td class="linedecision">
+        </td>
+        <td class="linecount coveredLine">10</td>
+        <td class="src coveredLine"><span class="w">  </span><span class="o">++</span><span class="n">i</span><span class="p">;</span></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l18" href="#merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l18">18</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecondition">
+        </td>
+        <td class="linedecision">
+        </td>
+        <td class="linecount coveredLine">10</td>
+        <td class="src coveredLine"><span class="p">}</span></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l19" href="#merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l19">19</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecondition">
+        </td>
+        <td class="linedecision">
+        </td>
+        <td class="linecount "></td>
+        <td class="src "></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l20" href="#merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l20">20</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecondition">
+        </td>
+        <td class="linedecision">
+        </td>
+        <td class="linecount coveredLine">4</td>
+        <td class="src coveredLine"><span class="kt">void</span><span class="w"> </span><span class="n">bar</span><span class="p">()</span></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l21" href="#merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l21">21</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecondition">
+        </td>
+        <td class="linedecision">
+        </td>
+        <td class="linecount "></td>
+        <td class="src "><span class="p">{</span></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l22" href="#merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l22">22</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecondition">
+        </td>
+        <td class="linedecision">
+        </td>
+        <td class="linecount "></td>
+        <td class="src "><span class="w">  </span><span class="k">static</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l23" href="#merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l23">23</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecondition">
+        </td>
+        <td class="linedecision">
+        </td>
+        <td class="linecount "></td>
+        <td class="src "></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l24" href="#merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l24">24</a></td>
+        <td class="linebranch">
+          <details class="linebranchDetails">
+            <summary class="linebranchSummary">1/2</summary>
+            <div class="linebranchContents">
+              <div class="takenBranch">&check; Branch 2 &rightarrow; 3 taken 4 times.</div>
+              <div class="notTakenBranch">&cross; Branch 2 &rightarrow; 6 not taken.</div>
             </div>
-            </details>
-      </td>
-      <td class="linedecision">
-        <details class="linedecisionDetails">
-          <summary class="linedecisionSummary">1/2</summary>
-          <div class="linedecisionContents">
-            <div class="takenDecision">&check; Decision 'true' taken 4 times.</div>
-            <div class="notTakenDecision">&cross; Decision 'false' not taken.</div>
-          </div>
-        </details>
-      </td>
-      <td class="linecount partialCoveredLine">4</td>
-      <td class="src partialCoveredLine"><span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">i</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
-    </tr>
-    <tr class="source-line">
-      <td class="lineno"><a id="merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l25" href="#merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l25">25</a></td>
-      <td class="linebranch">
-      </td>
-      <td class="linecondition">
-      </td>
-      <td class="linedecision">
-      </td>
-      <td class="linecount coveredLine">4</td>
-      <td class="src coveredLine"><span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot; is greater or equal 0&quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span></td>
-    </tr>
-    <tr class="source-line">
-      <td class="lineno"><a id="merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l26" href="#merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l26">26</a></td>
-      <td class="linebranch">
-      </td>
-      <td class="linecondition">
-      </td>
-      <td class="linedecision">
-      </td>
-      <td class="linecount "></td>
-      <td class="src "><span class="w">  </span><span class="p">}</span></td>
-    </tr>
-    <tr class="source-line">
-      <td class="lineno"><a id="merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l27" href="#merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l27">27</a></td>
-      <td class="linebranch">
-        <details class="linebranchDetails">
-          <summary class="linebranchSummary">5/6</summary>
-          <div class="linebranchContents">
-            <div class="takenBranch">&check; Branch 6 &rightarrow; 7 taken 3 times.</div>
-            <div class="takenBranch">&check; Branch 6 &rightarrow; 12 taken 1 time.</div>
-            <div class="takenBranch">&check; Branch 7 &rightarrow; 8 taken 2 times.</div>
-            <div class="takenBranch">&check; Branch 7 &rightarrow; 9 taken 1 time.</div>
-            <div class="notTakenBranch">&cross; Branch 8 &rightarrow; 9 not taken.</div>
-            <div class="takenBranch">&check; Branch 8 &rightarrow; 12 taken 2 times.</div>
-          </div>
-        </details>
-      </td>
-      <td class="linecondition">
-          <details class="lineconditionDetails">
-            <summary class="lineconditionSummary">5/6</summary>
-            <div class="lineconditionContents">
-              <div class="takenCondition">&check; Condition 0: Fully covered.</div>
-              <div class="takenCondition">&check; Condition 1.0: Fully covered.</div>
-              <div class="notTakenCondition">&cross; Condition 1.1: True not covered.</div>
+          </details>
+        </td>
+        <td class="linecondition">
+            <details class="lineconditionDetails">
+              <summary class="lineconditionSummary">1/2</summary>
+              <div class="lineconditionContents">
+                <div class="notTakenCondition">&cross; False not covered.</div>
+              </div>
+              </details>
+        </td>
+        <td class="linedecision">
+          <details class="linedecisionDetails">
+            <summary class="linedecisionSummary">1/2</summary>
+            <div class="linedecisionContents">
+              <div class="takenDecision">&check; Decision 'true' taken 4 times.</div>
+              <div class="notTakenDecision">&cross; Decision 'false' not taken.</div>
             </div>
-            </details>
-      </td>
-      <td class="linedecision">
-        <details class="linedecisionDetails">
-          <summary class="linedecisionSummary">1/2</summary>
-          <div class="linedecisionContents">
-            <div class="takenDecision">&check; Decision 'true' taken 4 times.</div>
-            <div class="notTakenDecision">&cross; Decision 'false' not taken.</div>
-          </div>
-        </details>
-      </td>
-      <td class="linecount partialCoveredLine">4</td>
-      <td class="src partialCoveredLine"><span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">i</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">2</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">4</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot; is between 0 and 2 or greater 4&quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span></td>
-    </tr>
-    <tr class="source-line">
-      <td class="lineno"><a id="merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l28" href="#merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l28">28</a></td>
-      <td class="linebranch">
-        <details class="linebranchDetails">
-          <summary class="linebranchSummary">1/2</summary>
-          <div class="linebranchContents">
-            <div class="notTakenBranch">&cross; Branch 12 &rightarrow; 13 not taken.</div>
-            <div class="takenBranch">&check; Branch 12 &rightarrow; 16 taken 4 times.</div>
-          </div>
-        </details>
-      </td>
-      <td class="linecondition">
-          <details class="lineconditionDetails">
-            <summary class="lineconditionSummary">1/2</summary>
-            <div class="lineconditionContents">
-              <div class="notTakenCondition">&cross; True not covered.</div>
+          </details>
+        </td>
+        <td class="linecount partialCoveredLine">4</td>
+        <td class="src partialCoveredLine"><span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">i</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l25" href="#merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l25">25</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecondition">
+        </td>
+        <td class="linedecision">
+        </td>
+        <td class="linecount coveredLine">4</td>
+        <td class="src coveredLine"><span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot; is greater or equal 0&quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l26" href="#merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l26">26</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecondition">
+        </td>
+        <td class="linedecision">
+        </td>
+        <td class="linecount "></td>
+        <td class="src "><span class="w">  </span><span class="p">}</span></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l27" href="#merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l27">27</a></td>
+        <td class="linebranch">
+          <details class="linebranchDetails">
+            <summary class="linebranchSummary">5/6</summary>
+            <div class="linebranchContents">
+              <div class="takenBranch">&check; Branch 6 &rightarrow; 7 taken 3 times.</div>
+              <div class="takenBranch">&check; Branch 6 &rightarrow; 12 taken 1 time.</div>
+              <div class="takenBranch">&check; Branch 7 &rightarrow; 8 taken 2 times.</div>
+              <div class="takenBranch">&check; Branch 7 &rightarrow; 9 taken 1 time.</div>
+              <div class="notTakenBranch">&cross; Branch 8 &rightarrow; 9 not taken.</div>
+              <div class="takenBranch">&check; Branch 8 &rightarrow; 12 taken 2 times.</div>
             </div>
-            </details>
-      </td>
-      <td class="linedecision">
-        <details class="linedecisionDetails">
-          <summary class="linedecisionSummary">1/2</summary>
-          <div class="linedecisionContents">
-            <div class="notTakenDecision">&cross; Decision 'true' not taken.</div>
-            <div class="takenDecision">&check; Decision 'false' taken 4 times.</div>
-          </div>
-        </details>
-      </td>
-      <td class="linecount partialCoveredLine">4</td>
-      <td class="src partialCoveredLine"><span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">i</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="mi">5</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
-    </tr>
-    <tr class="source-line">
-      <td class="lineno"><a id="merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l29" href="#merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l29">29</a></td>
-      <td class="linebranch">
-      </td>
-      <td class="linecondition">
-      </td>
-      <td class="linedecision">
-      </td>
-      <td class="linecount uncoveredLine">&cross;</td>
-      <td class="src uncoveredLine"><span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot; is greater 5&quot;</span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span></td>
-    </tr>
-    <tr class="source-line">
-      <td class="lineno"><a id="merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l30" href="#merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l30">30</a></td>
-      <td class="linebranch">
-      </td>
-      <td class="linecondition">
-      </td>
-      <td class="linedecision">
-      </td>
-      <td class="linecount "></td>
-      <td class="src "><span class="w">  </span><span class="p">}</span></td>
-    </tr>
-    <tr class="source-line">
-      <td class="lineno"><a id="merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l31" href="#merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l31">31</a></td>
-      <td class="linebranch">
-      </td>
-      <td class="linecondition">
-      </td>
-      <td class="linedecision">
-      </td>
-      <td class="linecount "></td>
-      <td class="src "></td>
-    </tr>
-    <tr class="source-line">
-      <td class="lineno"><a id="merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l32" href="#merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l32">32</a></td>
-      <td class="linebranch">
-      </td>
-      <td class="linecondition">
-      </td>
-      <td class="linedecision">
-      </td>
-      <td class="linecount coveredLine">4</td>
-      <td class="src coveredLine"><span class="w">  </span><span class="o">++</span><span class="n">i</span><span class="p">;</span></td>
-    </tr>
-    <tr class="source-line">
-      <td class="lineno"><a id="merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l33" href="#merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l33">33</a></td>
-      <td class="linebranch">
-      </td>
-      <td class="linecondition">
-      </td>
-      <td class="linedecision">
-      </td>
-      <td class="linecount coveredLine">4</td>
-      <td class="src coveredLine"><span class="p">}</span></td>
-    </tr>
-    <tr class="source-line">
-      <td class="lineno"><a id="merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l34" href="#merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l34">34</a></td>
-      <td class="linebranch">
-      </td>
-      <td class="linecondition">
-      </td>
-      <td class="linedecision">
-      </td>
-      <td class="linecount "></td>
-      <td class="src "></td>
-    </tr>
-    <tr class="source-line">
-      <td class="lineno"><a id="merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l35" href="#merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l35">35</a></td>
-      <td class="linebranch">
-      </td>
-      <td class="linecondition">
-      </td>
-      <td class="linedecision">
-      </td>
-      <td class="linecount coveredLine">1</td>
-      <td class="src coveredLine"><span class="kt">int</span><span class="w"> </span><span class="n">main</span><span class="p">()</span><span class="w"> </span><span class="p">{</span></td>
-    </tr>
-    <tr class="source-line">
-      <td class="lineno"><a id="merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l36" href="#merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l36">36</a></td>
-      <td class="linebranch">
-      </td>
-      <td class="linecondition">
-      </td>
-      <td class="linedecision">
-      </td>
-      <td class="linecount coveredLine">1</td>
-      <td class="src coveredLine"><span class="w">  </span><span class="n">foo</span><span class="o">&lt;&gt;</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span></td>
-    </tr>
-    <tr class="source-line">
-      <td class="lineno"><a id="merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l37" href="#merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l37">37</a></td>
-      <td class="linebranch">
-      </td>
-      <td class="linecondition">
-      </td>
-      <td class="linedecision">
-      </td>
-      <td class="linecount coveredLine">1</td>
-      <td class="src coveredLine"><span class="w">  </span><span class="n">foo</span><span class="o">&lt;&gt;</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span></td>
-    </tr>
-    <tr class="source-line">
-      <td class="lineno"><a id="merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l38" href="#merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l38">38</a></td>
-      <td class="linebranch">
-      </td>
-      <td class="linecondition">
-      </td>
-      <td class="linedecision">
-      </td>
-      <td class="linecount coveredLine">1</td>
-      <td class="src coveredLine"><span class="w">  </span><span class="n">foo</span><span class="o">&lt;&gt;</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span></td>
-    </tr>
-    <tr class="source-line">
-      <td class="lineno"><a id="merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l39" href="#merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l39">39</a></td>
-      <td class="linebranch">
-      </td>
-      <td class="linecondition">
-      </td>
-      <td class="linedecision">
-      </td>
-      <td class="linecount coveredLine">1</td>
-      <td class="src coveredLine"><span class="w">  </span><span class="n">foo</span><span class="o">&lt;&gt;</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span></td>
-    </tr>
-    <tr class="source-line">
-      <td class="lineno"><a id="merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l40" href="#merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l40">40</a></td>
-      <td class="linebranch">
-      </td>
-      <td class="linecondition">
-      </td>
-      <td class="linedecision">
-      </td>
-      <td class="linecount coveredLine">1</td>
-      <td class="src coveredLine"><span class="w">  </span><span class="n">foo</span><span class="o">&lt;&gt;</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span></td>
-    </tr>
-    <tr class="source-line">
-      <td class="lineno"><a id="merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l41" href="#merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l41">41</a></td>
-      <td class="linebranch">
-      </td>
-      <td class="linecondition">
-      </td>
-      <td class="linedecision">
-      </td>
-      <td class="linecount coveredLine">1</td>
-      <td class="src coveredLine"><span class="w">  </span><span class="n">foo</span><span class="o">&lt;&gt;</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span></td>
-    </tr>
-    <tr class="source-line">
-      <td class="lineno"><a id="merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l42" href="#merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l42">42</a></td>
-      <td class="linebranch">
-      </td>
-      <td class="linecondition">
-      </td>
-      <td class="linedecision">
-      </td>
-      <td class="linecount "></td>
-      <td class="src "></td>
-    </tr>
-    <tr class="source-line">
-      <td class="lineno"><a id="merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l43" href="#merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l43">43</a></td>
-      <td class="linebranch">
-      </td>
-      <td class="linecondition">
-      </td>
-      <td class="linedecision">
-      </td>
-      <td class="linecount coveredLine">1</td>
-      <td class="src coveredLine"><span class="w">  </span><span class="n">foo</span><span class="o">&lt;&gt;</span><span class="p">(</span><span class="mf">0.0</span><span class="p">);</span></td>
-    </tr>
-    <tr class="source-line">
-      <td class="lineno"><a id="merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l44" href="#merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l44">44</a></td>
-      <td class="linebranch">
-      </td>
-      <td class="linecondition">
-      </td>
-      <td class="linedecision">
-      </td>
-      <td class="linecount coveredLine">1</td>
-      <td class="src coveredLine"><span class="w">  </span><span class="n">foo</span><span class="o">&lt;&gt;</span><span class="p">(</span><span class="mf">0.0</span><span class="p">);</span></td>
-    </tr>
-    <tr class="source-line">
-      <td class="lineno"><a id="merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l45" href="#merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l45">45</a></td>
-      <td class="linebranch">
-      </td>
-      <td class="linecondition">
-      </td>
-      <td class="linedecision">
-      </td>
-      <td class="linecount coveredLine">1</td>
-      <td class="src coveredLine"><span class="w">  </span><span class="n">foo</span><span class="o">&lt;&gt;</span><span class="p">(</span><span class="mf">0.0</span><span class="p">);</span></td>
-    </tr>
-    <tr class="source-line">
-      <td class="lineno"><a id="merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l46" href="#merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l46">46</a></td>
-      <td class="linebranch">
-      </td>
-      <td class="linecondition">
-      </td>
-      <td class="linedecision">
-      </td>
-      <td class="linecount coveredLine">1</td>
-      <td class="src coveredLine"><span class="w">  </span><span class="n">foo</span><span class="o">&lt;&gt;</span><span class="p">(</span><span class="mf">0.0</span><span class="p">);</span></td>
-    </tr>
-    <tr class="source-line">
-      <td class="lineno"><a id="merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l47" href="#merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l47">47</a></td>
-      <td class="linebranch">
-      </td>
-      <td class="linecondition">
-      </td>
-      <td class="linedecision">
-      </td>
-      <td class="linecount "></td>
-      <td class="src "></td>
-    </tr>
-    <tr class="source-line">
-      <td class="lineno"><a id="merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l48" href="#merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l48">48</a></td>
-      <td class="linebranch">
-      </td>
-      <td class="linecondition">
-      </td>
-      <td class="linedecision">
-      </td>
-      <td class="linecount coveredLine">1</td>
-      <td class="src coveredLine"><span class="w">  </span><span class="n">bar</span><span class="p">();</span></td>
-    </tr>
-    <tr class="source-line">
-      <td class="lineno"><a id="merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l49" href="#merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l49">49</a></td>
-      <td class="linebranch">
-      </td>
-      <td class="linecondition">
-      </td>
-      <td class="linedecision">
-      </td>
-      <td class="linecount coveredLine">1</td>
-      <td class="src coveredLine"><span class="w">  </span><span class="n">bar</span><span class="p">();</span></td>
-    </tr>
-    <tr class="source-line">
-      <td class="lineno"><a id="merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l50" href="#merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l50">50</a></td>
-      <td class="linebranch">
-      </td>
-      <td class="linecondition">
-      </td>
-      <td class="linedecision">
-      </td>
-      <td class="linecount coveredLine">1</td>
-      <td class="src coveredLine"><span class="w">  </span><span class="n">bar</span><span class="p">();</span></td>
-    </tr>
-    <tr class="source-line">
-      <td class="lineno"><a id="merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l51" href="#merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l51">51</a></td>
-      <td class="linebranch">
-      </td>
-      <td class="linecondition">
-      </td>
-      <td class="linedecision">
-      </td>
-      <td class="linecount coveredLine">1</td>
-      <td class="src coveredLine"><span class="w">  </span><span class="n">bar</span><span class="p">();</span></td>
-    </tr>
-    <tr class="source-line">
-      <td class="lineno"><a id="merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l52" href="#merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l52">52</a></td>
-      <td class="linebranch">
-      </td>
-      <td class="linecondition">
-      </td>
-      <td class="linedecision">
-      </td>
-      <td class="linecount "></td>
-      <td class="src "></td>
-    </tr>
-    <tr class="source-line">
-      <td class="lineno"><a id="merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l53" href="#merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l53">53</a></td>
-      <td class="linebranch">
-      </td>
-      <td class="linecondition">
-      </td>
-      <td class="linedecision">
-      </td>
-      <td class="linecount coveredLine">1</td>
-      <td class="src coveredLine"><span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span></td>
-    </tr>
-    <tr class="source-line">
-      <td class="lineno"><a id="merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l54" href="#merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l54">54</a></td>
-      <td class="linebranch">
-      </td>
-      <td class="linecondition">
-      </td>
-      <td class="linedecision">
-      </td>
-      <td class="linecount "></td>
-      <td class="src "><span class="p">}</span></td>
-    </tr>
-    <tr class="source-line">
-      <td class="lineno"><a id="merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l55" href="#merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l55">55</a></td>
-      <td class="linebranch">
-      </td>
-      <td class="linecondition">
-      </td>
-      <td class="linedecision">
-      </td>
-      <td class="linecount "></td>
-      <td class="src "></td>
-    </tr>
-  </table>
+          </details>
+        </td>
+        <td class="linecondition">
+            <details class="lineconditionDetails">
+              <summary class="lineconditionSummary">5/6</summary>
+              <div class="lineconditionContents">
+                <div class="takenCondition">&check; Condition 0: Fully covered.</div>
+                <div class="takenCondition">&check; Condition 1.0: Fully covered.</div>
+                <div class="notTakenCondition">&cross; Condition 1.1: True not covered.</div>
+              </div>
+              </details>
+        </td>
+        <td class="linedecision">
+          <details class="linedecisionDetails">
+            <summary class="linedecisionSummary">1/2</summary>
+            <div class="linedecisionContents">
+              <div class="takenDecision">&check; Decision 'true' taken 4 times.</div>
+              <div class="notTakenDecision">&cross; Decision 'false' not taken.</div>
+            </div>
+          </details>
+        </td>
+        <td class="linecount partialCoveredLine">4</td>
+        <td class="src partialCoveredLine"><span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">i</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">2</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">4</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot; is between 0 and 2 or greater 4&quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l28" href="#merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l28">28</a></td>
+        <td class="linebranch">
+          <details class="linebranchDetails">
+            <summary class="linebranchSummary">1/2</summary>
+            <div class="linebranchContents">
+              <div class="notTakenBranch">&cross; Branch 12 &rightarrow; 13 not taken.</div>
+              <div class="takenBranch">&check; Branch 12 &rightarrow; 16 taken 4 times.</div>
+            </div>
+          </details>
+        </td>
+        <td class="linecondition">
+            <details class="lineconditionDetails">
+              <summary class="lineconditionSummary">1/2</summary>
+              <div class="lineconditionContents">
+                <div class="notTakenCondition">&cross; True not covered.</div>
+              </div>
+              </details>
+        </td>
+        <td class="linedecision">
+          <details class="linedecisionDetails">
+            <summary class="linedecisionSummary">1/2</summary>
+            <div class="linedecisionContents">
+              <div class="notTakenDecision">&cross; Decision 'true' not taken.</div>
+              <div class="takenDecision">&check; Decision 'false' taken 4 times.</div>
+            </div>
+          </details>
+        </td>
+        <td class="linecount partialCoveredLine">4</td>
+        <td class="src partialCoveredLine"><span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">i</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="mi">5</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l29" href="#merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l29">29</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecondition">
+        </td>
+        <td class="linedecision">
+        </td>
+        <td class="linecount uncoveredLine">&cross;</td>
+        <td class="src uncoveredLine"><span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot; is greater 5&quot;</span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l30" href="#merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l30">30</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecondition">
+        </td>
+        <td class="linedecision">
+        </td>
+        <td class="linecount "></td>
+        <td class="src "><span class="w">  </span><span class="p">}</span></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l31" href="#merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l31">31</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecondition">
+        </td>
+        <td class="linedecision">
+        </td>
+        <td class="linecount "></td>
+        <td class="src "></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l32" href="#merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l32">32</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecondition">
+        </td>
+        <td class="linedecision">
+        </td>
+        <td class="linecount coveredLine">4</td>
+        <td class="src coveredLine"><span class="w">  </span><span class="o">++</span><span class="n">i</span><span class="p">;</span></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l33" href="#merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l33">33</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecondition">
+        </td>
+        <td class="linedecision">
+        </td>
+        <td class="linecount coveredLine">4</td>
+        <td class="src coveredLine"><span class="p">}</span></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l34" href="#merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l34">34</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecondition">
+        </td>
+        <td class="linedecision">
+        </td>
+        <td class="linecount "></td>
+        <td class="src "></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l35" href="#merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l35">35</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecondition">
+        </td>
+        <td class="linedecision">
+        </td>
+        <td class="linecount coveredLine">1</td>
+        <td class="src coveredLine"><span class="kt">int</span><span class="w"> </span><span class="n">main</span><span class="p">()</span><span class="w"> </span><span class="p">{</span></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l36" href="#merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l36">36</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecondition">
+        </td>
+        <td class="linedecision">
+        </td>
+        <td class="linecount coveredLine">1</td>
+        <td class="src coveredLine"><span class="w">  </span><span class="n">foo</span><span class="o">&lt;&gt;</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l37" href="#merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l37">37</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecondition">
+        </td>
+        <td class="linedecision">
+        </td>
+        <td class="linecount coveredLine">1</td>
+        <td class="src coveredLine"><span class="w">  </span><span class="n">foo</span><span class="o">&lt;&gt;</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l38" href="#merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l38">38</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecondition">
+        </td>
+        <td class="linedecision">
+        </td>
+        <td class="linecount coveredLine">1</td>
+        <td class="src coveredLine"><span class="w">  </span><span class="n">foo</span><span class="o">&lt;&gt;</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l39" href="#merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l39">39</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecondition">
+        </td>
+        <td class="linedecision">
+        </td>
+        <td class="linecount coveredLine">1</td>
+        <td class="src coveredLine"><span class="w">  </span><span class="n">foo</span><span class="o">&lt;&gt;</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l40" href="#merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l40">40</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecondition">
+        </td>
+        <td class="linedecision">
+        </td>
+        <td class="linecount coveredLine">1</td>
+        <td class="src coveredLine"><span class="w">  </span><span class="n">foo</span><span class="o">&lt;&gt;</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l41" href="#merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l41">41</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecondition">
+        </td>
+        <td class="linedecision">
+        </td>
+        <td class="linecount coveredLine">1</td>
+        <td class="src coveredLine"><span class="w">  </span><span class="n">foo</span><span class="o">&lt;&gt;</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l42" href="#merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l42">42</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecondition">
+        </td>
+        <td class="linedecision">
+        </td>
+        <td class="linecount "></td>
+        <td class="src "></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l43" href="#merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l43">43</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecondition">
+        </td>
+        <td class="linedecision">
+        </td>
+        <td class="linecount coveredLine">1</td>
+        <td class="src coveredLine"><span class="w">  </span><span class="n">foo</span><span class="o">&lt;&gt;</span><span class="p">(</span><span class="mf">0.0</span><span class="p">);</span></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l44" href="#merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l44">44</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecondition">
+        </td>
+        <td class="linedecision">
+        </td>
+        <td class="linecount coveredLine">1</td>
+        <td class="src coveredLine"><span class="w">  </span><span class="n">foo</span><span class="o">&lt;&gt;</span><span class="p">(</span><span class="mf">0.0</span><span class="p">);</span></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l45" href="#merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l45">45</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecondition">
+        </td>
+        <td class="linedecision">
+        </td>
+        <td class="linecount coveredLine">1</td>
+        <td class="src coveredLine"><span class="w">  </span><span class="n">foo</span><span class="o">&lt;&gt;</span><span class="p">(</span><span class="mf">0.0</span><span class="p">);</span></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l46" href="#merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l46">46</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecondition">
+        </td>
+        <td class="linedecision">
+        </td>
+        <td class="linecount coveredLine">1</td>
+        <td class="src coveredLine"><span class="w">  </span><span class="n">foo</span><span class="o">&lt;&gt;</span><span class="p">(</span><span class="mf">0.0</span><span class="p">);</span></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l47" href="#merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l47">47</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecondition">
+        </td>
+        <td class="linedecision">
+        </td>
+        <td class="linecount "></td>
+        <td class="src "></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l48" href="#merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l48">48</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecondition">
+        </td>
+        <td class="linedecision">
+        </td>
+        <td class="linecount coveredLine">1</td>
+        <td class="src coveredLine"><span class="w">  </span><span class="n">bar</span><span class="p">();</span></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l49" href="#merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l49">49</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecondition">
+        </td>
+        <td class="linedecision">
+        </td>
+        <td class="linecount coveredLine">1</td>
+        <td class="src coveredLine"><span class="w">  </span><span class="n">bar</span><span class="p">();</span></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l50" href="#merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l50">50</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecondition">
+        </td>
+        <td class="linedecision">
+        </td>
+        <td class="linecount coveredLine">1</td>
+        <td class="src coveredLine"><span class="w">  </span><span class="n">bar</span><span class="p">();</span></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l51" href="#merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l51">51</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecondition">
+        </td>
+        <td class="linedecision">
+        </td>
+        <td class="linecount coveredLine">1</td>
+        <td class="src coveredLine"><span class="w">  </span><span class="n">bar</span><span class="p">();</span></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l52" href="#merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l52">52</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecondition">
+        </td>
+        <td class="linedecision">
+        </td>
+        <td class="linecount "></td>
+        <td class="src "></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l53" href="#merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l53">53</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecondition">
+        </td>
+        <td class="linedecision">
+        </td>
+        <td class="linecount coveredLine">1</td>
+        <td class="src coveredLine"><span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l54" href="#merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l54">54</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecondition">
+        </td>
+        <td class="linedecision">
+        </td>
+        <td class="linecount "></td>
+        <td class="src "><span class="p">}</span></td>
+      </tr>
+      <tr class="source-line">
+        <td class="lineno"><a id="merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l55" href="#merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l55">55</a></td>
+        <td class="linebranch">
+        </td>
+        <td class="linecondition">
+        </td>
+        <td class="linedecision">
+        </td>
+        <td class="linecount "></td>
+        <td class="src "></td>
+      </tr>
+    </table>
+  </div>
 </div></main>
 
 <script>
@@ -1857,6 +1888,14 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
       else
       {
         enabled_elements.push(element)
+        title = element.getAttribute("data-title")
+        if (title == "") {
+          title = "GCC Code Coverage Report"
+        }
+        else {
+          title += " - GCC Code Coverage Report"
+        }
+        document.title = title
         var summary = document.getElementById("summary-" + hash_parts[0])
         if (summary == null) {
           enabled_elements.push(global_summary)
@@ -1883,7 +1922,8 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
       <hr/>
     </main>
     <footer>
-      Generated by: <a href="http://gcovr.com/en/main">GCOVR (Version 8.4+main)</a>
+      Created using <a href="http://gcovr.com/en/main">GCOVR (Version 8.4+main)</a>
+      at 2025-09-28 18:09:21+00:00
     </footer>
   </body>
 </html>
