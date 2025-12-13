@@ -6,6 +6,7 @@
     "ignorePaths": [
         "/.git/",
         "/.gitbugtraq",
+        "/admin/*.patch",
         "/AUTHORS.txt",
         "/doc/source/conf.py",
         "/src/gcovr/formats/html/github/primer.css",

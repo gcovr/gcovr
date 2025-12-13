@@ -559,6 +559,44 @@ def html2jpeg(session: nox.Session) -> None:
     """Create JPEGs from HTML for documentation"""
     import requests  # pylint: disable=import-outside-toplevel
 
+    session.log("Build patched image of bedrockio/export-html...")
+    with session.chdir(session.cache_dir):
+        if not Path("export-html").exists():
+            session.run(
+                "git",
+                "clone",
+                "https://github.com/bedrockio/export-html.git",
+                external=True,
+            )
+        with session.chdir("export-html"):
+            session.run(
+                "git",
+                "checkout",
+                "228f0fdf42cc31f1269f31f015e94e0b1f423c6d",
+                "--",
+                ".",
+                external=True,
+            )
+            session.run("git", "reset", "--hard", external=True)
+            session.run(
+                "git",
+                "apply",
+                str(
+                    Path(__file__).parent
+                    / "admin"
+                    / "0001-Added-ability-to-set-the-viewport-and-associated-opt.patch"
+                ),
+                external=True,
+            )
+            session.run(
+                "docker",
+                "build",
+                "-t",
+                "bedrockio/export-html-patched",
+                ".",
+                external=True,
+            )
+
     # Create a socket
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     # Bind the socket to localhost and let the OS assign a free port number
@@ -577,7 +615,7 @@ def html2jpeg(session: nox.Session) -> None:
                 "--detach",
                 "-p",
                 f"{port}:2305",
-                "bedrockio/export-html",
+                "bedrockio/export-html-patched",
             ]
         ).strip()
 
@@ -603,6 +641,7 @@ def html2jpeg(session: nox.Session) -> None:
                     "type": "jpeg",
                     "fullPage": False,
                     "clip": {"x": 1, "y": 1, "width": size[0], "height": size[1]},
+                    "viewport": {"width": size[0], "height": size[1]},
                 },
             }
             session.log(f"Generating {jpeg} from {html}...")
@@ -631,42 +670,42 @@ def html2jpeg(session: nox.Session) -> None:
         screenshot(
             "doc/examples/example_html.html",
             "doc/images/screenshot-html.jpeg",
-            (800, 290),
+            (1000, 375),
         )
         screenshot(
             "doc/examples/example_html.details.example.cpp.9597a7a3397b8e3a48116e2a3afb4154.html",
             "doc/images/screenshot-html-details.example.cpp.jpeg",
-            (800, 600),
+            (1000, 660),
         )
         screenshot(
             "tests/html/reference/theme-default-green/gcc-5/coverage.main.cpp.118fcbaaba162ba17933c7893247df3a.html",
             "doc/images/screenshot-html-default-green-src.jpeg",
-            (800, 290),
+            (1000, 390),
         )
         screenshot(
             "tests/html/reference/theme-default-blue/gcc-5/coverage.main.cpp.118fcbaaba162ba17933c7893247df3a.html",
             "doc/images/screenshot-html-default-blue-src.jpeg",
-            (800, 290),
+            (1000, 390),
         )
         screenshot(
             "tests/html/reference/theme-github-green/gcc-5/coverage.main.cpp.118fcbaaba162ba17933c7893247df3a.html",
             "doc/images/screenshot-html-github-green-src.jpeg",
-            (800, 500),
+            (1150, 460),
         )
         screenshot(
             "tests/html/reference/theme-github-blue/gcc-5/coverage.main.cpp.118fcbaaba162ba17933c7893247df3a.html",
             "doc/images/screenshot-html-github-blue-src.jpeg",
-            (800, 500),
+            (1150, 460),
         )
         screenshot(
             "tests/html/reference/theme-github-dark-green/gcc-5/coverage.main.cpp.118fcbaaba162ba17933c7893247df3a.html",
             "doc/images/screenshot-html-github-dark-green-src.jpeg",
-            (800, 500),
+            (1150, 460),
         )
         screenshot(
             "tests/html/reference/theme-github-dark-blue/gcc-5/coverage.main.cpp.118fcbaaba162ba17933c7893247df3a.html",
             "doc/images/screenshot-html-github-dark-blue-src.jpeg",
-            (800, 500),
+            (1150, 460),
         )
 
 
