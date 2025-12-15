@@ -27,10 +27,19 @@ div.file-list > span:has(meter)
 div.file-list > span:not(:has(meter))
 {
   color: black !important;
-  min-width: 4em !important;
   padding-left: 5px !important;
   padding-right: 5px !important;
   margin-left: 0px !important;
   margin-right: 0px !important;
   text-align: right
+}
+
+div.file-list > span:first-child
+{
+  min-width: 3.5em !important;
+}
+
+div.file-list > span:last-child
+{
+  min-width: 4.5em !important;
 }
