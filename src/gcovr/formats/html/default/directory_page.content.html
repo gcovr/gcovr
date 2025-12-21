@@ -2,7 +2,8 @@
 <div class="filelist Box m-3">
   <div class="Box-row py-2 d-flex position-relative">
     <div role="rowheader" class="color-fg-muted flex-auto min-width-0 mr-2 col-md-2">File</div>
-    <div role="rowheader" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline">Lines</div>
+    <div role="rowheader" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline"></div>
+    <div role="rowheader" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">Lines</div>
     <div role="rowheader" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">Functions</div>
     <div role="rowheader" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">Branches</div>
     {% if SHOW_CONDITION_COVERAGE %}
@@ -34,6 +35,8 @@
         <meter class="{{row.lines.class}}" min="0" max="100" value="{{row.lines.coverage}}" title="{{row.lines.coverage}}%">{{row.lines.coverage}}</meter>
         {% endif %}
       </span>
+    </div>
+    <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2 file-list {{row.lines.class}}">
       <span>{{row.lines.coverage}}%</span>
       <span title="Exec / Excl / Total">{{row.lines.exec}} / {{row.lines.excluded}} / {{row.lines.total}}</span>
     </div>
