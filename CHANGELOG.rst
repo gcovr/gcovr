@@ -20,6 +20,7 @@ Breaking changes:
   - Restructure the the summary and move some data to the footer. (:issue:`1217`)
   - Add common stylesheet for all themes. (:issue:`1220`)
   - Add navigation links to source details. (:issue:`1220`)
+  - Add sorting by clicking on the headers of the file overview table and the function table. (:issue:`1219`)
 
 New features and notable changes:
 

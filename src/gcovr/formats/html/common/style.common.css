@@ -62,3 +62,13 @@ a.nav.index::after {
 a.nav.next::after {
   content: "» next";
 }
+
+.sorted-ascending::after {
+  content: " ↑";
+  white-space: pre;
+}
+
+.sorted-descending::after {
+  content: " ↓";
+  white-space: pre;
+}

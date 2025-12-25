@@ -275,6 +275,15 @@ class RootInfo:
     """Class holding the information used in Jinja2 template."""
 
     def __init__(self, options: Options) -> None:
+        self.sort_by = (
+            "filename"
+            if options.sort_key == "filename"
+            else ("branches" if options.sort_branches else "lines")
+        )
+        self.sort_percent = options.sort_key != "uncovered-number"
+        self.sorted = (
+            "sorted-descending" if options.sort_reverse else "sorted-ascending"
+        )
         self.medium_threshold = options.medium_threshold
         self.high_threshold = options.high_threshold
         self.medium_threshold_line = options.medium_threshold_line
@@ -396,8 +405,11 @@ def write_report(
     else:
         css_data += get_formatter(options).get_css()
 
+    javascript_data = templates(options).get_template("sorting.js").render().strip()
+
     if self_contained:
         data["css"] = css_data
+        data["javascript"] = javascript_data
     else:
         css_output = os.path.splitext(output_file)[0] + ".css"
         with open_text_for_writing(css_output, encoding="utf-8") as fh_out:
@@ -409,6 +421,17 @@ def write_report(
         else:  # pragma: no cover  Can't be checked because of the reference compare
             css_link = css_output
         data["css_link"] = css_link
+
+        javascript_output = os.path.splitext(output_file)[0] + ".js"
+        with open_text_for_writing(javascript_output) as fh_out:
+            fh_out.write(javascript_data)
+            fh_out.write("\n")
+
+        if options.html_relative_anchors:
+            javascript_link = os.path.basename(javascript_output)
+        else:  # pragma: no cover  Can't be checked because of the reference compare
+            javascript_link = javascript_output
+        data["javascript_link"] = javascript_link
 
     data["theme"] = get_theme_color(options.html_theme)
 
@@ -754,6 +777,13 @@ def get_coverage_data(
             coverage, medium_threshold_branch, high_threshold_branch
         )
 
+    def sort_value(coverage_stats: Union[CoverageStat, DecisionCoverageStat]) -> str:
+        return str(
+            coverage_stats.percent_or("-")
+            if root_info.sort_percent
+            else coverage_stats.total - coverage_stats.covered
+        )
+
     stats = cdata.stats
 
     is_file_with_lines = isinstance(cdata, FileCoverage) and cdata.has_lines()
@@ -765,6 +795,7 @@ def get_coverage_data(
         "class": line_coverage_class(
             stats.line.percent_or(100.0 if is_file_with_lines else None)
         ),
+        "sort": sort_value(stats.line),
     }
 
     branches = {
@@ -773,6 +804,7 @@ def get_coverage_data(
         "excluded": stats.branch.excluded,
         "coverage": stats.branch.percent_or("-"),
         "class": branch_coverage_class(stats.branch.percent),
+        "sort": sort_value(stats.branch),
     }
 
     conditions = {
@@ -781,6 +813,7 @@ def get_coverage_data(
         "excluded": stats.condition.excluded,
         "coverage": stats.condition.percent_or("-"),
         "class": branch_coverage_class(stats.condition.percent),
+        "sort": sort_value(stats.condition),
     }
 
     decisions = {
@@ -789,6 +822,7 @@ def get_coverage_data(
         "unchecked": stats.decision.uncheckable,
         "coverage": stats.decision.percent_or("-"),
         "class": coverage_class(stats.decision.percent),
+        "sort": sort_value(stats.decision),
     }
 
     functions = {
@@ -797,6 +831,7 @@ def get_coverage_data(
         "excluded": stats.function.excluded,
         "coverage": stats.function.percent_or("-"),
         "class": coverage_class(stats.function.percent),
+        "sort": sort_value(stats.function),
     }
 
     calls = {
@@ -805,6 +840,7 @@ def get_coverage_data(
         "excluded": stats.call.excluded,
         "coverage": stats.call.percent_or("-"),
         "class": coverage_class(stats.call.percent),
+        "sort": sort_value(stats.call),
     }
     display_filename = force_unix_separator(
         os.path.relpath(
