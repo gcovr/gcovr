@@ -66,6 +66,16 @@ footer
   padding-top: 3px;
 }
 
+.sorted-ascending::after {
+  content: " ↑";
+  white-space: pre;
+}
+
+.sorted-descending::after {
+  content: " ↓";
+  white-space: pre;
+}
+
 .position-relative {
   position: relative !important
 }
