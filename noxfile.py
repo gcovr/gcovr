@@ -285,7 +285,7 @@ def doc(session: nox.Session) -> None:
 
     session.log("Read current release from CHANGELOG.rst...")
     changelog_rst = Path("CHANGELOG.rst")
-    with changelog_rst.open(encoding="UTF-8") as fh_in:
+    with changelog_rst.open(encoding="utf-8") as fh_in:
         lines = fh_in.readlines()
 
     out_lines = list[str]()
@@ -325,13 +325,13 @@ def doc(session: nox.Session) -> None:
     release_notes_md = Path() / "doc" / "build" / "release_notes.md"
     session.log(f"Write {release_notes_md}...")
     release_notes_md.parent.mkdir(exist_ok=True)
-    with release_notes_md.open("w", encoding="UTF-8") as fh_out:
+    with release_notes_md.open("w", encoding="utf-8") as fh_out:
         fh_out.writelines(out_lines)
 
     re_issue = re.compile(r"#(\d+)")
     job_summary_md = Path() / "doc" / "build" / "job_summary.md"
     session.log(f"Write {job_summary_md}...")
-    with job_summary_md.open("w", encoding="UTF-8") as fh_out:
+    with job_summary_md.open("w", encoding="utf-8") as fh_out:
         fh_out.write(f"# {gcovr_version}\n")
         fh_out.writelines(
             re_issue.sub(r"[#\1](https://github.com/gcovr/gcovr/issues/\1)", out)
@@ -349,7 +349,7 @@ def doc(session: nox.Session) -> None:
 
     # Build the Sphinx documentation
     with session.chdir("doc"):
-        with open("examples/gcovr.out", "w", encoding="UTF-8") as fh_out:
+        with open("examples/gcovr.out", "w", encoding="utf-8") as fh_out:
             session.run("gcovr", "-h", stdout=fh_out)
         for builder in ("linkcheck", "html", "latex", "epub"):
             if (
@@ -627,7 +627,7 @@ def html2jpeg(session: nox.Session) -> None:
 
         def screenshot(html: str, jpeg: str, size: tuple[int, int]) -> None:
             def read_file(file: str) -> str:
-                with open(file, encoding="UTF-8") as fh_in:
+                with open(file, encoding="utf-8") as fh_in:
                     return " ".join(fh_in.readlines()).replace("\n", "")
 
             content = re.sub(

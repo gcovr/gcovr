@@ -280,7 +280,7 @@ def write_xml_output(
             etree.tostring(
                 root,
                 pretty_print=pretty,
-                encoding="UTF-8",
+                encoding="utf-8",
                 xml_declaration=True,
                 doctype=doctype,  # type: ignore [arg-type]
             )

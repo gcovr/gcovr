@@ -11,13 +11,15 @@ Next Release
 Breaking changes:
 
 - The option :option:`--lcov-test-name` doesn't accept values with spaces anymore. (:issue:`1196`)
-- Change HTML templates (:issue:`1216`, :issue:`1217`):
+- Changes to HTML templates:
 
-  - The file overview table in the default theme now uses a grid layout.
-  - The function lists table in both themes are changed to a grid layout.
+  - The file overview table in the default theme now uses a grid layout. (:issue:`1216`)
+  - The function lists table in both themes are changed to a grid layout. (:issue:`1216`)
   - Add a common template folder where the common templates for the themes are stored.
-    It contains the function content and source page navigation templates.
-  - Restructure the the summary and move some data to the footer.
+    It contains the function content and source page navigation templates. (:issue:`1216`)
+  - Restructure the the summary and move some data to the footer. (:issue:`1217`)
+  - Add common stylesheet for all themes. (:issue:`1220`)
+  - Add navigation links to source details. (:issue:`1220`)
 
 New features and notable changes:
 

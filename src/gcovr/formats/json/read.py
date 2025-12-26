@@ -65,10 +65,10 @@ def read_report(options: Options) -> CoverageContainer:
                 LOGGER.trace("Processing file: %s", data_source)
 
             if data_source.casefold().endswith(GZIP_SUFFIX):
-                with gzip.open(data_source, "rt", encoding="UTF-8") as fh:
+                with gzip.open(data_source, "rt", encoding="utf-8") as fh:
                     gcovr_json_data = json.loads(fh.read())
             else:
-                with open(data_source, encoding="UTF-8") as json_file:
+                with open(data_source, encoding="utf-8") as json_file:
                     gcovr_json_data = json.load(json_file)
 
             format_version = str(gcovr_json_data["gcovr/format_version"])

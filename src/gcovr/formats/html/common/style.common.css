@@ -36,3 +36,29 @@ a:visited
     width: 100%;
   }
 }
+
+div.nav {
+  margin-left: auto;
+}
+
+a.nav {
+  text-decoration: none;
+  color: grey;
+  padding-left: 1em;
+}
+
+a.nav:hover {
+  text-decoration: underline;
+}
+
+a.nav.prev::after {
+  content: "« prev";
+}
+
+a.nav.index::after {
+  content: "^ index";
+}
+
+a.nav.next::after {
+  content: "» next";
+}

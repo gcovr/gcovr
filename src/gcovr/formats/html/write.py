@@ -298,6 +298,7 @@ class RootInfo:
         self.calls = dict[str, Any]()
         self.functions = dict[str, Any]()
         self.lines = dict[str, Any]()
+        self.navigation = dict[str, tuple[Optional[str], Optional[str]]]()
 
     def set_directory(self, directory: str) -> None:
         """Set the directory for the report."""
@@ -399,7 +400,7 @@ def write_report(
         data["css"] = css_data
     else:
         css_output = os.path.splitext(output_file)[0] + ".css"
-        with open_text_for_writing(css_output) as fh_out:
+        with open_text_for_writing(css_output, encoding="utf-8") as fh_out:
             fh_out.write(css_data)
             fh_out.write("\n")
 
@@ -467,9 +468,26 @@ def write_report(
         if directory != "":
             root_directory = str(directory) + os.sep
 
+    previous_fname: Optional[str] = None
+    previous_link_report: Optional[str] = None
+    for fname in sorted(cdata_sourcefile.keys()):
+        root_info.navigation[fname] = (previous_link_report, None)
+        link_report = cdata_sourcefile[fname]
+        if link_report is not None:
+            if root_info.relative_anchors or root_info.single_page:
+                link_report = os.path.basename(link_report)
+        if previous_fname is not None:
+            root_info.navigation[previous_fname] = (
+                root_info.navigation[previous_fname][0],
+                link_report,
+            )
+        previous_fname = fname
+        previous_link_report = link_report
+
     root_info.set_directory(force_unix_separator(root_directory))
 
     if options.html_details or options.html_nested:
+        data["ROOT_FNAME"] = os.path.basename(output_file)
         (output_prefix, output_suffix) = _get_prefix_and_suffix(output_file)
         functions_output_file = f"{output_prefix}.functions{output_suffix}"
         data["FUNCTIONS_FNAME"] = os.path.basename(functions_output_file)
@@ -877,6 +895,7 @@ def get_file_data(
 
     file_data = dict[str, Any](
         {
+            "fname": filename,
             "filename": cdata_fname[filename],
             "html_filename": os.path.basename(cdata_sourcefile[filename]),
             "source_lines": [],
