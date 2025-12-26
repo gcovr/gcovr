@@ -267,6 +267,7 @@ def test_linked(gcovr_test_exec: "GcovrTestExec") -> None:
 
     gcovr_test_exec.gcovr(
         "--json-add-tracefile=coverage.json",
+        "--html-theme=github.green",
         "--html-details",
         "--html=coverage.html",
     )

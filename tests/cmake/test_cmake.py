@@ -126,8 +126,8 @@ def test_oos_makefile_ccache(gcovr_test_exec: "GcovrTestExec", check) -> None:  
                 "--json-pretty",
                 f"--json=coverage{'' if run == 0 else '.cached'}.json",
             )
-    gcovr_test_exec.compare_json()
     gcovr_test_exec.run("diff", "-U", "1", "coverage.json", "coverage.cached.json")
+    gcovr_test_exec.compare_json()
 
 
 def test_oos_ninja(gcovr_test_exec: "GcovrTestExec") -> None:
@@ -209,5 +209,5 @@ def test_oos_ninja_ccache(gcovr_test_exec: "GcovrTestExec", check) -> None:  # t
                 "--json-pretty",
                 f"--json=coverage{'' if run == 0 else '.cached'}.json",
             )
-    gcovr_test_exec.compare_json()
     gcovr_test_exec.run("diff", "-U", "1", "coverage.json", "coverage.cached.json")
+    gcovr_test_exec.compare_json()

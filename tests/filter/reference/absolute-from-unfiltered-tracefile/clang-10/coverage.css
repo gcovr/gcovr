@@ -124,6 +124,16 @@ a.nav.index::after {
 a.nav.next::after {
   content: "» next";
 }
+
+.sorted-ascending::after {
+  content: " ↑";
+  white-space: pre;
+}
+
+.sorted-descending::after {
+  content: " ↓";
+  white-space: pre;
+}
 /*** Summary formats ***/
 
 .summary
@@ -227,8 +237,8 @@ table.legend span.coverage-low,
 table.legend span.coverage-medium,
 table.legend span.coverage-high
 {
-  padding-left: 3px;
-  padding-right: 3px;
+  padding-left: 0.5em;
+  padding-right: 0.5em;
 }
 
 table.legend span.coverage-unknown,

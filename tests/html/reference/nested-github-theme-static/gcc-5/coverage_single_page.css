@@ -76,6 +76,16 @@ a.nav.index::after {
 a.nav.next::after {
   content: "» next";
 }
+
+.sorted-ascending::after {
+  content: " ↑";
+  white-space: pre;
+}
+
+.sorted-descending::after {
+  content: " ↓";
+  white-space: pre;
+}
 .theme-green, .theme-blue, .theme-dark-blue, .theme-dark-green {
   --unknown_color: var(--color-neutral-emphasis-plus);
   --low_color: var(--color-danger-emphasis);
