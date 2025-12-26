@@ -87,18 +87,14 @@
     <tr>
       <th scope="row">Decisions:</th>
       <td class="{{info.decisions.class}}">{{info.decisions.coverage}}%</td>
-      <td class="{{info.decisions.class}}">{{info.decisions.exec}}</td>
-      <td class="{{info.decisions.class}}">-</td>
-      <td class="{{info.decisions.class}}">{{info.decisions.total}}</td>
+      <td class="{{info.decisions.class}}">{{info.decisions.exec}} / - / {{info.decisions.total}}</td>
     </tr>
     {% endif %}
     {% if SHOW_CALLS %}
     <tr>
       <th scope="row">Calls:</th>
       <td class="{{info.calls.class}}">{{info.calls.coverage}}%</td>
-      <td class="{{info.calls.class}}">{{info.calls.exec}}</td>
-      <td class="{{info.calls.class}}">{{info.calls.excluded}}</td>
-      <td class="{{info.calls.class}}">{{info.calls.total}}</td>
+      <td class="{{info.calls.class}}">{{info.calls.exec}} / {{info.calls.excluded}} / {{info.calls.total}}</td>
     </tr>
     {% endif %}
   </table>
