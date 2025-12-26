@@ -48,6 +48,15 @@
   --partial_covered_color: var(--color-accent-subtle);
   --taken_color: var(--color-accent-fg);
 }
+.sorted-ascending::after {
+  content: " ↑";
+  white-space: pre;
+}
+
+.sorted-descending::after {
+  content: " ↓";
+  white-space: pre;
+}
 
 .transy-2 {
   transform: translateY(-2px);
