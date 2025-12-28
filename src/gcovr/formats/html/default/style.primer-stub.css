@@ -97,10 +97,6 @@
   margin: var(--base-size-16, 16px) !important
 }
 
-.mr-2 {
-  margin-right: var(--base-size-8, 8px) !important;
-}
-
 .py-2 {
   padding-top: var(--base-size-8, 8px) !important;
   padding-bottom: var(--base-size-8, 8px) !important;

@@ -227,13 +227,6 @@ pre
   color: inherit;
 }
 
-.file-list
-{
-  margin: 1em auto;
-  border: 0;
-  border-spacing: 1px;
-}
-
 .file-source table
 {
   border-spacing: 0;

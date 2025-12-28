@@ -1,3 +1,9 @@
+div.file-list
+{
+  border: 0;
+  border-spacing: 1px;
+}
+
 div.file-list.coverage-unknown > span:not(:has(meter))
 {
   background-color: var(--unknown_color) !important;
