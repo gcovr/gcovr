@@ -6,6 +6,8 @@
     <title>GCC Code Coverage Report</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <style type="text/css">
+@charset "utf-8";
+
 :root {
   font-family: sans-serif;
   --tab_size: 4;
@@ -88,6 +90,56 @@ a:visited
   text-decoration: underline;
 }
 
+.js-enabled .js-enabled-hidden {
+  display: none
+}
+
+.js-disabled .js-disabled-hidden {
+  display: none
+}
+
+
+@media (max-width: 544px) {
+  .filelist .Box-row {
+    flex-direction: column;
+  }
+  .functionslist .Box-row {
+    flex-direction: column;
+  }
+
+  .filelist .Box-row > div {
+    width: 100%;
+  }
+  .functionslist .Box-row > div {
+    width: 100%;
+  }
+}
+
+div.nav {
+  margin-left: auto;
+}
+
+a.nav {
+  text-decoration: none;
+  color: grey;
+  padding-left: 1em;
+}
+
+a.nav:hover {
+  text-decoration: underline;
+}
+
+a.nav.prev::after {
+  content: "« prev";
+}
+
+a.nav.index::after {
+  content: "^ index";
+}
+
+a.nav.next::after {
+  content: "» next";
+}
 /*** Summary formats ***/
 
 .summary
@@ -306,6 +358,12 @@ meter.coverage-high:-moz-meter-optimum::-moz-meter-bar
 }
 
 /*** End of Meter formats ***/
+div.file-list
+{
+  border: 0;
+  border-spacing: 1px;
+}
+
 div.file-list.coverage-unknown > span:not(:has(meter))
 {
   background-color: var(--unknown_color) !important;
@@ -580,13 +638,6 @@ pre
   color: inherit;
 }
 
-.file-list
-{
-  margin: 1em auto;
-  border: 0;
-  border-spacing: 1px;
-}
-
 .file-source table
 {
   border-spacing: 0;
@@ -608,20 +659,6 @@ pre
 {
   width: 100%;
 }
-.js-enabled .js-enabled-hidden {
-  display: none
-}
-
-.js-disabled .js-disabled-hidden {
-  display: none
-}
-
-footer
-{
-  text-align: center;
-  padding-top: 3px;
-}
-
 .position-relative {
   position: relative !important
 }
@@ -636,7 +673,6 @@ footer
 .text-small {
   font-size: 12px !important
 }
-
 
 .Box {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
@@ -690,22 +726,6 @@ footer
   background-color: var(--color-accent-subtle);
 }
 
-@media (max-width: 544px) {
-  .filelist .Box-row {
-    flex-direction: column;
-  }
-  .functionslist .Box-row {
-    flex-direction: column;
-  }
-
-  .filelist .Box-row > div {
-    width: 100%;
-  }
-  .functionslist .Box-row > div {
-    width: 100%;
-  }
-}
-
 .d-flex {
   display: flex !important
 }
@@ -738,10 +758,6 @@ footer
   margin: var(--base-size-16, 16px) !important
 }
 
-.mr-2 {
-  margin-right: var(--base-size-8, 8px) !important;
-}
-
 .py-2 {
   padding-top: var(--base-size-8, 8px) !important;
   padding-bottom: var(--base-size-8, 8px) !important;
@@ -768,6 +784,10 @@ footer
 
 .width-fit {
   max-width: 100% !important
+}
+
+.text-center {
+  text-align: center !important
 }
 
 /* pygments syntax highlighting */
@@ -967,7 +987,7 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 <a href="#merged.functions.html" class="js-disabled-hidden">List of functions</a>  </nav>
 <div class="filelist Box m-3">
   <div class="Box-row py-2 d-flex position-relative">
-    <div role="rowheader" class="color-fg-muted flex-auto min-width-0 mr-2 col-md-2">File</div>
+    <div role="rowheader" class="color-fg-muted flex-auto min-width-0 col-md-2">File</div>
     <div role="rowheader" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline"></div>
     <div role="rowheader" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">Lines</div>
     <div role="rowheader" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">Functions</div>
@@ -976,7 +996,7 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
     <div role="rowheader" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">Decisions</div>
   </div>
   <div class="Box-row Box-row--focus-gray py-2 d-flex position-relative">
-    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 mr-2 col-md-2">
+    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 col-md-2">
       <div class="d-flex">
         <span class="css-truncate css-truncate-target d-block width-fit">
           <a class="" title="main.cpp" href="#merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html">main.cpp</a>
@@ -1116,6 +1136,11 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 <div class="Box m-3 file-source">
   <div class="Box-header d-flex flex-space-between">
     main.cpp
+    <div class="nav">
+      <a class="nav prev" href="#coverage.merged.html"></a>
+      <a class="nav index" href="#"></a>
+      <a class="nav next" href="#coverage.merged.html"></a>
+    </div>
   </div>
   <div style="overflow-x: auto;">
     <table class="text-mono text-small">
@@ -1924,7 +1949,7 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 
       <hr/>
     </main>
-    <footer>
+    <footer class="text-center">
       Created using <a href="http://gcovr.com/en/main">GCOVR (Version 8.4+main)</a>
       at 2025-09-28 18:09:21+00:00
     </footer>

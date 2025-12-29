@@ -38,6 +38,7 @@
 <main id="{{ file.link }}" class="js-enabled-hidden" data-title="{{ file.filename }}">
   <div id="summary-{{ file.link }}" class="summary js-enabled-hidden">
     {# If javascript is enabled this summary is moved to the summary block at the top #}
+    {% set fname = file.fname %}
     {% set filename = file.filename %}
     {% set html_filename = file.html_filename %}
     {% set lines = file.lines %}

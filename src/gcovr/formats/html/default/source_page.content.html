@@ -2,6 +2,11 @@
 <div class="Box m-3 file-source">
   <div class="Box-header d-flex flex-space-between">
     {{filename}}
+    <div class="nav">
+      <a class="nav prev" href="{% if info.single_page %}#{% endif %}{{info.navigation[fname][0] or ROOT_FNAME}}"></a>
+      <a class="nav index" href="{% if info.single_page %}#{% else %}{{ROOT_FNAME}}{% endif %}"></a>
+      <a class="nav next" href="{% if info.single_page %}#{% endif %}{{info.navigation[fname][1] or ROOT_FNAME}}"></a>
+    </div>
   </div>
   <div style="overflow-x: auto;">
     <table class="text-mono text-small">

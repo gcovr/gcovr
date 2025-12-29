@@ -1,0 +1,64 @@
+/* Link formats: use maroon w/underlines */
+a:link
+{
+  color: navy;
+  text-decoration: underline;
+}
+a:visited
+{
+  color: maroon;
+  text-decoration: underline;
+}
+
+{% if single_page == "js-enabled" %}
+.js-enabled .js-enabled-hidden {
+  display: none
+}
+
+.js-disabled .js-disabled-hidden {
+  display: none
+}
+
+{% endif %}
+
+@media (max-width: 544px) {
+  .filelist .Box-row {
+    flex-direction: column;
+  }
+  .functionslist .Box-row {
+    flex-direction: column;
+  }
+
+  .filelist .Box-row > div {
+    width: 100%;
+  }
+  .functionslist .Box-row > div {
+    width: 100%;
+  }
+}
+
+div.nav {
+  margin-left: auto;
+}
+
+a.nav {
+  text-decoration: none;
+  color: grey;
+  padding-left: 1em;
+}
+
+a.nav:hover {
+  text-decoration: underline;
+}
+
+a.nav.prev::after {
+  content: "« prev";
+}
+
+a.nav.index::after {
+  content: "^ index";
+}
+
+a.nav.next::after {
+  content: "» next";
+}

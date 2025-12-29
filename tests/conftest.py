@@ -538,7 +538,7 @@ class GcovrTestCompare:
         output_pattern: list[str],
         scrub: Optional[Callable[[str], str]] = None,
         translate_new_line: bool = True,
-        encoding: str = "utf8",
+        encoding: str = "utf-8",
     ) -> None:
         """Compare the files with the given patterns."""
         if self.generate_reference:  # pragma: no cover
@@ -552,9 +552,14 @@ class GcovrTestCompare:
         all_compare_errors = []
         for test_file, reference_file in self.__find_reference_files(output_pattern):
             with test_file.open(encoding=encoding, newline="") as fh_in:
-                test_content = fh_in.read()
-                if scrub is not None:
-                    test_content = scrub(test_content)
+                try:
+                    test_content = fh_in.read()
+                    if scrub is not None:
+                        test_content = scrub(test_content)
+                except UnicodeDecodeError as e:  # pragma: no cover
+                    raise AssertionError(
+                        f"Unable to read test file {test_file}: {e}"
+                    ) from e
 
             # Overwrite the file created above with the scrubbed content
             if self.generate_reference:  # pragma: no cover

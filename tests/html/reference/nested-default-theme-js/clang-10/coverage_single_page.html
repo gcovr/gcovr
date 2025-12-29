@@ -6,6 +6,8 @@
     <title>GCC Code Coverage Report</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <style type="text/css">
+@charset "utf-8";
+
 :root {
   font-family: sans-serif;
   --tab_size: 4;
@@ -88,6 +90,56 @@ a:visited
   text-decoration: underline;
 }
 
+.js-enabled .js-enabled-hidden {
+  display: none
+}
+
+.js-disabled .js-disabled-hidden {
+  display: none
+}
+
+
+@media (max-width: 544px) {
+  .filelist .Box-row {
+    flex-direction: column;
+  }
+  .functionslist .Box-row {
+    flex-direction: column;
+  }
+
+  .filelist .Box-row > div {
+    width: 100%;
+  }
+  .functionslist .Box-row > div {
+    width: 100%;
+  }
+}
+
+div.nav {
+  margin-left: auto;
+}
+
+a.nav {
+  text-decoration: none;
+  color: grey;
+  padding-left: 1em;
+}
+
+a.nav:hover {
+  text-decoration: underline;
+}
+
+a.nav.prev::after {
+  content: "« prev";
+}
+
+a.nav.index::after {
+  content: "^ index";
+}
+
+a.nav.next::after {
+  content: "» next";
+}
 /*** Summary formats ***/
 
 .summary
@@ -306,6 +358,12 @@ meter.coverage-high:-moz-meter-optimum::-moz-meter-bar
 }
 
 /*** End of Meter formats ***/
+div.file-list
+{
+  border: 0;
+  border-spacing: 1px;
+}
+
 div.file-list.coverage-unknown > span:not(:has(meter))
 {
   background-color: var(--unknown_color) !important;
@@ -580,13 +638,6 @@ pre
   color: inherit;
 }
 
-.file-list
-{
-  margin: 1em auto;
-  border: 0;
-  border-spacing: 1px;
-}
-
 .file-source table
 {
   border-spacing: 0;
@@ -608,20 +659,6 @@ pre
 {
   width: 100%;
 }
-.js-enabled .js-enabled-hidden {
-  display: none
-}
-
-.js-disabled .js-disabled-hidden {
-  display: none
-}
-
-footer
-{
-  text-align: center;
-  padding-top: 3px;
-}
-
 .position-relative {
   position: relative !important
 }
@@ -636,7 +673,6 @@ footer
 .text-small {
   font-size: 12px !important
 }
-
 
 .Box {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
@@ -690,22 +726,6 @@ footer
   background-color: var(--color-accent-subtle);
 }
 
-@media (max-width: 544px) {
-  .filelist .Box-row {
-    flex-direction: column;
-  }
-  .functionslist .Box-row {
-    flex-direction: column;
-  }
-
-  .filelist .Box-row > div {
-    width: 100%;
-  }
-  .functionslist .Box-row > div {
-    width: 100%;
-  }
-}
-
 .d-flex {
   display: flex !important
 }
@@ -738,10 +758,6 @@ footer
   margin: var(--base-size-16, 16px) !important
 }
 
-.mr-2 {
-  margin-right: var(--base-size-8, 8px) !important;
-}
-
 .py-2 {
   padding-top: var(--base-size-8, 8px) !important;
   padding-bottom: var(--base-size-8, 8px) !important;
@@ -768,6 +784,10 @@ footer
 
 .width-fit {
   max-width: 100% !important
+}
+
+.text-center {
+  text-align: center !important
 }
 
 /* pygments syntax highlighting */
@@ -985,14 +1005,14 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 <a href="#functions.html" class="js-disabled-hidden">List of functions</a>  </nav>
 <div class="filelist Box m-3">
   <div class="Box-row py-2 d-flex position-relative">
-    <div role="rowheader" class="color-fg-muted flex-auto min-width-0 mr-2 col-md-2">File</div>
+    <div role="rowheader" class="color-fg-muted flex-auto min-width-0 col-md-2">File</div>
     <div role="rowheader" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline"></div>
     <div role="rowheader" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">Lines</div>
     <div role="rowheader" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">Functions</div>
     <div role="rowheader" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">Branches</div>
   </div>
   <div class="Box-row Box-row--focus-gray py-2 d-flex position-relative">
-    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 mr-2 col-md-2">
+    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 col-md-2">
       <div class="d-flex">
         <span class="css-truncate css-truncate-target d-block width-fit">
           <a class="" title="C/D/File6.cpp" href="#File6.cpp.73326d74f2aeb2719dd6d8a9bcc3e582.html">C/D/File6.cpp</a>
@@ -1018,7 +1038,7 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
     </div>
   </div>
   <div class="Box-row Box-row--focus-gray py-2 d-flex position-relative">
-    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 mr-2 col-md-2">
+    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 col-md-2">
       <div class="d-flex">
         <span class="css-truncate css-truncate-target d-block width-fit">
           <a class="" title="C/file5.cpp" href="#file5.cpp.4f0be33a4dcfe398ba897b87f58ca7ce.html">C/file5.cpp</a>
@@ -1044,7 +1064,7 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
     </div>
   </div>
   <div class="Box-row Box-row--focus-gray py-2 d-flex position-relative">
-    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 mr-2 col-md-2">
+    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 col-md-2">
       <div class="d-flex">
         <span class="css-truncate css-truncate-target d-block width-fit">
           <a class="" title="file1.cpp" href="#file1.cpp.11975e1ce5d9c157e76130f444523bea.html">file1.cpp</a>
@@ -1070,7 +1090,7 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
     </div>
   </div>
   <div class="Box-row Box-row--focus-gray py-2 d-flex position-relative">
-    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 mr-2 col-md-2">
+    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 col-md-2">
       <div class="d-flex">
         <span class="css-truncate css-truncate-target d-block width-fit">
           <a class="" title="file3.cpp" href="#file3.cpp.bcfa344b5512d8cd5857f2fe86511d71.html">file3.cpp</a>
@@ -1096,7 +1116,7 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
     </div>
   </div>
   <div class="Box-row Box-row--focus-gray py-2 d-flex position-relative">
-    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 mr-2 col-md-2">
+    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 col-md-2">
       <div class="d-flex">
         <span class="css-truncate css-truncate-target d-block width-fit">
           <a class="" title="File4.cpp" href="#File4.cpp.1d7a80554861eb8b5c21bc2e26ff8f70.html">File4.cpp</a>
@@ -1122,7 +1142,7 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
     </div>
   </div>
   <div class="Box-row Box-row--focus-gray py-2 d-flex position-relative">
-    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 mr-2 col-md-2">
+    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 col-md-2">
       <div class="d-flex">
         <span class="css-truncate css-truncate-target d-block width-fit">
           <a class="" title="file7.cpp" href="#file7.cpp.fa9d180b71a3402bed7d24bb1966eaf5.html">file7.cpp</a>
@@ -1148,7 +1168,7 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
     </div>
   </div>
   <div class="Box-row Box-row--focus-gray py-2 d-flex position-relative">
-    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 mr-2 col-md-2">
+    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 col-md-2">
       <div class="d-flex">
         <span class="css-truncate css-truncate-target d-block width-fit">
           <a class="" title="subdir_0/subdir_1/subdir_2/subdir_3/subdir_4/subdir_5/subdir_6/subdir_7/subdir_8/subdir_9/File2.cpp" href="#File2.cpp.1aed42bd33fceec1188f2f95c6e8946c.html">subdir_0/subdir_1/subdir_2/subdir_3/subdir_4/subdir_5/subdir_6/subdir_7/subdir_8/subdir_9/File2.cpp</a>
@@ -1244,6 +1264,11 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 <div class="Box m-3 file-source">
   <div class="Box-header d-flex flex-space-between">
     C/D/File6.cpp
+    <div class="nav">
+      <a class="nav prev" href="#coverage_single_page.html"></a>
+      <a class="nav index" href="#"></a>
+      <a class="nav next" href="#file5.cpp.4f0be33a4dcfe398ba897b87f58ca7ce.html"></a>
+    </div>
   </div>
   <div style="overflow-x: auto;">
     <table class="text-mono text-small">
@@ -1394,6 +1419,11 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 <div class="Box m-3 file-source">
   <div class="Box-header d-flex flex-space-between">
     C/file5.cpp
+    <div class="nav">
+      <a class="nav prev" href="#File6.cpp.73326d74f2aeb2719dd6d8a9bcc3e582.html"></a>
+      <a class="nav index" href="#"></a>
+      <a class="nav next" href="#File4.cpp.1d7a80554861eb8b5c21bc2e26ff8f70.html"></a>
+    </div>
   </div>
   <div style="overflow-x: auto;">
     <table class="text-mono text-small">
@@ -1544,6 +1574,11 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 <div class="Box m-3 file-source">
   <div class="Box-header d-flex flex-space-between">
     File4.cpp
+    <div class="nav">
+      <a class="nav prev" href="#file5.cpp.4f0be33a4dcfe398ba897b87f58ca7ce.html"></a>
+      <a class="nav index" href="#"></a>
+      <a class="nav next" href="#file1.cpp.11975e1ce5d9c157e76130f444523bea.html"></a>
+    </div>
   </div>
   <div style="overflow-x: auto;">
     <table class="text-mono text-small">
@@ -1694,6 +1729,11 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 <div class="Box m-3 file-source">
   <div class="Box-header d-flex flex-space-between">
     file1.cpp
+    <div class="nav">
+      <a class="nav prev" href="#File4.cpp.1d7a80554861eb8b5c21bc2e26ff8f70.html"></a>
+      <a class="nav index" href="#"></a>
+      <a class="nav next" href="#file3.cpp.bcfa344b5512d8cd5857f2fe86511d71.html"></a>
+    </div>
   </div>
   <div style="overflow-x: auto;">
     <table class="text-mono text-small">
@@ -1851,6 +1891,11 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 <div class="Box m-3 file-source">
   <div class="Box-header d-flex flex-space-between">
     file3.cpp
+    <div class="nav">
+      <a class="nav prev" href="#file1.cpp.11975e1ce5d9c157e76130f444523bea.html"></a>
+      <a class="nav index" href="#"></a>
+      <a class="nav next" href="#file7.cpp.fa9d180b71a3402bed7d24bb1966eaf5.html"></a>
+    </div>
   </div>
   <div style="overflow-x: auto;">
     <table class="text-mono text-small">
@@ -2043,6 +2088,11 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 <div class="Box m-3 file-source">
   <div class="Box-header d-flex flex-space-between">
     file7.cpp
+    <div class="nav">
+      <a class="nav prev" href="#file3.cpp.bcfa344b5512d8cd5857f2fe86511d71.html"></a>
+      <a class="nav index" href="#"></a>
+      <a class="nav next" href="#File2.cpp.1aed42bd33fceec1188f2f95c6e8946c.html"></a>
+    </div>
   </div>
   <div style="overflow-x: auto;">
     <table class="text-mono text-small">
@@ -2165,6 +2215,11 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 <div class="Box m-3 file-source">
   <div class="Box-header d-flex flex-space-between">
     subdir_0/subdir_1/subdir_2/subdir_3/subdir_4/subdir_5/subdir_6/subdir_7/subdir_8/subdir_9/File2.cpp
+    <div class="nav">
+      <a class="nav prev" href="#file7.cpp.fa9d180b71a3402bed7d24bb1966eaf5.html"></a>
+      <a class="nav index" href="#"></a>
+      <a class="nav next" href="#coverage_single_page.html"></a>
+    </div>
   </div>
   <div style="overflow-x: auto;">
     <table class="text-mono text-small">
@@ -2346,7 +2401,7 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 
       <hr/>
     </main>
-    <footer>
+    <footer class="text-center">
       Created using <a href="http://gcovr.com/en/main">GCOVR (Version 8.4+main)</a>
       at 2025-09-28 18:09:21+00:00
     </footer>
