@@ -1,3 +1,5 @@
+@charset "utf-8";
+
 {% include "primer.css" %}
 
 {% include "style.common.css" %}
