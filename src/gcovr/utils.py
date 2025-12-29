@@ -221,7 +221,15 @@ def open_text_for_writing(
             with open(filename, "wt", **kwargs) as fh_out:  # pylint: disable=unspecified-encoding
                 yield fh_out
     else:
-        yield sys.stdout
+        encoding = kwargs.get("encoding", "utf-8").lower()
+        old_encoding = sys.stdout.encoding
+        try:
+            if old_encoding != encoding:
+                sys.stdout.reconfigure(encoding=encoding)  # type: ignore[union-attr]
+            yield sys.stdout
+        finally:
+            if old_encoding != encoding:
+                sys.stdout.reconfigure(encoding=old_encoding)  # type: ignore[union-attr]
 
 
 @contextmanager
