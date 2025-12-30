@@ -1,7 +1,13 @@
 {# -*- engine: jinja -*- #}
 <div class="Box m-3">
-  <div class="Box-header d-flex flex-space-between">
+  <div class="Box-header d-flex flex-space-between sticky">
     {{filename}}
+    <div class="toggle-buttons">
+      <button type="button" class="button_toggle_coveredLine show_coveredLine" value="coveredLine" title="Toggle covered lines">{{lines.exec - lines.partial}} covered</button>
+      <button type="button" class="button_toggle_uncoveredLine show_uncoveredLine" value="uncoveredLine" title="Toggle uncovered lines">{{lines.uncovered}} uncovered</button>
+      <button type="button" class="button_toggle_partialCoveredLine show_partialCoveredLine" value="partialCoveredLine" title="Toggle partial covered lines">{{lines.partial}} partial covered</button>
+      <button type="button" class="button_toggle_excludedLine show_excludedLine" value="excludedLine" title="Toggle excluded lines">{{lines.excluded}} excluded</button>
+    </div>
     <div class="nav">
       <a class="nav prev" href="{% if info.single_page %}#{% endif %}{{info.navigation[fname][0] or ROOT_FNAME}}"></a>
       <a class="nav index" href="{% if info.single_page %}#{% else %}{{ROOT_FNAME}}{% endif %}"></a>
@@ -146,8 +152,8 @@
           {% endif %}
         </td>
         {% endif %}
-        <td class="src {{row.covclass}} pr-2 pl-2 color-fg-muted text-right">{% if ( row.covclass == 'uncoveredLine' ) %}&cross;{% elif ( row.covclass == 'excludedLine' ) %}&minus;{% else %}{{row.linecount}}{% endif %}</td>
-        <td class="src {{row.covclass}}">{{row.source}}</td>
+        <td class="src {{row.covclass}} show_{{row.covclass}} pr-2 pl-2 color-fg-muted text-right">{% if ( row.covclass == 'uncoveredLine' ) %}&cross;{% elif ( row.covclass == 'excludedLine' ) %}&minus;{% else %}{{row.linecount}}{% endif %}</td>
+        <td class="src {{row.covclass}} show_{{row.covclass}}">{{row.source}}</td>
         {% if USE_BLOCK_IDS %}
         <td class="text-right src linenos">{% if row.block_ids %}{{row.block_ids | join(', ')}}{% endif %}</td>
         {% endif %}

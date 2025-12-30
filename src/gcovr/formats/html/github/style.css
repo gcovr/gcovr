@@ -35,19 +35,19 @@ td.linenos .normal {
   color: var(--taken_color) !important;
 }
 
-.coveredLine {
+.coveredLine.show_coveredLine {
   background-color: var(--covered_color) !important;
 }
 
-.partialCoveredLine {
+.partialCoveredLine.show_partialCoveredLine {
   background-color: var(--partial_covered_color) !important;
 }
 
-.uncoveredLine {
+.uncoveredLine.show_uncoveredLine {
   background-color: var(--uncovered_color) !important;
 }
 
-.excludedLine {
+.excludedLine.show_excludedLine {
   background-color: var(--excluded_color) !important;
 }
 
