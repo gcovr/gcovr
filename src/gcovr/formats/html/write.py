@@ -405,11 +405,16 @@ def write_report(
     else:
         css_data += get_formatter(options).get_css()
 
-    javascript_data = templates(options).get_template("sorting.js").render().strip()
+    javascript_data = (
+        None
+        if options.html_single_page == "static"
+        else templates(options).get_template("gcovr.js").render().strip()
+    )
 
     if self_contained:
         data["css"] = css_data
-        data["javascript"] = javascript_data
+        if javascript_data is not None:
+            data["javascript"] = javascript_data
     else:
         css_output = os.path.splitext(output_file)[0] + ".css"
         with open_text_for_writing(css_output, encoding="utf-8") as fh_out:
@@ -422,16 +427,17 @@ def write_report(
             css_link = css_output
         data["css_link"] = css_link
 
-        javascript_output = os.path.splitext(output_file)[0] + ".js"
-        with open_text_for_writing(javascript_output) as fh_out:
-            fh_out.write(javascript_data)
-            fh_out.write("\n")
+        if javascript_data is not None:
+            javascript_output = os.path.splitext(output_file)[0] + ".js"
+            with open_text_for_writing(javascript_output) as fh_out:
+                fh_out.write(javascript_data)
+                fh_out.write("\n")
 
-        if options.html_relative_anchors:
-            javascript_link = os.path.basename(javascript_output)
-        else:  # pragma: no cover  Can't be checked because of the reference compare
-            javascript_link = javascript_output
-        data["javascript_link"] = javascript_link
+            if options.html_relative_anchors:
+                javascript_link = os.path.basename(javascript_output)
+            else:  # pragma: no cover  Can't be checked because of the reference compare
+                javascript_link = javascript_output
+            data["javascript_link"] = javascript_link
 
     data["theme"] = get_theme_color(options.html_theme)
 
@@ -1024,6 +1030,17 @@ def get_file_data(
                         options.html_block_ids,
                     )
                 )
+
+    file_data["lines"]["uncovered"] = len(
+        [row for row in file_data["source_lines"] if row["covclass"] == "uncoveredLine"]
+    )
+    file_data["lines"]["partial"] = len(
+        [
+            row
+            for row in file_data["source_lines"]
+            if row["covclass"] == "partialCoveredLine"
+        ]
+    )
 
     return file_data, functions, file_not_found
 

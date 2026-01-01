@@ -70,7 +70,11 @@ hr {
   border-bottom: 1px solid var(--color-border-muted);
 }
 
-/* Link formats: use maroon w/underlines */
+.sticky {
+  position: sticky;
+  top: 0;
+}
+
 a:link
 {
   color: navy;
@@ -99,6 +103,39 @@ a:visited
   }
 }
 
+button.button_toggle_coveredLine,
+button.button_toggle_uncoveredLine,
+button.button_toggle_excludedLine,
+button.button_toggle_partialCoveredLine {
+  margin-left: 1em;
+  border: 1px solid;
+  border-radius: 6px;
+  color: var(--color-fg-default);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  text-decoration: line-through;
+}
+button.button_toggle_coveredLine.show_coveredLine,
+button.button_toggle_uncoveredLine.show_uncoveredLine,
+button.button_toggle_excludedLine.show_excludedLine,
+button.button_toggle_partialCoveredLine.show_partialCoveredLine {
+  text-decoration: none;
+}
+
+button.button_toggle_coveredLine {
+  background-color: var(--covered_color) !important;
+}
+button.button_toggle_uncoveredLine {
+  background-color: var(--uncovered_color) !important;
+}
+button.button_toggle_excludedLine {
+  background-color: var(--excluded_color) !important;
+}
+button.button_toggle_partialCoveredLine {
+  background-color: var(--partial_covered_color) !important;
+}
+
 div.nav {
   margin-left: auto;
 }
@@ -123,6 +160,10 @@ a.nav.index::after {
 
 a.nav.next::after {
   content: "» next";
+}
+
+.sortable {
+  cursor: pointer;
 }
 
 .sorted-ascending::after {
@@ -409,26 +450,22 @@ td.CoverValue
   white-space: nowrap;
 }
 
-td.coveredLine,
-span.coveredLine
+.coveredLine.show_coveredLine
 {
   background-color: var(--covered_color) !important;
 }
 
-td.partialCoveredLine,
-span.partialCoveredLine
+.partialCoveredLine.show_partialCoveredLine
 {
   background-color: var(--partial_covered_color) !important;
 }
 
-td.uncoveredLine,
-span.uncoveredLine
+.uncoveredLine.show_uncoveredLine
 {
   background-color: var(--uncovered_color) !important;
 }
 
-td.excludedLine,
-span.excludedLine
+.excludedLine.show_excludedLine
 {
   background-color: var(--excluded_color) !important;
 }
@@ -653,10 +690,6 @@ pre
 {
   width: 100%;
 }
-.position-relative {
-  position: relative !important
-}
-
 .color-fg-muted {
   color: var(--color-fg-muted) !important
 }

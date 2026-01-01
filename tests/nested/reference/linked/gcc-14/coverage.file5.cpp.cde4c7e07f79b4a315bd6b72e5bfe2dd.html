@@ -63,8 +63,8 @@
 <div class="m-3">
   <details>
     <summary>List of functions</summary>
-<div class="functionslist Box m-3">
-  <div class="Box-row py-2 d-flex position-relative">
+<div class="Box m-3 functionslist">
+  <div class="Box-header py-2 d-flex sticky">
     <div role="rowheader" class="color-fg-muted flex-auto min-width-0 col-md-2">Function (File:Line)</div>
     <div role="rowheader" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline">Calls</div>
     <div role="rowheader" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">Lines</div>
@@ -72,7 +72,7 @@
     <div role="rowheader" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">Conditions</div>
     <div role="rowheader" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">Blocks</div>
   </div>
-  <div class="Box-row Box-row--focus-gray py-2 d-flex position-relative">
+  <div class="Box-row Box-row--focus-gray py-2 d-flex">
     <div role="gridcell" class="color-fg-muted flex-auto min-width-0 col-md-2"><a href="#l1">foo5(int) (subdir/A/C/file5.cpp:1)</a>    </div>
     <div role="gridcell" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline" data-sort="1">called 1 time</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">75.0%</div>
@@ -86,8 +86,14 @@
         </nav>
         <main>
 <div class="Box m-3">
-  <div class="Box-header d-flex flex-space-between">
+  <div class="Box-header d-flex flex-space-between sticky">
     A/C/file5.cpp
+    <div class="toggle-buttons">
+      <button type="button" class="button_toggle_coveredLine show_coveredLine" value="coveredLine" title="Toggle covered lines">2 covered</button>
+      <button type="button" class="button_toggle_uncoveredLine show_uncoveredLine" value="uncoveredLine" title="Toggle uncovered lines">1 uncovered</button>
+      <button type="button" class="button_toggle_partialCoveredLine show_partialCoveredLine" value="partialCoveredLine" title="Toggle partial covered lines">1 partial covered</button>
+      <button type="button" class="button_toggle_excludedLine show_excludedLine" value="excludedLine" title="Toggle excluded lines">0 excluded</button>
+    </div>
     <div class="nav">
       <a class="nav prev" href="coverage.File6.cpp.d50a8531ab312aa3faac8eaedb567137.html"></a>
       <a class="nav index" href="coverage.html"></a>
@@ -109,8 +115,8 @@
         </td>
         <td class="text-right src linenos ws-unset">
         </td>
-        <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">1</td>
-        <td class="src coveredLine"><span class="kt">int</span><span class="w"> </span><span class="nf">foo5</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">param</span><span class="p">)</span></td>
+        <td class="src coveredLine show_coveredLine pr-2 pl-2 color-fg-muted text-right">1</td>
+        <td class="src coveredLine show_coveredLine"><span class="kt">int</span><span class="w"> </span><span class="nf">foo5</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">param</span><span class="p">)</span></td>
       </tr>
       <tr>
         <td class="text-right src linenos"><a class="normal" id="l2" href="#l2">2</a></td>
@@ -118,8 +124,8 @@
         </td>
         <td class="text-right src linenos ws-unset">
         </td>
-        <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-        <td class="src "><span class="p">{</span></td>
+        <td class="src  show_ pr-2 pl-2 color-fg-muted text-right"></td>
+        <td class="src  show_"><span class="p">{</span></td>
       </tr>
       <tr>
         <td class="text-right src linenos"><a class="normal" id="l3" href="#l3">3</a></td>
@@ -140,8 +146,8 @@
             </div>
           </details>
         </td>
-        <td class="src partialCoveredLine pr-2 pl-2 color-fg-muted text-right">1</td>
-        <td class="src partialCoveredLine"><span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">param</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
+        <td class="src partialCoveredLine show_partialCoveredLine pr-2 pl-2 color-fg-muted text-right">1</td>
+        <td class="src partialCoveredLine show_partialCoveredLine"><span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">param</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
       </tr>
       <tr>
         <td class="text-right src linenos"><a class="normal" id="l4" href="#l4">4</a></td>
@@ -149,8 +155,8 @@
         </td>
         <td class="text-right src linenos ws-unset">
         </td>
-        <td class="src uncoveredLine pr-2 pl-2 color-fg-muted text-right">&cross;</td>
-        <td class="src uncoveredLine"><span class="w">     </span><span class="k">return</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span></td>
+        <td class="src uncoveredLine show_uncoveredLine pr-2 pl-2 color-fg-muted text-right">&cross;</td>
+        <td class="src uncoveredLine show_uncoveredLine"><span class="w">     </span><span class="k">return</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span></td>
       </tr>
       <tr>
         <td class="text-right src linenos"><a class="normal" id="l5" href="#l5">5</a></td>
@@ -158,8 +164,8 @@
         </td>
         <td class="text-right src linenos ws-unset">
         </td>
-        <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-        <td class="src "><span class="w">  </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span></td>
+        <td class="src  show_ pr-2 pl-2 color-fg-muted text-right"></td>
+        <td class="src  show_"><span class="w">  </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span></td>
       </tr>
       <tr>
         <td class="text-right src linenos"><a class="normal" id="l6" href="#l6">6</a></td>
@@ -167,8 +173,8 @@
         </td>
         <td class="text-right src linenos ws-unset">
         </td>
-        <td class="src coveredLine pr-2 pl-2 color-fg-muted text-right">1</td>
-        <td class="src coveredLine"><span class="w">     </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span></td>
+        <td class="src coveredLine show_coveredLine pr-2 pl-2 color-fg-muted text-right">1</td>
+        <td class="src coveredLine show_coveredLine"><span class="w">     </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span></td>
       </tr>
       <tr>
         <td class="text-right src linenos"><a class="normal" id="l7" href="#l7">7</a></td>
@@ -176,8 +182,8 @@
         </td>
         <td class="text-right src linenos ws-unset">
         </td>
-        <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-        <td class="src "><span class="w">  </span><span class="p">}</span></td>
+        <td class="src  show_ pr-2 pl-2 color-fg-muted text-right"></td>
+        <td class="src  show_"><span class="w">  </span><span class="p">}</span></td>
       </tr>
       <tr>
         <td class="text-right src linenos"><a class="normal" id="l8" href="#l8">8</a></td>
@@ -185,8 +191,8 @@
         </td>
         <td class="text-right src linenos ws-unset">
         </td>
-        <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-        <td class="src "><span class="p">}</span></td>
+        <td class="src  show_ pr-2 pl-2 color-fg-muted text-right"></td>
+        <td class="src  show_"><span class="p">}</span></td>
       </tr>
       <tr>
         <td class="text-right src linenos"><a class="normal" id="l9" href="#l9">9</a></td>
@@ -194,8 +200,8 @@
         </td>
         <td class="text-right src linenos ws-unset">
         </td>
-        <td class="src  pr-2 pl-2 color-fg-muted text-right"></td>
-        <td class="src "></td>
+        <td class="src  show_ pr-2 pl-2 color-fg-muted text-right"></td>
+        <td class="src  show_"></td>
       </tr>
     </table>
   </div>
