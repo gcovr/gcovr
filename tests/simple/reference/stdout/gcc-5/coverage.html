@@ -107,6 +107,39 @@ a:visited
   }
 }
 
+button.button_toggle_coveredLine,
+button.button_toggle_uncoveredLine,
+button.button_toggle_excludedLine,
+button.button_toggle_partialCoveredLine {
+  margin-left: 1em;
+  border: 1px solid;
+  border-radius: 6px;
+  color: var(--color-fg-default);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  text-decoration: line-through;
+}
+button.button_toggle_coveredLine.show_coveredLine,
+button.button_toggle_uncoveredLine.show_uncoveredLine,
+button.button_toggle_excludedLine.show_excludedLine,
+button.button_toggle_partialCoveredLine.show_partialCoveredLine {
+  text-decoration: none;
+}
+
+button.button_toggle_coveredLine {
+  background-color: var(--covered_color) !important;
+}
+button.button_toggle_uncoveredLine {
+  background-color: var(--uncovered_color) !important;
+}
+button.button_toggle_excludedLine {
+  background-color: var(--excluded_color) !important;
+}
+button.button_toggle_partialCoveredLine {
+  background-color: var(--partial_covered_color) !important;
+}
+
 div.nav {
   margin-left: auto;
 }
@@ -131,6 +164,11 @@ a.nav.index::after {
 
 a.nav.next::after {
   content: "» next";
+}
+
+.sticky {
+  position: sticky;
+  top: 0;
 }
 /*** Summary formats ***/
 
@@ -407,26 +445,22 @@ td.CoverValue
   white-space: nowrap;
 }
 
-td.coveredLine,
-span.coveredLine
+.coveredLine.show_coveredLine
 {
   background-color: var(--covered_color) !important;
 }
 
-td.partialCoveredLine,
-span.partialCoveredLine
+.partialCoveredLine.show_partialCoveredLine
 {
   background-color: var(--partial_covered_color) !important;
 }
 
-td.uncoveredLine,
-span.uncoveredLine
+.uncoveredLine.show_uncoveredLine
 {
   background-color: var(--uncovered_color) !important;
 }
 
-td.excludedLine,
-span.excludedLine
+.excludedLine.show_excludedLine
 {
   background-color: var(--excluded_color) !important;
 }
@@ -651,10 +685,6 @@ pre
 {
   width: 100%;
 }
-.position-relative {
-  position: relative !important
-}
-
 .color-fg-muted {
   color: var(--color-fg-muted) !important
 }
@@ -858,6 +888,47 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 .vm { color: #19177C } /* Name.Variable.Magic */
 .il { color: #666 } /* Literal.Number.Integer.Long */
     </style>
+    <script>
+/*
+This file is inspired by coverage.py's js code.
+*/
+
+gcovr = {};
+
+gcovr.file_loaded = function () {
+  gcovr.on_click(".button_toggle_coveredLine", gcovr.toggle_lines);
+  gcovr.on_click(".button_toggle_uncoveredLine", gcovr.toggle_lines);
+  gcovr.on_click(".button_toggle_partialCoveredLine", gcovr.toggle_lines);
+  gcovr.on_click(".button_toggle_excludedLine", gcovr.toggle_lines);
+};
+
+gcovr.on_click = function (selector, handler) {
+  document.querySelectorAll(selector).forEach(elt => elt.addEventListener("click", handler));
+};
+
+gcovr.toggle_lines = function (event) {
+  const btn = event.target.closest("button");
+  const category = btn.value
+  const show = !btn.classList.contains("show_" + category);
+  gcovr.set_line_visibility(btn, category, show);
+};
+
+gcovr.set_line_visibility = function (btn, category, should_show) {
+  const cls = "show_" + category;
+  if (should_show) {
+    btn.closest("main").querySelectorAll("td." + category).forEach(e => e.classList.add(cls));
+    btn.classList.add(cls);
+  }
+  else {
+    btn.closest("main").querySelectorAll("td." + category).forEach(e => e.classList.remove(cls));
+    btn.classList.remove(cls);
+  }
+};
+
+document.addEventListener("DOMContentLoaded", () => {
+  gcovr.file_loaded();
+});
+    </script>
   </head>
 
   <body>
@@ -914,15 +985,15 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 
     </nav>
     <main>
-<div class="filelist Box m-3">
-  <div class="Box-row py-2 d-flex position-relative">
+<div class="Box m-3 filelist">
+  <div class="Box-header py-2 d-flex sticky">
     <div role="rowheader" class="color-fg-muted flex-auto min-width-0 col-md-2">File</div>
     <div role="rowheader" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline"></div>
     <div role="rowheader" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">Lines</div>
     <div role="rowheader" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">Functions</div>
     <div role="rowheader" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">Branches</div>
   </div>
-  <div class="Box-row Box-row--focus-gray py-2 d-flex position-relative">
+  <div class="Box-row Box-row--focus-gray py-2 d-flex">
     <div role="gridcell" class="color-fg-muted flex-auto min-width-0 col-md-2">
       <div class="d-flex">
         <span class="css-truncate css-truncate-target d-block width-fit">

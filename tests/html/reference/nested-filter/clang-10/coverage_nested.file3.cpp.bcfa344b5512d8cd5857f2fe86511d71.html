@@ -6,6 +6,7 @@
     <title>file3.cpp - GCC Code Coverage Report</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <link rel="stylesheet" href="coverage_nested.css"/>
+    <script src="coverage_nested.js"></script>
   </head>
 
   <body>
@@ -62,21 +63,21 @@
   <details>
     <summary>List of functions</summary>
 <div class="functionslist Box m-3">
-  <div class="Box-row py-2 d-flex position-relative">
+  <div class="Box-header py-2 d-flex sticky">
     <div role="rowheader" class="color-fg-muted flex-auto min-width-0 col-md-2">Function (File:Line)</div>
     <div role="rowheader" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline">Calls</div>
     <div role="rowheader" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">Lines</div>
     <div role="rowheader" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">Branches</div>
     <div role="rowheader" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">Blocks</div>
   </div>
-  <div class="Box-row Box-row--focus-gray py-2 d-flex position-relative">
+  <div class="Box-row Box-row--focus-gray py-2 d-flex">
     <div role="gridcell" class="color-fg-muted flex-auto min-width-0 col-md-2"><a href="#l1">_Z8four_barv (A/file3.cpp:1)</a>    </div>
     <div role="gridcell" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline">called 1 time</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">100.0%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">-%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">100.0%</div>
   </div>
-  <div class="Box-row Box-row--focus-gray py-2 d-flex position-relative">
+  <div class="Box-row Box-row--focus-gray py-2 d-flex">
     <div role="gridcell" class="color-fg-muted flex-auto min-width-0 col-md-2"><a href="#l8">_Z9four_bar_v (A/file3.cpp:8)</a>    </div>
     <div role="gridcell" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline">not called</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">0.0%</div>
@@ -89,8 +90,14 @@
     </nav>
     <main>
 <div class="Box m-3 file-source">
-  <div class="Box-header d-flex flex-space-between">
+  <div class="Box-header d-flex flex-space-between sticky">
     file3.cpp
+    <div class="toggle-buttons">
+      <button type="button" class="button_toggle_coveredLine show_coveredLine" value="coveredLine" title="Toggle covered lines">4 covered</button>
+      <button type="button" class="button_toggle_uncoveredLine show_uncoveredLine" value="uncoveredLine" title="Toggle uncovered lines">6 uncovered</button>
+      <button type="button" class="button_toggle_partialCoveredLine show_partialCoveredLine" value="partialCoveredLine" title="Toggle partial covered lines">0 partial covered</button>
+      <button type="button" class="button_toggle_excludedLine show_excludedLine" value="excludedLine" title="Toggle excluded lines">0 excluded</button>
+    </div>
     <div class="nav">
       <a class="nav prev" href="coverage_nested.file1.cpp.11975e1ce5d9c157e76130f444523bea.html"></a>
       <a class="nav index" href="coverage_nested.html"></a>
@@ -109,113 +116,113 @@
         <td class="lineno"><a id="l1" href="#l1">1</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine">1</td>
-        <td class="src coveredLine"><span class="kt">int</span><span class="w"> </span><span class="nf">four_bar</span><span class="p">()</span></td>
+        <td class="linecount coveredLine show_coveredLine">1</td>
+        <td class="src coveredLine show_coveredLine"><span class="kt">int</span><span class="w"> </span><span class="nf">four_bar</span><span class="p">()</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l2" href="#l2">2</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount "></td>
-        <td class="src "><span class="p">{</span></td>
+        <td class="linecount  show_"></td>
+        <td class="src  show_"><span class="p">{</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l3" href="#l3">3</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine">1</td>
-        <td class="src coveredLine"><span class="kt">int</span><span class="w"> </span><span class="n">x</span><span class="o">=</span><span class="mi">1</span><span class="p">;</span></td>
+        <td class="linecount coveredLine show_coveredLine">1</td>
+        <td class="src coveredLine show_coveredLine"><span class="kt">int</span><span class="w"> </span><span class="n">x</span><span class="o">=</span><span class="mi">1</span><span class="p">;</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l4" href="#l4">4</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine">1</td>
-        <td class="src coveredLine"><span class="kt">int</span><span class="w"> </span><span class="n">y</span><span class="o">=</span><span class="mi">2</span><span class="p">;</span></td>
+        <td class="linecount coveredLine show_coveredLine">1</td>
+        <td class="src coveredLine show_coveredLine"><span class="kt">int</span><span class="w"> </span><span class="n">y</span><span class="o">=</span><span class="mi">2</span><span class="p">;</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l5" href="#l5">5</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount coveredLine">1</td>
-        <td class="src coveredLine"><span class="k">return</span><span class="w"> </span><span class="n">x</span><span class="o">+</span><span class="n">y</span><span class="p">;</span></td>
+        <td class="linecount coveredLine show_coveredLine">1</td>
+        <td class="src coveredLine show_coveredLine"><span class="k">return</span><span class="w"> </span><span class="n">x</span><span class="o">+</span><span class="n">y</span><span class="p">;</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l6" href="#l6">6</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount "></td>
-        <td class="src "><span class="p">}</span></td>
+        <td class="linecount  show_"></td>
+        <td class="src  show_"><span class="p">}</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l7" href="#l7">7</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount "></td>
-        <td class="src "></td>
+        <td class="linecount  show_"></td>
+        <td class="src  show_"></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l8" href="#l8">8</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount uncoveredLine">&cross;</td>
-        <td class="src uncoveredLine"><span class="kt">int</span><span class="w"> </span><span class="nf">four_bar_</span><span class="p">()</span></td>
+        <td class="linecount uncoveredLine show_uncoveredLine">&cross;</td>
+        <td class="src uncoveredLine show_uncoveredLine"><span class="kt">int</span><span class="w"> </span><span class="nf">four_bar_</span><span class="p">()</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l9" href="#l9">9</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount "></td>
-        <td class="src "><span class="p">{</span></td>
+        <td class="linecount  show_"></td>
+        <td class="src  show_"><span class="p">{</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l10" href="#l10">10</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount uncoveredLine">&cross;</td>
-        <td class="src uncoveredLine"><span class="kt">int</span><span class="w"> </span><span class="n">x</span><span class="o">=</span><span class="mi">1</span><span class="p">;</span></td>
+        <td class="linecount uncoveredLine show_uncoveredLine">&cross;</td>
+        <td class="src uncoveredLine show_uncoveredLine"><span class="kt">int</span><span class="w"> </span><span class="n">x</span><span class="o">=</span><span class="mi">1</span><span class="p">;</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l11" href="#l11">11</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount uncoveredLine">&cross;</td>
-        <td class="src uncoveredLine"><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">x</span><span class="p">)</span></td>
+        <td class="linecount uncoveredLine show_uncoveredLine">&cross;</td>
+        <td class="src uncoveredLine show_uncoveredLine"><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">x</span><span class="p">)</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l12" href="#l12">12</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount uncoveredLine">&cross;</td>
-        <td class="src uncoveredLine"><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="mi">2</span><span class="o">*</span><span class="n">x</span><span class="p">;</span><span class="w">     </span><span class="cm">/* This is a really long comment that confirms whether gcovr colors lines that exceed normal expectations. */</span></td>
+        <td class="linecount uncoveredLine show_uncoveredLine">&cross;</td>
+        <td class="src uncoveredLine show_uncoveredLine"><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="mi">2</span><span class="o">*</span><span class="n">x</span><span class="p">;</span><span class="w">     </span><span class="cm">/* This is a really long comment that confirms whether gcovr colors lines that exceed normal expectations. */</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l13" href="#l13">13</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount "></td>
-        <td class="src "><span class="k">else</span></td>
+        <td class="linecount  show_"></td>
+        <td class="src  show_"><span class="k">else</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l14" href="#l14">14</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount uncoveredLine">&cross;</td>
-        <td class="src uncoveredLine"><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">x</span><span class="p">;</span></td>
+        <td class="linecount uncoveredLine show_uncoveredLine">&cross;</td>
+        <td class="src uncoveredLine show_uncoveredLine"><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">x</span><span class="p">;</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l15" href="#l15">15</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount uncoveredLine">&cross;</td>
-        <td class="src uncoveredLine"><span class="p">}</span></td>
+        <td class="linecount uncoveredLine show_uncoveredLine">&cross;</td>
+        <td class="src uncoveredLine show_uncoveredLine"><span class="p">}</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l16" href="#l16">16</a></td>
         <td class="linebranch">
         </td>
-        <td class="linecount "></td>
-        <td class="src "></td>
+        <td class="linecount  show_"></td>
+        <td class="src  show_"></td>
       </tr>
     </table>
   </div>

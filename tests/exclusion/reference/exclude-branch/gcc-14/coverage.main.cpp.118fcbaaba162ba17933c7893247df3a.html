@@ -6,6 +6,7 @@
     <title>main.cpp - GCC Code Coverage Report</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <link rel="stylesheet" href="coverage.css"/>
+    <script src="coverage.js"></script>
   </head>
 
   <body>
@@ -67,7 +68,7 @@
   <details>
     <summary>List of functions</summary>
 <div class="functionslist Box m-3">
-  <div class="Box-row py-2 d-flex position-relative">
+  <div class="Box-header py-2 d-flex sticky">
     <div role="rowheader" class="color-fg-muted flex-auto min-width-0 col-md-2">Function (File:Line)</div>
     <div role="rowheader" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline">Calls</div>
     <div role="rowheader" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">Lines</div>
@@ -75,7 +76,7 @@
     <div role="rowheader" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">Conditions</div>
     <div role="rowheader" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">Blocks</div>
   </div>
-  <div class="Box-row Box-row--focus-gray py-2 d-flex position-relative">
+  <div class="Box-row Box-row--focus-gray py-2 d-flex">
     <div role="gridcell" class="color-fg-muted flex-auto min-width-0 col-md-2"><a href="#l4">foo(int) (main.cpp:4)</a>    </div>
     <div role="gridcell" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline">called 1 time</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">72.7%</div>
@@ -83,7 +84,7 @@
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2" >50.0%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">72.7%</div>
   </div>
-  <div class="Box-row Box-row--focus-gray py-2 d-flex position-relative">
+  <div class="Box-row Box-row--focus-gray py-2 d-flex">
     <div role="gridcell" class="color-fg-muted flex-auto min-width-0 col-md-2"><a href="#l26">main (main.cpp:26)</a>    </div>
     <div role="gridcell" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline">called 1 time</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">100.0%</div>
@@ -97,8 +98,14 @@
     </nav>
     <main>
 <div class="Box m-3 file-source">
-  <div class="Box-header d-flex flex-space-between">
+  <div class="Box-header d-flex flex-space-between sticky">
     main.cpp
+    <div class="toggle-buttons">
+      <button type="button" class="button_toggle_coveredLine show_coveredLine" value="coveredLine" title="Toggle covered lines">10 covered</button>
+      <button type="button" class="button_toggle_uncoveredLine show_uncoveredLine" value="uncoveredLine" title="Toggle uncovered lines">3 uncovered</button>
+      <button type="button" class="button_toggle_partialCoveredLine show_partialCoveredLine" value="partialCoveredLine" title="Toggle partial covered lines">1 partial covered</button>
+      <button type="button" class="button_toggle_excludedLine show_excludedLine" value="excludedLine" title="Toggle excluded lines">0 excluded</button>
+    </div>
     <div class="nav">
       <a class="nav prev" href="coverage.html"></a>
       <a class="nav index" href="coverage.html"></a>
@@ -120,8 +127,8 @@
         </td>
         <td class="linecondition">
         </td>
-        <td class="linecount "></td>
-        <td class="src "><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;iostream&gt;</span></td>
+        <td class="linecount  show_"></td>
+        <td class="src  show_"><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;iostream&gt;</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l2" href="#l2">2</a></td>
@@ -129,8 +136,8 @@
         </td>
         <td class="linecondition">
         </td>
-        <td class="linecount "></td>
-        <td class="src "></td>
+        <td class="linecount  show_"></td>
+        <td class="src  show_"></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l3" href="#l3">3</a></td>
@@ -138,8 +145,8 @@
         </td>
         <td class="linecondition">
         </td>
-        <td class="linecount "></td>
-        <td class="src "></td>
+        <td class="linecount  show_"></td>
+        <td class="src  show_"></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l4" href="#l4">4</a></td>
@@ -147,8 +154,8 @@
         </td>
         <td class="linecondition">
         </td>
-        <td class="linecount coveredLine">1</td>
-        <td class="src coveredLine"><span class="kt">int</span><span class="w"> </span><span class="nf">foo</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">param</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
+        <td class="linecount coveredLine show_coveredLine">1</td>
+        <td class="src coveredLine show_coveredLine"><span class="kt">int</span><span class="w"> </span><span class="nf">foo</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">param</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l5" href="#l5">5</a></td>
@@ -156,8 +163,8 @@
         </td>
         <td class="linecondition">
         </td>
-        <td class="linecount coveredLine">1</td>
-        <td class="src coveredLine"><span class="w">   </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">param</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="c1">// </span><span class="cs">GCOVR_EXCL_BR_LINE</span></td>
+        <td class="linecount coveredLine show_coveredLine">1</td>
+        <td class="src coveredLine show_coveredLine"><span class="w">   </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">param</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="c1">// </span><span class="cs">GCOVR_EXCL_BR_LINE</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l6" href="#l6">6</a></td>
@@ -165,8 +172,8 @@
         </td>
         <td class="linecondition">
         </td>
-        <td class="linecount uncoveredLine">&cross;</td>
-        <td class="src uncoveredLine"><span class="w">      </span><span class="n">param</span><span class="o">++</span><span class="p">;</span></td>
+        <td class="linecount uncoveredLine show_uncoveredLine">&cross;</td>
+        <td class="src uncoveredLine show_uncoveredLine"><span class="w">      </span><span class="n">param</span><span class="o">++</span><span class="p">;</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l7" href="#l7">7</a></td>
@@ -174,8 +181,8 @@
         </td>
         <td class="linecondition">
         </td>
-        <td class="linecount "></td>
-        <td class="src "><span class="w">   </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span></td>
+        <td class="linecount  show_"></td>
+        <td class="src  show_"><span class="w">   </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l8" href="#l8">8</a></td>
@@ -183,8 +190,8 @@
         </td>
         <td class="linecondition">
         </td>
-        <td class="linecount coveredLine">1</td>
-        <td class="src coveredLine"><span class="w">      </span><span class="n">param</span><span class="o">--</span><span class="p">;</span></td>
+        <td class="linecount coveredLine show_coveredLine">1</td>
+        <td class="src coveredLine show_coveredLine"><span class="w">      </span><span class="n">param</span><span class="o">--</span><span class="p">;</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l9" href="#l9">9</a></td>
@@ -192,8 +199,8 @@
         </td>
         <td class="linecondition">
         </td>
-        <td class="linecount "></td>
-        <td class="src "><span class="w">   </span><span class="p">}</span></td>
+        <td class="linecount  show_"></td>
+        <td class="src  show_"><span class="w">   </span><span class="p">}</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l10" href="#l10">10</a></td>
@@ -214,8 +221,8 @@
               </div>
               </details>
         </td>
-        <td class="linecount partialCoveredLine">1</td>
-        <td class="src partialCoveredLine"><span class="w">   </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">param</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
+        <td class="linecount partialCoveredLine show_partialCoveredLine">1</td>
+        <td class="src partialCoveredLine show_partialCoveredLine"><span class="w">   </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">param</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l11" href="#l11">11</a></td>
@@ -223,8 +230,8 @@
         </td>
         <td class="linecondition">
         </td>
-        <td class="linecount coveredLine">1</td>
-        <td class="src coveredLine"><span class="w">      </span><span class="n">param</span><span class="o">++</span><span class="p">;</span></td>
+        <td class="linecount coveredLine show_coveredLine">1</td>
+        <td class="src coveredLine show_coveredLine"><span class="w">      </span><span class="n">param</span><span class="o">++</span><span class="p">;</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l12" href="#l12">12</a></td>
@@ -232,8 +239,8 @@
         </td>
         <td class="linecondition">
         </td>
-        <td class="linecount "></td>
-        <td class="src "><span class="w">   </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span></td>
+        <td class="linecount  show_"></td>
+        <td class="src  show_"><span class="w">   </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l13" href="#l13">13</a></td>
@@ -241,8 +248,8 @@
         </td>
         <td class="linecondition">
         </td>
-        <td class="linecount uncoveredLine">&cross;</td>
-        <td class="src uncoveredLine"><span class="w">      </span><span class="n">param</span><span class="o">--</span><span class="p">;</span></td>
+        <td class="linecount uncoveredLine show_uncoveredLine">&cross;</td>
+        <td class="src uncoveredLine show_uncoveredLine"><span class="w">      </span><span class="n">param</span><span class="o">--</span><span class="p">;</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l14" href="#l14">14</a></td>
@@ -250,8 +257,8 @@
         </td>
         <td class="linecondition">
         </td>
-        <td class="linecount "></td>
-        <td class="src "><span class="w">   </span><span class="p">}</span></td>
+        <td class="linecount  show_"></td>
+        <td class="src  show_"><span class="w">   </span><span class="p">}</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l15" href="#l15">15</a></td>
@@ -259,8 +266,8 @@
         </td>
         <td class="linecondition">
         </td>
-        <td class="linecount "></td>
-        <td class="src "><span class="w">   </span><span class="c1">// </span><span class="cs">GCOV_EXCL_BR_START</span></td>
+        <td class="linecount  show_"></td>
+        <td class="src  show_"><span class="w">   </span><span class="c1">// </span><span class="cs">GCOV_EXCL_BR_START</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l16" href="#l16">16</a></td>
@@ -268,8 +275,8 @@
         </td>
         <td class="linecondition">
         </td>
-        <td class="linecount coveredLine">1</td>
-        <td class="src coveredLine"><span class="w">   </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">param</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
+        <td class="linecount coveredLine show_coveredLine">1</td>
+        <td class="src coveredLine show_coveredLine"><span class="w">   </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">param</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l17" href="#l17">17</a></td>
@@ -277,8 +284,8 @@
         </td>
         <td class="linecondition">
         </td>
-        <td class="linecount uncoveredLine">&cross;</td>
-        <td class="src uncoveredLine"><span class="w">      </span><span class="n">param</span><span class="o">++</span><span class="p">;</span></td>
+        <td class="linecount uncoveredLine show_uncoveredLine">&cross;</td>
+        <td class="src uncoveredLine show_uncoveredLine"><span class="w">      </span><span class="n">param</span><span class="o">++</span><span class="p">;</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l18" href="#l18">18</a></td>
@@ -286,8 +293,8 @@
         </td>
         <td class="linecondition">
         </td>
-        <td class="linecount "></td>
-        <td class="src "><span class="w">   </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span></td>
+        <td class="linecount  show_"></td>
+        <td class="src  show_"><span class="w">   </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l19" href="#l19">19</a></td>
@@ -295,8 +302,8 @@
         </td>
         <td class="linecondition">
         </td>
-        <td class="linecount coveredLine">1</td>
-        <td class="src coveredLine"><span class="w">      </span><span class="n">param</span><span class="o">--</span><span class="p">;</span></td>
+        <td class="linecount coveredLine show_coveredLine">1</td>
+        <td class="src coveredLine show_coveredLine"><span class="w">      </span><span class="n">param</span><span class="o">--</span><span class="p">;</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l20" href="#l20">20</a></td>
@@ -304,8 +311,8 @@
         </td>
         <td class="linecondition">
         </td>
-        <td class="linecount "></td>
-        <td class="src "><span class="w">   </span><span class="p">}</span></td>
+        <td class="linecount  show_"></td>
+        <td class="src  show_"><span class="w">   </span><span class="p">}</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l21" href="#l21">21</a></td>
@@ -313,8 +320,8 @@
         </td>
         <td class="linecondition">
         </td>
-        <td class="linecount "></td>
-        <td class="src "><span class="w">   </span><span class="c1">// </span><span class="cs">GCOV_EXCL_BR_STOP</span></td>
+        <td class="linecount  show_"></td>
+        <td class="src  show_"><span class="w">   </span><span class="c1">// </span><span class="cs">GCOV_EXCL_BR_STOP</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l22" href="#l22">22</a></td>
@@ -322,8 +329,8 @@
         </td>
         <td class="linecondition">
         </td>
-        <td class="linecount coveredLine">1</td>
-        <td class="src coveredLine"><span class="w">   </span><span class="k">return</span><span class="w"> </span><span class="n">param</span><span class="p">;</span></td>
+        <td class="linecount coveredLine show_coveredLine">1</td>
+        <td class="src coveredLine show_coveredLine"><span class="w">   </span><span class="k">return</span><span class="w"> </span><span class="n">param</span><span class="p">;</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l23" href="#l23">23</a></td>
@@ -331,8 +338,8 @@
         </td>
         <td class="linecondition">
         </td>
-        <td class="linecount "></td>
-        <td class="src "><span class="p">}</span></td>
+        <td class="linecount  show_"></td>
+        <td class="src  show_"><span class="p">}</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l24" href="#l24">24</a></td>
@@ -340,8 +347,8 @@
         </td>
         <td class="linecondition">
         </td>
-        <td class="linecount "></td>
-        <td class="src "></td>
+        <td class="linecount  show_"></td>
+        <td class="src  show_"></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l25" href="#l25">25</a></td>
@@ -349,8 +356,8 @@
         </td>
         <td class="linecondition">
         </td>
-        <td class="linecount "></td>
-        <td class="src "></td>
+        <td class="linecount  show_"></td>
+        <td class="src  show_"></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l26" href="#l26">26</a></td>
@@ -358,8 +365,8 @@
         </td>
         <td class="linecondition">
         </td>
-        <td class="linecount coveredLine">1</td>
-        <td class="src coveredLine"><span class="kt">int</span><span class="w"> </span><span class="nf">main</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">argc</span><span class="p">,</span><span class="w"> </span><span class="kt">char</span><span class="o">*</span><span class="w"> </span><span class="n">argv</span><span class="p">[])</span><span class="w"> </span><span class="p">{</span></td>
+        <td class="linecount coveredLine show_coveredLine">1</td>
+        <td class="src coveredLine show_coveredLine"><span class="kt">int</span><span class="w"> </span><span class="nf">main</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">argc</span><span class="p">,</span><span class="w"> </span><span class="kt">char</span><span class="o">*</span><span class="w"> </span><span class="n">argv</span><span class="p">[])</span><span class="w"> </span><span class="p">{</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l27" href="#l27">27</a></td>
@@ -367,8 +374,8 @@
         </td>
         <td class="linecondition">
         </td>
-        <td class="linecount coveredLine">1</td>
-        <td class="src coveredLine"><span class="w">  </span><span class="n">foo</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span></td>
+        <td class="linecount coveredLine show_coveredLine">1</td>
+        <td class="src coveredLine show_coveredLine"><span class="w">  </span><span class="n">foo</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l28" href="#l28">28</a></td>
@@ -376,8 +383,8 @@
         </td>
         <td class="linecondition">
         </td>
-        <td class="linecount "></td>
-        <td class="src "></td>
+        <td class="linecount  show_"></td>
+        <td class="src  show_"></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l29" href="#l29">29</a></td>
@@ -385,8 +392,8 @@
         </td>
         <td class="linecondition">
         </td>
-        <td class="linecount coveredLine">1</td>
-        <td class="src coveredLine"><span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span></td>
+        <td class="linecount coveredLine show_coveredLine">1</td>
+        <td class="src coveredLine show_coveredLine"><span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l30" href="#l30">30</a></td>
@@ -394,8 +401,8 @@
         </td>
         <td class="linecondition">
         </td>
-        <td class="linecount "></td>
-        <td class="src "><span class="p">}</span></td>
+        <td class="linecount  show_"></td>
+        <td class="src  show_"><span class="p">}</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l31" href="#l31">31</a></td>
@@ -403,8 +410,8 @@
         </td>
         <td class="linecondition">
         </td>
-        <td class="linecount "></td>
-        <td class="src "></td>
+        <td class="linecount  show_"></td>
+        <td class="src  show_"></td>
       </tr>
     </table>
   </div>

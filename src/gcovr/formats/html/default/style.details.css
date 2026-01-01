@@ -4,26 +4,22 @@ td.CoverValue
   white-space: nowrap;
 }
 
-td.coveredLine,
-span.coveredLine
+.coveredLine.show_coveredLine
 {
   background-color: var(--covered_color) !important;
 }
 
-td.partialCoveredLine,
-span.partialCoveredLine
+.partialCoveredLine.show_partialCoveredLine
 {
   background-color: var(--partial_covered_color) !important;
 }
 
-td.uncoveredLine,
-span.uncoveredLine
+.uncoveredLine.show_uncoveredLine
 {
   background-color: var(--uncovered_color) !important;
 }
 
-td.excludedLine,
-span.excludedLine
+.excludedLine.show_excludedLine
 {
   background-color: var(--excluded_color) !important;
 }

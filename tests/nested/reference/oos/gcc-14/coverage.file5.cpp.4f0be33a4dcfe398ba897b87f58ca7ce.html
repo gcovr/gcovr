@@ -6,6 +6,7 @@
     <title>A/C/file5.cpp - GCC Code Coverage Report</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <link rel="stylesheet" href="coverage.css"/>
+    <script src="coverage.js"></script>
   </head>
 
   <body>
@@ -67,7 +68,7 @@
   <details>
     <summary>List of functions</summary>
 <div class="functionslist Box m-3">
-  <div class="Box-row py-2 d-flex position-relative">
+  <div class="Box-header py-2 d-flex sticky">
     <div role="rowheader" class="color-fg-muted flex-auto min-width-0 col-md-2">Function (File:Line)</div>
     <div role="rowheader" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline">Calls</div>
     <div role="rowheader" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">Lines</div>
@@ -75,7 +76,7 @@
     <div role="rowheader" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">Conditions</div>
     <div role="rowheader" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">Blocks</div>
   </div>
-  <div class="Box-row Box-row--focus-gray py-2 d-flex position-relative">
+  <div class="Box-row Box-row--focus-gray py-2 d-flex">
     <div role="gridcell" class="color-fg-muted flex-auto min-width-0 col-md-2"><a href="#l1">foo5(int) (A/C/file5.cpp:1)</a>    </div>
     <div role="gridcell" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline">called 1 time</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">66.7%</div>
@@ -89,8 +90,14 @@
     </nav>
     <main>
 <div class="Box m-3 file-source">
-  <div class="Box-header d-flex flex-space-between">
+  <div class="Box-header d-flex flex-space-between sticky">
     A/C/file5.cpp
+    <div class="toggle-buttons">
+      <button type="button" class="button_toggle_coveredLine show_coveredLine" value="coveredLine" title="Toggle covered lines">1 covered</button>
+      <button type="button" class="button_toggle_uncoveredLine show_uncoveredLine" value="uncoveredLine" title="Toggle uncovered lines">1 uncovered</button>
+      <button type="button" class="button_toggle_partialCoveredLine show_partialCoveredLine" value="partialCoveredLine" title="Toggle partial covered lines">1 partial covered</button>
+      <button type="button" class="button_toggle_excludedLine show_excludedLine" value="excludedLine" title="Toggle excluded lines">1 excluded</button>
+    </div>
     <div class="nav">
       <a class="nav prev" href="coverage.File6.cpp.73326d74f2aeb2719dd6d8a9bcc3e582.html"></a>
       <a class="nav index" href="coverage.html"></a>
@@ -112,8 +119,8 @@
         </td>
         <td class="linecondition">
         </td>
-        <td class="linecount excludedLine">&minus;</td>
-        <td class="src excludedLine">int foo5(int param)</td>
+        <td class="linecount excludedLine show_excludedLine">&minus;</td>
+        <td class="src excludedLine show_excludedLine">int foo5(int param)</td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l2" href="#l2">2</a></td>
@@ -121,8 +128,8 @@
         </td>
         <td class="linecondition">
         </td>
-        <td class="linecount "></td>
-        <td class="src ">{</td>
+        <td class="linecount  show_"></td>
+        <td class="src  show_">{</td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l3" href="#l3">3</a></td>
@@ -143,8 +150,8 @@
               </div>
               </details>
         </td>
-        <td class="linecount partialCoveredLine">1</td>
-        <td class="src partialCoveredLine">  if (param) {</td>
+        <td class="linecount partialCoveredLine show_partialCoveredLine">1</td>
+        <td class="src partialCoveredLine show_partialCoveredLine">  if (param) {</td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l4" href="#l4">4</a></td>
@@ -152,8 +159,8 @@
         </td>
         <td class="linecondition">
         </td>
-        <td class="linecount uncoveredLine">&cross;</td>
-        <td class="src uncoveredLine">     return 1;</td>
+        <td class="linecount uncoveredLine show_uncoveredLine">&cross;</td>
+        <td class="src uncoveredLine show_uncoveredLine">     return 1;</td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l5" href="#l5">5</a></td>
@@ -161,8 +168,8 @@
         </td>
         <td class="linecondition">
         </td>
-        <td class="linecount "></td>
-        <td class="src ">  } else {</td>
+        <td class="linecount  show_"></td>
+        <td class="src  show_">  } else {</td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l6" href="#l6">6</a></td>
@@ -170,8 +177,8 @@
         </td>
         <td class="linecondition">
         </td>
-        <td class="linecount coveredLine">1</td>
-        <td class="src coveredLine">     return 0;</td>
+        <td class="linecount coveredLine show_coveredLine">1</td>
+        <td class="src coveredLine show_coveredLine">     return 0;</td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l7" href="#l7">7</a></td>
@@ -179,8 +186,8 @@
         </td>
         <td class="linecondition">
         </td>
-        <td class="linecount "></td>
-        <td class="src ">  }</td>
+        <td class="linecount  show_"></td>
+        <td class="src  show_">  }</td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l8" href="#l8">8</a></td>
@@ -188,8 +195,8 @@
         </td>
         <td class="linecondition">
         </td>
-        <td class="linecount "></td>
-        <td class="src ">}</td>
+        <td class="linecount  show_"></td>
+        <td class="src  show_">}</td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l9" href="#l9">9</a></td>
@@ -197,8 +204,8 @@
         </td>
         <td class="linecondition">
         </td>
-        <td class="linecount "></td>
-        <td class="src "></td>
+        <td class="linecount  show_"></td>
+        <td class="src  show_"></td>
       </tr>
     </table>
   </div>

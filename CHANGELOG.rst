@@ -20,6 +20,7 @@ Breaking changes:
   - Restructure the the summary and move some data to the footer. (:issue:`1217`)
   - Add common stylesheet for all themes. (:issue:`1220`)
   - Add navigation links to source details. (:issue:`1220`)
+  - Add buttons to toggle line background color in source details view. (:issue:`1221`)
 
 New features and notable changes:
 

@@ -1,7 +1,3 @@
-.position-relative {
-  position: relative !important
-}
-
 .color-fg-muted {
   color: var(--color-fg-muted) !important
 }

@@ -6,6 +6,7 @@
     <title>A/file3.cpp - GCC Code Coverage Report</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <link rel="stylesheet" href="coverage.css"/>
+    <script src="coverage.js"></script>
   </head>
 
   <body>
@@ -67,7 +68,7 @@
   <details>
     <summary>List of functions</summary>
 <div class="functionslist Box m-3">
-  <div class="Box-row py-2 d-flex position-relative">
+  <div class="Box-header py-2 d-flex sticky">
     <div role="rowheader" class="color-fg-muted flex-auto min-width-0 col-md-2">Function (File:Line)</div>
     <div role="rowheader" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline">Calls</div>
     <div role="rowheader" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">Lines</div>
@@ -75,7 +76,7 @@
     <div role="rowheader" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">Conditions</div>
     <div role="rowheader" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">Blocks</div>
   </div>
-  <div class="Box-row Box-row--focus-gray py-2 d-flex position-relative">
+  <div class="Box-row Box-row--focus-gray py-2 d-flex">
     <div role="gridcell" class="color-fg-muted flex-auto min-width-0 col-md-2"><a href="#l1">four_bar() (A/file3.cpp:1)</a>    </div>
     <div role="gridcell" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline">called 1 time</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">100.0%</div>
@@ -83,7 +84,7 @@
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2" >-%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">100.0%</div>
   </div>
-  <div class="Box-row Box-row--focus-gray py-2 d-flex position-relative">
+  <div class="Box-row Box-row--focus-gray py-2 d-flex">
     <div role="gridcell" class="color-fg-muted flex-auto min-width-0 col-md-2"><a href="#l8">four_bar_() (A/file3.cpp:8)</a>    </div>
     <div role="gridcell" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline">not called</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">0.0%</div>
@@ -97,8 +98,14 @@
     </nav>
     <main>
 <div class="Box m-3 file-source">
-  <div class="Box-header d-flex flex-space-between">
+  <div class="Box-header d-flex flex-space-between sticky">
     A/file3.cpp
+    <div class="toggle-buttons">
+      <button type="button" class="button_toggle_coveredLine show_coveredLine" value="coveredLine" title="Toggle covered lines">3 covered</button>
+      <button type="button" class="button_toggle_uncoveredLine show_uncoveredLine" value="uncoveredLine" title="Toggle uncovered lines">4 uncovered</button>
+      <button type="button" class="button_toggle_partialCoveredLine show_partialCoveredLine" value="partialCoveredLine" title="Toggle partial covered lines">0 partial covered</button>
+      <button type="button" class="button_toggle_excludedLine show_excludedLine" value="excludedLine" title="Toggle excluded lines">2 excluded</button>
+    </div>
     <div class="nav">
       <a class="nav prev" href="coverage.file1.cpp.11975e1ce5d9c157e76130f444523bea.html"></a>
       <a class="nav index" href="coverage.html"></a>
@@ -120,8 +127,8 @@
         </td>
         <td class="linecondition">
         </td>
-        <td class="linecount excludedLine">&minus;</td>
-        <td class="src excludedLine">int four_bar()</td>
+        <td class="linecount excludedLine show_excludedLine">&minus;</td>
+        <td class="src excludedLine show_excludedLine">int four_bar()</td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l2" href="#l2">2</a></td>
@@ -129,8 +136,8 @@
         </td>
         <td class="linecondition">
         </td>
-        <td class="linecount "></td>
-        <td class="src ">{</td>
+        <td class="linecount  show_"></td>
+        <td class="src  show_">{</td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l3" href="#l3">3</a></td>
@@ -138,8 +145,8 @@
         </td>
         <td class="linecondition">
         </td>
-        <td class="linecount coveredLine">1</td>
-        <td class="src coveredLine">int x=1;</td>
+        <td class="linecount coveredLine show_coveredLine">1</td>
+        <td class="src coveredLine show_coveredLine">int x=1;</td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l4" href="#l4">4</a></td>
@@ -147,8 +154,8 @@
         </td>
         <td class="linecondition">
         </td>
-        <td class="linecount coveredLine">1</td>
-        <td class="src coveredLine">int y=2;</td>
+        <td class="linecount coveredLine show_coveredLine">1</td>
+        <td class="src coveredLine show_coveredLine">int y=2;</td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l5" href="#l5">5</a></td>
@@ -156,8 +163,8 @@
         </td>
         <td class="linecondition">
         </td>
-        <td class="linecount coveredLine">1</td>
-        <td class="src coveredLine">return x+y;</td>
+        <td class="linecount coveredLine show_coveredLine">1</td>
+        <td class="src coveredLine show_coveredLine">return x+y;</td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l6" href="#l6">6</a></td>
@@ -165,8 +172,8 @@
         </td>
         <td class="linecondition">
         </td>
-        <td class="linecount "></td>
-        <td class="src ">}</td>
+        <td class="linecount  show_"></td>
+        <td class="src  show_">}</td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l7" href="#l7">7</a></td>
@@ -174,8 +181,8 @@
         </td>
         <td class="linecondition">
         </td>
-        <td class="linecount "></td>
-        <td class="src "></td>
+        <td class="linecount  show_"></td>
+        <td class="src  show_"></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l8" href="#l8">8</a></td>
@@ -183,8 +190,8 @@
         </td>
         <td class="linecondition">
         </td>
-        <td class="linecount excludedLine">&minus;</td>
-        <td class="src excludedLine">int four_bar_()</td>
+        <td class="linecount excludedLine show_excludedLine">&minus;</td>
+        <td class="src excludedLine show_excludedLine">int four_bar_()</td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l9" href="#l9">9</a></td>
@@ -192,8 +199,8 @@
         </td>
         <td class="linecondition">
         </td>
-        <td class="linecount "></td>
-        <td class="src ">{</td>
+        <td class="linecount  show_"></td>
+        <td class="src  show_">{</td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l10" href="#l10">10</a></td>
@@ -201,8 +208,8 @@
         </td>
         <td class="linecondition">
         </td>
-        <td class="linecount uncoveredLine">&cross;</td>
-        <td class="src uncoveredLine">int x=1;</td>
+        <td class="linecount uncoveredLine show_uncoveredLine">&cross;</td>
+        <td class="src uncoveredLine show_uncoveredLine">int x=1;</td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l11" href="#l11">11</a></td>
@@ -210,8 +217,8 @@
         </td>
         <td class="linecondition">
         </td>
-        <td class="linecount uncoveredLine">&cross;</td>
-        <td class="src uncoveredLine">if (x)</td>
+        <td class="linecount uncoveredLine show_uncoveredLine">&cross;</td>
+        <td class="src uncoveredLine show_uncoveredLine">if (x)</td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l12" href="#l12">12</a></td>
@@ -219,8 +226,8 @@
         </td>
         <td class="linecondition">
         </td>
-        <td class="linecount uncoveredLine">&cross;</td>
-        <td class="src uncoveredLine">    return 2*x;     /* This is a really long comment that confirms whether gcovr colors lines that exceed normal expectations. */</td>
+        <td class="linecount uncoveredLine show_uncoveredLine">&cross;</td>
+        <td class="src uncoveredLine show_uncoveredLine">    return 2*x;     /* This is a really long comment that confirms whether gcovr colors lines that exceed normal expectations. */</td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l13" href="#l13">13</a></td>
@@ -228,8 +235,8 @@
         </td>
         <td class="linecondition">
         </td>
-        <td class="linecount "></td>
-        <td class="src ">else</td>
+        <td class="linecount  show_"></td>
+        <td class="src  show_">else</td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l14" href="#l14">14</a></td>
@@ -237,8 +244,8 @@
         </td>
         <td class="linecondition">
         </td>
-        <td class="linecount uncoveredLine">&cross;</td>
-        <td class="src uncoveredLine">    return x;</td>
+        <td class="linecount uncoveredLine show_uncoveredLine">&cross;</td>
+        <td class="src uncoveredLine show_uncoveredLine">    return x;</td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l15" href="#l15">15</a></td>
@@ -246,8 +253,8 @@
         </td>
         <td class="linecondition">
         </td>
-        <td class="linecount "></td>
-        <td class="src ">}</td>
+        <td class="linecount  show_"></td>
+        <td class="src  show_">}</td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l16" href="#l16">16</a></td>
@@ -255,8 +262,8 @@
         </td>
         <td class="linecondition">
         </td>
-        <td class="linecount "></td>
-        <td class="src "></td>
+        <td class="linecount  show_"></td>
+        <td class="src  show_"></td>
       </tr>
     </table>
   </div>

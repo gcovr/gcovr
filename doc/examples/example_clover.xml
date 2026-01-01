@@ -1,4 +1,4 @@
-<?xml version='1.0' encoding='UTF-8'?>
+<?xml version='1.0' encoding='utf-8'?>
 <coverage clover="1759082961" generated="1759082961">
   <project timestamp="1759082961">
     <metrics complexity="0" elements="7" coveredelements="6" conditionals="0" coveredconditionals="0" statements="7" coveredstatements="6" methods="0" coveredmethods="0" packages="1" classes="1" files="1"/>
