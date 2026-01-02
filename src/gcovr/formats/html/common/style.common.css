@@ -113,3 +113,7 @@ a.nav.next::after {
   content: " ↓";
   white-space: pre;
 }
+
+.source-table-container {
+  overflow-x: auto;
+}
