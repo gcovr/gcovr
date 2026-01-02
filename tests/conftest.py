@@ -944,7 +944,7 @@ class GcovrTestExec:
         """Compare the HTML report files."""
         with self.check:
             self._compare.compare_files(
-                output_pattern=["coverage*.html", "coverage*.css", "coverage*.js"],
+                output_pattern=["coverage*.html", "coverage*.js", "coverage*.css"],
                 encoding=encoding,
             )
 

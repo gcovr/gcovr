@@ -18,6 +18,7 @@ Breaking changes:
   - Add a common template folder where the common templates for the themes are stored.
     It contains the function content and source page navigation templates. (:issue:`1216`)
   - Restructure the the summary and move some data to the footer. (:issue:`1217`)
+  - Add sorting by clicking on the headers of the file overview table and the function table. (:issue:`1219`)
   - Add common stylesheet for all themes. (:issue:`1220`)
   - Add navigation links to source details. (:issue:`1220`)
   - Add buttons to toggle line background color in source details view. (:issue:`1221`)

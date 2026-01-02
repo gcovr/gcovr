@@ -1,4 +1,8 @@
-/* Link formats: use maroon w/underlines */
+.sticky {
+  position: sticky;
+  top: 0;
+}
+
 a:link
 {
   color: navy;
@@ -96,7 +100,16 @@ a.nav.next::after {
   content: "» next";
 }
 
-.sticky {
-  position: sticky;
-  top: 0;
+.sortable {
+  cursor: pointer;
+}
+
+.sorted-ascending::after {
+  content: " ↑";
+  white-space: pre;
+}
+
+.sorted-descending::after {
+  content: " ↓";
+  white-space: pre;
 }

@@ -13,12 +13,14 @@
 {{ css | safe }}
     </style>
     {% endif %}
+    {% if info.single_page != "static" %}
     {% if javascript_link is defined %}
     <script src="{{javascript_link}}"></script>
     {% else %}
     <script>
 {{ javascript | safe }}
     </script>
+    {% endif %}
     {% endif %}
   </head>
 

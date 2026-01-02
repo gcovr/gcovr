@@ -1,6 +1,5 @@
 <!DOCTYPE html>
-<html class="theme-green">
-
+<html class="theme-green" >
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <title>A/C/file5.cpp - GCC Code Coverage Report</title>
@@ -8,61 +7,58 @@
     <link rel="stylesheet" href="coverage.css"/>
     <script src="coverage.js"></script>
   </head>
-
   <body>
-
-    <header>
-      <h1>GCC Code Coverage Report</h1>
-      <hr/>
-      <div class="summary">
+    <div class="Layout-main">
+      <div class="Layout-main-centered-lg" style="max-width: 1280px;">
+        <div class="d-flex flex-justify-center">
+          <h1>GCC Code Coverage Report</h1>
+        </div>
+        <hr/>
+        <div class="summary">
 <div>
-  <table class="legend">
-    <tr>
-      <th scope="row">Directory:</th>
-      <td>nested/subdir/</td>
-    </tr>
-    <tr>
-      <th scope="row">Coverage:</th>
-      <td class="legend">
-        <span class="coverage-low">low: &ge; 0%</span>
-        <span class="coverage-medium">medium: &ge; 75.0%</span>
-        <span class="coverage-high">high: &ge; 90.0%</span>
-      </td>
-    </tr>
-  </table>
-</div>
-<div>
-  <table class="coverage">
-    <tr>
-      <th></th>
-      <th scope="col">Coverage</th>
-      <th scope="col">Exec / Excl / Total</th>
-    </tr>
-    <tr>
-      <th scope="row">Lines:</th>
-      <td class="coverage-medium">80.0%</td>
-      <td class="coverage-medium">4 / 0 / 5</td>
-    </tr>
-    <tr>
-      <th scope="row">Functions:</th>
-      <td class="coverage-high">100.0%</td>
-      <td class="coverage-high">1 / 0 / 1</td>
-    </tr>
-    <tr>
-      <th scope="row">Branches:</th>
-      <td class="coverage-low">50.0%</td>
-      <td class="coverage-low">1 / 0 / 2</td>
-    </tr>
-  </table>
-</div>
+  <div class="containter-xl clearfix">
+    <div class="col-sm-12 col-lg-9 float-left d-flex flex-column p-3">
+      <div class="d-flex">
+        <div class="mr-2 color-fg-accent transy-2">
+          <svg aria-label="Directory" aria-hidden="true" height="16" viewBox="0 0 16 16" version="1.1" width="16" data-view-component="true" class="octicon octicon-file-directory-fill hx_color-icon-directory">
+            <path d="M1.75 1A1.75 1.75 0 0 0 0 2.75v10.5C0 14.216.784 15 1.75 15h12.5A1.75 1.75 0 0 0 16 13.25v-8.5A1.75 1.75 0 0 0 14.25 3H7.5a.25.25 0 0 1-.2-.1l-.9-1.2C6.07 1.26 5.55 1 5 1H1.75Z"></path>
+          </svg>
+        </div>
+        <span>nested/subdir/</span>
       </div>
-      <hr/>
-    </header>
-    <nav>
+      <div class="d-flex flex-wrap" style="margin-bottom: 2px;">
+        <div class="mr-2" style="min-width: 70px;">Coverage:</div>
+        <div class="IssueLabel coverage-low color-fg-on-emphasis mr-1">low: &ge; 0%</div>
+        <div class="IssueLabel coverage-medium color-fg-on-emphasis mr-1">medium: &ge; 75.0%</div>
+        <div class="IssueLabel coverage-high color-fg-on-emphasis mr-1">high: &ge; 90.0%</div>
+      </div>
+    </div>
+    <div class="col-sm-12 col-lg-3 float-left d-flex flex-column text-right flex-justify-end p-3">
+      <div class="d-flex">
+        <div class="mr-2">Lines:</div>
+        <div class="mr-2" style="margin: auto;">4 of 5, 0 excluded</div>
+        <div class="Label--minw"><span class="coverage-medium IssueLabel color-fg-on-emphasis mr-1">80.0%</span></div>
+      </div>
+      <div class="d-flex">
+        <div class="mr-2">Functions:</div>
+        <div class="mr-2" style="margin: auto;">1 of 1, 0 excluded</div>
+        <div class="Label--minw"><span class="coverage-high IssueLabel color-fg-on-emphasis mr-1">100.0%</span></div>
+      </div>
+      <div class="d-flex">
+        <div class="mr-2">Branches:</div>
+        <div class="mr-2" style="margin: auto;">1 of 2, 0 excluded</div>
+        <div class="Label--minw"><span class="coverage-low IssueLabel color-fg-on-emphasis mr-1">50.0%</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+        </div>
+        <hr/>
+        <nav>
 <div class="m-3">
   <details>
     <summary>List of functions</summary>
-<div class="functionslist Box m-3">
+<div class="Box m-3 functionslist">
   <div class="Box-header py-2 d-flex sticky">
     <div role="rowheader" class="color-fg-muted flex-auto min-width-0 col-md-2">Function (File:Line)</div>
     <div role="rowheader" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline">Calls</div>
@@ -72,7 +68,7 @@
   </div>
   <div class="Box-row Box-row--focus-gray py-2 d-flex">
     <div role="gridcell" class="color-fg-muted flex-auto min-width-0 col-md-2"><a href="#l1">foo5(int) (subdir/A/C/file5.cpp:1)</a>    </div>
-    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline">called 1 time</div>
+    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline" data-sort="1">called 1 time</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">80.0%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">50.0%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">75.0%</div>
@@ -80,9 +76,9 @@
 </div>  </details>
 </div>
 
-    </nav>
-    <main>
-<div class="Box m-3 file-source">
+        </nav>
+        <main>
+<div class="Box m-3">
   <div class="Box-header d-flex flex-space-between sticky">
     A/C/file5.cpp
     <div class="toggle-buttons">
@@ -98,91 +94,93 @@
     </div>
   </div>
   <div style="overflow-x: auto;">
-    <table class="text-mono text-small">
+    <table class="text-mono text-small" style="width:100%;">
       <tr>
-        <th align="right">Line</th>
-        <th align="right">Branch</th>
-        <th align="right">Exec</th>
-        <th align="left" style="width: 100%;">Source</th>
+        <th class="p-2">Line</th>
+        <th class="p-2">Branch</th>
+        <th class="p-2">Exec</th>
+        <th class="p-2 text-left" style="width: 100%;">Source</th>
       </tr>
-      <tr class="source-line">
-        <td class="lineno"><a id="l1" href="#l1">1</a></td>
-        <td class="linebranch">
+      <tr>
+        <td class="text-right src linenos"><a class="normal" id="l1" href="#l1">1</a></td>
+        <td class="text-right src linenos ws-unset">
         </td>
-        <td class="linecount coveredLine show_coveredLine">1</td>
+        <td class="src coveredLine show_coveredLine pr-2 pl-2 color-fg-muted text-right">1</td>
         <td class="src coveredLine show_coveredLine"><span class="kt">int</span><span class="w"> </span><span class="nf">foo5</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">param</span><span class="p">)</span></td>
       </tr>
-      <tr class="source-line">
-        <td class="lineno"><a id="l2" href="#l2">2</a></td>
-        <td class="linebranch">
+      <tr>
+        <td class="text-right src linenos"><a class="normal" id="l2" href="#l2">2</a></td>
+        <td class="text-right src linenos ws-unset">
         </td>
-        <td class="linecount  show_"></td>
+        <td class="src  show_ pr-2 pl-2 color-fg-muted text-right"></td>
         <td class="src  show_"><span class="p">{</span></td>
       </tr>
-      <tr class="source-line">
-        <td class="lineno"><a id="l3" href="#l3">3</a></td>
-        <td class="linebranch">
-          <details class="linebranchDetails">
-            <summary class="linebranchSummary">1/2</summary>
-            <div class="linebranchContents">
-              <div class="notTakenBranch">&cross; Branch 0 not taken.</div>
-              <div class="takenBranch">&check; Branch 1 taken 1 time.</div>
+      <tr>
+        <td class="text-right src linenos"><a class="normal" id="l3" href="#l3">3</a></td>
+        <td class="text-right src linenos ws-unset">
+          <details class="normal details-overlay">
+            <summary>1/2</summary>
+            <div class="text-left position-absolute color-bg-subtle p-3 mt-2" style="z-index: 1;">
+              <div class="color-fg-danger">&cross; Branch 0 not taken.</div>
+              <div class="color-taken-branch">&check; Branch 1 taken 1 time.</div>
             </div>
           </details>
         </td>
-        <td class="linecount partialCoveredLine show_partialCoveredLine">1</td>
+        <td class="src partialCoveredLine show_partialCoveredLine pr-2 pl-2 color-fg-muted text-right">1</td>
         <td class="src partialCoveredLine show_partialCoveredLine"><span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">param</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
       </tr>
-      <tr class="source-line">
-        <td class="lineno"><a id="l4" href="#l4">4</a></td>
-        <td class="linebranch">
+      <tr>
+        <td class="text-right src linenos"><a class="normal" id="l4" href="#l4">4</a></td>
+        <td class="text-right src linenos ws-unset">
         </td>
-        <td class="linecount uncoveredLine show_uncoveredLine">&cross;</td>
+        <td class="src uncoveredLine show_uncoveredLine pr-2 pl-2 color-fg-muted text-right">&cross;</td>
         <td class="src uncoveredLine show_uncoveredLine"><span class="w">     </span><span class="k">return</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span></td>
       </tr>
-      <tr class="source-line">
-        <td class="lineno"><a id="l5" href="#l5">5</a></td>
-        <td class="linebranch">
+      <tr>
+        <td class="text-right src linenos"><a class="normal" id="l5" href="#l5">5</a></td>
+        <td class="text-right src linenos ws-unset">
         </td>
-        <td class="linecount  show_"></td>
+        <td class="src  show_ pr-2 pl-2 color-fg-muted text-right"></td>
         <td class="src  show_"><span class="w">  </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span></td>
       </tr>
-      <tr class="source-line">
-        <td class="lineno"><a id="l6" href="#l6">6</a></td>
-        <td class="linebranch">
+      <tr>
+        <td class="text-right src linenos"><a class="normal" id="l6" href="#l6">6</a></td>
+        <td class="text-right src linenos ws-unset">
         </td>
-        <td class="linecount coveredLine show_coveredLine">1</td>
+        <td class="src coveredLine show_coveredLine pr-2 pl-2 color-fg-muted text-right">1</td>
         <td class="src coveredLine show_coveredLine"><span class="w">     </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span></td>
       </tr>
-      <tr class="source-line">
-        <td class="lineno"><a id="l7" href="#l7">7</a></td>
-        <td class="linebranch">
+      <tr>
+        <td class="text-right src linenos"><a class="normal" id="l7" href="#l7">7</a></td>
+        <td class="text-right src linenos ws-unset">
         </td>
-        <td class="linecount  show_"></td>
+        <td class="src  show_ pr-2 pl-2 color-fg-muted text-right"></td>
         <td class="src  show_"><span class="w">  </span><span class="p">}</span></td>
       </tr>
-      <tr class="source-line">
-        <td class="lineno"><a id="l8" href="#l8">8</a></td>
-        <td class="linebranch">
+      <tr>
+        <td class="text-right src linenos"><a class="normal" id="l8" href="#l8">8</a></td>
+        <td class="text-right src linenos ws-unset">
         </td>
-        <td class="linecount coveredLine show_coveredLine">1</td>
+        <td class="src coveredLine show_coveredLine pr-2 pl-2 color-fg-muted text-right">1</td>
         <td class="src coveredLine show_coveredLine"><span class="p">}</span></td>
       </tr>
-      <tr class="source-line">
-        <td class="lineno"><a id="l9" href="#l9">9</a></td>
-        <td class="linebranch">
+      <tr>
+        <td class="text-right src linenos"><a class="normal" id="l9" href="#l9">9</a></td>
+        <td class="text-right src linenos ws-unset">
         </td>
-        <td class="linecount  show_"></td>
+        <td class="src  show_ pr-2 pl-2 color-fg-muted text-right"></td>
         <td class="src  show_"></td>
       </tr>
     </table>
   </div>
 </div>
-      <hr/>
-    </main>
-    <footer class="text-center">
-      Created using <a href="http://gcovr.com/en/main">GCOVR (Version 8.4+main)</a>
-      at 2025-09-28 18:09:21+00:00
-    </footer>
+          <hr/>
+        </main>
+        <footer class="text-center">
+          Created using <a href="http://gcovr.com/en/main">GCOVR (Version 8.4+main)</a>
+          at 2025-09-28 18:09:21+00:00
+        </footer>
+      </div>
+    </div>
   </body>
 </html>
