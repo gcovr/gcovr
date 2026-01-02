@@ -10,6 +10,9 @@
 
 {% block content %}
 {% if info.single_page == "js-enabled" %}
+<script>
+  gcovr.root_dirname = "{{ directories[-1].dirname }}";
+</script>
 <main id="{{ FUNCTIONS_FNAME }}" class="js-enabled-hidden js-disabled-hidden" data-title="Functions">
   <details>
     {# If javascript is enabled this details content is moved one level up and the details is removed #}
@@ -60,82 +63,5 @@
   {%  endif %}
 </main>
 {%  endfor %}
-
-{% if info.single_page == "js-enabled" %}
-<script>
-  document.body.classList.add("js-enabled")
-  document.body.classList.remove("js-disabled")
-
-  var global_summary = document.getElementById("summary")
-  var global_content = document.getElementById("{{ directories[-1].dirname }}")
-  var function_list = document.getElementById("{{ FUNCTIONS_FNAME }}")
-
-  // Move the summaries in the tree
-  summaries = document.body.querySelectorAll(".summary")
-  for (var i = 0; i < summaries.length; i++) {
-    if (summaries[i].id != summary) {
-      global_summary.parentNode.insertBefore(summaries[i], global_summary)
-    }
-  }
-
-  // Remove the details element of the function list
-  function_list_details = function_list.querySelector("details")
-  function_list_details.parentNode.insertBefore(function_list.querySelector("nav"), function_list_details)
-  function_list_details.parentNode.removeChild(function_list_details)
-
-  var old_hash = null
-  var enabled_elements = [global_summary, global_content]
-  function activateElement() {
-    if (old_hash != location.hash) {
-      old_hash = location.hash
-      hash_parts =
-        (location.hash == "")
-        ? ["{{ directories[-1].dirname }}"]
-        : decodeURIComponent(location.hash.substring(1)).split("|")
-
-      for (var i = 0; i < enabled_elements.length; i++) {
-        enabled_elements[i].classList.add("js-enabled-hidden")
-      }
-
-      enabled_elements = []
-      element = document.getElementById(hash_parts[0])
-      if (element == null) {
-        enabled_elements.push(global_summary)
-        enabled_elements.push(global_content)
-      }
-      else
-      {
-        enabled_elements.push(element)
-        title = element.getAttribute("data-title")
-        if (title == "") {
-          title = "{{info.head}}"
-        }
-        else {
-          title += " - {{info.head}}"
-        }
-        document.title = title
-        var summary = document.getElementById("summary-" + hash_parts[0])
-        if (summary == null) {
-          enabled_elements.push(global_summary)
-        }
-        else {
-          enabled_elements.push(summary)
-        }
-      }
-      for (var i = 0; i < enabled_elements.length; i++) {
-        enabled_elements[i].classList.remove("js-enabled-hidden")
-      }
-      window.scrollTo(0, 0)
-
-      // We need to scroll to the element
-      if (hash_parts.length > 1) {
-        document.getElementById(hash_parts[0]).scrollIntoView()
-      }
-    }
-  }
-  activateElement()
-  window.addEventListener("hashchange", activateElement)
-</script>
-{% endif %}
 
 {% endblock %}
