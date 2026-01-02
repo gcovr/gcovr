@@ -974,7 +974,7 @@ gcovr.sortGridTable = function (rowHeaderColumn) {
             comparison = cellA.localeCompare(cellB);
         }
 
-        if ( comparison == 0) {
+        if (comparison == 0) {
             // Fallback to first column (ascending) for stable sorting
             const firstCellA = a.children[0].textContent.trim().toLowerCase();
             const firstCellB = b.children[0].textContent.trim().toLowerCase();
