@@ -24,6 +24,7 @@ table.legend
   display: flex;
   flex-flow: row wrap;
   justify-content: flex-start;
+  margin-left: 16px;
 }
 
 table.legend th[scope=row]
@@ -54,7 +55,8 @@ table.legend td.warning_text
 
 table.coverage
 {
-  border-collapse: collapse
+  border-collapse: collapse;
+  margin-right: 16px;
 }
 
 table.coverage td,

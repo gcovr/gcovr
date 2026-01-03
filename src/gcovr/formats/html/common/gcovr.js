@@ -5,10 +5,10 @@ This file is inspired by coverage.py's js code.
 gcovr = {};
 
 gcovr.fileLoaded = function () {
-  gcovr.onClick(".button_toggle_coveredLine", gcovr.toggleLines);
-  gcovr.onClick(".button_toggle_uncoveredLine", gcovr.toggleLines);
-  gcovr.onClick(".button_toggle_partialCoveredLine", gcovr.toggleLines);
-  gcovr.onClick(".button_toggle_excludedLine", gcovr.toggleLines);
+  gcovr.addOnClickHandler(".button_toggle_coveredLine", gcovr.toggleLines);
+  gcovr.addOnClickHandler(".button_toggle_uncoveredLine", gcovr.toggleLines);
+  gcovr.addOnClickHandler(".button_toggle_partialCoveredLine", gcovr.toggleLines);
+  gcovr.addOnClickHandler(".button_toggle_excludedLine", gcovr.toggleLines);
 
   document.querySelectorAll("div.sortable").forEach(header => {
     header.addEventListener("click", () => gcovr.sortGridTable(header));
@@ -16,10 +16,16 @@ gcovr.fileLoaded = function () {
 
   {% if info.single_page == "js-enabled" %}
   gcovr.singlePageSetup();
+  {% else %}
+  gcovr.source_table_body = document.querySelector(".source-table-container > table > tbody")
+  gcovr.initScrollMarkers();
   {% endif %}
+  window.addEventListener("resize", () => {
+    gcovr.initScrollMarkers();
+  });
 };
 
-gcovr.onClick = function (selector, handler) {
+gcovr.addOnClickHandler = function (selector, handler) {
   document.querySelectorAll(selector).forEach(elt => elt.addEventListener("click", handler));
 };
 
@@ -69,9 +75,11 @@ gcovr.singlePageActivateElement = function () {
     if (element == null) {
       gcovr.single_page_enabled_elements.push(gcovr.single_page_global_summary)
       gcovr.single_page_enabled_elements.push(gcovr.single_page_global_content)
+      gcovr.source_table_body = null
     }
     else {
       gcovr.single_page_enabled_elements.push(element)
+      gcovr.source_table_body = element.querySelector(".source-table-container > table > tbody")
       title = element.getAttribute("data-title")
       if (title == "") {
         title = "{{info.head}}"
@@ -97,6 +105,8 @@ gcovr.singlePageActivateElement = function () {
     if (hash_parts.length > 1) {
       document.getElementById(hash_parts[0]).scrollIntoView()
     }
+
+    gcovr.initScrollMarkers();
   }
 };
 {% endif %}
@@ -106,6 +116,7 @@ gcovr.toggleLines = function (event) {
   const category = btn.value
   const show = !btn.classList.contains("show_" + category);
   gcovr.setLineVisibility(btn, category, show);
+  gcovr.buildScrollMarkers();
 };
 
 gcovr.setLineVisibility = function (btn, category, should_show) {
@@ -118,6 +129,62 @@ gcovr.setLineVisibility = function (btn, category, should_show) {
     btn.closest("main").querySelectorAll("td." + category).forEach(e => e.classList.remove(cls));
     btn.classList.remove(cls);
   }
+};
+
+gcovr.initScrollMarkers = function () {
+  if (gcovr.source_table_body === null) {
+    const temp_scroll_marker = document.getElementById("scroll_marker")
+    if (temp_scroll_marker) {
+      temp_scroll_marker.remove();
+    }
+  }
+  else {
+    gcovr.lines_len = gcovr.source_table_body.querySelectorAll("tr").length - 1; // exclude header
+    gcovr.buildScrollMarkers();
+  }
+};
+
+gcovr.buildScrollMarkers = function () {
+    const temp_scroll_marker = document.getElementById("scroll_marker")
+    if (temp_scroll_marker) temp_scroll_marker.remove();
+    // Don't build markers if the window has no scroll bar.
+    if (document.body.scrollHeight <= window.innerHeight) {
+        return;
+    }
+
+    const marker_scale = window.innerHeight / document.body.scrollHeight;
+    const line_height = Math.min(Math.max(3, window.innerHeight / gcovr.lines_len), 10);
+
+    let previous_line = -99, last_mark, last_top;
+
+    const scroll_marker = document.createElement("div");
+    scroll_marker.id = "scroll_marker";
+    gcovr.source_table_body.querySelectorAll(
+      "tr:has(td.show_coveredLine), tr:has(td.show_uncoveredLine), tr:has(td.show_excludedLine), tr:has(td.show_partialCoveredLine)"
+    ).forEach(element => {
+        const line_top = Math.floor(element.offsetTop * marker_scale);
+        const line_number = parseInt(element.querySelector("td > a").textContent);
+
+        if (line_number === previous_line + 1) {
+            // If this solid missed block just make previous mark higher.
+            last_mark.style.height = `${line_top + line_height - last_top}px`;
+        }
+        else {
+            // Add colored line in scroll_marker block.
+            last_mark = document.createElement("div");
+            last_mark.id = `m${line_number}`;
+            last_mark.classList.add("marker");
+            last_mark.style.height = `${line_height}px`;
+            last_mark.style.top = `${line_top}px`;
+            scroll_marker.append(last_mark);
+            last_top = line_top;
+        }
+
+        previous_line = line_number;
+    });
+
+    // Append last to prevent layout calculation
+    document.body.append(scroll_marker);
 };
 
 gcovr.sortGridTable = function (rowHeaderColumn) {
