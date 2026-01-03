@@ -25,32 +25,33 @@
   </head>
 
   <body{% if info.single_page == "js-enabled" %} class="js-disabled"{% endif %}>
-
-    <header>
-      <h1>{{info.head}}</h1>
-      <hr/>
-      {% if not info.single_page %}
-      <div class="summary">
-      {% endif %}
-        {% block summary %}
+    <div>
+      <header>
+        <h1>{{info.head}}</h1>
+        <hr/>
+        {% if not info.single_page %}
+        <div class="summary">
+        {% endif %}
+          {% block summary %}
+          {% endblock %}
+        {% if not info.single_page %}
+        </div>
+        {% endif %}
+        <hr/>
+      </header>
+      <nav>
+        {% block navigation %}
         {% endblock %}
-      {% if not info.single_page %}
-      </div>
-      {% endif %}
-      <hr/>
-    </header>
-    <nav>
-      {% block navigation %}
-      {% endblock %}
-    </nav>
-    <main>
-      {% block content %}
-      {% endblock %}
-      <hr/>
-    </main>
-    <footer class="text-center">
-      Created using <a href="http://gcovr.com/en/{{ 'main' if info.version.endswith('+main') else info.version }}">GCOVR (Version {{ info.version }})</a>
-      at {{info.date}}
-    </footer>
+      </nav>
+      <main>
+        {% block content %}
+        {% endblock %}
+        <hr/>
+      </main>
+      <footer class="text-center">
+        Created using <a href="http://gcovr.com/en/{{ 'main' if info.version.endswith('+main') else info.version }}">GCOVR (Version {{ info.version }})</a>
+        at {{info.date}}
+      </footer>
+    </div>
   </body>
 </html>

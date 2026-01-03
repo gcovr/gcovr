@@ -142,6 +142,29 @@ a.nav.next::after {
   content: " ↓";
   white-space: pre;
 }
+
+.source-table-container {
+  overflow-x: auto;
+}
+
+#scroll_marker {
+  position: fixed;
+  z-index: 3;
+  right: 0;
+  top: 0;
+  width: 12px;
+  height: 100%;
+  background-color: var(--color-canvas-default);
+  border-left: 1px solid var(--color-border-default);
+  will-change: transform;
+}
+
+#scroll_marker .marker {
+  background: #cccccc;
+  position: absolute;
+  min-height: 3px;
+  width: 100%;
+}
 .theme-green, .theme-blue, .theme-dark-blue, .theme-dark-green {
   --unknown_color: var(--color-neutral-emphasis-plus);
   --low_color: var(--color-danger-emphasis);
@@ -378,18 +401,103 @@ This file is inspired by coverage.py's js code.
 gcovr = {};
 
 gcovr.fileLoaded = function () {
-  gcovr.onClick(".button_toggle_coveredLine", gcovr.toggleLines);
-  gcovr.onClick(".button_toggle_uncoveredLine", gcovr.toggleLines);
-  gcovr.onClick(".button_toggle_partialCoveredLine", gcovr.toggleLines);
-  gcovr.onClick(".button_toggle_excludedLine", gcovr.toggleLines);
+  gcovr.addOnClickHandler(".button_toggle_coveredLine", gcovr.toggleLines);
+  gcovr.addOnClickHandler(".button_toggle_uncoveredLine", gcovr.toggleLines);
+  gcovr.addOnClickHandler(".button_toggle_partialCoveredLine", gcovr.toggleLines);
+  gcovr.addOnClickHandler(".button_toggle_excludedLine", gcovr.toggleLines);
 
   document.querySelectorAll("div.sortable").forEach(header => {
     header.addEventListener("click", () => gcovr.sortGridTable(header));
   });
+
+  gcovr.singlePageSetup();
+  window.addEventListener("resize", () => {
+    gcovr.initScrollMarkers();
+  });
 };
 
-gcovr.onClick = function (selector, handler) {
+gcovr.addOnClickHandler = function (selector, handler) {
   document.querySelectorAll(selector).forEach(elt => elt.addEventListener("click", handler));
+};
+
+gcovr.singlePageSetup = function () {
+  document.body.classList.add("js-enabled")
+  document.body.classList.remove("js-disabled")
+
+  gcovr.single_page_global_summary = document.getElementById("summary")
+  gcovr.single_page_global_content = document.getElementById(gcovr.root_dirname)
+  gcovr.single_page_function_list = document.getElementById("functions.html")
+
+  // Move the summaries in the tree
+  summaries = document.body.querySelectorAll(".summary")
+  for (var i = 0; i < summaries.length; i++) {
+    if (summaries[i].id != summary) {
+      gcovr.single_page_global_summary.parentNode.insertBefore(summaries[i], gcovr.single_page_global_summary)
+    }
+  }
+
+  // Remove the details element of the function list
+  function_list_details = gcovr.single_page_function_list.querySelector("details")
+  function_list_details.parentNode.insertBefore(gcovr.single_page_function_list.querySelector("nav"), function_list_details)
+  function_list_details.parentNode.removeChild(function_list_details)
+
+  gcovr.single_page_old_hash = null
+  gcovr.single_page_enabled_elements = [gcovr.single_page_global_summary, gcovr.single_page_global_content]
+
+  gcovr.singlePageActivateElement()
+  window.addEventListener("hashchange", gcovr.singlePageActivateElement)
+};
+
+gcovr.singlePageActivateElement = function () {
+  if (gcovr.single_page_old_hash != location.hash) {
+    gcovr.single_page_old_hash = location.hash
+    hash_parts =
+      (location.hash == "")
+        ? [gcovr.root_dirname]
+        : decodeURIComponent(location.hash.substring(1)).split("|")
+
+    for (var i = 0; i < gcovr.single_page_enabled_elements.length; i++) {
+      gcovr.single_page_enabled_elements[i].classList.add("js-enabled-hidden")
+    }
+
+    gcovr.single_page_enabled_elements = []
+    element = document.getElementById(hash_parts[0])
+    if (element == null) {
+      gcovr.single_page_enabled_elements.push(gcovr.single_page_global_summary)
+      gcovr.single_page_enabled_elements.push(gcovr.single_page_global_content)
+      gcovr.source_table_body = null
+    }
+    else {
+      gcovr.single_page_enabled_elements.push(element)
+      gcovr.source_table_body = element.querySelector(".source-table-container > table > tbody")
+      title = element.getAttribute("data-title")
+      if (title == "") {
+        title = "GCC Code Coverage Report"
+      }
+      else {
+        title += " - GCC Code Coverage Report"
+      }
+      document.title = title
+      var summary = document.getElementById("summary-" + hash_parts[0])
+      if (summary == null) {
+        gcovr.single_page_enabled_elements.push(gcovr.single_page_global_summary)
+      }
+      else {
+        gcovr.single_page_enabled_elements.push(summary)
+      }
+    }
+    for (var i = 0; i < gcovr.single_page_enabled_elements.length; i++) {
+      gcovr.single_page_enabled_elements[i].classList.remove("js-enabled-hidden")
+    }
+    window.scrollTo(0, 0)
+
+    // We need to scroll to the element
+    if (hash_parts.length > 1) {
+      document.getElementById(hash_parts[0]).scrollIntoView()
+    }
+
+    gcovr.initScrollMarkers();
+  }
 };
 
 gcovr.toggleLines = function (event) {
@@ -397,6 +505,7 @@ gcovr.toggleLines = function (event) {
   const category = btn.value
   const show = !btn.classList.contains("show_" + category);
   gcovr.setLineVisibility(btn, category, show);
+  gcovr.buildScrollMarkers();
 };
 
 gcovr.setLineVisibility = function (btn, category, should_show) {
@@ -411,52 +520,108 @@ gcovr.setLineVisibility = function (btn, category, should_show) {
   }
 };
 
+gcovr.initScrollMarkers = function () {
+  if (gcovr.source_table_body === null) {
+    const temp_scroll_marker = document.getElementById("scroll_marker")
+    if (temp_scroll_marker) {
+      temp_scroll_marker.remove();
+    }
+  }
+  else {
+    gcovr.lines_len = gcovr.source_table_body.querySelectorAll("tr").length - 1; // exclude header
+    gcovr.buildScrollMarkers();
+  }
+};
+
+gcovr.buildScrollMarkers = function () {
+    const temp_scroll_marker = document.getElementById("scroll_marker")
+    if (temp_scroll_marker) temp_scroll_marker.remove();
+    // Don't build markers if the window has no scroll bar.
+    if (document.body.scrollHeight <= window.innerHeight) {
+        return;
+    }
+
+    const marker_scale = window.innerHeight / document.body.scrollHeight;
+    const line_height = Math.min(Math.max(3, window.innerHeight / gcovr.lines_len), 10);
+
+    let previous_line = -99, last_mark, last_top;
+
+    const scroll_marker = document.createElement("div");
+    scroll_marker.id = "scroll_marker";
+    gcovr.source_table_body.querySelectorAll(
+      "tr:has(td.show_coveredLine), tr:has(td.show_uncoveredLine), tr:has(td.show_excludedLine), tr:has(td.show_partialCoveredLine)"
+    ).forEach(element => {
+        const line_top = Math.floor(element.offsetTop * marker_scale);
+        const line_number = parseInt(element.querySelector("td > a").textContent);
+
+        if (line_number === previous_line + 1) {
+            // If this solid missed block just make previous mark higher.
+            last_mark.style.height = `${line_top + line_height - last_top}px`;
+        }
+        else {
+            // Add colored line in scroll_marker block.
+            last_mark = document.createElement("div");
+            last_mark.id = `m${line_number}`;
+            last_mark.classList.add("marker");
+            last_mark.style.height = `${line_height}px`;
+            last_mark.style.top = `${line_top}px`;
+            scroll_marker.append(last_mark);
+            last_top = line_top;
+        }
+
+        previous_line = line_number;
+    });
+
+    // Append last to prevent layout calculation
+    document.body.append(scroll_marker);
+};
+
 gcovr.sortGridTable = function (rowHeaderColumn) {
-    const table = rowHeaderColumn.closest('.Box');
-    const rows = Array.from(table.querySelectorAll('.Box-row'));
+  const table = rowHeaderColumn.closest('.Box');
+  const rows = Array.from(table.querySelectorAll('.Box-row'));
 
-    const columnIndex = Array.from(rowHeaderColumn.parentNode.children).indexOf(rowHeaderColumn);
-    const isAscending = rowHeaderColumn.classList.contains('sorted-ascending');
+  const columnIndex = Array.from(rowHeaderColumn.parentNode.children).indexOf(rowHeaderColumn);
+  const isAscending = rowHeaderColumn.classList.contains('sorted-ascending');
 
-    rows.sort((a, b) => {
-        const cellA =
-          a.children[columnIndex].hasAttribute('data-sort')
-          ? a.children[columnIndex].getAttribute('data-sort')
-          : a.children[columnIndex].textContent.trim().toLowerCase();
-        const cellB =
-          b.children[columnIndex].hasAttribute('data-sort')
-          ? b.children[columnIndex].getAttribute('data-sort')
-          : b.children[columnIndex].textContent.trim().toLowerCase();
+  rows.sort((a, b) => {
+    const cellA =
+      a.children[columnIndex].hasAttribute('data-sort')
+        ? a.children[columnIndex].getAttribute('data-sort')
+        : a.children[columnIndex].textContent.trim().toLowerCase();
+    const cellB =
+      b.children[columnIndex].hasAttribute('data-sort')
+        ? b.children[columnIndex].getAttribute('data-sort')
+        : b.children[columnIndex].textContent.trim().toLowerCase();
 
-        let comparison = 0;
-        if (!isNaN(parseFloat(cellA)) && !isNaN(parseFloat(cellB))) {
-            comparison = parseFloat(cellA) - parseFloat(cellB);
-        } else {
-            comparison = cellA.localeCompare(cellB);
-        }
+    let comparison = 0;
+    if (!isNaN(parseFloat(cellA)) && !isNaN(parseFloat(cellB))) {
+      comparison = parseFloat(cellA) - parseFloat(cellB);
+    } else {
+      comparison = cellA.localeCompare(cellB);
+    }
 
-        if (comparison == 0) {
-            // Fallback to first column (ascending) for stable sorting
-            const firstCellA = a.children[0].textContent.trim().toLowerCase();
-            const firstCellB = b.children[0].textContent.trim().toLowerCase();
-            return firstCellA.localeCompare(firstCellB);
-        }
+    if (comparison == 0) {
+      // Fallback to first column (ascending) for stable sorting
+      const firstCellA = a.children[0].textContent.trim().toLowerCase();
+      const firstCellB = b.children[0].textContent.trim().toLowerCase();
+      return firstCellA.localeCompare(firstCellB);
+    }
 
-        return isAscending ? -comparison : comparison;
-    });
+    return isAscending ? -comparison : comparison;
+  });
 
 
-    // Remove existing rows
-    rows.forEach(row => table.removeChild(row));
+  // Remove existing rows
+  rows.forEach(row => table.removeChild(row));
 
-    // Append sorted rows
-    rows.forEach(row => table.appendChild(row));
+  // Append sorted rows
+  rows.forEach(row => table.appendChild(row));
 
-    // Update header classes
-    Array.from(rowHeaderColumn.parentNode.children).forEach(th => {
-        th.classList.remove('sorted-ascending', 'sorted-descending');
-    });
-    rowHeaderColumn.classList.add(isAscending ? 'sorted-descending' : 'sorted-ascending');
+  // Update header classes
+  Array.from(rowHeaderColumn.parentNode.children).forEach(th => {
+    th.classList.remove('sorted-ascending', 'sorted-descending');
+  });
+  rowHeaderColumn.classList.add(isAscending ? 'sorted-descending' : 'sorted-ascending');
 }
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -514,6 +679,9 @@ document.addEventListener("DOMContentLoaded", () => {
         <nav>
         </nav>
         <main>
+<script>
+  gcovr.root_dirname = "/";
+</script>
 <main id="functions.html" class="js-enabled-hidden js-disabled-hidden" data-title="Functions">
   <details>
     <summary>Overall list of functions</summary>
@@ -930,7 +1098,7 @@ document.addEventListener("DOMContentLoaded", () => {
       <a class="nav next" href="#file5.cpp.4f0be33a4dcfe398ba897b87f58ca7ce.html"></a>
     </div>
   </div>
-  <div style="overflow-x: auto;">
+  <div class="source-table-container">
     <table class="text-mono text-small" style="width:100%;">
       <tr>
         <th class="p-2">Line</th>
@@ -949,8 +1117,8 @@ document.addEventListener("DOMContentLoaded", () => {
         <td class="text-right src linenos"><a class="normal" id="File6.cpp.73326d74f2aeb2719dd6d8a9bcc3e582.html|l2" href="#l2">2</a></td>
         <td class="text-right src linenos ws-unset">
         </td>
-        <td class="src  show_ pr-2 pl-2 color-fg-muted text-right"></td>
-        <td class="src  show_"><span class="p">{</span></td>
+        <td class="src pr-2 pl-2 color-fg-muted text-right"></td>
+        <td class="src"><span class="p">{</span></td>
       </tr>
       <tr>
         <td class="text-right src linenos"><a class="normal" id="File6.cpp.73326d74f2aeb2719dd6d8a9bcc3e582.html|l3" href="#l3">3</a></td>
@@ -977,8 +1145,8 @@ document.addEventListener("DOMContentLoaded", () => {
         <td class="text-right src linenos"><a class="normal" id="File6.cpp.73326d74f2aeb2719dd6d8a9bcc3e582.html|l5" href="#l5">5</a></td>
         <td class="text-right src linenos ws-unset">
         </td>
-        <td class="src  show_ pr-2 pl-2 color-fg-muted text-right"></td>
-        <td class="src  show_"><span class="w">  </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span></td>
+        <td class="src pr-2 pl-2 color-fg-muted text-right"></td>
+        <td class="src"><span class="w">  </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span></td>
       </tr>
       <tr>
         <td class="text-right src linenos"><a class="normal" id="File6.cpp.73326d74f2aeb2719dd6d8a9bcc3e582.html|l6" href="#l6">6</a></td>
@@ -991,8 +1159,8 @@ document.addEventListener("DOMContentLoaded", () => {
         <td class="text-right src linenos"><a class="normal" id="File6.cpp.73326d74f2aeb2719dd6d8a9bcc3e582.html|l7" href="#l7">7</a></td>
         <td class="text-right src linenos ws-unset">
         </td>
-        <td class="src  show_ pr-2 pl-2 color-fg-muted text-right"></td>
-        <td class="src  show_"><span class="w">  </span><span class="p">}</span></td>
+        <td class="src pr-2 pl-2 color-fg-muted text-right"></td>
+        <td class="src"><span class="w">  </span><span class="p">}</span></td>
       </tr>
       <tr>
         <td class="text-right src linenos"><a class="normal" id="File6.cpp.73326d74f2aeb2719dd6d8a9bcc3e582.html|l8" href="#l8">8</a></td>
@@ -1005,8 +1173,8 @@ document.addEventListener("DOMContentLoaded", () => {
         <td class="text-right src linenos"><a class="normal" id="File6.cpp.73326d74f2aeb2719dd6d8a9bcc3e582.html|l9" href="#l9">9</a></td>
         <td class="text-right src linenos ws-unset">
         </td>
-        <td class="src  show_ pr-2 pl-2 color-fg-muted text-right"></td>
-        <td class="src  show_"></td>
+        <td class="src pr-2 pl-2 color-fg-muted text-right"></td>
+        <td class="src"></td>
       </tr>
     </table>
   </div>
@@ -1088,7 +1256,7 @@ document.addEventListener("DOMContentLoaded", () => {
       <a class="nav next" href="#File4.cpp.1d7a80554861eb8b5c21bc2e26ff8f70.html"></a>
     </div>
   </div>
-  <div style="overflow-x: auto;">
+  <div class="source-table-container">
     <table class="text-mono text-small" style="width:100%;">
       <tr>
         <th class="p-2">Line</th>
@@ -1107,8 +1275,8 @@ document.addEventListener("DOMContentLoaded", () => {
         <td class="text-right src linenos"><a class="normal" id="file5.cpp.4f0be33a4dcfe398ba897b87f58ca7ce.html|l2" href="#l2">2</a></td>
         <td class="text-right src linenos ws-unset">
         </td>
-        <td class="src  show_ pr-2 pl-2 color-fg-muted text-right"></td>
-        <td class="src  show_"><span class="p">{</span></td>
+        <td class="src pr-2 pl-2 color-fg-muted text-right"></td>
+        <td class="src"><span class="p">{</span></td>
       </tr>
       <tr>
         <td class="text-right src linenos"><a class="normal" id="file5.cpp.4f0be33a4dcfe398ba897b87f58ca7ce.html|l3" href="#l3">3</a></td>
@@ -1135,8 +1303,8 @@ document.addEventListener("DOMContentLoaded", () => {
         <td class="text-right src linenos"><a class="normal" id="file5.cpp.4f0be33a4dcfe398ba897b87f58ca7ce.html|l5" href="#l5">5</a></td>
         <td class="text-right src linenos ws-unset">
         </td>
-        <td class="src  show_ pr-2 pl-2 color-fg-muted text-right"></td>
-        <td class="src  show_"><span class="w">  </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span></td>
+        <td class="src pr-2 pl-2 color-fg-muted text-right"></td>
+        <td class="src"><span class="w">  </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span></td>
       </tr>
       <tr>
         <td class="text-right src linenos"><a class="normal" id="file5.cpp.4f0be33a4dcfe398ba897b87f58ca7ce.html|l6" href="#l6">6</a></td>
@@ -1149,8 +1317,8 @@ document.addEventListener("DOMContentLoaded", () => {
         <td class="text-right src linenos"><a class="normal" id="file5.cpp.4f0be33a4dcfe398ba897b87f58ca7ce.html|l7" href="#l7">7</a></td>
         <td class="text-right src linenos ws-unset">
         </td>
-        <td class="src  show_ pr-2 pl-2 color-fg-muted text-right"></td>
-        <td class="src  show_"><span class="w">  </span><span class="p">}</span></td>
+        <td class="src pr-2 pl-2 color-fg-muted text-right"></td>
+        <td class="src"><span class="w">  </span><span class="p">}</span></td>
       </tr>
       <tr>
         <td class="text-right src linenos"><a class="normal" id="file5.cpp.4f0be33a4dcfe398ba897b87f58ca7ce.html|l8" href="#l8">8</a></td>
@@ -1163,8 +1331,8 @@ document.addEventListener("DOMContentLoaded", () => {
         <td class="text-right src linenos"><a class="normal" id="file5.cpp.4f0be33a4dcfe398ba897b87f58ca7ce.html|l9" href="#l9">9</a></td>
         <td class="text-right src linenos ws-unset">
         </td>
-        <td class="src  show_ pr-2 pl-2 color-fg-muted text-right"></td>
-        <td class="src  show_"></td>
+        <td class="src pr-2 pl-2 color-fg-muted text-right"></td>
+        <td class="src"></td>
       </tr>
     </table>
   </div>
@@ -1246,7 +1414,7 @@ document.addEventListener("DOMContentLoaded", () => {
       <a class="nav next" href="#file1.cpp.11975e1ce5d9c157e76130f444523bea.html"></a>
     </div>
   </div>
-  <div style="overflow-x: auto;">
+  <div class="source-table-container">
     <table class="text-mono text-small" style="width:100%;">
       <tr>
         <th class="p-2">Line</th>
@@ -1265,8 +1433,8 @@ document.addEventListener("DOMContentLoaded", () => {
         <td class="text-right src linenos"><a class="normal" id="File4.cpp.1d7a80554861eb8b5c21bc2e26ff8f70.html|l2" href="#l2">2</a></td>
         <td class="text-right src linenos ws-unset">
         </td>
-        <td class="src  show_ pr-2 pl-2 color-fg-muted text-right"></td>
-        <td class="src  show_"><span class="p">{</span></td>
+        <td class="src pr-2 pl-2 color-fg-muted text-right"></td>
+        <td class="src"><span class="p">{</span></td>
       </tr>
       <tr>
         <td class="text-right src linenos"><a class="normal" id="File4.cpp.1d7a80554861eb8b5c21bc2e26ff8f70.html|l3" href="#l3">3</a></td>
@@ -1293,8 +1461,8 @@ document.addEventListener("DOMContentLoaded", () => {
         <td class="text-right src linenos"><a class="normal" id="File4.cpp.1d7a80554861eb8b5c21bc2e26ff8f70.html|l5" href="#l5">5</a></td>
         <td class="text-right src linenos ws-unset">
         </td>
-        <td class="src  show_ pr-2 pl-2 color-fg-muted text-right"></td>
-        <td class="src  show_"><span class="w">  </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span></td>
+        <td class="src pr-2 pl-2 color-fg-muted text-right"></td>
+        <td class="src"><span class="w">  </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span></td>
       </tr>
       <tr>
         <td class="text-right src linenos"><a class="normal" id="File4.cpp.1d7a80554861eb8b5c21bc2e26ff8f70.html|l6" href="#l6">6</a></td>
@@ -1307,8 +1475,8 @@ document.addEventListener("DOMContentLoaded", () => {
         <td class="text-right src linenos"><a class="normal" id="File4.cpp.1d7a80554861eb8b5c21bc2e26ff8f70.html|l7" href="#l7">7</a></td>
         <td class="text-right src linenos ws-unset">
         </td>
-        <td class="src  show_ pr-2 pl-2 color-fg-muted text-right"></td>
-        <td class="src  show_"><span class="w">  </span><span class="p">}</span></td>
+        <td class="src pr-2 pl-2 color-fg-muted text-right"></td>
+        <td class="src"><span class="w">  </span><span class="p">}</span></td>
       </tr>
       <tr>
         <td class="text-right src linenos"><a class="normal" id="File4.cpp.1d7a80554861eb8b5c21bc2e26ff8f70.html|l8" href="#l8">8</a></td>
@@ -1321,8 +1489,8 @@ document.addEventListener("DOMContentLoaded", () => {
         <td class="text-right src linenos"><a class="normal" id="File4.cpp.1d7a80554861eb8b5c21bc2e26ff8f70.html|l9" href="#l9">9</a></td>
         <td class="text-right src linenos ws-unset">
         </td>
-        <td class="src  show_ pr-2 pl-2 color-fg-muted text-right"></td>
-        <td class="src  show_"></td>
+        <td class="src pr-2 pl-2 color-fg-muted text-right"></td>
+        <td class="src"></td>
       </tr>
     </table>
   </div>
@@ -1404,7 +1572,7 @@ document.addEventListener("DOMContentLoaded", () => {
       <a class="nav next" href="#file3.cpp.bcfa344b5512d8cd5857f2fe86511d71.html"></a>
     </div>
   </div>
-  <div style="overflow-x: auto;">
+  <div class="source-table-container">
     <table class="text-mono text-small" style="width:100%;">
       <tr>
         <th class="p-2">Line</th>
@@ -1423,8 +1591,8 @@ document.addEventListener("DOMContentLoaded", () => {
         <td class="text-right src linenos"><a class="normal" id="file1.cpp.11975e1ce5d9c157e76130f444523bea.html|l2" href="#l2">2</a></td>
         <td class="text-right src linenos ws-unset">
         </td>
-        <td class="src  show_ pr-2 pl-2 color-fg-muted text-right"></td>
-        <td class="src  show_"><span class="p">{</span></td>
+        <td class="src pr-2 pl-2 color-fg-muted text-right"></td>
+        <td class="src"><span class="p">{</span></td>
       </tr>
       <tr>
         <td class="text-right src linenos"><a class="normal" id="file1.cpp.11975e1ce5d9c157e76130f444523bea.html|l3" href="#l3">3</a></td>
@@ -1451,8 +1619,8 @@ document.addEventListener("DOMContentLoaded", () => {
         <td class="text-right src linenos"><a class="normal" id="file1.cpp.11975e1ce5d9c157e76130f444523bea.html|l5" href="#l5">5</a></td>
         <td class="text-right src linenos ws-unset">
         </td>
-        <td class="src  show_ pr-2 pl-2 color-fg-muted text-right"></td>
-        <td class="src  show_"><span class="w">  </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span></td>
+        <td class="src pr-2 pl-2 color-fg-muted text-right"></td>
+        <td class="src"><span class="w">  </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span></td>
       </tr>
       <tr>
         <td class="text-right src linenos"><a class="normal" id="file1.cpp.11975e1ce5d9c157e76130f444523bea.html|l6" href="#l6">6</a></td>
@@ -1465,8 +1633,8 @@ document.addEventListener("DOMContentLoaded", () => {
         <td class="text-right src linenos"><a class="normal" id="file1.cpp.11975e1ce5d9c157e76130f444523bea.html|l7" href="#l7">7</a></td>
         <td class="text-right src linenos ws-unset">
         </td>
-        <td class="src  show_ pr-2 pl-2 color-fg-muted text-right"></td>
-        <td class="src  show_"><span class="w">  </span><span class="p">}</span></td>
+        <td class="src pr-2 pl-2 color-fg-muted text-right"></td>
+        <td class="src"><span class="w">  </span><span class="p">}</span></td>
       </tr>
       <tr>
         <td class="text-right src linenos"><a class="normal" id="file1.cpp.11975e1ce5d9c157e76130f444523bea.html|l8" href="#l8">8</a></td>
@@ -1479,8 +1647,8 @@ document.addEventListener("DOMContentLoaded", () => {
         <td class="text-right src linenos"><a class="normal" id="file1.cpp.11975e1ce5d9c157e76130f444523bea.html|l9" href="#l9">9</a></td>
         <td class="text-right src linenos ws-unset">
         </td>
-        <td class="src  show_ pr-2 pl-2 color-fg-muted text-right"></td>
-        <td class="src  show_"></td>
+        <td class="src pr-2 pl-2 color-fg-muted text-right"></td>
+        <td class="src"></td>
       </tr>
     </table>
   </div>
@@ -1569,7 +1737,7 @@ document.addEventListener("DOMContentLoaded", () => {
       <a class="nav next" href="#file7.cpp.fa9d180b71a3402bed7d24bb1966eaf5.html"></a>
     </div>
   </div>
-  <div style="overflow-x: auto;">
+  <div class="source-table-container">
     <table class="text-mono text-small" style="width:100%;">
       <tr>
         <th class="p-2">Line</th>
@@ -1588,8 +1756,8 @@ document.addEventListener("DOMContentLoaded", () => {
         <td class="text-right src linenos"><a class="normal" id="file3.cpp.bcfa344b5512d8cd5857f2fe86511d71.html|l2" href="#l2">2</a></td>
         <td class="text-right src linenos ws-unset">
         </td>
-        <td class="src  show_ pr-2 pl-2 color-fg-muted text-right"></td>
-        <td class="src  show_"><span class="p">{</span></td>
+        <td class="src pr-2 pl-2 color-fg-muted text-right"></td>
+        <td class="src"><span class="p">{</span></td>
       </tr>
       <tr>
         <td class="text-right src linenos"><a class="normal" id="file3.cpp.bcfa344b5512d8cd5857f2fe86511d71.html|l3" href="#l3">3</a></td>
@@ -1616,15 +1784,15 @@ document.addEventListener("DOMContentLoaded", () => {
         <td class="text-right src linenos"><a class="normal" id="file3.cpp.bcfa344b5512d8cd5857f2fe86511d71.html|l6" href="#l6">6</a></td>
         <td class="text-right src linenos ws-unset">
         </td>
-        <td class="src  show_ pr-2 pl-2 color-fg-muted text-right"></td>
-        <td class="src  show_"><span class="p">}</span></td>
+        <td class="src pr-2 pl-2 color-fg-muted text-right"></td>
+        <td class="src"><span class="p">}</span></td>
       </tr>
       <tr>
         <td class="text-right src linenos"><a class="normal" id="file3.cpp.bcfa344b5512d8cd5857f2fe86511d71.html|l7" href="#l7">7</a></td>
         <td class="text-right src linenos ws-unset">
         </td>
-        <td class="src  show_ pr-2 pl-2 color-fg-muted text-right"></td>
-        <td class="src  show_"></td>
+        <td class="src pr-2 pl-2 color-fg-muted text-right"></td>
+        <td class="src"></td>
       </tr>
       <tr>
         <td class="text-right src linenos"><a class="normal" id="file3.cpp.bcfa344b5512d8cd5857f2fe86511d71.html|l8" href="#l8">8</a></td>
@@ -1637,8 +1805,8 @@ document.addEventListener("DOMContentLoaded", () => {
         <td class="text-right src linenos"><a class="normal" id="file3.cpp.bcfa344b5512d8cd5857f2fe86511d71.html|l9" href="#l9">9</a></td>
         <td class="text-right src linenos ws-unset">
         </td>
-        <td class="src  show_ pr-2 pl-2 color-fg-muted text-right"></td>
-        <td class="src  show_"><span class="p">{</span></td>
+        <td class="src pr-2 pl-2 color-fg-muted text-right"></td>
+        <td class="src"><span class="p">{</span></td>
       </tr>
       <tr>
         <td class="text-right src linenos"><a class="normal" id="file3.cpp.bcfa344b5512d8cd5857f2fe86511d71.html|l10" href="#l10">10</a></td>
@@ -1665,8 +1833,8 @@ document.addEventListener("DOMContentLoaded", () => {
         <td class="text-right src linenos"><a class="normal" id="file3.cpp.bcfa344b5512d8cd5857f2fe86511d71.html|l13" href="#l13">13</a></td>
         <td class="text-right src linenos ws-unset">
         </td>
-        <td class="src  show_ pr-2 pl-2 color-fg-muted text-right"></td>
-        <td class="src  show_"><span class="k">else</span></td>
+        <td class="src pr-2 pl-2 color-fg-muted text-right"></td>
+        <td class="src"><span class="k">else</span></td>
       </tr>
       <tr>
         <td class="text-right src linenos"><a class="normal" id="file3.cpp.bcfa344b5512d8cd5857f2fe86511d71.html|l14" href="#l14">14</a></td>
@@ -1686,8 +1854,8 @@ document.addEventListener("DOMContentLoaded", () => {
         <td class="text-right src linenos"><a class="normal" id="file3.cpp.bcfa344b5512d8cd5857f2fe86511d71.html|l16" href="#l16">16</a></td>
         <td class="text-right src linenos ws-unset">
         </td>
-        <td class="src  show_ pr-2 pl-2 color-fg-muted text-right"></td>
-        <td class="src  show_"></td>
+        <td class="src pr-2 pl-2 color-fg-muted text-right"></td>
+        <td class="src"></td>
       </tr>
     </table>
   </div>
@@ -1769,7 +1937,7 @@ document.addEventListener("DOMContentLoaded", () => {
       <a class="nav next" href="#File2.cpp.1aed42bd33fceec1188f2f95c6e8946c.html"></a>
     </div>
   </div>
-  <div style="overflow-x: auto;">
+  <div class="source-table-container">
     <table class="text-mono text-small" style="width:100%;">
       <tr>
         <th class="p-2">Line</th>
@@ -1788,8 +1956,8 @@ document.addEventListener("DOMContentLoaded", () => {
         <td class="text-right src linenos"><a class="normal" id="file7.cpp.fa9d180b71a3402bed7d24bb1966eaf5.html|l2" href="#l2">2</a></td>
         <td class="text-right src linenos ws-unset">
         </td>
-        <td class="src  show_ pr-2 pl-2 color-fg-muted text-right"></td>
-        <td class="src  show_"><span class="p">{</span></td>
+        <td class="src pr-2 pl-2 color-fg-muted text-right"></td>
+        <td class="src"><span class="p">{</span></td>
       </tr>
       <tr>
         <td class="text-right src linenos"><a class="normal" id="file7.cpp.fa9d180b71a3402bed7d24bb1966eaf5.html|l3" href="#l3">3</a></td>
@@ -1802,15 +1970,15 @@ document.addEventListener("DOMContentLoaded", () => {
         <td class="text-right src linenos"><a class="normal" id="file7.cpp.fa9d180b71a3402bed7d24bb1966eaf5.html|l4" href="#l4">4</a></td>
         <td class="text-right src linenos ws-unset">
         </td>
-        <td class="src  show_ pr-2 pl-2 color-fg-muted text-right"></td>
-        <td class="src  show_"><span class="p">}</span></td>
+        <td class="src pr-2 pl-2 color-fg-muted text-right"></td>
+        <td class="src"><span class="p">}</span></td>
       </tr>
       <tr>
         <td class="text-right src linenos"><a class="normal" id="file7.cpp.fa9d180b71a3402bed7d24bb1966eaf5.html|l5" href="#l5">5</a></td>
         <td class="text-right src linenos ws-unset">
         </td>
-        <td class="src  show_ pr-2 pl-2 color-fg-muted text-right"></td>
-        <td class="src  show_"></td>
+        <td class="src pr-2 pl-2 color-fg-muted text-right"></td>
+        <td class="src"></td>
       </tr>
     </table>
   </div>
@@ -1899,7 +2067,7 @@ document.addEventListener("DOMContentLoaded", () => {
       <a class="nav next" href="#coverage_single_page.html"></a>
     </div>
   </div>
-  <div style="overflow-x: auto;">
+  <div class="source-table-container">
     <table class="text-mono text-small" style="width:100%;">
       <tr>
         <th class="p-2">Line</th>
@@ -1918,8 +2086,8 @@ document.addEventListener("DOMContentLoaded", () => {
         <td class="text-right src linenos"><a class="normal" id="File2.cpp.1aed42bd33fceec1188f2f95c6e8946c.html|l2" href="#l2">2</a></td>
         <td class="text-right src linenos ws-unset">
         </td>
-        <td class="src  show_ pr-2 pl-2 color-fg-muted text-right"></td>
-        <td class="src  show_"><span class="p">{</span></td>
+        <td class="src pr-2 pl-2 color-fg-muted text-right"></td>
+        <td class="src"><span class="p">{</span></td>
       </tr>
       <tr>
         <td class="text-right src linenos"><a class="normal" id="File2.cpp.1aed42bd33fceec1188f2f95c6e8946c.html|l3" href="#l3">3</a></td>
@@ -1946,15 +2114,15 @@ document.addEventListener("DOMContentLoaded", () => {
         <td class="text-right src linenos"><a class="normal" id="File2.cpp.1aed42bd33fceec1188f2f95c6e8946c.html|l6" href="#l6">6</a></td>
         <td class="text-right src linenos ws-unset">
         </td>
-        <td class="src  show_ pr-2 pl-2 color-fg-muted text-right"></td>
-        <td class="src  show_"><span class="p">}</span></td>
+        <td class="src pr-2 pl-2 color-fg-muted text-right"></td>
+        <td class="src"><span class="p">}</span></td>
       </tr>
       <tr>
         <td class="text-right src linenos"><a class="normal" id="File2.cpp.1aed42bd33fceec1188f2f95c6e8946c.html|l7" href="#l7">7</a></td>
         <td class="text-right src linenos ws-unset">
         </td>
-        <td class="src  show_ pr-2 pl-2 color-fg-muted text-right"></td>
-        <td class="src  show_"></td>
+        <td class="src pr-2 pl-2 color-fg-muted text-right"></td>
+        <td class="src"></td>
       </tr>
       <tr>
         <td class="text-right src linenos"><a class="normal" id="File2.cpp.1aed42bd33fceec1188f2f95c6e8946c.html|l8" href="#l8">8</a></td>
@@ -1967,8 +2135,8 @@ document.addEventListener("DOMContentLoaded", () => {
         <td class="text-right src linenos"><a class="normal" id="File2.cpp.1aed42bd33fceec1188f2f95c6e8946c.html|l9" href="#l9">9</a></td>
         <td class="text-right src linenos ws-unset">
         </td>
-        <td class="src  show_ pr-2 pl-2 color-fg-muted text-right"></td>
-        <td class="src  show_"><span class="p">{</span></td>
+        <td class="src pr-2 pl-2 color-fg-muted text-right"></td>
+        <td class="src"><span class="p">{</span></td>
       </tr>
       <tr>
         <td class="text-right src linenos"><a class="normal" id="File2.cpp.1aed42bd33fceec1188f2f95c6e8946c.html|l10" href="#l10">10</a></td>
@@ -1988,94 +2156,19 @@ document.addEventListener("DOMContentLoaded", () => {
         <td class="text-right src linenos"><a class="normal" id="File2.cpp.1aed42bd33fceec1188f2f95c6e8946c.html|l12" href="#l12">12</a></td>
         <td class="text-right src linenos ws-unset">
         </td>
-        <td class="src  show_ pr-2 pl-2 color-fg-muted text-right"></td>
-        <td class="src  show_"><span class="p">}</span></td>
+        <td class="src pr-2 pl-2 color-fg-muted text-right"></td>
+        <td class="src"><span class="p">}</span></td>
       </tr>
       <tr>
         <td class="text-right src linenos"><a class="normal" id="File2.cpp.1aed42bd33fceec1188f2f95c6e8946c.html|l13" href="#l13">13</a></td>
         <td class="text-right src linenos ws-unset">
         </td>
-        <td class="src  show_ pr-2 pl-2 color-fg-muted text-right"></td>
-        <td class="src  show_"></td>
+        <td class="src pr-2 pl-2 color-fg-muted text-right"></td>
+        <td class="src"></td>
       </tr>
     </table>
   </div>
 </div></main>
-
-<script>
-  document.body.classList.add("js-enabled")
-  document.body.classList.remove("js-disabled")
-
-  var global_summary = document.getElementById("summary")
-  var global_content = document.getElementById("/")
-  var function_list = document.getElementById("functions.html")
-
-  // Move the summaries in the tree
-  summaries = document.body.querySelectorAll(".summary")
-  for (var i = 0; i < summaries.length; i++) {
-    if (summaries[i].id != summary) {
-      global_summary.parentNode.insertBefore(summaries[i], global_summary)
-    }
-  }
-
-  // Remove the details element of the function list
-  function_list_details = function_list.querySelector("details")
-  function_list_details.parentNode.insertBefore(function_list.querySelector("nav"), function_list_details)
-  function_list_details.parentNode.removeChild(function_list_details)
-
-  var old_hash = null
-  var enabled_elements = [global_summary, global_content]
-  function activateElement() {
-    if (old_hash != location.hash) {
-      old_hash = location.hash
-      hash_parts =
-        (location.hash == "")
-        ? ["/"]
-        : decodeURIComponent(location.hash.substring(1)).split("|")
-
-      for (var i = 0; i < enabled_elements.length; i++) {
-        enabled_elements[i].classList.add("js-enabled-hidden")
-      }
-
-      enabled_elements = []
-      element = document.getElementById(hash_parts[0])
-      if (element == null) {
-        enabled_elements.push(global_summary)
-        enabled_elements.push(global_content)
-      }
-      else
-      {
-        enabled_elements.push(element)
-        title = element.getAttribute("data-title")
-        if (title == "") {
-          title = "GCC Code Coverage Report"
-        }
-        else {
-          title += " - GCC Code Coverage Report"
-        }
-        document.title = title
-        var summary = document.getElementById("summary-" + hash_parts[0])
-        if (summary == null) {
-          enabled_elements.push(global_summary)
-        }
-        else {
-          enabled_elements.push(summary)
-        }
-      }
-      for (var i = 0; i < enabled_elements.length; i++) {
-        enabled_elements[i].classList.remove("js-enabled-hidden")
-      }
-      window.scrollTo(0, 0)
-
-      // We need to scroll to the element
-      if (hash_parts.length > 1) {
-        document.getElementById(hash_parts[0]).scrollIntoView()
-      }
-    }
-  }
-  activateElement()
-  window.addEventListener("hashchange", activateElement)
-</script>
 
           <hr/>
         </main>

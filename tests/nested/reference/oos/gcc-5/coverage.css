@@ -175,6 +175,29 @@ a.nav.next::after {
   content: " ↓";
   white-space: pre;
 }
+
+.source-table-container {
+  overflow-x: auto;
+}
+
+#scroll_marker {
+  position: fixed;
+  z-index: 3;
+  right: 0;
+  top: 0;
+  width: 12px;
+  height: 100%;
+  background-color: var(--color-canvas-default);
+  border-left: 1px solid var(--color-border-default);
+  will-change: transform;
+}
+
+#scroll_marker .marker {
+  background: #cccccc;
+  position: absolute;
+  min-height: 3px;
+  width: 100%;
+}
 /*** Summary formats ***/
 
 .summary
@@ -201,6 +224,7 @@ table.legend
   display: flex;
   flex-flow: row wrap;
   justify-content: flex-start;
+  margin-left: 16px;
 }
 
 table.legend th[scope=row]
@@ -231,7 +255,8 @@ table.legend td.warning_text
 
 table.coverage
 {
-  border-collapse: collapse
+  border-collapse: collapse;
+  margin-right: 16px;
 }
 
 table.coverage td,
@@ -706,7 +731,7 @@ pre
   font-size: var(--body-font-size, 14px);
   line-height: 1.5;
   color: var(--color-fg-default);
-  background-color:var(--color-canvas-default);
+  background-color: var(--color-canvas-default);
   border-color: var(--color-border-default);
   border-radius: var(--borderRadius-medium, 6px);
   border-style: solid;

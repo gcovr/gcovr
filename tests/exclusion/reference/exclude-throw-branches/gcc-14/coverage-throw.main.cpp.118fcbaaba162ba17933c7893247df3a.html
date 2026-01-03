@@ -10,11 +10,11 @@
   </head>
 
   <body>
-
-    <header>
-      <h1>GCC Code Coverage Report</h1>
-      <hr/>
-      <div class="summary">
+    <div>
+      <header>
+        <h1>GCC Code Coverage Report</h1>
+        <hr/>
+        <div class="summary">
 <div>
   <table class="legend">
     <tr>
@@ -60,10 +60,10 @@
     </tr>
   </table>
 </div>
-      </div>
-      <hr/>
-    </header>
-    <nav>
+        </div>
+        <hr/>
+      </header>
+      <nav>
 <div class="m-3">
   <details>
     <summary>List of functions</summary>
@@ -127,8 +127,8 @@
 </div>  </details>
 </div>
 
-    </nav>
-    <main>
+      </nav>
+      <main>
 <div class="Box m-3 file-source">
   <div class="Box-header d-flex flex-space-between sticky">
     main.cpp
@@ -144,7 +144,7 @@
       <a class="nav next" href="coverage-throw.html"></a>
     </div>
   </div>
-  <div style="overflow-x: auto;">
+  <div class="source-table-container">
     <table class="text-mono text-small">
       <tr>
         <th align="right">Line</th>
@@ -159,8 +159,8 @@
         </td>
         <td class="linecondition">
         </td>
-        <td class="linecount  show_"></td>
-        <td class="src  show_"><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;stdexcept&gt;</span></td>
+        <td class="linecount"></td>
+        <td class="src "><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;stdexcept&gt;</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l2" href="#l2">2</a></td>
@@ -168,8 +168,8 @@
         </td>
         <td class="linecondition">
         </td>
-        <td class="linecount  show_"></td>
-        <td class="src  show_"></td>
+        <td class="linecount"></td>
+        <td class="src "></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l3" href="#l3">3</a></td>
@@ -178,7 +178,7 @@
         <td class="linecondition">
         </td>
         <td class="linecount coveredLine show_coveredLine">3</td>
-        <td class="src coveredLine show_coveredLine"><span class="kt">int</span><span class="w"> </span><span class="nf">function_that_may_throw</span><span class="p">(</span><span class="kt">bool</span><span class="w"> </span><span class="n">die</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
+        <td class="src  coveredLine show_coveredLine"><span class="kt">int</span><span class="w"> </span><span class="nf">function_that_may_throw</span><span class="p">(</span><span class="kt">bool</span><span class="w"> </span><span class="n">die</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l4" href="#l4">4</a></td>
@@ -200,7 +200,7 @@
               </details>
         </td>
         <td class="linecount coveredLine show_coveredLine">3</td>
-        <td class="src coveredLine show_coveredLine"><span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">die</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
+        <td class="src  coveredLine show_coveredLine"><span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">die</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l5" href="#l5">5</a></td>
@@ -216,7 +216,7 @@
         <td class="linecondition">
         </td>
         <td class="linecount partialCoveredLine show_partialCoveredLine">1</td>
-        <td class="src partialCoveredLine show_partialCoveredLine"><span class="w">        </span><span class="k">throw</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">runtime_error</span><span class="p">(</span><span class="s">&quot;the error&quot;</span><span class="p">);</span></td>
+        <td class="src  partialCoveredLine show_partialCoveredLine"><span class="w">        </span><span class="k">throw</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">runtime_error</span><span class="p">(</span><span class="s">&quot;the error&quot;</span><span class="p">);</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l6" href="#l6">6</a></td>
@@ -224,8 +224,8 @@
         </td>
         <td class="linecondition">
         </td>
-        <td class="linecount  show_"></td>
-        <td class="src  show_"><span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span></td>
+        <td class="linecount"></td>
+        <td class="src "><span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l7" href="#l7">7</a></td>
@@ -234,7 +234,7 @@
         <td class="linecondition">
         </td>
         <td class="linecount coveredLine show_coveredLine">2</td>
-        <td class="src coveredLine show_coveredLine"><span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="mi">42</span><span class="p">;</span></td>
+        <td class="src  coveredLine show_coveredLine"><span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="mi">42</span><span class="p">;</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l8" href="#l8">8</a></td>
@@ -242,8 +242,8 @@
         </td>
         <td class="linecondition">
         </td>
-        <td class="linecount  show_"></td>
-        <td class="src  show_"><span class="w">    </span><span class="p">}</span></td>
+        <td class="linecount"></td>
+        <td class="src "><span class="w">    </span><span class="p">}</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l9" href="#l9">9</a></td>
@@ -251,8 +251,8 @@
         </td>
         <td class="linecondition">
         </td>
-        <td class="linecount  show_"></td>
-        <td class="src  show_"><span class="p">}</span></td>
+        <td class="linecount"></td>
+        <td class="src "><span class="p">}</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l10" href="#l10">10</a></td>
@@ -260,8 +260,8 @@
         </td>
         <td class="linecondition">
         </td>
-        <td class="linecount  show_"></td>
-        <td class="src  show_"></td>
+        <td class="linecount"></td>
+        <td class="src "></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l11" href="#l11">11</a></td>
@@ -269,8 +269,8 @@
         </td>
         <td class="linecondition">
         </td>
-        <td class="linecount  show_"></td>
-        <td class="src  show_"><span class="k">struct</span><span class="w"> </span><span class="nc">RAII</span><span class="w"> </span><span class="p">{</span></td>
+        <td class="linecount"></td>
+        <td class="src "><span class="k">struct</span><span class="w"> </span><span class="nc">RAII</span><span class="w"> </span><span class="p">{</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l12" href="#l12">12</a></td>
@@ -278,8 +278,8 @@
         </td>
         <td class="linecondition">
         </td>
-        <td class="linecount  show_"></td>
-        <td class="src  show_"><span class="w">    </span><span class="kt">bool</span><span class="w"> </span><span class="n">die</span><span class="p">;</span></td>
+        <td class="linecount"></td>
+        <td class="src "><span class="w">    </span><span class="kt">bool</span><span class="w"> </span><span class="n">die</span><span class="p">;</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l13" href="#l13">13</a></td>
@@ -287,8 +287,8 @@
         </td>
         <td class="linecondition">
         </td>
-        <td class="linecount  show_"></td>
-        <td class="src  show_"></td>
+        <td class="linecount"></td>
+        <td class="src "></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l14" href="#l14">14</a></td>
@@ -296,8 +296,8 @@
         </td>
         <td class="linecondition">
         </td>
-        <td class="linecount  show_"></td>
-        <td class="src  show_"><span class="w">    </span><span class="n">RAII</span><span class="p">(</span><span class="kt">bool</span><span class="p">);</span></td>
+        <td class="linecount"></td>
+        <td class="src "><span class="w">    </span><span class="n">RAII</span><span class="p">(</span><span class="kt">bool</span><span class="p">);</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l15" href="#l15">15</a></td>
@@ -305,8 +305,8 @@
         </td>
         <td class="linecondition">
         </td>
-        <td class="linecount  show_"></td>
-        <td class="src  show_"><span class="w">    </span><span class="o">~</span><span class="n">RAII</span><span class="p">();</span></td>
+        <td class="linecount"></td>
+        <td class="src "><span class="w">    </span><span class="o">~</span><span class="n">RAII</span><span class="p">();</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l16" href="#l16">16</a></td>
@@ -315,7 +315,7 @@
         <td class="linecondition">
         </td>
         <td class="linecount coveredLine show_coveredLine">1</td>
-        <td class="src coveredLine show_coveredLine"><span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="nf">method_that_may_throw</span><span class="p">()</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="p">{</span></td>
+        <td class="src  coveredLine show_coveredLine"><span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="nf">method_that_may_throw</span><span class="p">()</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="p">{</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l17" href="#l17">17</a></td>
@@ -324,7 +324,7 @@
         <td class="linecondition">
         </td>
         <td class="linecount coveredLine show_coveredLine">1</td>
-        <td class="src coveredLine show_coveredLine"><span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">function_that_may_throw</span><span class="p">(</span><span class="n">die</span><span class="p">);</span></td>
+        <td class="src  coveredLine show_coveredLine"><span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">function_that_may_throw</span><span class="p">(</span><span class="n">die</span><span class="p">);</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l18" href="#l18">18</a></td>
@@ -332,8 +332,8 @@
         </td>
         <td class="linecondition">
         </td>
-        <td class="linecount  show_"></td>
-        <td class="src  show_"><span class="w">    </span><span class="p">}</span></td>
+        <td class="linecount"></td>
+        <td class="src "><span class="w">    </span><span class="p">}</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l19" href="#l19">19</a></td>
@@ -341,8 +341,8 @@
         </td>
         <td class="linecondition">
         </td>
-        <td class="linecount  show_"></td>
-        <td class="src  show_"><span class="p">};</span></td>
+        <td class="linecount"></td>
+        <td class="src "><span class="p">};</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l20" href="#l20">20</a></td>
@@ -350,8 +350,8 @@
         </td>
         <td class="linecondition">
         </td>
-        <td class="linecount  show_"></td>
-        <td class="src  show_"></td>
+        <td class="linecount"></td>
+        <td class="src "></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l21" href="#l21">21</a></td>
@@ -360,7 +360,7 @@
         <td class="linecondition">
         </td>
         <td class="linecount coveredLine show_coveredLine">1</td>
-        <td class="src coveredLine show_coveredLine"><span class="n">RAII</span><span class="o">::</span><span class="n">RAII</span><span class="p">(</span><span class="kt">bool</span><span class="w"> </span><span class="n">die</span><span class="p">)</span><span class="w"> </span><span class="o">:</span><span class="n">die</span><span class="p">(</span><span class="n">die</span><span class="p">)</span><span class="w"> </span><span class="p">{}</span></td>
+        <td class="src  coveredLine show_coveredLine"><span class="n">RAII</span><span class="o">::</span><span class="n">RAII</span><span class="p">(</span><span class="kt">bool</span><span class="w"> </span><span class="n">die</span><span class="p">)</span><span class="w"> </span><span class="o">:</span><span class="n">die</span><span class="p">(</span><span class="n">die</span><span class="p">)</span><span class="w"> </span><span class="p">{}</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l22" href="#l22">22</a></td>
@@ -369,7 +369,7 @@
         <td class="linecondition">
         </td>
         <td class="linecount coveredLine show_coveredLine">1</td>
-        <td class="src coveredLine show_coveredLine"><span class="n">RAII</span><span class="o">::~</span><span class="n">RAII</span><span class="p">()</span><span class="w"> </span><span class="p">{}</span></td>
+        <td class="src  coveredLine show_coveredLine"><span class="n">RAII</span><span class="o">::~</span><span class="n">RAII</span><span class="p">()</span><span class="w"> </span><span class="p">{}</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l23" href="#l23">23</a></td>
@@ -377,8 +377,8 @@
         </td>
         <td class="linecondition">
         </td>
-        <td class="linecount  show_"></td>
-        <td class="src  show_"></td>
+        <td class="linecount"></td>
+        <td class="src "></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l24" href="#l24">24</a></td>
@@ -387,7 +387,7 @@
         <td class="linecondition">
         </td>
         <td class="linecount coveredLine show_coveredLine">1</td>
-        <td class="src coveredLine show_coveredLine"><span class="kt">int</span><span class="w"> </span><span class="n">function_with_catchers</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">argc</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
+        <td class="src  coveredLine show_coveredLine"><span class="kt">int</span><span class="w"> </span><span class="n">function_with_catchers</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">argc</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l25" href="#l25">25</a></td>
@@ -396,7 +396,7 @@
         <td class="linecondition">
         </td>
         <td class="linecount coveredLine show_coveredLine">1</td>
-        <td class="src coveredLine show_coveredLine"><span class="w">    </span><span class="kt">bool</span><span class="w"> </span><span class="n">die_again</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">true</span><span class="p">;</span></td>
+        <td class="src  coveredLine show_coveredLine"><span class="w">    </span><span class="kt">bool</span><span class="w"> </span><span class="n">die_again</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">true</span><span class="p">;</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l26" href="#l26">26</a></td>
@@ -404,8 +404,8 @@
         </td>
         <td class="linecondition">
         </td>
-        <td class="linecount  show_"></td>
-        <td class="src  show_"></td>
+        <td class="linecount"></td>
+        <td class="src "></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l27" href="#l27">27</a></td>
@@ -413,8 +413,8 @@
         </td>
         <td class="linecondition">
         </td>
-        <td class="linecount  show_"></td>
-        <td class="src  show_"><span class="w">    </span><span class="k">try</span><span class="w"> </span><span class="p">{</span></td>
+        <td class="linecount"></td>
+        <td class="src "><span class="w">    </span><span class="k">try</span><span class="w"> </span><span class="p">{</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l28" href="#l28">28</a></td>
@@ -430,7 +430,7 @@
         <td class="linecondition">
         </td>
         <td class="linecount partialCoveredLine show_partialCoveredLine">1</td>
-        <td class="src partialCoveredLine show_partialCoveredLine"><span class="w">        </span><span class="n">function_that_may_throw</span><span class="p">(</span><span class="n">argc</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">1</span><span class="p">);</span></td>
+        <td class="src  partialCoveredLine show_partialCoveredLine"><span class="w">        </span><span class="n">function_that_may_throw</span><span class="p">(</span><span class="n">argc</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">1</span><span class="p">);</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l29" href="#l29">29</a></td>
@@ -446,7 +446,7 @@
         <td class="linecondition">
         </td>
         <td class="linecount partialCoveredLine show_partialCoveredLine">1</td>
-        <td class="src partialCoveredLine show_partialCoveredLine"><span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="k">catch</span><span class="w"> </span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">exception</span><span class="o">&amp;</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
+        <td class="src  partialCoveredLine show_partialCoveredLine"><span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="k">catch</span><span class="w"> </span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">exception</span><span class="o">&amp;</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l30" href="#l30">30</a></td>
@@ -455,7 +455,7 @@
         <td class="linecondition">
         </td>
         <td class="linecount coveredLine show_coveredLine">1</td>
-        <td class="src coveredLine show_coveredLine"><span class="w">        </span><span class="n">die_again</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span></td>
+        <td class="src  coveredLine show_coveredLine"><span class="w">        </span><span class="n">die_again</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l31" href="#l31">31</a></td>
@@ -464,7 +464,7 @@
         <td class="linecondition">
         </td>
         <td class="linecount coveredLine show_coveredLine">1</td>
-        <td class="src coveredLine show_coveredLine"><span class="w">    </span><span class="p">}</span></td>
+        <td class="src  coveredLine show_coveredLine"><span class="w">    </span><span class="p">}</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l32" href="#l32">32</a></td>
@@ -472,8 +472,8 @@
         </td>
         <td class="linecondition">
         </td>
-        <td class="linecount  show_"></td>
-        <td class="src  show_"></td>
+        <td class="linecount"></td>
+        <td class="src "></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l33" href="#l33">33</a></td>
@@ -489,7 +489,7 @@
         <td class="linecondition">
         </td>
         <td class="linecount partialCoveredLine show_partialCoveredLine">1</td>
-        <td class="src partialCoveredLine show_partialCoveredLine"><span class="w">    </span><span class="n">RAII</span><span class="w"> </span><span class="n">raii</span><span class="p">(</span><span class="n">die_again</span><span class="p">);</span></td>
+        <td class="src  partialCoveredLine show_partialCoveredLine"><span class="w">    </span><span class="n">RAII</span><span class="w"> </span><span class="n">raii</span><span class="p">(</span><span class="n">die_again</span><span class="p">);</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l34" href="#l34">34</a></td>
@@ -497,8 +497,8 @@
         </td>
         <td class="linecondition">
         </td>
-        <td class="linecount  show_"></td>
-        <td class="src  show_"></td>
+        <td class="linecount"></td>
+        <td class="src "></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l35" href="#l35">35</a></td>
@@ -506,8 +506,8 @@
         </td>
         <td class="linecondition">
         </td>
-        <td class="linecount  show_"></td>
-        <td class="src  show_"><span class="w">    </span><span class="k">try</span><span class="w"> </span><span class="p">{</span></td>
+        <td class="linecount"></td>
+        <td class="src "><span class="w">    </span><span class="k">try</span><span class="w"> </span><span class="p">{</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l36" href="#l36">36</a></td>
@@ -523,7 +523,7 @@
         <td class="linecondition">
         </td>
         <td class="linecount partialCoveredLine show_partialCoveredLine">1</td>
-        <td class="src partialCoveredLine show_partialCoveredLine"><span class="w">        </span><span class="n">raii</span><span class="p">.</span><span class="n">method_that_may_throw</span><span class="p">();</span></td>
+        <td class="src  partialCoveredLine show_partialCoveredLine"><span class="w">        </span><span class="n">raii</span><span class="p">.</span><span class="n">method_that_may_throw</span><span class="p">();</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l37" href="#l37">37</a></td>
@@ -532,7 +532,7 @@
         <td class="linecondition">
         </td>
         <td class="linecount uncoveredLine show_uncoveredLine">&cross;</td>
-        <td class="src uncoveredLine show_uncoveredLine"><span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="k">catch</span><span class="w"> </span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">exception</span><span class="o">&amp;</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
+        <td class="src  uncoveredLine show_uncoveredLine"><span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="k">catch</span><span class="w"> </span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">exception</span><span class="o">&amp;</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l38" href="#l38">38</a></td>
@@ -541,7 +541,7 @@
         <td class="linecondition">
         </td>
         <td class="linecount uncoveredLine show_uncoveredLine">&cross;</td>
-        <td class="src uncoveredLine show_uncoveredLine"><span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span></td>
+        <td class="src  uncoveredLine show_uncoveredLine"><span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l39" href="#l39">39</a></td>
@@ -550,7 +550,7 @@
         <td class="linecondition">
         </td>
         <td class="linecount uncoveredLine show_uncoveredLine">&cross;</td>
-        <td class="src uncoveredLine show_uncoveredLine"><span class="w">    </span><span class="p">}</span></td>
+        <td class="src  uncoveredLine show_uncoveredLine"><span class="w">    </span><span class="p">}</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l40" href="#l40">40</a></td>
@@ -558,8 +558,8 @@
         </td>
         <td class="linecondition">
         </td>
-        <td class="linecount  show_"></td>
-        <td class="src  show_"></td>
+        <td class="linecount"></td>
+        <td class="src "></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l41" href="#l41">41</a></td>
@@ -575,7 +575,7 @@
         <td class="linecondition">
         </td>
         <td class="linecount partialCoveredLine show_partialCoveredLine">1</td>
-        <td class="src partialCoveredLine show_partialCoveredLine"><span class="w">    </span><span class="n">function_that_may_throw</span><span class="p">(</span><span class="n">argc</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="mi">1</span><span class="p">);</span></td>
+        <td class="src  partialCoveredLine show_partialCoveredLine"><span class="w">    </span><span class="n">function_that_may_throw</span><span class="p">(</span><span class="n">argc</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="mi">1</span><span class="p">);</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l42" href="#l42">42</a></td>
@@ -583,8 +583,8 @@
         </td>
         <td class="linecondition">
         </td>
-        <td class="linecount  show_"></td>
-        <td class="src  show_"></td>
+        <td class="linecount"></td>
+        <td class="src "></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l43" href="#l43">43</a></td>
@@ -593,7 +593,7 @@
         <td class="linecondition">
         </td>
         <td class="linecount coveredLine show_coveredLine">1</td>
-        <td class="src coveredLine show_coveredLine"><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span></td>
+        <td class="src  coveredLine show_coveredLine"><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l44" href="#l44">44</a></td>
@@ -602,7 +602,7 @@
         <td class="linecondition">
         </td>
         <td class="linecount coveredLine show_coveredLine">1</td>
-        <td class="src coveredLine show_coveredLine"><span class="p">}</span></td>
+        <td class="src  coveredLine show_coveredLine"><span class="p">}</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l45" href="#l45">45</a></td>
@@ -610,8 +610,8 @@
         </td>
         <td class="linecondition">
         </td>
-        <td class="linecount  show_"></td>
-        <td class="src  show_"></td>
+        <td class="linecount"></td>
+        <td class="src "></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l46" href="#l46">46</a></td>
@@ -619,8 +619,8 @@
         </td>
         <td class="linecondition">
         </td>
-        <td class="linecount  show_"></td>
-        <td class="src  show_"></td>
+        <td class="linecount"></td>
+        <td class="src "></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l47" href="#l47">47</a></td>
@@ -629,7 +629,7 @@
         <td class="linecondition">
         </td>
         <td class="linecount coveredLine show_coveredLine">1</td>
-        <td class="src coveredLine show_coveredLine"><span class="kt">int</span><span class="w"> </span><span class="n">main</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">argc</span><span class="p">,</span><span class="w"> </span><span class="kt">char</span><span class="o">*</span><span class="w"> </span><span class="n">argv</span><span class="p">[])</span><span class="w"> </span><span class="p">{</span></td>
+        <td class="src  coveredLine show_coveredLine"><span class="kt">int</span><span class="w"> </span><span class="n">main</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">argc</span><span class="p">,</span><span class="w"> </span><span class="kt">char</span><span class="o">*</span><span class="w"> </span><span class="n">argv</span><span class="p">[])</span><span class="w"> </span><span class="p">{</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l48" href="#l48">48</a></td>
@@ -638,7 +638,7 @@
         <td class="linecondition">
         </td>
         <td class="linecount coveredLine show_coveredLine">1</td>
-        <td class="src coveredLine show_coveredLine"><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">function_with_catchers</span><span class="p">(</span><span class="n">argc</span><span class="p">);</span></td>
+        <td class="src  coveredLine show_coveredLine"><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">function_with_catchers</span><span class="p">(</span><span class="n">argc</span><span class="p">);</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l49" href="#l49">49</a></td>
@@ -646,8 +646,8 @@
         </td>
         <td class="linecondition">
         </td>
-        <td class="linecount  show_"></td>
-        <td class="src  show_"><span class="p">}</span></td>
+        <td class="linecount"></td>
+        <td class="src "><span class="p">}</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="l50" href="#l50">50</a></td>
@@ -655,17 +655,18 @@
         </td>
         <td class="linecondition">
         </td>
-        <td class="linecount  show_"></td>
-        <td class="src  show_"></td>
+        <td class="linecount"></td>
+        <td class="src "></td>
       </tr>
     </table>
   </div>
 </div>
-      <hr/>
-    </main>
-    <footer class="text-center">
-      Created using <a href="http://gcovr.com/en/main">GCOVR (Version 8.4+main)</a>
-      at 2025-09-28 18:09:21+00:00
-    </footer>
+        <hr/>
+      </main>
+      <footer class="text-center">
+        Created using <a href="http://gcovr.com/en/main">GCOVR (Version 8.4+main)</a>
+        at 2025-09-28 18:09:21+00:00
+      </footer>
+    </div>
   </body>
 </html>

@@ -405,10 +405,19 @@ def write_report(
     else:
         css_data += get_formatter(options).get_css()
 
+    if options.html_details or options.html_nested:
+        data["ROOT_FNAME"] = os.path.basename(output_file)
+        (output_prefix, output_suffix) = _get_prefix_and_suffix(output_file)
+        functions_output_file = f"{output_prefix}.functions{output_suffix}"
+        data["FUNCTIONS_FNAME"] = os.path.basename(functions_output_file)
+        if options.html_single_page:
+            # Remove the prefix to get shorter links
+            data["FUNCTIONS_FNAME"] = data["FUNCTIONS_FNAME"].split(".", maxsplit=1)[1]
+
     javascript_data = (
         None
         if options.html_single_page == "static"
-        else templates(options).get_template("gcovr.js").render().strip()
+        else templates(options).get_template("gcovr.js").render(**data).strip()
     )
 
     if self_contained:
@@ -514,15 +523,6 @@ def write_report(
         previous_link_report = link_report
 
     root_info.set_directory(force_unix_separator(root_directory))
-
-    if options.html_details or options.html_nested:
-        data["ROOT_FNAME"] = os.path.basename(output_file)
-        (output_prefix, output_suffix) = _get_prefix_and_suffix(output_file)
-        functions_output_file = f"{output_prefix}.functions{output_suffix}"
-        data["FUNCTIONS_FNAME"] = os.path.basename(functions_output_file)
-        if options.html_single_page:
-            # Remove the prefix to get shorter links
-            data["FUNCTIONS_FNAME"] = data["FUNCTIONS_FNAME"].split(".", maxsplit=1)[1]
 
     if options.html_single_page:
         write_single_page(
