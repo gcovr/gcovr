@@ -10,9 +10,7 @@ gcovr.fileLoaded = function () {
   gcovr.addOnClickHandler(".button_toggle_partialCoveredLine", gcovr.toggleLines);
   gcovr.addOnClickHandler(".button_toggle_excludedLine", gcovr.toggleLines);
 
-  document.querySelectorAll("div.sortable").forEach(header => {
-    header.addEventListener("click", () => gcovr.sortGridTable(header));
-  });
+  gcovr.addOnClickHandler("div.sortable", gcovr.sortGridTable);
 
   {% if info.single_page == "js-enabled" %}
   gcovr.singlePageSetup();
@@ -26,7 +24,10 @@ gcovr.fileLoaded = function () {
 };
 
 gcovr.addOnClickHandler = function (selector, handler) {
-  document.querySelectorAll(selector).forEach(elt => elt.addEventListener("click", handler));
+  document.querySelectorAll(selector).forEach(elt => {
+    elt.style.cursor = "pointer";
+    elt.addEventListener("click", handler)
+  });
 };
 
 {% if info.single_page == "js-enabled" %}
@@ -187,7 +188,8 @@ gcovr.buildScrollMarkers = function () {
     document.body.append(scroll_marker);
 };
 
-gcovr.sortGridTable = function (rowHeaderColumn) {
+gcovr.sortGridTable = function (event) {
+  const rowHeaderColumn = event.target.closest('div.sortable');
   const table = rowHeaderColumn.closest('.Box');
   const rows = Array.from(table.querySelectorAll('.Box-row'));
 

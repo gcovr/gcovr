@@ -14,7 +14,6 @@ a:visited
   text-decoration: underline;
 }
 
-{% if single_page == "js-enabled" %}
 .js-enabled .js-enabled-hidden {
   display: none
 }
@@ -23,7 +22,9 @@ a:visited
   display: none
 }
 
-{% endif %}
+.block-separator {
+  border-bottom: 5px solid var(--color-border-muted);
+}
 
 @media (max-width: 544px) {
   .filelist .Box-row {
@@ -49,7 +50,6 @@ button.button_toggle_partialCoveredLine {
   border: 1px solid;
   border-radius: 6px;
   color: var(--color-fg-default);
-  cursor: pointer;
   display: inline-flex;
   align-items: center;
   text-decoration: line-through;
@@ -82,6 +82,8 @@ a.nav {
   text-decoration: none;
   color: grey;
   padding-left: 1em;
+  white-space: nowrap;
+  overflow: hidden;
 }
 
 a.nav:hover {
