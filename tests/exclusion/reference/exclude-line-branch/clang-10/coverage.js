@@ -10,9 +10,7 @@ gcovr.fileLoaded = function () {
   gcovr.addOnClickHandler(".button_toggle_partialCoveredLine", gcovr.toggleLines);
   gcovr.addOnClickHandler(".button_toggle_excludedLine", gcovr.toggleLines);
 
-  document.querySelectorAll("div.sortable").forEach(header => {
-    header.addEventListener("click", () => gcovr.sortGridTable(header));
-  });
+  gcovr.addOnClickHandler("div.sortable", gcovr.sortGridTable);
 
   gcovr.source_table_body = document.querySelector(".source-table-container > table > tbody")
   gcovr.initScrollMarkers();
@@ -22,7 +20,10 @@ gcovr.fileLoaded = function () {
 };
 
 gcovr.addOnClickHandler = function (selector, handler) {
-  document.querySelectorAll(selector).forEach(elt => elt.addEventListener("click", handler));
+  document.querySelectorAll(selector).forEach(elt => {
+    elt.style.cursor = "pointer";
+    elt.addEventListener("click", handler)
+  });
 };
 
 
@@ -68,7 +69,8 @@ gcovr.buildScrollMarkers = function () {
     }
 
     const marker_scale = window.innerHeight / document.body.scrollHeight;
-    const line_height = Math.min(Math.max(3, window.innerHeight / gcovr.lines_len), 10);
+    const line_height = Math.max(3, window.innerHeight / gcovr.lines_len);
+    const offset_table_start = gcovr.source_table_body.querySelector("td").getBoundingClientRect().top;
 
     let previous_line = -99, last_mark, last_top;
 
@@ -77,7 +79,7 @@ gcovr.buildScrollMarkers = function () {
     gcovr.source_table_body.querySelectorAll(
       "tr:has(td.show_coveredLine), tr:has(td.show_uncoveredLine), tr:has(td.show_excludedLine), tr:has(td.show_partialCoveredLine)"
     ).forEach(element => {
-        const line_top = Math.floor(element.offsetTop * marker_scale);
+        const line_top = Math.floor((offset_table_start + element.offsetTop) * marker_scale);
         const line_number = parseInt(element.querySelector("td > a").textContent);
 
         if (line_number === previous_line + 1) {
@@ -102,7 +104,8 @@ gcovr.buildScrollMarkers = function () {
     document.body.append(scroll_marker);
 };
 
-gcovr.sortGridTable = function (rowHeaderColumn) {
+gcovr.sortGridTable = function (event) {
+  const rowHeaderColumn = event.target.closest('div.sortable');
   const table = rowHeaderColumn.closest('.Box');
   const rows = Array.from(table.querySelectorAll('.Box-row'));
 

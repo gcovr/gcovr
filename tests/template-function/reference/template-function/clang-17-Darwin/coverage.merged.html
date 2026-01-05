@@ -102,6 +102,9 @@ a:visited
   display: none
 }
 
+.block-separator {
+  border-bottom: 5px solid var(--color-border-muted);
+}
 
 @media (max-width: 544px) {
   .filelist .Box-row {
@@ -127,7 +130,6 @@ button.button_toggle_partialCoveredLine {
   border: 1px solid;
   border-radius: 6px;
   color: var(--color-fg-default);
-  cursor: pointer;
   display: inline-flex;
   align-items: center;
   text-decoration: line-through;
@@ -160,6 +162,8 @@ a.nav {
   text-decoration: none;
   color: grey;
   padding-left: 1em;
+  white-space: nowrap;
+  overflow: hidden;
 }
 
 a.nav:hover {
@@ -742,6 +746,27 @@ pre
   font-size: 12px !important
 }
 
+.Layout-main {
+  min-width: 0
+}
+
+@media(max-width: 543.98px) {
+  .Layout {
+    grid-auto-flow: row;
+    grid-template-columns: 1fr !important
+  }
+
+  .Layout .Layout-main {
+    grid-column: 1 !important;
+    width: 100% !important
+  }
+}
+
+.Layout-main .Layout-main-centered-lg {
+  margin-left: auto;
+  margin-right: auto
+}
+
 .Box {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
   font-size: var(--body-font-size, 14px);
@@ -804,6 +829,10 @@ pre
 
 .flex-justify-end {
   justify-content: flex-end !important
+}
+
+.flex-justify-center {
+  justify-content: center !important
 }
 
 .flex-wrap {
@@ -947,9 +976,7 @@ gcovr.fileLoaded = function () {
   gcovr.addOnClickHandler(".button_toggle_partialCoveredLine", gcovr.toggleLines);
   gcovr.addOnClickHandler(".button_toggle_excludedLine", gcovr.toggleLines);
 
-  document.querySelectorAll("div.sortable").forEach(header => {
-    header.addEventListener("click", () => gcovr.sortGridTable(header));
-  });
+  gcovr.addOnClickHandler("div.sortable", gcovr.sortGridTable);
 
   gcovr.singlePageSetup();
   window.addEventListener("resize", () => {
@@ -958,7 +985,10 @@ gcovr.fileLoaded = function () {
 };
 
 gcovr.addOnClickHandler = function (selector, handler) {
-  document.querySelectorAll(selector).forEach(elt => elt.addEventListener("click", handler));
+  document.querySelectorAll(selector).forEach(elt => {
+    elt.style.cursor = "pointer";
+    elt.addEventListener("click", handler)
+  });
 };
 
 gcovr.singlePageSetup = function () {
@@ -1083,7 +1113,8 @@ gcovr.buildScrollMarkers = function () {
     }
 
     const marker_scale = window.innerHeight / document.body.scrollHeight;
-    const line_height = Math.min(Math.max(3, window.innerHeight / gcovr.lines_len), 10);
+    const line_height = Math.max(3, window.innerHeight / gcovr.lines_len);
+    const offset_table_start = gcovr.source_table_body.querySelector("td").getBoundingClientRect().top;
 
     let previous_line = -99, last_mark, last_top;
 
@@ -1092,7 +1123,7 @@ gcovr.buildScrollMarkers = function () {
     gcovr.source_table_body.querySelectorAll(
       "tr:has(td.show_coveredLine), tr:has(td.show_uncoveredLine), tr:has(td.show_excludedLine), tr:has(td.show_partialCoveredLine)"
     ).forEach(element => {
-        const line_top = Math.floor(element.offsetTop * marker_scale);
+        const line_top = Math.floor((offset_table_start + element.offsetTop) * marker_scale);
         const line_number = parseInt(element.querySelector("td > a").textContent);
 
         if (line_number === previous_line + 1) {
@@ -1117,7 +1148,8 @@ gcovr.buildScrollMarkers = function () {
     document.body.append(scroll_marker);
 };
 
-gcovr.sortGridTable = function (rowHeaderColumn) {
+gcovr.sortGridTable = function (event) {
+  const rowHeaderColumn = event.target.closest('div.sortable');
   const table = rowHeaderColumn.closest('.Box');
   const rows = Array.from(table.querySelectorAll('.Box-row'));
 
@@ -1172,67 +1204,70 @@ document.addEventListener("DOMContentLoaded", () => {
   </head>
 
   <body class="js-disabled">
-    <div>
-      <header>
-        <h1>GCC Code Coverage Report</h1>
-        <hr/>
+    <div class="Layout-main">
+      <div class="Layout-main-centered-lg" style="max-width: 1280px;">
+        <div class="d-flex flex-justify-center">
+          <h1>GCC Code Coverage Report</h1>
+        </div>
+        <hr class="block-separator"/>
+        <header>
 <div id="summary" class="summary">
-<div>
-  <table class="legend">
-    <tr>
-      <th scope="row">Directory:</th>
-      <td>.</td>
-    </tr>
-    <tr>
-      <th scope="row">Coverage:</th>
-      <td class="legend">
-        <span class="coverage-low">low: &ge; 0%</span>
-        <span class="coverage-medium">medium: &ge; 75.0%</span>
-        <span class="coverage-high">high: &ge; 90.0%</span>
-      </td>
-    </tr>
-  </table>
+  <div>
+    <table class="legend">
+      <tr>
+        <th scope="row">Directory:</th>
+        <td>.</td>
+      </tr>
+      <tr>
+        <th scope="row">Coverage:</th>
+        <td class="legend">
+          <span class="coverage-low">low: &ge; 0%</span>
+          <span class="coverage-medium">medium: &ge; 75.0%</span>
+          <span class="coverage-high">high: &ge; 90.0%</span>
+        </td>
+      </tr>
+    </table>
+  </div>
+
+  <div>
+    <table class="coverage">
+      <tr>
+        <th></th>
+        <th scope="col">Coverage</th>
+        <th scope="col">Exec / Excl / Total</th>
+      </tr>
+      <tr>
+        <th scope="row">Lines:</th>
+        <td class="coverage-high">94.4%</td>
+        <td class="coverage-high">34 / 0 / 36</td>
+      </tr>
+      <tr>
+        <th scope="row">Functions:</th>
+        <td class="coverage-high">100.0%</td>
+        <td class="coverage-high">4 / 0 / 4</td>
+      </tr>
+      <tr>
+        <th scope="row">Branches:</th>
+        <td class="coverage-medium">76.7%</td>
+        <td class="coverage-medium">23 / 0 / 30</td>
+      </tr>
+      <tr>
+        <th scope="row">Decisions:</th>
+        <td class="coverage-low">58.3%</td>
+        <td class="coverage-low">7 / - / 12</td>
+      </tr>
+    </table>
+  </div>
 </div>
-
-<div>
-  <table class="coverage">
-    <tr>
-      <th></th>
-      <th scope="col">Coverage</th>
-      <th scope="col">Exec / Excl / Total</th>
-    </tr>
-    <tr>
-      <th scope="row">Lines:</th>
-      <td class="coverage-high">94.4%</td>
-      <td class="coverage-high">34 / 0 / 36</td>
-    </tr>
-    <tr>
-      <th scope="row">Functions:</th>
-      <td class="coverage-high">100.0%</td>
-      <td class="coverage-high">4 / 0 / 4</td>
-    </tr>
-    <tr>
-      <th scope="row">Branches:</th>
-      <td class="coverage-medium">76.7%</td>
-      <td class="coverage-medium">23 / 0 / 30</td>
-    </tr>
-    <tr>
-      <th scope="row">Decisions:</th>
-      <td class="coverage-low">58.3%</td>
-      <td class="coverage-low">7 / - / 12</td>
-    </tr>
-  </table>
-</div></div>
-
-        <hr/>
-      </header>
-      <nav>
-      </nav>
-      <main>
+        </header>
+        <nav>
+        </nav>
+        <main>
 <script>
   gcovr.root_dirname = "/";
 </script>
-<main id="merged.functions.html" class="js-enabled-hidden js-disabled-hidden" data-title="Functions">
+<hr class="js-disabled-hidden"/>
+<div id="merged.functions.html" class="js-enabled-hidden js-disabled-hidden" data-title="Functions">
   <details>
     <summary>Overall list of functions</summary>
     <nav class="function_page"><div class="Box m-3 functionslist">
@@ -1273,12 +1308,12 @@ document.addEventListener("DOMContentLoaded", () => {
   </div>
 </div>    </nav>
   </details>
-  <hr class="js-enabled-hidden"/>
-</main>
+</div>
 
-<main id="/" class="js-enabled-hidden" data-title="">
+<div id="/" class="js-enabled-hidden" data-title="">
   <nav>
-<a href="#merged.functions.html" class="js-disabled-hidden">List of functions</a>  </nav>
+<a href="#merged.functions.html" class="js-disabled-hidden">List of functions</a>
+  </nav>
 <div class="Box m-3 filelist">
   <div class="Box-header py-2 d-flex sticky">
     <div role="rowheader" class="color-fg-muted flex-auto min-width-0 col-md-2">File</div>
@@ -1319,56 +1354,57 @@ document.addEventListener("DOMContentLoaded", () => {
     </div>
   </div>
 </div>
-  <hr class="js-enabled-hidden"/>
-</main>
-
-<main id="merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html" class="js-enabled-hidden" data-title="main.cpp">
-  <div id="summary-merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html" class="summary js-enabled-hidden">
-<div>
-  <table class="legend">
-    <tr>
-      <th scope="row">Directory:</th>
-      <td>.</td>
-    </tr>
-    <tr>
-      <th scope="row">Coverage:</th>
-      <td class="legend">
-        <span class="coverage-low">low: &ge; 0%</span>
-        <span class="coverage-medium">medium: &ge; 75.0%</span>
-        <span class="coverage-high">high: &ge; 90.0%</span>
-      </td>
-    </tr>
-  </table>
+  <hr class="js-enabled-hidden block-separator"/>
 </div>
-<div>
-  <table class="coverage">
-    <tr>
-      <th></th>
-      <th scope="col">Coverage</th>
-      <th scope="col">Exec / Excl / Total</th>
-    </tr>
-    <tr>
-      <th scope="row">Lines:</th>
-      <td class="coverage-high">94.4%</td>
-      <td class="coverage-high">34 / 0 / 36</td>
-    </tr>
-    <tr>
-      <th scope="row">Functions:</th>
-      <td class="coverage-high">100.0%</td>
-      <td class="coverage-high">4 / 0 / 4</td>
-    </tr>
-    <tr>
-      <th scope="row">Branches:</th>
-      <td class="coverage-medium">76.7%</td>
-      <td class="coverage-medium">23 / 0 / 30</td>
-    </tr>
-    <tr>
-      <th scope="row">Decisions:</th>
-      <td class="coverage-low">58.3%</td>
-      <td class="coverage-low">7 / - / 12</td>
-    </tr>
-  </table>
-</div>  </div>
+
+<div id="merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html" class="js-enabled-hidden" data-title="main.cpp">
+<div id="summary-merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html" class="summaryjs-enabled-hidden">
+  <div>
+    <table class="legend">
+      <tr>
+        <th scope="row">Directory:</th>
+        <td>.</td>
+      </tr>
+      <tr>
+        <th scope="row">Coverage:</th>
+        <td class="legend">
+          <span class="coverage-low">low: &ge; 0%</span>
+          <span class="coverage-medium">medium: &ge; 75.0%</span>
+          <span class="coverage-high">high: &ge; 90.0%</span>
+        </td>
+      </tr>
+    </table>
+  </div>
+  <div>
+    <table class="coverage">
+      <tr>
+        <th></th>
+        <th scope="col">Coverage</th>
+        <th scope="col">Exec / Excl / Total</th>
+      </tr>
+      <tr>
+        <th scope="row">Lines:</th>
+        <td class="coverage-high">94.4%</td>
+        <td class="coverage-high">34 / 0 / 36</td>
+      </tr>
+      <tr>
+        <th scope="row">Functions:</th>
+        <td class="coverage-high">100.0%</td>
+        <td class="coverage-high">4 / 0 / 4</td>
+      </tr>
+      <tr>
+        <th scope="row">Branches:</th>
+        <td class="coverage-medium">76.7%</td>
+        <td class="coverage-medium">23 / 0 / 30</td>
+      </tr>
+      <tr>
+        <th scope="row">Decisions:</th>
+        <td class="coverage-low">58.3%</td>
+        <td class="coverage-low">7 / - / 12</td>
+      </tr>
+    </table>
+  </div>
+</div>  <hr/>
   <nav>
 <div class="m-3">
   <details>
@@ -2035,14 +2071,16 @@ document.addEventListener("DOMContentLoaded", () => {
       </tr>
     </table>
   </div>
-</div></main>
+</div></div>
 
-        <hr/>
-      </main>
-      <footer class="text-center">
-        Created using <a href="http://gcovr.com/en/main">GCOVR (Version 8.4+main)</a>
-        at 2025-09-28 18:09:21+00:00
-      </footer>
+        </main>
+        <hr class="block-separator"/>
+        <footer class="text-center">
+          Created using <a href="http://gcovr.com/en/main">GCOVR (Version 8.4+main)</a>
+          at 2025-09-28 18:09:21+00:00
+        </footer>
+      </div>
     </div>
   </body>
+
 </html>

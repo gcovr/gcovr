@@ -25,9 +25,7 @@ gcovr.fileLoaded = function () {
   gcovr.addOnClickHandler(".button_toggle_partialCoveredLine", gcovr.toggleLines);
   gcovr.addOnClickHandler(".button_toggle_excludedLine", gcovr.toggleLines);
 
-  document.querySelectorAll("div.sortable").forEach(header => {
-    header.addEventListener("click", () => gcovr.sortGridTable(header));
-  });
+  gcovr.addOnClickHandler("div.sortable", gcovr.sortGridTable);
 
   gcovr.source_table_body = document.querySelector(".source-table-container > table > tbody")
   gcovr.initScrollMarkers();
@@ -37,7 +35,10 @@ gcovr.fileLoaded = function () {
 };
 
 gcovr.addOnClickHandler = function (selector, handler) {
-  document.querySelectorAll(selector).forEach(elt => elt.addEventListener("click", handler));
+  document.querySelectorAll(selector).forEach(elt => {
+    elt.style.cursor = "pointer";
+    elt.addEventListener("click", handler)
+  });
 };
 
 
@@ -83,7 +84,8 @@ gcovr.buildScrollMarkers = function () {
     }
 
     const marker_scale = window.innerHeight / document.body.scrollHeight;
-    const line_height = Math.min(Math.max(3, window.innerHeight / gcovr.lines_len), 10);
+    const line_height = Math.max(3, window.innerHeight / gcovr.lines_len);
+    const offset_table_start = gcovr.source_table_body.querySelector("td").getBoundingClientRect().top;
 
     let previous_line = -99, last_mark, last_top;
 
@@ -92,7 +94,7 @@ gcovr.buildScrollMarkers = function () {
     gcovr.source_table_body.querySelectorAll(
       "tr:has(td.show_coveredLine), tr:has(td.show_uncoveredLine), tr:has(td.show_excludedLine), tr:has(td.show_partialCoveredLine)"
     ).forEach(element => {
-        const line_top = Math.floor(element.offsetTop * marker_scale);
+        const line_top = Math.floor((offset_table_start + element.offsetTop) * marker_scale);
         const line_number = parseInt(element.querySelector("td > a").textContent);
 
         if (line_number === previous_line + 1) {
@@ -117,7 +119,8 @@ gcovr.buildScrollMarkers = function () {
     document.body.append(scroll_marker);
 };
 
-gcovr.sortGridTable = function (rowHeaderColumn) {
+gcovr.sortGridTable = function (event) {
+  const rowHeaderColumn = event.target.closest('div.sortable');
   const table = rowHeaderColumn.closest('.Box');
   const rows = Array.from(table.querySelectorAll('.Box-row'));
 
@@ -172,59 +175,62 @@ document.addEventListener("DOMContentLoaded", () => {
   </head>
 
   <body>
-    <div>
-      <header>
-        <h1>GCC Code Coverage Report</h1>
-        <hr/>
-        <div class="summary">
-<div>
-  <table class="legend">
-    <tr>
-      <th scope="row">Directory:</th>
-      <td>.</td>
-    </tr>
-    <tr>
-      <th scope="row">Coverage:</th>
-      <td class="legend">
-        <span class="coverage-low">low: &ge; 0%</span>
-        <span class="coverage-medium">medium: &ge; 75.0%</span>
-        <span class="coverage-high">high: &ge; 90.0%</span>
-      </td>
-    </tr>
-  </table>
-</div>
-
-<div>
-  <table class="coverage">
-    <tr>
-      <th></th>
-      <th scope="col">Coverage</th>
-      <th scope="col">Exec / Excl / Total</th>
-    </tr>
-    <tr>
-      <th scope="row">Lines:</th>
-      <td class="coverage-high">100.0%</td>
-      <td class="coverage-high">2 / 0 / 2</td>
-    </tr>
-    <tr>
-      <th scope="row">Functions:</th>
-      <td class="coverage-high">100.0%</td>
-      <td class="coverage-high">1 / 0 / 1</td>
-    </tr>
-    <tr>
-      <th scope="row">Branches:</th>
-      <td class="coverage-unknown">-%</td>
-      <td class="coverage-unknown">0 / 0 / 0</td>
-    </tr>
-  </table>
-</div>
+    <div class="Layout-main">
+      <div class="Layout-main-centered-lg" style="max-width: 1280px;">
+        <div class="d-flex flex-justify-center">
+          <h1>GCC Code Coverage Report</h1>
         </div>
-        <hr/>
-      </header>
-      <nav>
+        <hr class="block-separator"/>
+        <header>
+<div id="summary" class="summary">
+  <div>
+    <table class="legend">
+      <tr>
+        <th scope="row">Directory:</th>
+        <td>.</td>
+      </tr>
+      <tr>
+        <th scope="row">Coverage:</th>
+        <td class="legend">
+          <span class="coverage-low">low: &ge; 0%</span>
+          <span class="coverage-medium">medium: &ge; 75.0%</span>
+          <span class="coverage-high">high: &ge; 90.0%</span>
+        </td>
+      </tr>
+    </table>
+  </div>
 
-      </nav>
-      <main>
+  <div>
+    <table class="coverage">
+      <tr>
+        <th></th>
+        <th scope="col">Coverage</th>
+        <th scope="col">Exec / Excl / Total</th>
+      </tr>
+      <tr>
+        <th scope="row">Lines:</th>
+        <td class="coverage-high">100.0%</td>
+        <td class="coverage-high">2 / 0 / 2</td>
+      </tr>
+      <tr>
+        <th scope="row">Functions:</th>
+        <td class="coverage-high">100.0%</td>
+        <td class="coverage-high">1 / 0 / 1</td>
+      </tr>
+      <tr>
+        <th scope="row">Branches:</th>
+        <td class="coverage-unknown">-%</td>
+        <td class="coverage-unknown">0 / 0 / 0</td>
+      </tr>
+    </table>
+  </div>
+</div>
+        </header>
+        <hr/>
+        <nav>
+
+        </nav>
+        <main>
 <div class="Box m-3 filelist">
   <div class="Box-header py-2 d-flex sticky">
     <div role="rowheader" class="color-fg-muted flex-auto min-width-0 col-md-2">File</div>
@@ -261,12 +267,14 @@ document.addEventListener("DOMContentLoaded", () => {
   </div>
 </div>
 
-        <hr/>
-      </main>
-      <footer class="text-center">
-        Created using <a href="http://gcovr.com/en/main">GCOVR (Version 8.4+main)</a>
-        at 2025-09-28 18:09:21+00:00
-      </footer>
+        </main>
+        <hr class="block-separator"/>
+        <footer class="text-center">
+          Created using <a href="http://gcovr.com/en/main">GCOVR (Version 8.4+main)</a>
+          at 2025-09-28 18:09:21+00:00
+        </footer>
+      </div>
     </div>
   </body>
+
 </html>
