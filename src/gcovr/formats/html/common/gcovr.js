@@ -154,7 +154,8 @@ gcovr.buildScrollMarkers = function () {
     }
 
     const marker_scale = window.innerHeight / document.body.scrollHeight;
-    const line_height = Math.min(Math.max(3, window.innerHeight / gcovr.lines_len), 10);
+    const line_height = Math.max(3, window.innerHeight / gcovr.lines_len);
+    const offset_table_start = gcovr.source_table_body.querySelector("td").getBoundingClientRect().top;
 
     let previous_line = -99, last_mark, last_top;
 
@@ -163,7 +164,7 @@ gcovr.buildScrollMarkers = function () {
     gcovr.source_table_body.querySelectorAll(
       "tr:has(td.show_coveredLine), tr:has(td.show_uncoveredLine), tr:has(td.show_excludedLine), tr:has(td.show_partialCoveredLine)"
     ).forEach(element => {
-        const line_top = Math.floor(element.offsetTop * marker_scale);
+        const line_top = Math.floor((offset_table_start + element.offsetTop) * marker_scale);
         const line_number = parseInt(element.querySelector("td > a").textContent);
 
         if (line_number === previous_line + 1) {
