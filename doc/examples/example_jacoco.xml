@@ -1,4 +1,4 @@
-<?xml version='1.0' encoding='UTF-8'?>
+<?xml version='1.0' encoding='utf-8'?>
 <!DOCTYPE report SYSTEM 'https://www.jacoco.org/jacoco/trunk/coverage/report.dtd'>
 <report name="GCOVR report">
   <package name="">

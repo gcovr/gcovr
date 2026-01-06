@@ -1,0 +1,52 @@
+From ab5317ff94fb6340917bf460953951eb5e2411d9 Mon Sep 17 00:00:00 2001
+From: Kevin Fullerton <kevin.fullerton1980@gmail.com>
+Date: Thu, 2 May 2024 11:23:45 +0000
+Subject: [PATCH] Added ability to set the viewport and associated options when
+ requesting a screenshot using the Puppeteer Page.setVIewport() method
+
+---
+ src/app.js | 14 ++++++++++++++
+ 1 file changed, 14 insertions(+)
+
+diff --git a/src/app.js b/src/app.js
+index 0c4c6a0..9337998 100644
+--- a/src/app.js
++++ b/src/app.js
+@@ -55,6 +55,7 @@ router.post(
+         type: yd.string().allow("jpeg", "png", "webp").default("png"),
+         quality: yd.number().min(0).max(100).default(100),
+         fullPage: yd.boolean().default(true),
++        fromSurface: yd.boolean().default(true),
+         clip: yd.object({
+           x: yd.number(),
+           y: yd.number(),
+@@ -63,6 +64,14 @@ router.post(
+         }),
+         omitBackground: yd.boolean().default(false),
+         encoding: yd.string().allow("base64", "binary").default("binary"),
++        viewport: yd.object({
++          width: yd.number().default(800),
++          height: yd.number().default(600),
++          deviceScaleFactory: yd.number().default(1),
++          hasTouch: yd.boolean().default(false),
++          isLandscape: yd.boolean().default(false),
++          isMobile: yd.boolean().default(false),
++        }),
+       })
+       .default({
+         scale: 1,
+@@ -78,6 +87,11 @@ router.post(
+     const browser = await getBrowser();
+     const page = await browser.newPage();
+
++    if (body.export.viewport) {
++      await page.setViewport(body.export.viewport);
++      delete body.export.viewport;
++    }
++
+     if (body.url) {
+       await page.goto(body.url, { waitUntil: "load" });
+     } else {
+--
+2.50.1 (Apple Git-155)
+

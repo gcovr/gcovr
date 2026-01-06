@@ -77,7 +77,7 @@ def test_examples(gcovr_test_exec: "GcovrTestExec", shell_script: Path) -> None:
     )
 
     # Read old file
-    baseline = baseline_file.read_bytes().decode(encoding="UTF-8")
+    baseline = baseline_file.read_bytes().decode(encoding="utf-8")
     baseline_scrubbed = scrub_function(baseline)
     current = None
     try:
@@ -87,7 +87,7 @@ def test_examples(gcovr_test_exec: "GcovrTestExec", shell_script: Path) -> None:
             gcovr_test_exec.output_dir / shell_script.name,
         )
         # Read new data
-        current = output_file.read_bytes().decode(encoding="UTF-8")
+        current = output_file.read_bytes().decode(encoding="utf-8")
         current_scrubbed = scrub_function(current)
 
         gcovr_test_exec._compare.assert_equals(  # pylint: disable=protected-access

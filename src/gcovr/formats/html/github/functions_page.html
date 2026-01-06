@@ -9,6 +9,7 @@
 {% endblock %}
 
 {% block content %}
-{% include "functions_page.content.html" %}
+{%- set function_list = all_functions %}
+{%  include "functions_page.content.html" %}
 
 {% endblock %}

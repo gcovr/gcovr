@@ -6,6 +6,7 @@
     "ignorePaths": [
         "/.git/",
         "/.gitbugtraq",
+        "/admin/*.patch",
         "/AUTHORS.txt",
         "/doc/source/conf.py",
         "/src/gcovr/formats/html/github/primer.css",
@@ -256,6 +257,14 @@
                 // cspell:disable
                 "functionslist",
                 "transy"
+                // cspell:enable
+            ]
+        },
+        {
+            "languageId": "html",
+            "ignoreWords": [
+                // cspell:disable
+                "functionslist"
                 // cspell:enable
             ]
         }

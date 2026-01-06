@@ -18,6 +18,9 @@
 # ****************************************************************************
 
 # pylint: disable=missing-function-docstring,missing-module-docstring
+# cspell:ignore getpreferredencoding
+
+from locale import getpreferredencoding
 import logging
 import re
 import textwrap
@@ -42,6 +45,7 @@ from gcovr.logging import configure_logging
 
 configure_logging()
 
+DEFAULT_SOURCE_ENCODING = getpreferredencoding()
 
 # This example is taken from the GCC 8 Gcov documentation:
 # <https://gcc.gnu.org/onlinedocs/gcc-8.1.0/gcc/Invoking-Gcov.html>
@@ -665,7 +669,8 @@ def test_negative_branch_count_json() -> None:
         list(
             json.parse_coverage(
                 "example.gcov.json.gz",
-                gcov_json_data=source,
+                source,
+                source_encoding=DEFAULT_SOURCE_ENCODING,
                 include_filter=tuple([AlwaysMatchFilter()]),
                 exclude_filter=tuple(),
                 ignore_parse_errors=set(),
@@ -762,8 +767,9 @@ def test_negative_branch_count_ignored_json(
 
     list(
         json.parse_coverage(
-            gcov_json_data=source,
-            data_fname="example.gcov.json.gz",
+            "example.gcov.json.gz",
+            source,
+            source_encoding=DEFAULT_SOURCE_ENCODING,
             include_filter=tuple([AlwaysMatchFilter()]),
             exclude_filter=tuple(),
             ignore_parse_errors=set([flag]),

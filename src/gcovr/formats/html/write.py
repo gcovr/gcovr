@@ -87,17 +87,24 @@ def get_theme_color(html_theme: str) -> str:
 def templates(options: Options) -> Environment:
     """Get the Jinja2 environment for the templates."""
     # As default use the package loader
-    loader: BaseLoader = PackageLoader(
-        "gcovr.formats.html",
-        package_path=get_theme_name(options.html_theme),
-    )
-
+    loaders: list[BaseLoader] = []
     # If a directory is given files in the directory have higher precedence.
     if options.html_template_dir is not None:
-        loader = ChoiceLoader([FileSystemLoader(options.html_template_dir), loader])
+        loaders.append(FileSystemLoader(options.html_template_dir))
+
+    loaders += [
+        PackageLoader(
+            "gcovr.formats.html",
+            package_path=get_theme_name(options.html_theme),
+        ),
+        PackageLoader(
+            "gcovr.formats.html",
+            package_path="common",
+        ),
+    ]
 
     return Environment(
-        loader=loader,
+        loader=ChoiceLoader(loaders),
         autoescape=True,
         trim_blocks=True,
         lstrip_blocks=True,
@@ -268,6 +275,15 @@ class RootInfo:
     """Class holding the information used in Jinja2 template."""
 
     def __init__(self, options: Options) -> None:
+        self.sort_by = (
+            "filename"
+            if options.sort_key == "filename"
+            else ("branches" if options.sort_branches else "lines")
+        )
+        self.sort_percent = options.sort_key != "uncovered-number"
+        self.sorted = (
+            "sorted-descending" if options.sort_reverse else "sorted-ascending"
+        )
         self.medium_threshold = options.medium_threshold
         self.high_threshold = options.high_threshold
         self.medium_threshold_line = options.medium_threshold_line
@@ -291,6 +307,7 @@ class RootInfo:
         self.calls = dict[str, Any]()
         self.functions = dict[str, Any]()
         self.lines = dict[str, Any]()
+        self.navigation = dict[str, tuple[Optional[str], Optional[str]]]()
 
     def set_directory(self, directory: str) -> None:
         """Set the directory for the report."""
@@ -388,11 +405,19 @@ def write_report(
     else:
         css_data += get_formatter(options).get_css()
 
+    javascript_data = (
+        None
+        if options.html_single_page == "static"
+        else templates(options).get_template("gcovr.js").render().strip()
+    )
+
     if self_contained:
         data["css"] = css_data
+        if javascript_data is not None:
+            data["javascript"] = javascript_data
     else:
         css_output = os.path.splitext(output_file)[0] + ".css"
-        with open_text_for_writing(css_output) as fh_out:
+        with open_text_for_writing(css_output, encoding="utf-8") as fh_out:
             fh_out.write(css_data)
             fh_out.write("\n")
 
@@ -401,6 +426,18 @@ def write_report(
         else:  # pragma: no cover  Can't be checked because of the reference compare
             css_link = css_output
         data["css_link"] = css_link
+
+        if javascript_data is not None:
+            javascript_output = os.path.splitext(output_file)[0] + ".js"
+            with open_text_for_writing(javascript_output) as fh_out:
+                fh_out.write(javascript_data)
+                fh_out.write("\n")
+
+            if options.html_relative_anchors:
+                javascript_link = os.path.basename(javascript_output)
+            else:  # pragma: no cover  Can't be checked because of the reference compare
+                javascript_link = javascript_output
+            data["javascript_link"] = javascript_link
 
     data["theme"] = get_theme_color(options.html_theme)
 
@@ -460,9 +497,26 @@ def write_report(
         if directory != "":
             root_directory = str(directory) + os.sep
 
+    previous_fname: Optional[str] = None
+    previous_link_report: Optional[str] = None
+    for fname in sorted(cdata_sourcefile.keys()):
+        root_info.navigation[fname] = (previous_link_report, None)
+        link_report = cdata_sourcefile[fname]
+        if link_report is not None:
+            if root_info.relative_anchors or root_info.single_page:
+                link_report = os.path.basename(link_report)
+        if previous_fname is not None:
+            root_info.navigation[previous_fname] = (
+                root_info.navigation[previous_fname][0],
+                link_report,
+            )
+        previous_fname = fname
+        previous_link_report = link_report
+
     root_info.set_directory(force_unix_separator(root_directory))
 
     if options.html_details or options.html_nested:
+        data["ROOT_FNAME"] = os.path.basename(output_file)
         (output_prefix, output_suffix) = _get_prefix_and_suffix(output_file)
         functions_output_file = f"{output_prefix}.functions{output_suffix}"
         data["FUNCTIONS_FNAME"] = os.path.basename(functions_output_file)
@@ -707,6 +761,7 @@ def get_coverage_data(
     cdata: Union[CoverageContainerDirectory, FileCoverage],
     link_report: str,
     cdata_fname: str,
+    relative_path: str = "",
 ) -> dict[str, Any]:
     """Get the coverage data"""
 
@@ -728,6 +783,13 @@ def get_coverage_data(
             coverage, medium_threshold_branch, high_threshold_branch
         )
 
+    def sort_value(coverage_stats: Union[CoverageStat, DecisionCoverageStat]) -> str:
+        return str(
+            coverage_stats.percent_or("-")
+            if root_info.sort_percent
+            else coverage_stats.total - coverage_stats.covered
+        )
+
     stats = cdata.stats
 
     is_file_with_lines = isinstance(cdata, FileCoverage) and cdata.has_lines()
@@ -739,6 +801,7 @@ def get_coverage_data(
         "class": line_coverage_class(
             stats.line.percent_or(100.0 if is_file_with_lines else None)
         ),
+        "sort": sort_value(stats.line),
     }
 
     branches = {
@@ -747,6 +810,7 @@ def get_coverage_data(
         "excluded": stats.branch.excluded,
         "coverage": stats.branch.percent_or("-"),
         "class": branch_coverage_class(stats.branch.percent),
+        "sort": sort_value(stats.branch),
     }
 
     conditions = {
@@ -755,6 +819,7 @@ def get_coverage_data(
         "excluded": stats.condition.excluded,
         "coverage": stats.condition.percent_or("-"),
         "class": branch_coverage_class(stats.condition.percent),
+        "sort": sort_value(stats.condition),
     }
 
     decisions = {
@@ -763,6 +828,7 @@ def get_coverage_data(
         "unchecked": stats.decision.uncheckable,
         "coverage": stats.decision.percent_or("-"),
         "class": coverage_class(stats.decision.percent),
+        "sort": sort_value(stats.decision),
     }
 
     functions = {
@@ -771,6 +837,7 @@ def get_coverage_data(
         "excluded": stats.function.excluded,
         "coverage": stats.function.percent_or("-"),
         "class": coverage_class(stats.function.percent),
+        "sort": sort_value(stats.function),
     }
 
     calls = {
@@ -779,10 +846,16 @@ def get_coverage_data(
         "excluded": stats.call.excluded,
         "coverage": stats.call.percent_or("-"),
         "class": coverage_class(stats.call.percent),
+        "sort": sort_value(stats.call),
     }
     display_filename = force_unix_separator(
         os.path.relpath(
-            os.path.realpath(cdata_fname), os.path.realpath(root_info.directory)
+            os.path.realpath(cdata_fname),
+            os.path.realpath(
+                os.path.join(root_info.directory, relative_path)
+                if relative_path
+                else root_info.directory
+            ),
         )
     )
 
@@ -815,8 +888,6 @@ def get_directory_data(
         relative_path = ""
     elif relative_path.startswith(root_info.directory):
         relative_path = relative_path[len(root_info.directory) :]
-    if len(relative_path) and relative_path[-1] == "/":
-        relative_path = relative_path[:-1]
     directory_data = dict[str, Any](
         {
             "dirname": (
@@ -844,6 +915,7 @@ def get_directory_data(
                 covdata_dir[key],
                 cdata_sourcefile[fname],
                 cdata_fname[fname],
+                relative_path,
             )
         )
 
@@ -865,6 +937,7 @@ def get_file_data(
 
     file_data = dict[str, Any](
         {
+            "fname": filename,
             "filename": cdata_fname[filename],
             "html_filename": os.path.basename(cdata_sourcefile[filename]),
             "source_lines": [],
@@ -957,6 +1030,17 @@ def get_file_data(
                         options.html_block_ids,
                     )
                 )
+
+    file_data["lines"]["uncovered"] = len(
+        [row for row in file_data["source_lines"] if row["covclass"] == "uncoveredLine"]
+    )
+    file_data["lines"]["partial"] = len(
+        [
+            row
+            for row in file_data["source_lines"]
+            if row["covclass"] == "partialCoveredLine"
+        ]
+    )
 
     return file_data, functions, file_not_found
 

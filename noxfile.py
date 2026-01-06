@@ -285,7 +285,7 @@ def doc(session: nox.Session) -> None:
 
     session.log("Read current release from CHANGELOG.rst...")
     changelog_rst = Path("CHANGELOG.rst")
-    with changelog_rst.open(encoding="UTF-8") as fh_in:
+    with changelog_rst.open(encoding="utf-8") as fh_in:
         lines = fh_in.readlines()
 
     out_lines = list[str]()
@@ -325,13 +325,13 @@ def doc(session: nox.Session) -> None:
     release_notes_md = Path() / "doc" / "build" / "release_notes.md"
     session.log(f"Write {release_notes_md}...")
     release_notes_md.parent.mkdir(exist_ok=True)
-    with release_notes_md.open("w", encoding="UTF-8") as fh_out:
+    with release_notes_md.open("w", encoding="utf-8") as fh_out:
         fh_out.writelines(out_lines)
 
     re_issue = re.compile(r"#(\d+)")
     job_summary_md = Path() / "doc" / "build" / "job_summary.md"
     session.log(f"Write {job_summary_md}...")
-    with job_summary_md.open("w", encoding="UTF-8") as fh_out:
+    with job_summary_md.open("w", encoding="utf-8") as fh_out:
         fh_out.write(f"# {gcovr_version}\n")
         fh_out.writelines(
             re_issue.sub(r"[#\1](https://github.com/gcovr/gcovr/issues/\1)", out)
@@ -349,7 +349,7 @@ def doc(session: nox.Session) -> None:
 
     # Build the Sphinx documentation
     with session.chdir("doc"):
-        with open("examples/gcovr.out", "w", encoding="UTF-8") as fh_out:
+        with open("examples/gcovr.out", "w", encoding="utf-8") as fh_out:
             session.run("gcovr", "-h", stdout=fh_out)
         for builder in ("linkcheck", "html", "latex", "epub"):
             if (
@@ -559,6 +559,44 @@ def html2jpeg(session: nox.Session) -> None:
     """Create JPEGs from HTML for documentation"""
     import requests  # pylint: disable=import-outside-toplevel
 
+    session.log("Build patched image of bedrockio/export-html...")
+    with session.chdir(session.cache_dir):
+        if not Path("export-html").exists():
+            session.run(
+                "git",
+                "clone",
+                "https://github.com/bedrockio/export-html.git",
+                external=True,
+            )
+        with session.chdir("export-html"):
+            session.run(
+                "git",
+                "checkout",
+                "228f0fdf42cc31f1269f31f015e94e0b1f423c6d",
+                "--",
+                ".",
+                external=True,
+            )
+            session.run("git", "reset", "--hard", external=True)
+            session.run(
+                "git",
+                "apply",
+                str(
+                    Path(__file__).parent
+                    / "admin"
+                    / "0001-Added-ability-to-set-the-viewport-and-associated-opt.patch"
+                ),
+                external=True,
+            )
+            session.run(
+                "docker",
+                "build",
+                "-t",
+                "bedrockio/export-html-patched",
+                ".",
+                external=True,
+            )
+
     # Create a socket
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     # Bind the socket to localhost and let the OS assign a free port number
@@ -577,7 +615,7 @@ def html2jpeg(session: nox.Session) -> None:
                 "--detach",
                 "-p",
                 f"{port}:2305",
-                "bedrockio/export-html",
+                "bedrockio/export-html-patched",
             ]
         ).strip()
 
@@ -589,7 +627,7 @@ def html2jpeg(session: nox.Session) -> None:
 
         def screenshot(html: str, jpeg: str, size: tuple[int, int]) -> None:
             def read_file(file: str) -> str:
-                with open(file, encoding="UTF-8") as fh_in:
+                with open(file, encoding="utf-8") as fh_in:
                     return " ".join(fh_in.readlines()).replace("\n", "")
 
             content = re.sub(
@@ -603,6 +641,7 @@ def html2jpeg(session: nox.Session) -> None:
                     "type": "jpeg",
                     "fullPage": False,
                     "clip": {"x": 1, "y": 1, "width": size[0], "height": size[1]},
+                    "viewport": {"width": size[0], "height": size[1]},
                 },
             }
             session.log(f"Generating {jpeg} from {html}...")
@@ -631,42 +670,42 @@ def html2jpeg(session: nox.Session) -> None:
         screenshot(
             "doc/examples/example_html.html",
             "doc/images/screenshot-html.jpeg",
-            (800, 290),
+            (1150, 375),
         )
         screenshot(
             "doc/examples/example_html.details.example.cpp.9597a7a3397b8e3a48116e2a3afb4154.html",
             "doc/images/screenshot-html-details.example.cpp.jpeg",
-            (800, 600),
+            (1150, 825),
         )
         screenshot(
-            "tests/html-themes/reference/gcc-5/coverage.green.main.cpp.118fcbaaba162ba17933c7893247df3a.html",
+            "tests/html/reference/theme-default-green/gcc-5/coverage.main.cpp.118fcbaaba162ba17933c7893247df3a.html",
             "doc/images/screenshot-html-default-green-src.jpeg",
-            (800, 290),
+            (1150, 500),
         )
         screenshot(
-            "tests/html-themes/reference/gcc-5/coverage.blue.main.cpp.118fcbaaba162ba17933c7893247df3a.html",
+            "tests/html/reference/theme-default-blue/gcc-5/coverage.main.cpp.118fcbaaba162ba17933c7893247df3a.html",
             "doc/images/screenshot-html-default-blue-src.jpeg",
-            (800, 290),
+            (1150, 500),
         )
         screenshot(
-            "tests/html-themes-github/reference/gcc-5/coverage.green.main.cpp.118fcbaaba162ba17933c7893247df3a.html",
+            "tests/html/reference/theme-github-green/gcc-5/coverage.main.cpp.118fcbaaba162ba17933c7893247df3a.html",
             "doc/images/screenshot-html-github-green-src.jpeg",
-            (800, 500),
+            (1150, 480),
         )
         screenshot(
-            "tests/html-themes-github/reference/gcc-5/coverage.blue.main.cpp.118fcbaaba162ba17933c7893247df3a.html",
+            "tests/html/reference/theme-github-blue/gcc-5/coverage.main.cpp.118fcbaaba162ba17933c7893247df3a.html",
             "doc/images/screenshot-html-github-blue-src.jpeg",
-            (800, 500),
+            (1150, 480),
         )
         screenshot(
-            "tests/html-themes-github/reference/gcc-5/coverage.dark-green.main.cpp.118fcbaaba162ba17933c7893247df3a.html",
+            "tests/html/reference/theme-github-dark-green/gcc-5/coverage.main.cpp.118fcbaaba162ba17933c7893247df3a.html",
             "doc/images/screenshot-html-github-dark-green-src.jpeg",
-            (800, 500),
+            (1150, 480),
         )
         screenshot(
-            "tests/html-themes-github/reference/gcc-5/coverage.dark-blue.main.cpp.118fcbaaba162ba17933c7893247df3a.html",
+            "tests/html/reference/theme-github-dark-blue/gcc-5/coverage.main.cpp.118fcbaaba162ba17933c7893247df3a.html",
             "doc/images/screenshot-html-github-dark-blue-src.jpeg",
-            (800, 500),
+            (1150, 480),
         )
 
 

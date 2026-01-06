@@ -192,7 +192,7 @@ def process_gcov_json_data(
         "trace", data_fname, options.trace_include_filter, options.trace_exclude_filter
     )
 
-    with gzip.open(data_fname, "rt", encoding="UTF-8") as fh_in:
+    with gzip.open(data_fname, "rt", encoding="utf-8") as fh_in:
         gcov_json_data = json_loads(fh_in.read())
         if activate_trace_logging:
             LOGGER.trace(

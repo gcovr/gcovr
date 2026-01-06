@@ -29,10 +29,8 @@ The behavior of this parser was informed by the following sources:
   <https://gcc.gnu.org/onlinedocs/gcc-14.1.0/gcc/Invoking-Gcov.html>
 """
 # pylint: disable=too-many-lines
-# cspell:ignore getpreferredencoding
 
 import os
-from locale import getpreferredencoding
 from typing import Any, Iterator, Optional
 
 from gcovr.utils import get_md5_hexdigest, read_source_file
@@ -48,8 +46,6 @@ from .common import (
 
 GCOV_JSON_VERSION = "2"
 
-DEFAULT_SOURCE_ENCODING = getpreferredencoding()
-
 
 def parse_coverage(
     data_fname: str,
@@ -57,9 +53,9 @@ def parse_coverage(
     *,
     include_filter: tuple[Filter, ...],
     exclude_filter: tuple[Filter, ...],
+    source_encoding: str,
     ignore_parse_errors: Optional[set[str]],
     suspicious_hits_threshold: int = SUSPICIOUS_COUNTER,
-    source_encoding: str = DEFAULT_SOURCE_ENCODING,
     activate_trace_logging: bool = False,
 ) -> Iterator[tuple[FileCoverage, list[str]]]:
     """Process a GCOV JSON output."""

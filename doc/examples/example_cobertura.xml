@@ -1,4 +1,4 @@
-<?xml version='1.0' encoding='UTF-8'?>
+<?xml version='1.0' encoding='utf-8'?>
 <!DOCTYPE coverage SYSTEM 'http://cobertura.sourceforge.net/xml/coverage-04.dtd'>
 <coverage line-rate="0.8571428571428571" branch-rate="0.5" lines-covered="6" lines-valid="7" branches-covered="1" branches-valid="2" complexity="0.0" timestamp="1759082961" version="gcovr 8.4+main">
   <sources>
