@@ -1058,7 +1058,11 @@ def gcovr_test_exec(  # type: ignore[no-untyped-def]
                 test_id=test_id,
                 capsys=capsys,
                 check=check,
-                markers=list(request.node.iter_markers()),
+                markers=[
+                    m
+                    for m in request.node.iter_markers()
+                    if m.name not in ("skipif", "parametrize")
+                ],
                 compare=GcovrTestCompare(
                     output_dir=output_dir,
                     test_id=test_id,
