@@ -1,9 +1,12 @@
 import typing
 
+import pytest
+
 if typing.TYPE_CHECKING:
     from tests.conftest import GcovrTestExec
 
 
+@pytest.mark.json
 def test_oos_1(gcovr_test_exec: "GcovrTestExec") -> None:
     """Test out-of-source build and coverage."""
     build_dir = gcovr_test_exec.output_dir / "build"
@@ -22,6 +25,7 @@ def test_oos_1(gcovr_test_exec: "GcovrTestExec") -> None:
     gcovr_test_exec.compare_json()
 
 
+@pytest.mark.json
 def test_oos_2(gcovr_test_exec: "GcovrTestExec") -> None:
     """Test out-of-source build and coverage."""
     build_dir = gcovr_test_exec.output_dir / "build"

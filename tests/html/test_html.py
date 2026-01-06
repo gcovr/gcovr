@@ -167,6 +167,8 @@ PARAMETERS = [
     PARAMETERS,
     ids=[p[0] for p in PARAMETERS],
 )
+@pytest.mark.html
+@pytest.mark.html
 def test(
     gcovr_test_exec: "GcovrTestExec", _test_id: str, options: typing.List[str]
 ) -> None:
@@ -185,6 +187,8 @@ def test(
     GcovrTestExec.cc_version() >= (8 if GcovrTestExec.is_gcc() else 12),
     reason="Newer versions stub the missing lines",
 )
+@pytest.mark.html
+@pytest.mark.html
 def test_less_lines(  # type: ignore[no-untyped-def]
     gcovr_test_exec: "GcovrTestExec",
     check,
@@ -241,6 +245,8 @@ PARAMETERS_ENCODING = [
     PARAMETERS_ENCODING,
     ids=[p[0] for p in PARAMETERS_ENCODING],
 )
+@pytest.mark.html
+@pytest.mark.html
 def test_encoding(
     gcovr_test_exec: "GcovrTestExec",
     _test_id: str,
@@ -278,6 +284,8 @@ def test_empty_nested_report(gcovr_test_exec: "GcovrTestExec") -> None:
     )
 
 
+@pytest.mark.html
+@pytest.mark.html
 def test_file_not_found(gcovr_test_exec: "GcovrTestExec") -> None:
     """Test HTML output when file is not found, using tracefile."""
     # No compilation needed, just run gcovr with tracefile
@@ -291,6 +299,8 @@ def test_file_not_found(gcovr_test_exec: "GcovrTestExec") -> None:
     gcovr_test_exec.compare_html()
 
 
+@pytest.mark.html
+@pytest.mark.html
 def test_template_dir(gcovr_test_exec: "GcovrTestExec") -> None:
     """Test HTML single page output variants."""
     gcovr_test_exec.cxx_link(
@@ -393,6 +403,8 @@ PARAMETERS_NESTED = [
     PARAMETERS_NESTED,
     ids=[p[0] for p in PARAMETERS_NESTED],
 )
+@pytest.mark.html
+@pytest.mark.html
 def test_nested(
     gcovr_test_exec: "GcovrTestExec", test_id: str, options: typing.List[str]
 ) -> None:

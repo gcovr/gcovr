@@ -14,6 +14,7 @@ from tests.conftest import IS_LINUX, GcovrTestExec
     not IS_LINUX,
     reason="Merging of branches is independent of OS and we do not want to have separate data for Windows and Darwin.",
 )
+@pytest.mark.json
 def test_different_branches(gcovr_test_exec: "GcovrTestExec") -> None:
     """Test merging different branch information for same line."""
 
@@ -60,6 +61,8 @@ def test_different_branches(gcovr_test_exec: "GcovrTestExec") -> None:
         "separate",
     ],
 )
+@pytest.mark.json
+@pytest.mark.html
 def test_different_functions(  # type: ignore[no-untyped-def]
     gcovr_test_exec: "GcovrTestExec",
     caplog: pytest.LogCaptureFixture,

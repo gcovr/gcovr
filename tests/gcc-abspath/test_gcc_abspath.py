@@ -1,9 +1,11 @@
+import pytest
 import typing
 
 if typing.TYPE_CHECKING:
     from tests.conftest import GcovrTestExec
 
 
+@pytest.mark.json
 def test(gcovr_test_exec: "GcovrTestExec") -> None:
     """Test gcc-abspath coverage."""
     needed_option = "-fprofile-abs-path"

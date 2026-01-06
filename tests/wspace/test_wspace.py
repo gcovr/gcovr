@@ -1,12 +1,22 @@
 from pathlib import Path
 import typing
+import pytest
 
 if typing.TYPE_CHECKING:
     from tests.conftest import GcovrTestExec
 
 
+@pytest.mark.cobertura
+@pytest.mark.coveralls
+@pytest.mark.html
+@pytest.mark.jacoco
+@pytest.mark.json
+@pytest.mark.lcov
+@pytest.mark.sonarqube
+@pytest.mark.txt
 def test(gcovr_test_exec: "GcovrTestExec") -> None:
     """Test workspace coverage."""
+
     gcovr_test_exec.cxx_link("testcase", "main.cpp", cwd=Path("src code"))
     gcovr_test_exec.run("./testcase", cwd=Path("src code"))
     gcovr_test_exec.gcovr(

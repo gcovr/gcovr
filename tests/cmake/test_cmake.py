@@ -12,6 +12,7 @@ from tests.conftest import GCOVR_ISOLATED_TEST, GcovrTestExec
     not GCOVR_ISOLATED_TEST,
     reason="Only available in isolated docker test.",
 )
+@pytest.mark.json
 def test_gtest(gcovr_test_exec: "GcovrTestExec") -> None:
     """Test cmake with gtest."""
     for file in (gcovr_test_exec.output_dir / "gtest").glob("*"):
@@ -43,6 +44,7 @@ def test_gtest(gcovr_test_exec: "GcovrTestExec") -> None:
     gcovr_test_exec.compare_json()
 
 
+@pytest.mark.json
 def test_oos_makefile(gcovr_test_exec: "GcovrTestExec") -> None:
     """Test CMake out of source build with makefile."""
     for file in (gcovr_test_exec.output_dir / "simple_main").glob("*"):
@@ -78,6 +80,7 @@ def test_oos_makefile(gcovr_test_exec: "GcovrTestExec") -> None:
     not GCOVR_ISOLATED_TEST,
     reason="Only available in isolated docker test.",
 )
+@pytest.mark.json
 def test_oos_makefile_ccache(gcovr_test_exec: "GcovrTestExec", check) -> None:  # type: ignore[no-untyped-def]
     """Test CMake out of source build with makefile."""
     for file in (gcovr_test_exec.output_dir / "simple_main").glob("*"):
@@ -130,6 +133,7 @@ def test_oos_makefile_ccache(gcovr_test_exec: "GcovrTestExec", check) -> None:  
     gcovr_test_exec.compare_json()
 
 
+@pytest.mark.json
 def test_oos_ninja(gcovr_test_exec: "GcovrTestExec") -> None:
     """Test CMake out of source build with ninja."""
     for file in (gcovr_test_exec.output_dir / "simple_main").glob("*"):
@@ -164,6 +168,7 @@ def test_oos_ninja(gcovr_test_exec: "GcovrTestExec") -> None:
     not GCOVR_ISOLATED_TEST,
     reason="Only available in isolated docker test.",
 )
+@pytest.mark.json
 def test_oos_ninja_ccache(gcovr_test_exec: "GcovrTestExec", check) -> None:  # type: ignore[no-untyped-def]
     """Test CMake out of source build with ninja."""
     for file in (gcovr_test_exec.output_dir / "simple_main").glob("*"):

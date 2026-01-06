@@ -933,13 +933,6 @@ class GcovrTestExec:
                 output_pattern=["coverage*.json"],
             )
 
-    def compare_json_summary(self) -> None:
-        """Compare the JSON summary output files."""
-        with self.check:
-            self._compare.compare_files(
-                output_pattern=["coverage_summary*.json"],
-            )
-
     def compare_html(self, encoding: str = "utf8") -> None:
         """Compare the HTML report files."""
         with self.check:

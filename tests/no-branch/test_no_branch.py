@@ -1,9 +1,18 @@
 import typing
+import pytest
 
 if typing.TYPE_CHECKING:
     from tests.conftest import GcovrTestExec
 
 
+@pytest.mark.html
+@pytest.mark.cobertura
+@pytest.mark.coveralls
+@pytest.mark.html
+@pytest.mark.jacoco
+@pytest.mark.lcov
+@pytest.mark.sonarqube
+@pytest.mark.txt
 def test(gcovr_test_exec: "GcovrTestExec") -> None:
     """A simple test that verifies line coverage with no branches."""
     gcovr_test_exec.cxx_link("testcase", "main.cpp")

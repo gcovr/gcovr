@@ -8,6 +8,15 @@ if typing.TYPE_CHECKING:
     from tests.conftest import GcovrTestExec
 
 
+@pytest.mark.json
+@pytest.mark.markdown
+@pytest.mark.txt
+@pytest.mark.clover
+@pytest.mark.cobertura
+@pytest.mark.coveralls
+@pytest.mark.jacoco
+@pytest.mark.sonarqube
+@pytest.mark.html
 def test_standard(gcovr_test_exec: "GcovrTestExec") -> None:
     """Test excluding of functions."""
     gcovr_test_exec.cxx_link(
@@ -83,6 +92,15 @@ def test_standard(gcovr_test_exec: "GcovrTestExec") -> None:
     gcovr_test_exec.compare_sonarqube()
 
 
+@pytest.mark.json
+@pytest.mark.txt
+@pytest.mark.clover
+@pytest.mark.cobertura
+@pytest.mark.lcov
+@pytest.mark.coveralls
+@pytest.mark.jacoco
+@pytest.mark.sonarqube
+@pytest.mark.html
 def test_stdout(gcovr_test_exec: "GcovrTestExec") -> None:
     """Test excluding of functions."""
     gcovr_test_exec.cxx_link(
@@ -183,6 +201,17 @@ def test_stdout(gcovr_test_exec: "GcovrTestExec") -> None:
     gcovr_test_exec.compare_sonarqube()
 
 
+@pytest.mark.json
+@pytest.mark.csv
+@pytest.mark.markdown
+@pytest.mark.html
+@pytest.mark.txt
+@pytest.mark.clover
+@pytest.mark.cobertura
+@pytest.mark.coveralls
+@pytest.mark.jacoco
+@pytest.mark.lcov
+@pytest.mark.sonarqube
 def test_directory_output(gcovr_test_exec: "GcovrTestExec") -> None:
     """Test all files at once with output directory."""
     (gcovr_test_exec.output_dir / "output").mkdir()
@@ -210,8 +239,8 @@ def test_directory_output(gcovr_test_exec: "GcovrTestExec") -> None:
 
     for file in (gcovr_test_exec.output_dir / "output").glob("*.*"):
         file.rename(gcovr_test_exec.output_dir / file.name)
-    gcovr_test_exec.compare_csv()
     gcovr_test_exec.compare_json()
+    gcovr_test_exec.compare_csv()
     gcovr_test_exec.compare_markdown()
     gcovr_test_exec.compare_html()
     gcovr_test_exec.compare_txt()

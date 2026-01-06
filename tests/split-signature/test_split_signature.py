@@ -7,6 +7,16 @@ from tests.conftest import IS_LINUX, GcovrTestExec
     not IS_LINUX,
     reason="Split of signature is independent of OS and we do not want to have separate data for Windows and Darwin.",
 )
+@pytest.mark.html
+@pytest.mark.clover
+@pytest.mark.cobertura
+@pytest.mark.coveralls
+@pytest.mark.html
+@pytest.mark.jacoco
+@pytest.mark.json
+@pytest.mark.lcov
+@pytest.mark.sonarqube
+@pytest.mark.txt
 def test(gcovr_test_exec: "GcovrTestExec") -> None:
     """Test split-signature coverage."""
     gcovr_test_exec.cxx_link(

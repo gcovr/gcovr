@@ -15,6 +15,7 @@ SKIP_TEST = not IS_LINUX and not (IS_DARWIN and not IS_GCC and CC_VERSION == 17)
     SKIP_TEST,
     reason="Format is independent of OS and we do not want to have separate data for Windows and Darwin.",
 )
+@pytest.mark.txt
 def test_summary(gcovr_test_exec: "GcovrTestExec") -> None:
     """Test of text summary."""
     gcovr_test_exec.cxx_link(
@@ -37,6 +38,7 @@ def test_summary(gcovr_test_exec: "GcovrTestExec") -> None:
     SKIP_TEST,
     reason="Format is independent of OS and we do not want to have separate data for Windows and Darwin.",
 )
+@pytest.mark.txt
 def test_summary_full(gcovr_test_exec: "GcovrTestExec") -> None:
     """Test of text summary."""
     gcovr_test_exec.cxx_link(
@@ -61,6 +63,7 @@ def test_summary_full(gcovr_test_exec: "GcovrTestExec") -> None:
     SKIP_TEST,
     reason="Format is independent of OS and we do not want to have separate data for Windows and Darwin.",
 )
+@pytest.mark.txt
 def test_default(gcovr_test_exec: "GcovrTestExec") -> None:
     """Test text output coverage."""
     gcovr_test_exec.cxx_link(
@@ -77,6 +80,7 @@ def test_default(gcovr_test_exec: "GcovrTestExec") -> None:
     SKIP_TEST,
     reason="Format is independent of OS and we do not want to have separate data for Windows and Darwin.",
 )
+@pytest.mark.txt
 def test_branches(gcovr_test_exec: "GcovrTestExec") -> None:
     """Test branch metric in text output."""
     gcovr_test_exec.cxx_link(
@@ -95,6 +99,7 @@ def test_branches(gcovr_test_exec: "GcovrTestExec") -> None:
     SKIP_TEST,
     reason="Format is independent of OS and we do not want to have separate data for Windows and Darwin.",
 )
+@pytest.mark.txt
 def test_report_covered(gcovr_test_exec: "GcovrTestExec") -> None:
     """Test covered lines in text output."""
     gcovr_test_exec.cxx_link(
@@ -113,6 +118,7 @@ def test_report_covered(gcovr_test_exec: "GcovrTestExec") -> None:
     SKIP_TEST,
     reason="Format is independent of OS and we do not want to have separate data for Windows and Darwin.",
 )
+@pytest.mark.txt
 def test_report_covered_branches(gcovr_test_exec: "GcovrTestExec") -> None:
     """Test branch metric with covered report in text output."""
     gcovr_test_exec.cxx_link("testcase", "main.cpp")

@@ -1,3 +1,4 @@
+import pytest
 import os
 from pathlib import Path
 import typing
@@ -83,6 +84,11 @@ def report(gcovr_test_exec: "GcovrTestExec") -> None:
     gcovr_test_exec.compare_sonarqube()
 
 
+@pytest.mark.json
+@pytest.mark.cobertura
+@pytest.mark.coveralls
+@pytest.mark.sonarqube
+@pytest.mark.txt
 def test_from_build_dir(gcovr_test_exec: "GcovrTestExec") -> None:
     """Test calling from build directory."""
     build(gcovr_test_exec)
@@ -104,6 +110,11 @@ def test_from_build_dir(gcovr_test_exec: "GcovrTestExec") -> None:
     report(gcovr_test_exec)
 
 
+@pytest.mark.json
+@pytest.mark.cobertura
+@pytest.mark.coveralls
+@pytest.mark.sonarqube
+@pytest.mark.txt
 def test_from_build_dir_without_object_dir(gcovr_test_exec: "GcovrTestExec") -> None:
     """Test calling from build directory without object directory."""
     build(gcovr_test_exec)
@@ -124,6 +135,11 @@ def test_from_build_dir_without_object_dir(gcovr_test_exec: "GcovrTestExec") -> 
     report(gcovr_test_exec)
 
 
+@pytest.mark.json
+@pytest.mark.cobertura
+@pytest.mark.coveralls
+@pytest.mark.sonarqube
+@pytest.mark.txt
 def test_from_build_dir_without_search_dir(gcovr_test_exec: "GcovrTestExec") -> None:
     """Test calling from build directory without search directory."""
     build(gcovr_test_exec)
@@ -153,6 +169,11 @@ def test_from_build_dir_without_search_dir(gcovr_test_exec: "GcovrTestExec") -> 
     report(gcovr_test_exec)
 
 
+@pytest.mark.json
+@pytest.mark.cobertura
+@pytest.mark.coveralls
+@pytest.mark.sonarqube
+@pytest.mark.txt
 def test_from_root_dir(gcovr_test_exec: "GcovrTestExec") -> None:
     """Test calling from root directory."""
     build(gcovr_test_exec)
@@ -171,6 +192,11 @@ def test_from_root_dir(gcovr_test_exec: "GcovrTestExec") -> None:
     report(gcovr_test_exec)
 
 
+@pytest.mark.json
+@pytest.mark.cobertura
+@pytest.mark.coveralls
+@pytest.mark.sonarqube
+@pytest.mark.txt
 def test_from_root_dir_without_object_dir(gcovr_test_exec: "GcovrTestExec") -> None:
     """Test calling from root directory without object directory."""
     build(gcovr_test_exec)
@@ -188,6 +214,11 @@ def test_from_root_dir_without_object_dir(gcovr_test_exec: "GcovrTestExec") -> N
     report(gcovr_test_exec)
 
 
+@pytest.mark.json
+@pytest.mark.cobertura
+@pytest.mark.coveralls
+@pytest.mark.sonarqube
+@pytest.mark.txt
 def test_from_root_dir_without_search_dir(gcovr_test_exec: "GcovrTestExec") -> None:
     """Test calling from root directory without search directory."""
     build(gcovr_test_exec)

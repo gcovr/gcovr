@@ -1,10 +1,18 @@
 import os
 import typing
+import pytest
 
 if typing.TYPE_CHECKING:
     from tests.conftest import GcovrTestExec
 
 
+@pytest.mark.html
+@pytest.mark.cobertura
+@pytest.mark.coveralls
+@pytest.mark.html
+@pytest.mark.jacoco
+@pytest.mark.sonarqube
+@pytest.mark.txt
 def test(gcovr_test_exec: "GcovrTestExec") -> None:
     # Build shared library and test app
 

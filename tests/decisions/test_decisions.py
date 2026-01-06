@@ -9,6 +9,10 @@ from tests.conftest import IS_LINUX, USE_PROFDATA_POSSIBLE, GcovrTestExec
     not IS_LINUX,
     reason="Parsing of decision is independent of OS and we do not want to have separate data for Windows and Darwin.",
 )
+@pytest.mark.html
+@pytest.mark.html
+@pytest.mark.json
+@pytest.mark.txt
 def test_decisions(gcovr_test_exec: "GcovrTestExec") -> None:
     """Test of decision parsing."""
     gcovr_test_exec.cxx_link(
@@ -77,6 +81,7 @@ def test_decisions(gcovr_test_exec: "GcovrTestExec") -> None:
     not USE_PROFDATA_POSSIBLE,
     reason="Parsing of decision is independent of OS and we do not want to have separate data for Windows and Darwin and LLVM profdata is not compatible with GCC coverage data.",
 )
+@pytest.mark.json
 def test_decisions_llvm_profdata(gcovr_test_exec: "GcovrTestExec", check) -> None:  # type: ignore[no-untyped-def]
     """Test of decision parsing."""
     gcovr_test_exec.use_llvm_profdata = True
@@ -134,6 +139,9 @@ def test_decisions_llvm_profdata(gcovr_test_exec: "GcovrTestExec", check) -> Non
     not IS_LINUX,
     reason="Parsing of decision is independent of OS and we do not want to have separate data for Windows and Darwin.",
 )
+@pytest.mark.html
+@pytest.mark.json
+@pytest.mark.txt
 def test_decisions_neg_delta(gcovr_test_exec: "GcovrTestExec") -> None:
     """This test case causes a negative delta value during the multiline decision analysis, which results in a:
     DecisionCoverageUncheckable: decision and a debug log

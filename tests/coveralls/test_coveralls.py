@@ -76,6 +76,7 @@ PARAMETERS = [
     PARAMETERS,
     ids=[p[0] for p in PARAMETERS],
 )
+@pytest.mark.coveralls
 def test_ci(
     gcovr_test_exec: "GcovrTestExec", _test_id: str, env: dict[str, str]
 ) -> None:

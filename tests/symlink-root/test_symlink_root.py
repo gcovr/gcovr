@@ -1,3 +1,4 @@
+import pytest
 from pathlib import Path
 import typing
 
@@ -5,6 +6,7 @@ if typing.TYPE_CHECKING:
     from tests.conftest import GcovrTestExec
 
 
+@pytest.mark.txt
 def test(gcovr_test_exec: "GcovrTestExec") -> None:
     """A test that verifies coverage when using symlinks to create a root directory."""
     (gcovr_test_exec.output_dir / "symlink").symlink_to(

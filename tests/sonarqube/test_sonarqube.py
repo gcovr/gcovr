@@ -11,6 +11,7 @@ if typing.TYPE_CHECKING:
     "metric",
     ["line", "branch", "condition", "decision"],
 )
+@pytest.mark.sonarqube
 def test_metric(gcovr_test_exec: "GcovrTestExec", metric: str) -> None:
     """Test excluding of functions."""
     gcovr_test_exec.cxx_link(

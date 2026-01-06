@@ -1,9 +1,11 @@
+import pytest
 import typing
 
 if typing.TYPE_CHECKING:
     from tests.conftest import GcovrTestExec
 
 
+@pytest.mark.txt
 def test(gcovr_test_exec: "GcovrTestExec") -> None:
     """Test with many lines to check if we do not get 100% if we have at least one uncovered line."""
     gcovr_test_exec.cxx_link(

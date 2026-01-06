@@ -7,6 +7,7 @@ from tests.conftest import IS_LINUX, GcovrTestExec
     not IS_LINUX,
     reason="Merging is independent of OS and we do not want to have separate data for Windows and Darwin.",
 )
+@pytest.mark.json
 def test(gcovr_test_exec: "GcovrTestExec") -> None:
     """A test that verifies CoverageData.update function.
 

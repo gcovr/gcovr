@@ -37,6 +37,16 @@ def subst(gcovr_test_exec: "GcovrTestExec") -> typing.Iterator[Path]:
 
 
 @pytest.mark.skipif(platform.system() != "Windows", reason="Only for windows")
+@pytest.mark.html
+@pytest.mark.clover
+@pytest.mark.cobertura
+@pytest.mark.coveralls
+@pytest.mark.html
+@pytest.mark.jacoco
+@pytest.mark.json
+@pytest.mark.lcov
+@pytest.mark.sonarqube
+@pytest.mark.txt
 def test_drive_subst(gcovr_test_exec: "GcovrTestExec") -> None:
     """Test with drive substitution on Windows."""
 
