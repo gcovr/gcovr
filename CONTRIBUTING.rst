@@ -446,6 +446,12 @@ or only for the tests containing ``simple`` in the name:
 
     python3 -m nox -s 'docker_compiler(all)' -- -rs tests -- --update-reference -k 'simple'
 
+or only for the tests for ``html`` format:
+
+.. code:: bash
+
+    python3 -m nox -s 'docker_compiler(all)' -- -rs tests -- --update-reference -m 'html'
+
 .. _devcontainer:
 
 Use a devcontainer
