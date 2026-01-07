@@ -21,7 +21,19 @@ from typing import Union
 
 from ...data_model.container import CoverageContainer
 from ...formats.base import BaseHandler
-from ...options import GcovrConfigOption, OutputOrDefault
+from ...options import (
+    GcovrConfigOption,
+    GcovrDeprecatedConfigOptionAction,
+    OutputOrDefault,
+)
+
+
+class UseLcovFormatVersion(GcovrDeprecatedConfigOptionAction):
+    """Argparse action to map old option --lcov-format-v1 to new option --lcov-format-version=1.x."""
+
+    option = "--lcov-format-version"
+    config = "lcov_format_version"
+    value = "1.x"
 
 
 class LcovHandler(BaseHandler):
@@ -45,11 +57,21 @@ class LcovHandler(BaseHandler):
                 const=OutputOrDefault(None),
             ),
             GcovrConfigOption(
-                "lcov_format_v1",
+                "lcov_format_version",
+                ["--lcov-format-version"],
+                config="lcov_format_version",
+                group="output_options",
+                help="The format version to write.",
+                choices=("1.x", "2.0"),
+                default="2.2",
+            ),
+            GcovrConfigOption(
+                "lcov_format_version",
                 ["--lcov-format-1.x"],
                 group="output_options",
-                help="Write format from LCOV version 1.x instead of 2.x.",
-                action="store_true",
+                help="Deprecated, please use --lcov-format-version=1.x instead.",
+                nargs=0,
+                action=UseLcovFormatVersion,
             ),
             GcovrConfigOption(
                 "lcov_comment",
