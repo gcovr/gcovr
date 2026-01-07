@@ -7,6 +7,15 @@ from tests.conftest import GcovrTestExec
     GcovrTestExec.is_gcc() and GcovrTestExec.cc_version() in [5, 6],
     reason="The branch and call numbers differ in locale execution and CI",
 )
+@pytest.mark.html
+@pytest.mark.clover
+@pytest.mark.cobertura
+@pytest.mark.coveralls
+@pytest.mark.jacoco
+@pytest.mark.json
+@pytest.mark.lcov
+@pytest.mark.sonarqube
+@pytest.mark.txt
 def test(gcovr_test_exec: "GcovrTestExec") -> None:
     """Test virtual-classes coverage."""
     gcovr_test_exec.cxx_link(

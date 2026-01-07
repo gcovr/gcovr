@@ -5,6 +5,13 @@ import pytest
 from tests.conftest import CXX, IS_LINUX, GcovrTestExec
 
 
+@pytest.mark.html
+@pytest.mark.cobertura
+@pytest.mark.coveralls
+@pytest.mark.jacoco
+@pytest.mark.lcov
+@pytest.mark.sonarqube
+@pytest.mark.txt
 def test_absolute(gcovr_test_exec: "GcovrTestExec") -> None:
     """A simple test for filtering source files using absolute filepaths from existing unfiltered JSON report."""
     gcovr_test_exec.cxx_link(
@@ -66,6 +73,12 @@ def test_absolute(gcovr_test_exec: "GcovrTestExec") -> None:
     gcovr_test_exec.compare_sonarqube()
 
 
+@pytest.mark.html
+@pytest.mark.cobertura
+@pytest.mark.jacoco
+@pytest.mark.lcov
+@pytest.mark.sonarqube
+@pytest.mark.txt
 def test_absolute_from_unfiltered_tracefile(gcovr_test_exec: "GcovrTestExec") -> None:
     """A simple test for filtering source files using absolute filepaths from existing unfiltered JSON report."""
     gcovr_test_exec.cxx_link(
@@ -124,6 +137,13 @@ def test_absolute_from_unfiltered_tracefile(gcovr_test_exec: "GcovrTestExec") ->
     gcovr_test_exec.compare_sonarqube()
 
 
+@pytest.mark.html
+@pytest.mark.cobertura
+@pytest.mark.coveralls
+@pytest.mark.jacoco
+@pytest.mark.lcov
+@pytest.mark.sonarqube
+@pytest.mark.txt
 def test_relative(gcovr_test_exec: "GcovrTestExec") -> None:
     """A simple test for filtering source files using relative filepaths."""
     gcovr_test_exec.cxx_link(
@@ -185,6 +205,12 @@ def test_relative(gcovr_test_exec: "GcovrTestExec") -> None:
     gcovr_test_exec.compare_sonarqube()
 
 
+@pytest.mark.html
+@pytest.mark.cobertura
+@pytest.mark.jacoco
+@pytest.mark.lcov
+@pytest.mark.sonarqube
+@pytest.mark.txt
 def test_relative_from_unfiltered_tracefile(gcovr_test_exec: "GcovrTestExec") -> None:
     """A simple test for filtering source files using relative filepaths from existing unfiltered JSON report."""
     gcovr_test_exec.cxx_link(
@@ -241,6 +267,13 @@ def test_relative_from_unfiltered_tracefile(gcovr_test_exec: "GcovrTestExec") ->
     gcovr_test_exec.compare_sonarqube()
 
 
+@pytest.mark.html
+@pytest.mark.cobertura
+@pytest.mark.coveralls
+@pytest.mark.jacoco
+@pytest.mark.lcov
+@pytest.mark.sonarqube
+@pytest.mark.txt
 def test_relative_lib(gcovr_test_exec: "GcovrTestExec") -> None:
     """A simple test for filtering source files using relative filepaths."""
     for entry in (gcovr_test_exec.output_dir / "relative_lib").glob("*"):
@@ -339,6 +372,11 @@ def test_relative_lib(gcovr_test_exec: "GcovrTestExec") -> None:
     gcovr_test_exec.compare_sonarqube()
 
 
+@pytest.mark.cobertura
+@pytest.mark.jacoco
+@pytest.mark.lcov
+@pytest.mark.sonarqube
+@pytest.mark.txt
 def test_relative_lib_from_unfiltered_tracefile(
     gcovr_test_exec: "GcovrTestExec",
 ) -> None:
@@ -423,6 +461,7 @@ def test_relative_lib_from_unfiltered_tracefile(
     not IS_LINUX,
     reason="File inclusion is independent of OS and we do not want to have separate data for Windows and Darwin.",
 )
+@pytest.mark.json
 def test_include(gcovr_test_exec: "GcovrTestExec") -> None:
     """Test include filtering and multiple HTML themes."""
     # Compile file1.cpp without coverage flags, then main.cpp with coverage

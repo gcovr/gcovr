@@ -22,6 +22,7 @@ Breaking changes:
   - Add common stylesheet for all themes. (:issue:`1220`)
   - Add navigation links to source details. (:issue:`1220`)
   - Add buttons to toggle line background color in source details view. (:issue:`1221`)
+  - Add a document overview with all active lines in source details view. (:issue:`1222`)
 
 New features and notable changes:
 
@@ -78,7 +79,8 @@ Internal changes:
     - ``--archive_differences`` is now ``--archive-differences``
     - ``--skip_clean`` is now ``--skip-clean``
 
-  - Remove test with MacOs 13 because image will be retired by December 4th, 2025.
+  - Remove test with MacOs 13 because image was retired.
+  - Add markers to tests for the different report formats. (:issue:`1223`)
 
 - Activate parallel test execution by default and improve IDE support. (:issue:`1174`)
 - Add :option:`--trace-include` and :option:`--trace-exclude` to get additional output

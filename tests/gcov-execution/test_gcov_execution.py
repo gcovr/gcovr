@@ -192,6 +192,7 @@ def test_wd_not_found(gcovr_test_exec: "GcovrTestExec", check) -> None:  # type:
     CHMOD_IS_WORKING,
     reason="Only available in docker on hosts != MacOs",
 )
+@pytest.mark.json
 def test_ignore_output_error(gcovr_test_exec: "GcovrTestExec", check) -> None:  # type: ignore[no-untyped-def]
     """Test ignoring GCOV output errors."""
 
@@ -236,6 +237,7 @@ def test_ignore_output_error(gcovr_test_exec: "GcovrTestExec", check) -> None:  
     CHMOD_IS_WORKING,
     reason="Only available in docker on hosts != MacOs",
 )
+@pytest.mark.json
 def test_ignore_source_not_found(gcovr_test_exec: "GcovrTestExec", check) -> None:  # type: ignore[no-untyped-def]
     """Test ignoring GCOV source not found errors."""
 
@@ -281,6 +283,7 @@ def test_ignore_source_not_found(gcovr_test_exec: "GcovrTestExec", check) -> Non
     CHMOD_IS_WORKING,
     reason="Only available in docker on hosts != MacOs",
 )
+@pytest.mark.json
 def test_ignore_no_working_dir_found(gcovr_test_exec: "GcovrTestExec", check) -> None:  # type: ignore[no-untyped-def]
     """Test gcov-no_working_dir_found logic."""
 

@@ -8,6 +8,14 @@ from tests.conftest import IS_WINDOWS, GcovrTestExec
     IS_WINDOWS,
     reason="Dot-folders have no special meaning on Windows and we do not want to have separate data for Windows and Darwin.",
 )
+@pytest.mark.html
+@pytest.mark.cobertura
+@pytest.mark.coveralls
+@pytest.mark.jacoco
+@pytest.mark.json
+@pytest.mark.lcov
+@pytest.mark.sonarqube
+@pytest.mark.txt
 def test(gcovr_test_exec: "GcovrTestExec") -> None:
     """Test adding a tracefile output."""
     (gcovr_test_exec.output_dir / "subdir").rename(

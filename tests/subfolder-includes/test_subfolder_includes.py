@@ -1,10 +1,12 @@
 from pathlib import Path
 import typing
+import pytest
 
 if typing.TYPE_CHECKING:
     from tests.conftest import GcovrTestExec
 
 
+@pytest.mark.html
 def test(gcovr_test_exec: "GcovrTestExec") -> None:
     """Test subfolder includes coverage."""
     gcovr_test_exec.cxx_link(

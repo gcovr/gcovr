@@ -10,59 +10,63 @@
   </head>
 
   <body>
+    <div class="Layout-main">
+      <div class="Layout-main-centered-lg" style="max-width: 1280px;">
+        <div class="d-flex flex-justify-center">
+          <h1>GCC Code Coverage Report</h1>
+        </div>
+        <hr class="block-separator"/>
+        <header>
+<div id="summary" class="summary">
+  <div>
+    <table class="legend">
+      <tr>
+        <th scope="row">Directory:</th>
+        <td>.</td>
+      </tr>
+      <tr>
+        <th scope="row">Coverage:</th>
+        <td class="legend">
+          <span class="coverage-low">low: &ge; 0%</span>
+          <span class="coverage-medium">medium: &ge; 75.0%</span>
+          <span class="coverage-high">high: &ge; 90.0%</span>
+        </td>
+      </tr>
+    </table>
+  </div>
 
-    <header>
-      <h1>GCC Code Coverage Report</h1>
-      <hr/>
-      <div class="summary">
-<div>
-  <table class="legend">
-    <tr>
-      <th scope="row">Directory:</th>
-      <td>.</td>
-    </tr>
-    <tr>
-      <th scope="row">Coverage:</th>
-      <td class="legend">
-        <span class="coverage-low">low: &ge; 0%</span>
-        <span class="coverage-medium">medium: &ge; 75.0%</span>
-        <span class="coverage-high">high: &ge; 90.0%</span>
-      </td>
-    </tr>
-  </table>
+  <div>
+    <table class="coverage">
+      <tr>
+        <th></th>
+        <th scope="col">Coverage</th>
+        <th scope="col">Exec / Excl / Total</th>
+      </tr>
+      <tr>
+        <th scope="row">Lines:</th>
+        <td class="coverage-high">92.0%</td>
+        <td class="coverage-high">23 / 4 / 29</td>
+      </tr>
+      <tr>
+        <th scope="row">Functions:</th>
+        <td class="coverage-high">100.0%</td>
+        <td class="coverage-high">7 / 0 / 7</td>
+      </tr>
+      <tr>
+        <th scope="row">Branches:</th>
+        <td class="coverage-low">47.7%</td>
+        <td class="coverage-low">21 / 10 / 54</td>
+      </tr>
+    </table>
+  </div>
 </div>
-
-<div>
-  <table class="coverage">
-    <tr>
-      <th></th>
-      <th scope="col">Coverage</th>
-      <th scope="col">Exec / Excl / Total</th>
-    </tr>
-    <tr>
-      <th scope="row">Lines:</th>
-      <td class="coverage-high">92.0%</td>
-      <td class="coverage-high">23 / 4 / 29</td>
-    </tr>
-    <tr>
-      <th scope="row">Functions:</th>
-      <td class="coverage-high">100.0%</td>
-      <td class="coverage-high">7 / 0 / 7</td>
-    </tr>
-    <tr>
-      <th scope="row">Branches:</th>
-      <td class="coverage-low">47.7%</td>
-      <td class="coverage-low">21 / 10 / 54</td>
-    </tr>
-  </table>
-</div>
-      </div>
-      <hr/>
-    </header>
-    <nav>
+        </header>
+        <hr/>
+        <nav>
 <a href="coverage.functions.html">List of functions</a>
-    </nav>
-    <main>
+
+        </nav>
+        <main>
 <div class="Box m-3 filelist">
   <div class="Box-header py-2 d-flex sticky">
     <div role="rowheader" class="color-fg-muted flex-auto min-width-0 col-md-2">File</div>
@@ -99,11 +103,14 @@
   </div>
 </div>
 
-      <hr/>
-    </main>
-    <footer class="text-center">
-      Created using <a href="http://gcovr.com/en/main">GCOVR (Version 8.4+main)</a>
-      at 2025-09-28 18:09:21+00:00
-    </footer>
+        </main>
+        <hr class="block-separator"/>
+        <footer class="text-center">
+          Created using <a href="http://gcovr.com/en/main">GCOVR (Version 8.4+main)</a>
+          at 2025-09-28 18:09:21+00:00
+        </footer>
+      </div>
+    </div>
   </body>
+
 </html>

@@ -11,6 +11,8 @@ if typing.TYPE_CHECKING:
     "sort",
     ["uncovered-percent", "uncovered-number"],
 )
+@pytest.mark.html
+@pytest.mark.txt
 def test(gcovr_test_exec: "GcovrTestExec", sort: str) -> None:
     """Test excluding of functions."""
     gcovr_test_exec.cxx_link(

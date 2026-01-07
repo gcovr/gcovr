@@ -49,6 +49,7 @@ def build_bazel_example(gcovr_test_exec: "GcovrTestExec") -> dict[str, str]:
     BAZEL is None or IS_WINDOWS or (IS_DARWIN and IS_GCC) or not IS_GCC,
     reason="Bazel test not working on Windows or on MacOs (with gcc).",
 )
+@pytest.mark.json
 def test_run_on_our_own(gcovr_test_exec: "GcovrTestExec") -> None:
     """Test bazel build."""
     build_bazel_example(gcovr_test_exec)
@@ -76,6 +77,7 @@ def test_run_on_our_own(gcovr_test_exec: "GcovrTestExec") -> None:
     BAZEL is None or IS_WINDOWS or IS_DARWIN or not IS_GCC,
     reason="Bazel test not working on Windows and MacOs or with LLVM/clang.",
 )
+@pytest.mark.json
 def test_bazel_coverage(gcovr_test_exec: "GcovrTestExec") -> None:
     """Test bazel build."""
     env = build_bazel_example(gcovr_test_exec)

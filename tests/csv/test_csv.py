@@ -1,3 +1,4 @@
+import pytest
 import typing
 
 
@@ -5,6 +6,7 @@ if typing.TYPE_CHECKING:
     from tests.conftest import GcovrTestExec
 
 
+@pytest.mark.csv
 def test(gcovr_test_exec: "GcovrTestExec") -> None:
     """Test for generation of CSV report."""
     gcovr_test_exec.cxx_link(
