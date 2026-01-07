@@ -78,7 +78,8 @@ Internal changes:
     - ``--archive_differences`` is now ``--archive-differences``
     - ``--skip_clean`` is now ``--skip-clean``
 
-  - Remove test with MacOs 13 because image will be retired by December 4th, 2025.
+  - Remove test with MacOs 13 because image was retired.
+  - Add markers to tests for the different report formats. (:issue:`1223`)
 
 - Activate parallel test execution by default and improve IDE support. (:issue:`1174`)
 - Add :option:`--trace-include` and :option:`--trace-exclude` to get additional output

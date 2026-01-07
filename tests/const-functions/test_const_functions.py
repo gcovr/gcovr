@@ -1,10 +1,20 @@
 import typing
+import pytest
 
 
 if typing.TYPE_CHECKING:
     from tests.conftest import GcovrTestExec
 
 
+@pytest.mark.clover
+@pytest.mark.cobertura
+@pytest.mark.coveralls
+@pytest.mark.html
+@pytest.mark.jacoco
+@pytest.mark.json
+@pytest.mark.lcov
+@pytest.mark.sonarqube
+@pytest.mark.txt
 def test(gcovr_test_exec: "GcovrTestExec") -> None:
     """Test with same function const overload."""
     gcovr_test_exec.cxx_link(

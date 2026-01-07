@@ -7,6 +7,14 @@ from tests.conftest import IS_DARWIN, IS_LINUX, GcovrTestExec
     not IS_LINUX,
     reason="Exclusion markers are independent of OS and we do not want to have separate data for Windows and Darwin.",
 )
+@pytest.mark.html
+@pytest.mark.cobertura
+@pytest.mark.coveralls
+@pytest.mark.jacoco
+@pytest.mark.json
+@pytest.mark.lcov
+@pytest.mark.sonarqube
+@pytest.mark.txt
 def test_exclude_line(  # type: ignore[no-untyped-def]
     gcovr_test_exec: "GcovrTestExec",
     check,
@@ -75,6 +83,14 @@ def test_exclude_line(  # type: ignore[no-untyped-def]
     not IS_LINUX,
     reason="Exclusion markers are independent of OS and we do not want to have separate data for Windows and Darwin.",
 )
+@pytest.mark.html
+@pytest.mark.cobertura
+@pytest.mark.coveralls
+@pytest.mark.jacoco
+@pytest.mark.json
+@pytest.mark.lcov
+@pytest.mark.sonarqube
+@pytest.mark.txt
 def test_exclude_line_custom(gcovr_test_exec: "GcovrTestExec") -> None:
     """This test case verifies that custom tagged lines (LINE/START/STOP) are excluded per run options.
     It uses exclude_pattern_prefix to pass a custom prefix."""
@@ -145,6 +161,15 @@ def test_exclude_line_custom(gcovr_test_exec: "GcovrTestExec") -> None:
     not IS_LINUX,
     reason="Exclusion markers are independent of OS and we do not want to have separate data for Windows and Darwin.",
 )
+@pytest.mark.html
+@pytest.mark.clover
+@pytest.mark.cobertura
+@pytest.mark.coveralls
+@pytest.mark.jacoco
+@pytest.mark.json
+@pytest.mark.lcov
+@pytest.mark.sonarqube
+@pytest.mark.txt
 def test_exclude_line_branch(gcovr_test_exec: "GcovrTestExec") -> None:
     """Test for --exclude-unreachable-branches option.
 
@@ -256,6 +281,13 @@ def test_exclude_line_branch(gcovr_test_exec: "GcovrTestExec") -> None:
     gcovr_test_exec.compare_sonarqube()
 
 
+@pytest.mark.html
+@pytest.mark.cobertura
+@pytest.mark.coveralls
+@pytest.mark.jacoco
+@pytest.mark.lcov
+@pytest.mark.sonarqube
+@pytest.mark.txt
 def test_exclude_lines_by_pattern(gcovr_test_exec: "GcovrTestExec") -> None:
     """This test case verifies that custom tagged lines (LINE/START/STOP) are excluded per run options.
     It uses exclude_pattern_prefix to pass a custom prefix."""
@@ -324,6 +356,14 @@ def test_exclude_lines_by_pattern(gcovr_test_exec: "GcovrTestExec") -> None:
     not IS_LINUX,
     reason="Exclusion markers are independent of OS and we do not want to have separate data for Windows and Darwin.",
 )
+@pytest.mark.html
+@pytest.mark.cobertura
+@pytest.mark.coveralls
+@pytest.mark.jacoco
+@pytest.mark.json
+@pytest.mark.lcov
+@pytest.mark.sonarqube
+@pytest.mark.txt
 def test_exclude_branch(gcovr_test_exec: "GcovrTestExec") -> None:
     """This test case verifies that tagged lines (BR_LINE/BR_START/BR_STOP) are excluded per run options."""
     gcovr_test_exec.cxx_link(
@@ -392,6 +432,14 @@ def test_exclude_branch(gcovr_test_exec: "GcovrTestExec") -> None:
     not IS_LINUX,
     reason="Exclusion markers are independent of OS and we do not want to have separate data for Windows and Darwin.",
 )
+@pytest.mark.html
+@pytest.mark.cobertura
+@pytest.mark.coveralls
+@pytest.mark.jacoco
+@pytest.mark.json
+@pytest.mark.lcov
+@pytest.mark.sonarqube
+@pytest.mark.txt
 def test_exclude_branch_source(  # type: ignore[no-untyped-def]
     gcovr_test_exec: "GcovrTestExec",
     check,
@@ -491,6 +539,14 @@ def test_exclude_branch_source(  # type: ignore[no-untyped-def]
     gcovr_test_exec.compare_sonarqube()
 
 
+@pytest.mark.html
+@pytest.mark.cobertura
+@pytest.mark.coveralls
+@pytest.mark.jacoco
+@pytest.mark.json
+@pytest.mark.lcov
+@pytest.mark.sonarqube
+@pytest.mark.txt
 def test_exclude_branch_without_hit(  # type: ignore[no-untyped-def]
     gcovr_test_exec: "GcovrTestExec",
     check,
@@ -582,6 +638,14 @@ def test_exclude_branch_without_hit(  # type: ignore[no-untyped-def]
     not IS_LINUX,
     reason="Exclusion of throw branches is independent of OS and we do not want to have separate data for Windows and Darwin.",
 )
+@pytest.mark.html
+@pytest.mark.cobertura
+@pytest.mark.coveralls
+@pytest.mark.jacoco
+@pytest.mark.json
+@pytest.mark.lcov
+@pytest.mark.sonarqube
+@pytest.mark.txt
 def test_exclude_throw_branches(gcovr_test_exec: "GcovrTestExec") -> None:
     """Test exclude-throw-branches option."""
     gcovr_test_exec.cxx_link(
@@ -668,6 +732,14 @@ def test_exclude_throw_branches(gcovr_test_exec: "GcovrTestExec") -> None:
     gcovr_test_exec.compare_sonarqube()
 
 
+@pytest.mark.html
+@pytest.mark.cobertura
+@pytest.mark.coveralls
+@pytest.mark.jacoco
+@pytest.mark.json
+@pytest.mark.lcov
+@pytest.mark.sonarqube
+@pytest.mark.txt
 def test_exclude_directories_relative(gcovr_test_exec: "GcovrTestExec") -> None:
     """A simple test for excluding gcov files using relative directory paths."""
     (gcovr_test_exec.output_dir / "build" / "a").mkdir(parents=True)
@@ -732,6 +804,7 @@ def test_exclude_directories_relative(gcovr_test_exec: "GcovrTestExec") -> None:
     gcovr_test_exec.compare_sonarqube()
 
 
+@pytest.mark.json
 def test_exclude_file_relative(gcovr_test_exec: "GcovrTestExec") -> None:
     """A simple test for excluding source files using relative filepaths."""
     gcovr_test_exec.cxx_link("testcase", "main.cpp", "file1.cpp")
@@ -753,6 +826,7 @@ def test_exclude_file_relative(gcovr_test_exec: "GcovrTestExec") -> None:
     not IS_LINUX,
     reason="Exclusion markers are independent of OS and we do not want to have separate data for Windows and Darwin.",
 )
+@pytest.mark.json
 def test_exclude_function(  # type: ignore[no-untyped-def]
     gcovr_test_exec: "GcovrTestExec",
     check,
@@ -806,6 +880,7 @@ def test_exclude_function(  # type: ignore[no-untyped-def]
     IS_DARWIN,
     reason="Exclude Darwin to not have separate reference.",
 )
+@pytest.mark.json
 def test_gcov_exclude(gcovr_test_exec: "GcovrTestExec") -> None:
     gcovr_test_exec.cxx_link(
         "subdir/testcase",

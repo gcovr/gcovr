@@ -48,6 +48,7 @@ def test_config_deprecated(
     )
 
 
+@pytest.mark.json
 def test_gcovr_config(gcovr_test_exec: "GcovrTestExec") -> None:
     """Test JSON output with gcovr.config."""
     gcovr_test_exec.cxx_link(
@@ -62,6 +63,7 @@ def test_gcovr_config(gcovr_test_exec: "GcovrTestExec") -> None:
     gcovr_test_exec.compare_json()
 
 
+@pytest.mark.json
 def test_pyproject_toml(gcovr_test_exec: "GcovrTestExec") -> None:
     """Test JSON output with pyproject.toml."""
     gcovr_test_exec.cxx_link(
@@ -78,6 +80,7 @@ def test_pyproject_toml(gcovr_test_exec: "GcovrTestExec") -> None:
     gcovr_test_exec.compare_json()
 
 
+@pytest.mark.json
 def test_gcovr_toml(gcovr_test_exec: "GcovrTestExec") -> None:
     """Test JSON output with gcovr.toml."""
     gcovr_test_exec.cxx_link(

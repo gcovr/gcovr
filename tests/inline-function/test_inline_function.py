@@ -1,9 +1,12 @@
 import typing
+import pytest
 
 if typing.TYPE_CHECKING:
     from tests.conftest import GcovrTestExec
 
 
+@pytest.mark.html
+@pytest.mark.json
 def test(gcovr_test_exec: "GcovrTestExec") -> None:
     """Test gcc-abspath coverage."""
     gcovr_test_exec.cxx_link(

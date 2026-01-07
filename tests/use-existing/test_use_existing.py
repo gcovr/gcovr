@@ -7,6 +7,7 @@ from tests.conftest import (
 )
 
 
+@pytest.mark.json
 def test_all(gcovr_test_exec: "GcovrTestExec", check) -> None:  # type: ignore[no-untyped-def]
     """A test that verifies coverage when using existing *.gcov coverage files."""
     gcovr_test_exec.cxx_link(
@@ -47,6 +48,7 @@ def test_all(gcovr_test_exec: "GcovrTestExec", check) -> None:  # type: ignore[n
     gcovr_test_exec.compare_json()
 
 
+@pytest.mark.json
 def test_exclude_existing(gcovr_test_exec: "GcovrTestExec") -> None:
     """A test that verifies exclusion when using existing *.gcov coverage files."""
     gcovr_test_exec.cxx_link(
@@ -76,6 +78,8 @@ def test_exclude_existing(gcovr_test_exec: "GcovrTestExec") -> None:
     USE_GCC_JSON_INTERMEDIATE_FORMAT,
     reason="We only have the problem in text reports.",
 )
+@pytest.mark.json
+@pytest.mark.html
 def test_issue_1166(gcovr_test_exec: "GcovrTestExec", check) -> None:  # type: ignore[no-untyped-def]
     """A test that verifies reading of text reports without a function line."""
     gcovr_test_exec.cxx_link(
@@ -111,6 +115,7 @@ def test_issue_1166(gcovr_test_exec: "GcovrTestExec", check) -> None:  # type: i
     not IS_GCC,
     reason="We use an existing file and this is independent from compiler",
 )
+@pytest.mark.json
 def test_issue_1168(gcovr_test_exec: "GcovrTestExec", check) -> None:  # type: ignore[no-untyped-def]
     """A test that verifies correct parsing of template functions (specializations)."""
     gcov_file = (

@@ -3,6 +3,14 @@ import pytest
 from tests.conftest import USE_PROFDATA_POSSIBLE, GcovrTestExec
 
 
+@pytest.mark.json
+@pytest.mark.txt
+@pytest.mark.cobertura
+@pytest.mark.coveralls
+@pytest.mark.jacoco
+@pytest.mark.lcov
+@pytest.mark.sonarqube
+@pytest.mark.html
 def test_template_function(gcovr_test_exec: "GcovrTestExec") -> None:
     """Test template function coverage and merge-lines option."""
     gcovr_test_exec.cxx_link("testcase", "main.cpp")
@@ -111,6 +119,7 @@ def test_template_function(gcovr_test_exec: "GcovrTestExec") -> None:
     gcovr_test_exec.compare_sonarqube()
 
 
+@pytest.mark.json
 @pytest.mark.skipif(
     not USE_PROFDATA_POSSIBLE,
     reason="LLVM profdata is not compatible with GCC coverage data.",  # noqa: F821

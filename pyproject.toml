@@ -207,6 +207,19 @@ env = [
     "GCOVR_TEST_SUITE_NO_GIT_COMMAND=1",
     "SOURCE_DATE_EPOCH=1759082961",
 ]
+markers = [
+    "csv",
+    "json",
+    "html",
+    "txt",
+    "markdown",
+    "clover",
+    "cobertura",
+    "coveralls",
+    "jacoco",
+    "lcov",
+    "sonarqube",
+]
 
 [tool.coverage.run]
 branch = true

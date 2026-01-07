@@ -9,6 +9,16 @@ import pytest
 from tests.conftest import GCOVR_ISOLATED_TEST, USE_PROFDATA_POSSIBLE, GcovrTestExec
 
 
+@pytest.mark.clover
+@pytest.mark.cobertura
+@pytest.mark.coveralls
+@pytest.mark.html
+@pytest.mark.jacoco
+@pytest.mark.json
+@pytest.mark.lcov
+@pytest.mark.markdown
+@pytest.mark.sonarqube
+@pytest.mark.txt
 def test_standard(gcovr_test_exec: "GcovrTestExec") -> None:
     """Test nested coverage report generation."""
     gcovr_test_exec.cxx_link(
@@ -105,6 +115,7 @@ def test_standard(gcovr_test_exec: "GcovrTestExec") -> None:
     not GCOVR_ISOLATED_TEST,
     reason="Only available in isolated docker test.",
 )
+@pytest.mark.json
 def test_standard_ccache(gcovr_test_exec: "GcovrTestExec", check) -> None:  # type: ignore[no-untyped-def]
     """Test nested coverage report generation."""
     build_dir = gcovr_test_exec.output_dir / "build"
@@ -163,6 +174,7 @@ def test_standard_ccache(gcovr_test_exec: "GcovrTestExec", check) -> None:  # ty
     not USE_PROFDATA_POSSIBLE,
     reason="LLVM profdata is not compatible with GCC coverage data.",
 )
+@pytest.mark.json
 def test_standard_llvm_profdata(gcovr_test_exec: "GcovrTestExec") -> None:
     """Test nested coverage report generation."""
     gcovr_test_exec.cxx_link(
@@ -188,6 +200,7 @@ def test_standard_llvm_profdata(gcovr_test_exec: "GcovrTestExec") -> None:
     gcovr_test_exec.compare_json()
 
 
+@pytest.mark.json
 def test_threaded(gcovr_test_exec: "GcovrTestExec") -> None:
     """Test nested coverage report generation."""
     gcovr_test_exec.cxx_link(
@@ -215,6 +228,14 @@ def test_threaded(gcovr_test_exec: "GcovrTestExec") -> None:
     gcovr_test_exec.compare_json()
 
 
+@pytest.mark.cobertura
+@pytest.mark.coveralls
+@pytest.mark.html
+@pytest.mark.jacoco
+@pytest.mark.json
+@pytest.mark.lcov
+@pytest.mark.sonarqube
+@pytest.mark.txt
 def test_linked(gcovr_test_exec: "GcovrTestExec") -> None:
     """This test case was inspired by the logic in gcovr
     that traverses symbolic links:
@@ -306,6 +327,7 @@ def test_linked(gcovr_test_exec: "GcovrTestExec") -> None:
     gcovr_test_exec.compare_sonarqube()
 
 
+@pytest.mark.json
 def test_use_existing(gcovr_test_exec: "GcovrTestExec") -> None:
     """Test nested2-use-existing coverage."""
     # Build all required binaries
@@ -332,6 +354,14 @@ def test_use_existing(gcovr_test_exec: "GcovrTestExec") -> None:
     gcovr_test_exec.compare_json()
 
 
+@pytest.mark.cobertura
+@pytest.mark.coveralls
+@pytest.mark.html
+@pytest.mark.jacoco
+@pytest.mark.json
+@pytest.mark.lcov
+@pytest.mark.sonarqube
+@pytest.mark.txt
 def test_oos(gcovr_test_exec: "GcovrTestExec") -> None:
     """Test nested with oos build."""
     (gcovr_test_exec.output_dir / "objs").mkdir()
