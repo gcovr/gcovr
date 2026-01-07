@@ -1,6 +1,7 @@
 {# -*- engine: jinja -*- #}
 <!DOCTYPE html>
-<html class="theme-{{theme}}" {% if (theme == 'dark-blue' or theme == 'dark-green') %}data-color-mode="dark" data-dark-theme="dark"{% endif %}>
+<html class="theme-{{theme}}"{% if (theme == 'dark-blue' or theme == 'dark-green') %} data-color-mode="dark" data-dark-theme="dark"{% endif %}>
+
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset={{info.encoding}}"/>
     <title>{% block html_title %}{{info.head}}{% endblock %}</title>
@@ -22,22 +23,21 @@
     {% endif %}
     {% endif %}
   </head>
+
   <body{% if info.single_page == "js-enabled" %} class="js-disabled"{% endif %}>
     <div class="Layout-main">
       <div class="Layout-main-centered-lg" style="max-width: 1280px;">
         <div class="d-flex flex-justify-center">
           <h1>{{info.head}}</h1>
         </div>
-        <hr/>
-        {% if not info.single_page %}
-        <div class="summary">
-        {% endif %}
+        <hr class="block-separator"/>
+        <header>
           {% block summary %}
           {% endblock %}
+        </header>
         {% if not info.single_page %}
-        </div>
-        {% endif %}
         <hr/>
+        {% endif %}
         <nav>
           {% block navigation %}
           {% endblock %}
@@ -45,8 +45,8 @@
         <main>
           {% block content %}
           {% endblock %}
-          <hr/>
         </main>
+        <hr class="block-separator"/>
         <footer class="text-center">
           Created using <a href="http://gcovr.com/en/{{ 'main' if info.version.endswith('+main') else info.version }}">GCOVR (Version {{ info.version }})</a>
           at {{info.date}}
@@ -54,4 +54,5 @@
       </div>
     </div>
   </body>
+
 </html>

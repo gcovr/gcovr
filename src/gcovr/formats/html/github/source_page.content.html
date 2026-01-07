@@ -14,7 +14,7 @@
       <a class="nav next" href="{% if info.single_page %}#{% endif %}{{info.navigation[fname][1] or ROOT_FNAME}}"></a>
     </div>
   </div>
-  <div style="overflow-x: auto;">
+  <div class="source-table-container">
     <table class="text-mono text-small" style="width:100%;">
       <tr>
         <th class="p-2">Line</th>
@@ -152,8 +152,8 @@
           {% endif %}
         </td>
         {% endif %}
-        <td class="src {{row.covclass}} show_{{row.covclass}} pr-2 pl-2 color-fg-muted text-right">{% if ( row.covclass == 'uncoveredLine' ) %}&cross;{% elif ( row.covclass == 'excludedLine' ) %}&minus;{% else %}{{row.linecount}}{% endif %}</td>
-        <td class="src {{row.covclass}} show_{{row.covclass}}">{{row.source}}</td>
+        <td class="src{% if row.covclass %} {{row.covclass}} show_{{row.covclass}}{% endif %} pr-2 pl-2 color-fg-muted text-right">{% if ( row.covclass == 'uncoveredLine' ) %}&cross;{% elif ( row.covclass == 'excludedLine' ) %}&minus;{% else %}{{row.linecount}}{% endif %}</td>
+        <td class="src{% if row.covclass %} {{row.covclass}} show_{{row.covclass}}{% endif %}">{{row.source}}</td>
         {% if USE_BLOCK_IDS %}
         <td class="text-right src linenos">{% if row.block_ids %}{{row.block_ids | join(', ')}}{% endif %}</td>
         {% endif %}

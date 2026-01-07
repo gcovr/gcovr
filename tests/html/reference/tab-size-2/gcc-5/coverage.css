@@ -86,6 +86,17 @@ a:visited
   text-decoration: underline;
 }
 
+.js-enabled .js-enabled-hidden {
+  display: none
+}
+
+.js-disabled .js-disabled-hidden {
+  display: none
+}
+
+.block-separator {
+  border-bottom: 5px solid var(--color-border-muted);
+}
 
 @media (max-width: 544px) {
   .filelist .Box-row {
@@ -111,7 +122,6 @@ button.button_toggle_partialCoveredLine {
   border: 1px solid;
   border-radius: 6px;
   color: var(--color-fg-default);
-  cursor: pointer;
   display: inline-flex;
   align-items: center;
   text-decoration: line-through;
@@ -144,6 +154,8 @@ a.nav {
   text-decoration: none;
   color: grey;
   padding-left: 1em;
+  white-space: nowrap;
+  overflow: hidden;
 }
 
 a.nav:hover {
@@ -175,6 +187,29 @@ a.nav.next::after {
   content: " ↓";
   white-space: pre;
 }
+
+.source-table-container {
+  overflow-x: auto;
+}
+
+#scroll_marker {
+  position: fixed;
+  z-index: 3;
+  right: 0;
+  top: 0;
+  width: 12px;
+  height: 100%;
+  background-color: var(--color-canvas-default);
+  border-left: 1px solid var(--color-border-default);
+  will-change: transform;
+}
+
+#scroll_marker .marker {
+  background: #cccccc;
+  position: absolute;
+  min-height: 3px;
+  width: 100%;
+}
 /*** Summary formats ***/
 
 .summary
@@ -201,6 +236,7 @@ table.legend
   display: flex;
   flex-flow: row wrap;
   justify-content: flex-start;
+  margin-left: 16px;
 }
 
 table.legend th[scope=row]
@@ -231,7 +267,8 @@ table.legend td.warning_text
 
 table.coverage
 {
-  border-collapse: collapse
+  border-collapse: collapse;
+  margin-right: 16px;
 }
 
 table.coverage td,
@@ -701,12 +738,33 @@ pre
   font-size: 12px !important
 }
 
+.Layout-main {
+  min-width: 0
+}
+
+@media(max-width: 543.98px) {
+  .Layout {
+    grid-auto-flow: row;
+    grid-template-columns: 1fr !important
+  }
+
+  .Layout .Layout-main {
+    grid-column: 1 !important;
+    width: 100% !important
+  }
+}
+
+.Layout-main .Layout-main-centered-lg {
+  margin-left: auto;
+  margin-right: auto
+}
+
 .Box {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
   font-size: var(--body-font-size, 14px);
   line-height: 1.5;
   color: var(--color-fg-default);
-  background-color:var(--color-canvas-default);
+  background-color: var(--color-canvas-default);
   border-color: var(--color-border-default);
   border-radius: var(--borderRadius-medium, 6px);
   border-style: solid;
@@ -763,6 +821,10 @@ pre
 
 .flex-justify-end {
   justify-content: flex-end !important
+}
+
+.flex-justify-center {
+  justify-content: center !important
 }
 
 .flex-wrap {

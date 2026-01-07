@@ -9,12 +9,33 @@
   font-size: 12px !important
 }
 
+.Layout-main {
+  min-width: 0
+}
+
+@media(max-width: 543.98px) {
+  .Layout {
+    grid-auto-flow: row;
+    grid-template-columns: 1fr !important
+  }
+
+  .Layout .Layout-main {
+    grid-column: 1 !important;
+    width: 100% !important
+  }
+}
+
+.Layout-main .Layout-main-centered-lg {
+  margin-left: auto;
+  margin-right: auto
+}
+
 .Box {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
   font-size: var(--body-font-size, 14px);
   line-height: 1.5;
   color: var(--color-fg-default);
-  background-color:var(--color-canvas-default);
+  background-color: var(--color-canvas-default);
   border-color: var(--color-border-default);
   border-radius: var(--borderRadius-medium, 6px);
   border-style: solid;
@@ -71,6 +92,10 @@
 
 .flex-justify-end {
   justify-content: flex-end !important
+}
+
+.flex-justify-center {
+  justify-content: center !important
 }
 
 .flex-wrap {

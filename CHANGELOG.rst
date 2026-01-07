@@ -22,6 +22,7 @@ Breaking changes:
   - Add common stylesheet for all themes. (:issue:`1220`)
   - Add navigation links to source details. (:issue:`1220`)
   - Add buttons to toggle line background color in source details view. (:issue:`1221`)
+  - Add a document overview with all active lines in source details view. (:issue:`1222`)
 
 New features and notable changes:
 

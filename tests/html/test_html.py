@@ -408,7 +408,7 @@ def test_nested(
     """
 
     file2_cpp = gcovr_test_exec.output_dir / "subdir" / "A" / "File2.cpp"
-    if "-theme-js" in test_id:
+    if "-theme-" in test_id:
         deep_dir = file2_cpp.parent.joinpath(*[f"subdir_{i}" for i in range(0, 10)])
         deep_dir.mkdir(parents=True, exist_ok=True)
         file2_cpp = file2_cpp.rename(deep_dir / file2_cpp.name)
