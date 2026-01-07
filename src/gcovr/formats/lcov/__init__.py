@@ -63,7 +63,7 @@ class LcovHandler(BaseHandler):
                 group="output_options",
                 help="The format version to write.",
                 choices=("1.x", "2.0"),
-                default="2.2",
+                default="2.0",
             ),
             GcovrConfigOption(
                 "lcov_format_version",
