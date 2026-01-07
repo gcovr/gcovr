@@ -11,7 +11,6 @@ from tests.conftest import IS_WINDOWS, GcovrTestExec
 @pytest.mark.html
 @pytest.mark.cobertura
 @pytest.mark.coveralls
-@pytest.mark.html
 @pytest.mark.jacoco
 @pytest.mark.json
 @pytest.mark.lcov

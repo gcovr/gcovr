@@ -1023,11 +1023,11 @@ class GcovrTestExec:
             )
 
     def raise_not_used_markers(self) -> None:
-        """Must be called at the end of the test to get the markers which are not used."""
+        """Must be called at the end of the test to get the markers which were not used."""
 
         if self.markers:
             raise AssertionError(
-                "Following markers are not used: "
+                "Following markers were not used: "
                 + ", ".join(m.name for m in self.markers)
             )
 

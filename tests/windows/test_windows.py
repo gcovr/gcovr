@@ -41,7 +41,6 @@ def subst(gcovr_test_exec: "GcovrTestExec") -> typing.Iterator[Path]:
 @pytest.mark.clover
 @pytest.mark.cobertura
 @pytest.mark.coveralls
-@pytest.mark.html
 @pytest.mark.jacoco
 @pytest.mark.json
 @pytest.mark.lcov

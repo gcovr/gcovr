@@ -10,7 +10,6 @@ from tests.conftest import IS_DARWIN, IS_LINUX, GcovrTestExec
 @pytest.mark.html
 @pytest.mark.cobertura
 @pytest.mark.coveralls
-@pytest.mark.html
 @pytest.mark.jacoco
 @pytest.mark.json
 @pytest.mark.lcov
@@ -87,7 +86,6 @@ def test_exclude_line(  # type: ignore[no-untyped-def]
 @pytest.mark.html
 @pytest.mark.cobertura
 @pytest.mark.coveralls
-@pytest.mark.html
 @pytest.mark.jacoco
 @pytest.mark.json
 @pytest.mark.lcov
@@ -167,7 +165,6 @@ def test_exclude_line_custom(gcovr_test_exec: "GcovrTestExec") -> None:
 @pytest.mark.clover
 @pytest.mark.cobertura
 @pytest.mark.coveralls
-@pytest.mark.html
 @pytest.mark.jacoco
 @pytest.mark.json
 @pytest.mark.lcov
@@ -287,7 +284,6 @@ def test_exclude_line_branch(gcovr_test_exec: "GcovrTestExec") -> None:
 @pytest.mark.html
 @pytest.mark.cobertura
 @pytest.mark.coveralls
-@pytest.mark.html
 @pytest.mark.jacoco
 @pytest.mark.lcov
 @pytest.mark.sonarqube
@@ -363,7 +359,6 @@ def test_exclude_lines_by_pattern(gcovr_test_exec: "GcovrTestExec") -> None:
 @pytest.mark.html
 @pytest.mark.cobertura
 @pytest.mark.coveralls
-@pytest.mark.html
 @pytest.mark.jacoco
 @pytest.mark.json
 @pytest.mark.lcov
@@ -440,7 +435,6 @@ def test_exclude_branch(gcovr_test_exec: "GcovrTestExec") -> None:
 @pytest.mark.html
 @pytest.mark.cobertura
 @pytest.mark.coveralls
-@pytest.mark.html
 @pytest.mark.jacoco
 @pytest.mark.json
 @pytest.mark.lcov
@@ -548,7 +542,6 @@ def test_exclude_branch_source(  # type: ignore[no-untyped-def]
 @pytest.mark.html
 @pytest.mark.cobertura
 @pytest.mark.coveralls
-@pytest.mark.html
 @pytest.mark.jacoco
 @pytest.mark.json
 @pytest.mark.lcov
@@ -648,7 +641,6 @@ def test_exclude_branch_without_hit(  # type: ignore[no-untyped-def]
 @pytest.mark.html
 @pytest.mark.cobertura
 @pytest.mark.coveralls
-@pytest.mark.html
 @pytest.mark.jacoco
 @pytest.mark.json
 @pytest.mark.lcov
@@ -743,7 +735,6 @@ def test_exclude_throw_branches(gcovr_test_exec: "GcovrTestExec") -> None:
 @pytest.mark.html
 @pytest.mark.cobertura
 @pytest.mark.coveralls
-@pytest.mark.html
 @pytest.mark.jacoco
 @pytest.mark.json
 @pytest.mark.lcov

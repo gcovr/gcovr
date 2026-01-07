@@ -80,8 +80,6 @@ def test_exclude_existing(gcovr_test_exec: "GcovrTestExec") -> None:
 )
 @pytest.mark.json
 @pytest.mark.html
-@pytest.mark.html
-@pytest.mark.json
 def test_issue_1166(gcovr_test_exec: "GcovrTestExec", check) -> None:  # type: ignore[no-untyped-def]
     """A test that verifies reading of text reports without a function line."""
     gcovr_test_exec.cxx_link(

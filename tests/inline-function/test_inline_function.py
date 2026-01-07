@@ -6,7 +6,6 @@ if typing.TYPE_CHECKING:
 
 
 @pytest.mark.html
-@pytest.mark.html
 @pytest.mark.json
 def test(gcovr_test_exec: "GcovrTestExec") -> None:
     """Test gcc-abspath coverage."""

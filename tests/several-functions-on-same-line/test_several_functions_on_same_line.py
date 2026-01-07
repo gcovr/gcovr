@@ -9,7 +9,6 @@ if typing.TYPE_CHECKING:
 @pytest.mark.clover
 @pytest.mark.cobertura
 @pytest.mark.coveralls
-@pytest.mark.html
 @pytest.mark.jacoco
 @pytest.mark.json
 @pytest.mark.lcov

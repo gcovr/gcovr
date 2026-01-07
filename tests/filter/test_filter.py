@@ -8,7 +8,6 @@ from tests.conftest import CXX, IS_LINUX, GcovrTestExec
 @pytest.mark.html
 @pytest.mark.cobertura
 @pytest.mark.coveralls
-@pytest.mark.html
 @pytest.mark.jacoco
 @pytest.mark.lcov
 @pytest.mark.sonarqube
@@ -76,7 +75,6 @@ def test_absolute(gcovr_test_exec: "GcovrTestExec") -> None:
 
 @pytest.mark.html
 @pytest.mark.cobertura
-@pytest.mark.html
 @pytest.mark.jacoco
 @pytest.mark.lcov
 @pytest.mark.sonarqube
@@ -142,7 +140,6 @@ def test_absolute_from_unfiltered_tracefile(gcovr_test_exec: "GcovrTestExec") ->
 @pytest.mark.html
 @pytest.mark.cobertura
 @pytest.mark.coveralls
-@pytest.mark.html
 @pytest.mark.jacoco
 @pytest.mark.lcov
 @pytest.mark.sonarqube
@@ -210,7 +207,6 @@ def test_relative(gcovr_test_exec: "GcovrTestExec") -> None:
 
 @pytest.mark.html
 @pytest.mark.cobertura
-@pytest.mark.html
 @pytest.mark.jacoco
 @pytest.mark.lcov
 @pytest.mark.sonarqube
@@ -274,7 +270,6 @@ def test_relative_from_unfiltered_tracefile(gcovr_test_exec: "GcovrTestExec") ->
 @pytest.mark.html
 @pytest.mark.cobertura
 @pytest.mark.coveralls
-@pytest.mark.html
 @pytest.mark.jacoco
 @pytest.mark.lcov
 @pytest.mark.sonarqube
@@ -377,7 +372,6 @@ def test_relative_lib(gcovr_test_exec: "GcovrTestExec") -> None:
     gcovr_test_exec.compare_sonarqube()
 
 
-@pytest.mark.html
 @pytest.mark.cobertura
 @pytest.mark.jacoco
 @pytest.mark.lcov

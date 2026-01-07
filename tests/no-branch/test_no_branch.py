@@ -8,7 +8,6 @@ if typing.TYPE_CHECKING:
 @pytest.mark.html
 @pytest.mark.cobertura
 @pytest.mark.coveralls
-@pytest.mark.html
 @pytest.mark.jacoco
 @pytest.mark.lcov
 @pytest.mark.sonarqube

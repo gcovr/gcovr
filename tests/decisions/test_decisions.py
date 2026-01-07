@@ -10,7 +10,6 @@ from tests.conftest import IS_LINUX, USE_PROFDATA_POSSIBLE, GcovrTestExec
     reason="Parsing of decision is independent of OS and we do not want to have separate data for Windows and Darwin.",
 )
 @pytest.mark.html
-@pytest.mark.html
 @pytest.mark.json
 @pytest.mark.txt
 def test_decisions(gcovr_test_exec: "GcovrTestExec") -> None:
