@@ -100,6 +100,41 @@ class HtmlHandler(BaseHandler):
                 const=OutputOrDefault(None),
             ),
             GcovrConfigOption(
+                "html_single_page",
+                ["--html-single-page"],
+                group="output_options",
+                help=(
+                    "Use one single html output file containing all data in the "
+                    "specified mode. If mode is 'js-enabled' (default) and javascript "
+                    "is possible the page is interactive like the normal report. "
+                    "If mode is 'static' all files are shown at once."
+                ),
+                action="store_true",
+            ),
+            GcovrConfigOption(
+                "html_static_report",
+                ["--html-static-report"],
+                group="output_options",
+                help="Create a static report without javascript.",
+                action="store_true",
+            ),
+            GcovrConfigOption(
+                "html_self_contained",
+                ["--html-self-contained"],
+                group="output_options",
+                help=(
+                    "Control whether the HTML report bundles resources like CSS styles. "
+                    "Self-contained reports can be sent via email, "
+                    "but conflict with the Content Security Policy of some web servers. "
+                    "Defaults to self-contained reports unless --html-details or "
+                    "--html-nested is used without --html-single-page."
+                ),
+                action="store_const",
+                default=None,
+                const=True,
+                const_negate=False,
+            ),
+            GcovrConfigOption(
                 "html_block_ids",
                 ["--html-block-ids"],
                 group="output_options",
@@ -185,37 +220,6 @@ class HtmlHandler(BaseHandler):
                     "See also --source-encoding."
                 ),
                 default="UTF-8",
-            ),
-            GcovrConfigOption(
-                "html_self_contained",
-                ["--html-self-contained"],
-                group="output_options",
-                help=(
-                    "Control whether the HTML report bundles resources like CSS styles. "
-                    "Self-contained reports can be sent via email, "
-                    "but conflict with the Content Security Policy of some web servers. "
-                    "Defaults to self-contained reports unless --html-details or "
-                    "--html-nested is used without --html-single-page."
-                ),
-                action="store_const",
-                default=None,
-                const=True,
-                const_negate=False,
-            ),
-            GcovrConfigOption(
-                "html_single_page",
-                ["--html-single-page"],
-                group="output_options",
-                choices=("static", "js-enabled"),
-                nargs="?",
-                const="js-enabled",
-                default=None,
-                help=(
-                    "Use one single html output file containing all data in the "
-                    "specified mode. If mode is 'js-enabled' (default) and javascript "
-                    "is possible the page is interactive like the normal report. "
-                    "If mode is 'static' all files are shown at once."
-                ),
             ),
         ]
 

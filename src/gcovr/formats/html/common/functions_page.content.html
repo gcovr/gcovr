@@ -1,7 +1,7 @@
 {# -*- engine: jinja -*- #}
 <div class="Box m-3 functionslist">
   <div class="Box-header py-2 d-flex sticky">
-    {% set class_sortable = " sortable" if info.single_page != "static" and function_list | length > 1 else "" %}
+    {% set class_sortable = " sortable" if not info.static_report and function_list | length > 1 else "" %}
     <div role="rowheader" class="color-fg-muted flex-auto min-width-0 col-md-2{{class_sortable}}{% if class_sortable %} sorted-ascending{% endif %}">Function (File:Line)</div>
     <div role="rowheader" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline{{class_sortable}}">Calls</div>
     <div role="rowheader" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2{{class_sortable}}">Lines</div>
