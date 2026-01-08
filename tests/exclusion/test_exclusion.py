@@ -1,6 +1,7 @@
+import re
 import pytest
 
-from tests.conftest import IS_DARWIN, IS_LINUX, GcovrTestExec
+from tests.conftest import IS_DARWIN, IS_GCC, IS_LINUX, GcovrTestExec
 
 
 @pytest.mark.skipif(
@@ -646,7 +647,7 @@ def test_exclude_branch_without_hit(  # type: ignore[no-untyped-def]
 @pytest.mark.lcov
 @pytest.mark.sonarqube
 @pytest.mark.txt
-def test_exclude_throw_branches(gcovr_test_exec: "GcovrTestExec") -> None:
+def test_exclude_throw_branches(gcovr_test_exec: "GcovrTestExec", check) -> None:  # type: ignore[no-untyped-def]
     """Test exclude-throw-branches option."""
     gcovr_test_exec.cxx_link(
         "testcase",
@@ -655,11 +656,21 @@ def test_exclude_throw_branches(gcovr_test_exec: "GcovrTestExec") -> None:
 
     gcovr_test_exec.run("./testcase")
     gcovr_test_exec.gcovr("--json-pretty", "--json=coverage-throw.json")
-    gcovr_test_exec.gcovr(
+    process = gcovr_test_exec.gcovr(
         "--exclude-throw-branches",
+        "--trace-include=.*",
         "--json-pretty",
         "--json=coverage-exclude-throw.json",
     )
+    lines = [5, 28, 33, 36, 41] if IS_GCC else []
+    for line in lines:
+        check.is_true(
+            re.search(
+                rf"main.cpp:{line}: Removing \d+ unreachable branch\(es\) detected as exception-only code",
+                process.stderr,
+            ),
+            f"Expected exclusion message for throw branch at line {line} not found in stderr.",
+        )
     gcovr_test_exec.compare_json()
 
     gcovr_test_exec.gcovr(

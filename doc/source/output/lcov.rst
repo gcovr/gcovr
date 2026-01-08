@@ -24,5 +24,11 @@ using different operating systems, the line endings shall be the same.
 The LCOV info format is documented at
 `<https://github.com/linux-test-project/lcov/blob/07a1127c2b4390abf4a516e9763fb28a956a9ce4/man/geninfo.1#L989>`_.
 
+.. versionadded:: NEXT
+   Added :option:`--lcov-format-version`.
+
+.. deprecated:: NEXT
+   Deprecated :option:`--lcov-format-1.x <--lcov-format-1>` mapped to :option:`--lcov-format-version=1.x <--lcov-format-version>`.
+
 .. versionadded:: 7.0
    Added :option:`--lcov`, :option:`--lcov-comment` and :option:`--lcov-test-name`.

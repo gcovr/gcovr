@@ -842,50 +842,10 @@ GCOVR_CONFIG_OPTIONS = [
         action="store_true",
     ),
     GcovrConfigOption(
-        "exclude_internal_functions",
-        ["--include-internal-functions"],
-        group="gcov_options",
-        help=(
-            "Include function coverage of compiler internal functions "
-            "(starting with '__' or '_GLOBAL__sub_I_')."
-        ),
-        action="store_false",
-    ),
-    GcovrConfigOption(
-        "exclude_unreachable_branches",
-        ["--exclude-unreachable-branches"],
-        group="gcov_options",
-        help=(
-            "Exclude branch coverage from lines without useful source code "
-            "(often, compiler-generated 'dead' code)."
-        ),
-        action="store_true",
-    ),
-    GcovrConfigOption(
         "exclude_function_lines",
         ["--exclude-function-lines"],
         group="gcov_options",
         help="Exclude coverage from lines defining a function.",
-        action="store_true",
-    ),
-    GcovrConfigOption(
-        "exclude_noncode_lines",
-        ["--exclude-noncode-lines"],
-        config="exclude-noncode-lines",
-        group="gcov_options",
-        help="Exclude coverage from lines which seem to be non-code.",
-        action="store_true",
-        const_negate=False,
-    ),
-    GcovrConfigOption(
-        "exclude_throw_branches",
-        ["--exclude-throw-branches"],
-        group="gcov_options",
-        help=(
-            "For branch coverage, exclude branches "
-            "that the compiler generates for exception handling. "
-            "This often leads to more 'sensible' coverage reports."
-        ),
         action="store_true",
     ),
     GcovrConfigOption(
@@ -931,6 +891,46 @@ GCOVR_CONFIG_OPTIONS = [
         "warn_excluded_lines_with_hits",
         ["--warn-excluded-lines-with-hits"],
         help="Print a warning if a line excluded by comments has a hit counter != 0.",
+        action="store_true",
+    ),
+    GcovrConfigOption(
+        "exclude_internal_functions",
+        ["--include-internal-functions"],
+        group="gcov_options",
+        help=(
+            "Include function coverage of compiler internal functions "
+            "(starting with '__' or '_GLOBAL__sub_I_')."
+        ),
+        action="store_false",
+    ),
+    GcovrConfigOption(
+        "exclude_unreachable_branches",
+        ["--exclude-unreachable-branches"],
+        group="gcov_options",
+        help=(
+            "Remove branch coverage from lines without useful source code "
+            "(often, compiler-generated 'dead' code)."
+        ),
+        action="store_true",
+    ),
+    GcovrConfigOption(
+        "exclude_noncode_lines",
+        ["--exclude-noncode-lines"],
+        config="exclude-noncode-lines",
+        group="gcov_options",
+        help="Remove coverage from lines which seem to be non-code.",
+        action="store_true",
+        const_negate=False,
+    ),
+    GcovrConfigOption(
+        "exclude_throw_branches",
+        ["--exclude-throw-branches"],
+        group="gcov_options",
+        help=(
+            "For branch coverage, remove branches "
+            "that the compiler generates for exception handling. "
+            "This often leads to more 'sensible' coverage reports."
+        ),
         action="store_true",
     ),
     GcovrConfigOption(

@@ -59,7 +59,9 @@ def write_report(
             fh.write(f"SF:{filename}\n")
 
             # This filename is generated in the JSON intermediate format
-            if not options.lcov_format_v1 and not filename.endswith("<stdin>"):
+            if not options.lcov_format_version == "1.x" and not filename.endswith(
+                "<stdin>"
+            ):
                 # VER:<version ID>
                 # Generate md5 hash of file contents
                 with open(filename, "rb") as file_handle:
@@ -68,6 +70,7 @@ def write_report(
 
             functions = 0
             function_hits = 0
+            function_line_counts = dict[int, int]()
             for functioncov in filecov.functioncov(sort=True):
                 linenos = functioncov.reportable_linenos
                 functions += len(linenos)
@@ -76,9 +79,13 @@ def write_report(
                     # FN:<line number of function start>,[<line number of function end>,]<function name>
                     fh.write(f"FN:{lineno},{functioncov.name}{suffix()}\n")
                 for lineno in linenos:
-                    count = functioncov.count[lineno]
+                    count = functioncov.count[lineno] or 0
                     if count:
                         function_hits += 1
+                    if lineno in function_line_counts:
+                        function_line_counts[lineno] += count
+                    else:
+                        function_line_counts[lineno] = count
                     # FNDA:<execution count>,<function name>
                     fh.write(f"FNDA:{count},{functioncov.name}{suffix()}\n")
             # FNF:<number of functions found>
@@ -86,9 +93,13 @@ def write_report(
             # FNH:<number of function hit>
             fh.write(f"FNH:{function_hits}\n")
 
+            linecovs = [
+                list(linecov_collection.merge_lines().linecov())[0]
+                for linecov_collection in filecov.lines(sort=True)
+            ]
             branches = 0
             branch_hits = 0
-            for linecov in filecov.linecov(sort=True):
+            for linecov in linecovs:
                 if linecov.is_reportable:
                     for branchno, branchcov in enumerate(
                         branchcov
@@ -108,11 +119,23 @@ def write_report(
             # BRH:<number of branches hit>
             fh.write(f"BRH:{branch_hits}\n")
 
-            lines_covered = 0
-            for linecov in filecov.linecov(sort=True):
+            function_linenos = list(sorted(function_line_counts.keys()))
+            for linecov in linecovs:
+                if function_linenos and linecov.lineno >= function_linenos[0]:
+                    lineno = -1
+                    while function_linenos and linecov.lineno >= function_linenos[0]:
+                        lineno = function_linenos.pop(0)
+                        optional_checksum = (
+                            f",{linecov.md5}" if linecov.lineno == lineno else ""
+                        )
+                        # DA:<line number>,<execution count>[,<checksum>]
+                        fh.write(
+                            f"DA:{lineno},{function_line_counts[lineno]}{optional_checksum}\n"
+                        )
+                    if lineno == linecov.lineno:
+                        continue
+
                 if linecov.is_reportable:
-                    if linecov.count:
-                        lines_covered += 1
                     # DA:<line number>,<execution count>[,<checksum>]
                     fh.write(f"DA:{linecov.lineno},{linecov.count},{linecov.md5}\n")
 
