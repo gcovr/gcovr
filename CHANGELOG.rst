@@ -11,6 +11,7 @@ Next Release
 Breaking changes:
 
 - The option :option:`--lcov-test-name` doesn't accept values with spaces anymore. (:issue:`1196`)
+- The option :option:`--lcov-format-1.x <--lcov-format-1>` is deprecated and mapped to :option:`--lcov-format-version=1.x`. (:issue:`1212`)
 - Changes to HTML templates:
 
   - The file overview table in the default theme now uses a grid layout. (:issue:`1216`)
