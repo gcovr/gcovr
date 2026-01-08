@@ -13,7 +13,7 @@
 {{ css | safe }}
     </style>
     {% endif %}
-    {% if info.single_page != "static" %}
+    {% if not info.static_report %}
     {% if javascript_link is defined %}
     <script src="{{javascript_link}}"></script>
     {% else %}
@@ -24,7 +24,7 @@
     {% endif %}
   </head>
 
-  <body{% if info.single_page == "js-enabled" %} class="js-disabled"{% endif %}>
+  <body{% if info.single_page and not info.static_report %} class="js-disabled"{% endif %}>
     <div class="Layout-main">
       <div class="Layout-main-centered-lg" style="max-width: 1280px;">
         <div class="d-flex flex-justify-center">

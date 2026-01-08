@@ -12,7 +12,7 @@ gcovr.fileLoaded = function () {
 
   gcovr.addOnClickHandler("div.sortable", gcovr.sortGridTable);
 
-  {% if info.single_page == "js-enabled" %}
+  {% if info.single_page %}
   gcovr.singlePageSetup();
   {% else %}
   gcovr.source_table_body = document.querySelector(".source-table-container > table > tbody")
@@ -30,7 +30,7 @@ gcovr.addOnClickHandler = function (selector, handler) {
   });
 };
 
-{% if info.single_page == "js-enabled" %}
+{% if info.single_page %}
 gcovr.singlePageSetup = function () {
   document.body.classList.add("js-enabled")
   document.body.classList.remove("js-disabled")

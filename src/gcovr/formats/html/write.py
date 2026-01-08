@@ -150,9 +150,7 @@ class CssRenderer:
     def render(options: Options) -> str:
         """Get the rendered CSS content."""
         template = CssRenderer.__load_css_template(options)
-        return template.render(
-            tab_size=options.html_tab_size, single_page=options.html_single_page
-        )
+        return template.render(tab_size=options.html_tab_size)
 
 
 class NullHighlighting:
@@ -290,11 +288,12 @@ class RootInfo:
         self.high_threshold_line = options.high_threshold_line
         self.medium_threshold_branch = options.medium_threshold_branch
         self.high_threshold_branch = options.high_threshold_branch
-        self.link_function_list = (options.html_details or options.html_nested) and (
-            options.html_single_page != "static"
-        )
+        self.link_function_list = (
+            options.html_details or options.html_nested
+        ) and not (options.html_single_page and options.html_static_report)
         self.relative_anchors = options.html_relative_anchors
         self.single_page = options.html_single_page
+        self.static_report = options.html_static_report
 
         self.version = get_version_for_report()
         self.head = options.html_title
@@ -416,7 +415,7 @@ def write_report(
 
     javascript_data = (
         None
-        if options.html_single_page == "static"
+        if options.html_static_report
         else templates(options).get_template("gcovr.js").render(**data).strip()
     )
 
@@ -725,7 +724,7 @@ def write_single_page(
             )
         )
     directories = list[dict[str, Any]]([{"entries": all_files}])
-    if root_info.single_page == "js-enabled":
+    if not root_info.static_report:
         for dircov in covdata.directories:
             directories.append(
                 get_directory_data(

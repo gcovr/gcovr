@@ -7,7 +7,7 @@
 {% endblock %}
 
 {% block content %}
-{% if info.single_page == "js-enabled" %}
+{% if not info.static_report %}
 <script>
   gcovr.root_dirname = "{{ directories[-1].dirname }}";
 </script>

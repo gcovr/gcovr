@@ -1,5 +1,5 @@
 {# -*- engine: jinja -*- #}
-<div id="summary-{{ link }}" class="summary{% if info.single_page == 'js-enabled' %}js-enabled-hidden{% endif %}">
+<div id="summary-{{ link }}" class="summary{% if info.single_page and not info.static_report %}js-enabled-hidden{% endif %}">
   <div>
     <table class="legend">
       <tr>
