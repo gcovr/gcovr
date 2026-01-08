@@ -20,7 +20,7 @@ Fix excluded functions in HTML report
      - :ref:`release_8_4`
 
    * - Fixed
-     - :ref:`next_release`, :issue:`1206`
+     - :ref:`release_8_5`, :issue:`1206`
 
 The excluded functions where marked as ``not called`` instead of ``excluded`` in
 the HTML report.
@@ -36,7 +36,7 @@ Fix LCOV report if function is defined in multiple lines
      - :ref:`release_8_4`
 
    * - Fixed
-     - :ref:`next_release`, :issue:`1206`
+     - :ref:`release_8_5`, :issue:`1206`
 
 The created postfix for ``FNDA`` entry always contains the last line of the function.
 
@@ -59,7 +59,7 @@ Nested HTML report without data can't be generated
      - :ref:`release_6_0`
 
    * - Fixed
-     - :ref:`next_release`, :issue:`1197`
+     - :ref:`release_8_5`, :issue:`1197`
 
 When generating a nested HTML report but there is no coverage data
 for :ref:`release_6_0` to :ref:`release_8_2` no root page is generated
@@ -92,7 +92,7 @@ Drastic increase of runtime with large projects
      - :ref:`release_8_4`
 
    * - Fixed
-     - :ref:`next_release`, :issue:`1194`
+     - :ref:`release_8_5`, :issue:`1194`
 
 The runtime of ``gcovr`` increased drastically if a project had source files with many lines and functions.
 
@@ -111,7 +111,7 @@ Data source in JSON report can contain wrong information
      - :ref:`release_8_4`
 
    * - Fixed
-     - :ref:`next_release`, :issue:`1194`
+     - :ref:`release_8_5`, :issue:`1194`
 
 The set used to store the data source is shared for all items of the
 input file. Merging data from another source e.g. for a line is adding
@@ -128,7 +128,7 @@ the data source to all other locations.
      - :ref:`release_8_4`
 
    * - Fixed
-     - :ref:`next_release`, :issue:`1192`
+     - :ref:`release_8_5`, :issue:`1192`
 
 If text report for covered decisions is created with :option:`--txt-report-covered` and
 :option:`--txt-metric=decision` following error occurs:
@@ -162,7 +162,7 @@ Line coverage missing if template functions are used
      - :ref:`release_8_4`
 
    * - Fixed
-     - :ref:`next_release`, :issue:`1189`
+     - :ref:`release_8_5`, :issue:`1189`
 
 With release :ref:`release_8_4` we ignored lines without a function name.
 If template functions are used there are separators in ``gcov`` text format
@@ -224,7 +224,7 @@ Detection of version mismatch between gcc and gcov doesn't work
      - :ref:`release_8_4`
 
    * - Fixed
-     - :ref:`next_release`, :issue:`1187`
+     - :ref:`release_8_5`, :issue:`1187`
 
 The regular version for detecting version mismatch between ``gcc`` and ``gcov``
 didn't match the following strings:
@@ -243,7 +243,7 @@ Exclusion filter for existing GCOV files doesn't work
      - :ref:`release_8_3`
 
    * - Fixed
-     - :ref:`next_release`, :issue:`1176`
+     - :ref:`release_8_5`, :issue:`1176`
 
 The exclusion filter given by :option:`--gcov-exclude` isn't applied.
 The message ``Excluding gcov file: ...`` is printed but the file is still used.
@@ -259,7 +259,7 @@ Branch exclusion comments remove the branches complete and do not affect conditi
      - :ref:`release_8_0`
 
    * - Fixed
-     - :ref:`next_release`, :issue:`1171`
+     - :ref:`release_8_5`, :issue:`1171`
 
 If a line is excluded by comments and contains branches and conditions, the branches and
 conditions are excluded and the decisions are cleared.
@@ -279,7 +279,7 @@ Excluded branches ar still reported in LCOV report
      - :ref:`release_8_4`
 
    * - Fixed
-     - :ref:`next_release`, :issue:`1171`
+     - :ref:`release_8_5`, :issue:`1171`
 
 When a line with branches is excluded the branch exclusion flag is
 ignored and there are still ``BRDA`` lines created in the ``LCOV`` report.
@@ -295,7 +295,7 @@ Multiple counters for same line are not merged in coveralls report
      - :ref:`release_8_4`
 
    * - Fixed
-     - :ref:`next_release`, :issue:`1165`
+     - :ref:`release_8_5`, :issue:`1165`
 
 Since version 8.4 there can be several coverage elements for same line. This data
 isn't merged in coveralls report. The elements are added as several elements to the

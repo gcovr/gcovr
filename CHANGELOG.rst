@@ -3,10 +3,10 @@
 .. program is needed to resolve option links
 .. program::  gcovr
 
-.. _next_release:
+.. _release_8_5:
 
-Next Release
-------------
+8.5 (08 January 2026)
+---------------------
 
 Breaking changes:
 
@@ -67,8 +67,6 @@ Bug fixes and small improvements:
 - Change internal behavior of :option:`--exclude-function-lines` to exclude the line of function definition
   instead of removing it completely. (:issue:`1214`)
 - Ensure that all functions have a line coverage element in LCOV report. (:issue:`1212`)
-
-Documentation:
 
 Internal changes:
 

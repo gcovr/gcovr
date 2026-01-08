@@ -122,7 +122,7 @@ templates you wish to customize.
 
 .. _CSP: https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/CSP
 
-.. versionchanged:: NEXT
+.. versionchanged:: 8.5
     Added :option:`--html-static-report` and remove argument from :option:`--html-single-page`.
 
 .. versionchanged:: 8.4

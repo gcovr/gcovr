@@ -372,7 +372,7 @@ with the differences as an artifact.
     # run tests and generate a ZIP archive when there were differences
     python3 -m nox --session tests -- --archive-differences
 
-.. versionchanged:: NEXT
+.. versionchanged:: 8.5
    Replaced ``_`` with ``-`` in the options controlling the test suite:
 
    - ``--generate_reference`` is now ``--generate-reference``

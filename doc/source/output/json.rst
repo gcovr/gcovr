@@ -100,7 +100,7 @@ gcovr/data_sources: list
   A list of files from which the coverage object was populated.
   This entry is only available if :option:`--json-trace-data-source` is given.
 
-.. versionadded:: NEXT
+.. versionadded:: 8.5
    Change :option:`--verbose` to :option:`--json-trace-data-source` for ``gcovr/data_sources``.
 
 .. versionadded:: 8.3
@@ -184,7 +184,7 @@ The line entry should be interpreted as follows:
 * if ``count`` is 0, the line is uncovered
 * if ``count`` is nonzero, the line is covered
 
-.. versionadded:: NEXT
+.. versionadded:: 8.5
    Change :option:`--verbose` to :option:`--json-trace-data-source` for ``gcovr/data_sources``.
 
 .. versionadded:: 8.4
@@ -259,7 +259,7 @@ gcovr/data_sources: list
   A list of files from which the coverage object was populated.
   This entry is only available if :option:`--json-trace-data-source` is given.
 
-.. versionadded:: NEXT
+.. versionadded:: 8.5
    Change :option:`--verbose` to :option:`--json-trace-data-source` for ``gcovr/data_sources``.
 
 .. versionadded:: 8.4
@@ -325,7 +325,7 @@ gcovr/data_sources: list
   A list of files from which the coverage object was populated.
   This entry is only available if :option:`--json-trace-data-source` is given.
 
-.. versionadded:: NEXT
+.. versionadded:: 8.5
    Change :option:`--verbose` to :option:`--json-trace-data-source` for ``gcovr/data_sources``.
 
 .. versionadded:: 8.4
@@ -393,7 +393,7 @@ gcovr/data_sources: list
   A list of files from which the coverage object was populated.
   This entry is only available if :option:`--json-trace-data-source` is given.
 
-.. versionadded:: NEXT
+.. versionadded:: 8.5
    Change :option:`--verbose` to :option:`--json-trace-data-source` for ``gcovr/data_sources``.
 
 .. versionadded:: 8.4
@@ -438,7 +438,7 @@ gcovr/data_sources: list
   A list of files from which the coverage object was populated.
   This entry is only available if :option:`--json-trace-data-source` is given.
 
-.. versionadded:: NEXT
+.. versionadded:: 8.5
    Change :option:`--verbose` to :option:`--json-trace-data-source` for ``gcovr/data_sources``.
 
 .. versionchanged:: 8.4
@@ -507,10 +507,10 @@ gcovr/data_sources: list
 
 * if ``gcovr/excluded`` is true, the line should not be included in coverage reports.
 
-.. versionadded:: NEXT
+.. versionadded:: 8.5
    Change :option:`--verbose` to :option:`--json-trace-data-source` for ``gcovr/data_sources``.
 
-.. versionadded:: NEXT
+.. versionadded:: 8.5
    Key ``execution_count`` and ``blocks_percent`` are optional.
 
 .. versionadded:: 8.4
