@@ -104,7 +104,7 @@ If a template is missing from this directory the original is used. It is advised
 start by copying the part you want to modify from
 `the existing default theme templates <https://github.com/gcovr/gcovr/tree/main/src/gcovr/formats/html/default>`_
 , `the existing github theme templates <https://github.com/gcovr/gcovr/tree/main/src/gcovr/formats/html/github>`_.
-or  `the existing github theme templates <https://github.com/gcovr/gcovr/tree/main/src/gcovr/formats/html/common>`_.
+or  `the existing common templates <https://github.com/gcovr/gcovr/tree/main/src/gcovr/formats/html/common>`_.
 Keep in mind the template context data that is passed to these templates *MAY* change
 between release versions.
 
