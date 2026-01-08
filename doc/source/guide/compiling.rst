@@ -107,7 +107,7 @@ If you are using CMake, see :ref:`oos cmake`
 for information on configuring that build system
 to compile your software with coverage enabled.
 
-.. versionadded:: NEXT
+.. versionadded:: 8.5
    Added support for LLVM source based code coverage.
 
 

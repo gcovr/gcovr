@@ -4,12 +4,12 @@
 
 #  ************************** Copyrights and license ***************************
 #
-# This file is part of gcovr 8.4+main, a parsing and reporting tool for gcov.
-# https://gcovr.com/en/main
+# This file is part of gcovr 8.5, a parsing and reporting tool for gcov.
+# https://gcovr.com/en/8.5
 #
 # _____________________________________________________________________________
 #
-# Copyright (c) 2013-2025 the gcovr authors
+# Copyright (c) 2013-2026 the gcovr authors
 # Copyright (c) 2013 Sandia Corporation.
 # Under the terms of Contract DE-AC04-94AL85000 with Sandia Corporation,
 # the U.S. Government retains certain rights in this software.
@@ -357,7 +357,7 @@ def main(version: str, for_file: Optional[str] = None) -> None:
                 handlers.append(update_copyright_string)
             if filename == "LICENSE.txt":
                 handlers.append(update_license)
-            if filename == "pyproject.toml":
+            if filename == "pyproject.toml" and "config" not in fullname:
                 handlers.append(update_source_date_epoch_for_pytest)
             if extension in [".xml", ".html", ".json"] and (
                 "reference" in fullname or "examples" in fullname
@@ -372,12 +372,14 @@ def main(version: str, for_file: Optional[str] = None) -> None:
 
             if handlers:
                 encoding = "UTF-8"
-                if "html-encoding-" in fullname:
+                if "encoding-report-" in fullname:
                     encoding = (
                         fullname.replace("\\", "/")
-                        .split("html-encoding-")[1]
+                        .split("encoding-report-")[1]
                         .split("/")[0]
                     )
+                if filename == "main.cp1252.cpp":
+                    encoding = "cp1252"
                 with open(fullname, encoding=encoding) as fh_in:
                     lines = fh_in.readlines()
                     trailing_newline = lines and lines[-1][-1] == "\n"
