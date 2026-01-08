@@ -366,7 +366,7 @@ jobs:
     if: ${{ always() }}
     runs-on: ubuntu-22.04
     permissions:
-      contents: write
+      contents: read
     env:
       FORCE_COLOR: "1"
     timeout-minutes: 5
@@ -407,7 +407,7 @@ jobs:
     if: ${{ needs.build-package.outputs.publish_run_job == 'true' }}
     runs-on: ubuntu-22.04
     permissions:
-      contents: read
+      contents: write
     env:
       FORCE_COLOR: "1"
     timeout-minutes: 5
