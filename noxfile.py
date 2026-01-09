@@ -2,8 +2,8 @@
 
 #  ************************** Copyrights and license ***************************
 #
-# This file is part of gcovr 8.5, a parsing and reporting tool for gcov.
-# https://gcovr.com/en/8.5
+# This file is part of gcovr 8.5+main, a parsing and reporting tool for gcov.
+# https://gcovr.com/en/main
 #
 # _____________________________________________________________________________
 #
@@ -170,6 +170,7 @@ def prepare_next_iteration(session: nox.Session) -> None:
     else:
         session.error(f"Version line not found in {GCOVR_CHANGELOG_RST.name}")
     new_lines += list(lines)
+    new_lines.append("")
 
     GCOVR_CHANGELOG_RST.write_text("\n".join(new_lines))
 
@@ -306,7 +307,7 @@ def doc(session: nox.Session) -> None:
         if re.fullmatch(r"\d+\.\d+\s+\(.+\)", line.rstrip()):
             break
         line = re.sub(r"``", r"`", line)
-        line = re.sub(r":(?:option|ref):", r"", line)
+        line = re.sub(r":(?:option|ref):`(.+?)(?:\s*<[^>]+>)?`", r"`\1`", line)
         line = re.sub(r":issue:`(\d+)`", r"#\1", line)
         # Remove the empty lines around sub lists
         if (
