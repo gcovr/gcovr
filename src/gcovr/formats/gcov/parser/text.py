@@ -50,7 +50,7 @@ from .common import (
     check_hits,
 )
 
-UNKNOWN_FUNCTION_NAME = "<unknown function>"
+UNKNOWN_FUNCTION_NAME_FORMAT_STRING = "<unknown function {}>"
 
 
 def _line_pattern(pattern: str) -> Pattern[str]:
@@ -344,7 +344,7 @@ def parse_coverage(
 
     filecov = FileCoverage(data_filename, filename=filename)
     state = _ParserState.new(
-        function_name=UNKNOWN_FUNCTION_NAME,
+        function_name=UNKNOWN_FUNCTION_NAME_FORMAT_STRING,
     )
     for line, raw_line in tokenized_lines:
         try:
@@ -377,13 +377,28 @@ def parse_coverage(
     unknown_function_linecovs = [
         linecov
         for linecov in filecov.linecov()
-        if linecov.function_name == UNKNOWN_FUNCTION_NAME
+        if linecov.function_name == UNKNOWN_FUNCTION_NAME_FORMAT_STRING
     ]
     if unknown_function_linecovs:
+        # Update the function name to include the first lineno
+        function_name = UNKNOWN_FUNCTION_NAME_FORMAT_STRING.format(
+            unknown_function_linecovs[0].lineno
+        )
+        for linecov in unknown_function_linecovs:
+            linecov.parent.parent.insert_line_coverage(
+                linecov.data_sources,
+                lineno=linecov.lineno,
+                count=linecov.count,
+                function_name=function_name,
+                block_ids=linecov.block_ids,
+                excluded=linecov.excluded,
+            )
+            linecov.parent.remove_line_coverage(linecov)
+
         filecov.insert_function_coverage(
             str(data_filename),
             MergeOptions(func_opts=FUNCTION_MAX_LINE_MERGE_OPTIONS),
-            mangled_name=UNKNOWN_FUNCTION_NAME,
+            mangled_name=function_name,
             demangled_name=None,
             lineno=unknown_function_linecovs[0].lineno,
             count=None,
