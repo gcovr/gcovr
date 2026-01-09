@@ -88,7 +88,7 @@ jobs:
             case "${{ inputs.os }}/${{ inputs.gcc }}/${{ inputs.python-version }}" in
               ubuntu-22.04/gcc-11/3.13) USE_COVERAGE=true ;;
               windows-2019/gcc/3.13)    USE_COVERAGE=true ;;
-              macos-14/gcc-13/3.9)      USE_COVERAGE=true ;;
+              macos-14/gcc-13/3.10)      USE_COVERAGE=true ;;
               macos-15/gcc/3.13)        USE_COVERAGE=true ;;
               *)                        USE_COVERAGE=false ;;
             esac
