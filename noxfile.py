@@ -129,7 +129,7 @@ def prepare_release(session: nox.Session) -> None:
     else:
         session.error(f"Invalid input {release_type!r}")
 
-    session.run("python", "admin/bump_version.py", f"{major}.{minor}")
+    session.run("admin/bump_version.py", f"{major}.{minor}")
     session.notify("html2jpeg")
 
 
@@ -174,7 +174,7 @@ def prepare_next_iteration(session: nox.Session) -> None:
 
     GCOVR_CHANGELOG_RST.write_text("\n".join(new_lines))
 
-    session.run("python", "admin/bump_version.py", f"{last_version}+main")
+    session.run("admin/bump_version.py", f"{last_version}+main")
     session.notify("html2jpeg")
 
 

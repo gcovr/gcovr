@@ -111,6 +111,7 @@ def add_copyright_header_to_python_file(
 
     iter_lines = iter(lines)
 
+    skipped_lines = []
     # skip lines until header end marker
     for line in iter_lines:
         if len(line) > 0 and line == "#" + HEADER_END:
@@ -124,8 +125,10 @@ def add_copyright_header_to_python_file(
                     new_lines.append(line)
                     break
             break
-    # no header found
+        skipped_lines.append(line)
+    # no header found, use all skipped lines
     else:
+        new_lines.extend(skipped_lines)
         new_lines.append("\n")
 
     # keep all other lines
@@ -349,7 +352,9 @@ def main(version: str, for_file: str | None = None) -> None:
             handlers = list[Callable[[str, list[str], str], list[str]]]()
             _, extension = os.path.splitext(filename)
             fullname = os.path.join(root, filename)
-            if for_file is not None and for_file != os.path.abspath(fullname):
+            if for_file is not None and os.path.abspath(for_file) != os.path.abspath(
+                fullname
+            ):
                 continue
             if filename.endswith(".py") and filename not in ["version.py"]:
                 handlers.append(add_copyright_header_to_python_file)

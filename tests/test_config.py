@@ -23,7 +23,7 @@
 import io
 import re
 import textwrap
-from typing import Any, Iterable
+from typing import Any, Iterable, Optional, Union
 
 import pytest
 
@@ -160,7 +160,7 @@ def test_unknown_keys() -> None:
     ids=lambda test_spec: test_spec[0],
 )
 def test_option_with_boolean_values(
-    test_spec: tuple[str, str, str, bool | int, bool | int, bool],
+    test_spec: tuple[str, str, str, Union[bool, int], Union[bool, int], bool],
 ) -> None:
     r"""
     Boolean values need special consideration.
@@ -329,7 +329,7 @@ class Ref:
     This is useful to represent the presence of a value that may be None.
     """
 
-    def __init__(self, value: str | list[str] | None) -> None:
+    def __init__(self, value: Union[Optional[str], list[str]]) -> None:
         self.value = value
 
 
@@ -345,7 +345,7 @@ class Ref:
     ids=lambda test_spec: test_spec[0],
 )
 def test_namespace_merging_overwriting(
-    test_spec: tuple[str, list[Any], str | None],
+    test_spec: tuple[str, list[Any], Optional[str]],
 ) -> None:
     _, input_values, result = test_spec
 
@@ -380,7 +380,7 @@ def test_namespace_merging_overwriting(
     ids=lambda test_spec: test_spec[0],
 )
 def test_namespace_merging_appending(
-    test_spec: tuple[str, list[Any], list[str] | None],
+    test_spec: tuple[str, list[Any], Optional[list[str]]],
 ) -> None:
     _, input_values, result = test_spec
 
