@@ -23,7 +23,7 @@ from __future__ import annotations
 from argparse import _ArgumentGroup, ArgumentParser, ArgumentTypeError, SUPPRESS
 from inspect import isclass
 from locale import getpreferredencoding
-from typing import Iterable, Any, Optional, Callable, TextIO
+from typing import Iterable, Any, Callable, TextIO
 from dataclasses import dataclass
 import datetime
 import os
@@ -57,7 +57,7 @@ def timestamp(value: str) -> datetime.datetime:
         raise ArgumentTypeError(f"{ex}: {value!r}") from None
 
 
-def source_date_epoch() -> Optional[datetime.datetime]:
+def source_date_epoch() -> datetime.datetime | None:
     """Load time from SOURCE_DATE_EPOCH, if it exists.
     See: <https://reproducible-builds.org/docs/source-date-epoch/>
 
@@ -158,7 +158,7 @@ def argument_parser_setup(
 
 def parse_config_into_dict(
     config_entry_source: Iterable[ConfigEntry],
-    all_options: Optional[Iterable[GcovrConfigOption]] = None,
+    all_options: Iterable[GcovrConfigOption] | None = None,
 ) -> dict[str, Any]:
     """Parse a config file and save the configuration in a dictionary."""
     cfg_dict = dict[str, Any]()
@@ -189,7 +189,7 @@ def _get_value_from_config_entry(
     cfg_entry: ConfigEntry,
     option: GcovrConfigOption,
 ) -> Any:
-    def get_boolean(silent_error: bool = False) -> Optional[bool]:
+    def get_boolean(silent_error: bool = False) -> bool | None:
         try:
             return cfg_entry.value_as_bool
         except ValueError:
@@ -285,7 +285,7 @@ def _assign_value_to_dict(
     value: Any,
     option: GcovrConfigOption,
     is_single_value: bool,
-    cfg_entry_key: Optional[str] = None,
+    cfg_entry_key: str | None = None,
 ) -> None:
     if option.action == "append" or option.nargs == "*":
         append_target = namespace.setdefault(option.name, [])
@@ -314,7 +314,7 @@ def _assign_value_to_dict(
 
 def merge_options_and_set_defaults(
     partial_namespaces: list[dict[str, Any]],
-    all_options: Optional[list[GcovrConfigOption]] = None,
+    all_options: list[GcovrConfigOption] | None = None,
 ) -> Options:
     """Merge all options into the namespace and set the default values for unused options."""
     if not partial_namespaces:
@@ -1072,10 +1072,10 @@ class ConfigEntry:
     value: str
     """The un-parsed value."""
 
-    filename: Optional[str] = None
+    filename: str | None = None
     """Path of the config file, for error messages."""
 
-    lineno: Optional[int] = None
+    lineno: int | None = None
     """Line of the entry in the config file, for error messages."""
 
     def __str__(self) -> str:

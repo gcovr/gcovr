@@ -31,7 +31,7 @@ The behavior of this parser was informed by the following sources:
 # pylint: disable=too-many-lines
 
 import os
-from typing import Any, Iterator, Optional
+from typing import Any, Iterator
 
 from gcovr.utils import get_md5_hexdigest, read_source_file
 
@@ -54,7 +54,7 @@ def parse_coverage(
     include_filter: tuple[Filter, ...],
     exclude_filter: tuple[Filter, ...],
     source_encoding: str,
-    ignore_parse_errors: Optional[set[str]],
+    ignore_parse_errors: set[str] | None,
     suspicious_hits_threshold: int = SUSPICIOUS_COUNTER,
     activate_trace_logging: bool = False,
 ) -> Iterator[tuple[FileCoverage, list[str]]]:
@@ -109,7 +109,7 @@ def _parse_file_node(
     gcov_file_node: dict[str, Any],
     filename: str,
     source_lines: list[str],
-    ignore_parse_errors: Optional[set[str]],
+    ignore_parse_errors: set[str] | None,
     suspicious_hits_threshold: int = SUSPICIOUS_COUNTER,
     activate_trace_logging: bool = False,
 ) -> FileCoverage:

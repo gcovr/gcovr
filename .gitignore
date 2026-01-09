@@ -1,6 +1,11 @@
 # Python cache files
 __pycache__
 *.py[cod]
+
+# Tool caches
+/*_cache/
+
+# GCOV files
 *.gcda
 *.gcno
 *.gcov
@@ -12,7 +17,7 @@ __pycache__
 # nox virtual environments
 /.nox*/
 # User virtual environment
-/.venv/
+/.venv*/
 
 # Version is updated from hatch-vcs
 src/gcovr/version.py
@@ -35,6 +40,7 @@ src/gcovr/version.py
 
 # VS Code workspace
 /*.code-workspace
+/.vscode/settings.json
 
 # PyCharm
 /.idea
@@ -49,4 +55,3 @@ src/gcovr/version.py
 
 # CI standalone app folder
 /artifacts
-/.vscode/settings.json

@@ -17,8 +17,6 @@
 #
 # ****************************************************************************
 
-from typing import Union
-
 from ...data_model.container import CoverageContainer
 from ...formats.base import BaseHandler
 from ...options import (
@@ -40,7 +38,7 @@ class LcovHandler(BaseHandler):
     """Class to handle LCOV format."""
 
     @classmethod
-    def get_options(cls) -> list[Union[GcovrConfigOption, str]]:
+    def get_options(cls) -> list[GcovrConfigOption | str]:
         return [
             GcovrConfigOption(
                 "lcov",

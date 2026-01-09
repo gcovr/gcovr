@@ -20,16 +20,7 @@
 from __future__ import annotations
 import os
 import re
-from typing import (
-    Any,
-    ItemsView,
-    Iterable,
-    Iterator,
-    Literal,
-    Optional,
-    Union,
-    ValuesView,
-)
+from typing import Any, ItemsView, Iterable, Iterator, Literal, ValuesView
 
 from ..filter import is_file_excluded
 
@@ -67,8 +58,8 @@ class ContainerBase:
 
         basedir = commonpath(list(self.data.keys()))
 
-        def key_filename(key: str) -> list[Union[int, str]]:
-            def convert_to_int_if_possible(text: str) -> Union[int, str]:
+        def key_filename(key: str) -> list[int | str]:
+            def convert_to_int_if_possible(text: str) -> int | str:
                 return int(text) if text.isdigit() else text
 
             key = (
@@ -84,7 +75,7 @@ class ContainerBase:
             ]
 
         def coverage_stat(key: str) -> CoverageStat:
-            cov: Union[FileCoverage, CoverageContainerDirectory] = self.data[key]
+            cov: FileCoverage | CoverageContainerDirectory = self.data[key]
             if by_metric == "branch":
                 return cov.branch_coverage()
             if by_metric == "decision":
@@ -222,7 +213,7 @@ class CoverageContainer(ContainerBase):
         return stats
 
     @staticmethod
-    def _get_dirname(filename: str) -> Optional[str]:
+    def _get_dirname(filename: str) -> str | None:
         """Get the directory name with a trailing path separator.
 
         >>> import os
@@ -255,8 +246,8 @@ class CoverageContainer(ContainerBase):
         subdirs = dict[str, CoverageContainerDirectory]()
         for key in sorted_keys:
             filecov = self[key]
-            dircov: Optional[CoverageContainerDirectory] = None
-            dirname: Optional[str] = (
+            dircov: CoverageContainerDirectory | None = None
+            dirname: str | None = (
                 os.path.dirname(filecov.filename)
                 .replace("\\", os.sep)
                 .replace("/", os.sep)
@@ -326,16 +317,16 @@ class CoverageContainerDirectory(ContainerBase):
 
     def __init__(self, dirname: str) -> None:
         self.dirname: str = dirname
-        self.parent_dirname: Optional[str] = None
-        self.data = CoverageDict[str, Union[FileCoverage, CoverageContainerDirectory]]()
+        self.parent_dirname: str | None = None
+        self.data = CoverageDict[str, FileCoverage | CoverageContainerDirectory]()
         self.stats: SummarizedStats = SummarizedStats.new_empty()
 
     def __setitem__(
-        self, key: str, item: Union[FileCoverage, CoverageContainerDirectory]
+        self, key: str, item: FileCoverage | CoverageContainerDirectory
     ) -> None:
         self.data[key] = item
 
-    def __getitem__(self, key: str) -> Union[FileCoverage, CoverageContainerDirectory]:
+    def __getitem__(self, key: str) -> FileCoverage | CoverageContainerDirectory:
         return self.data[key]
 
     def __delitem__(self, key: str) -> None:
@@ -344,11 +335,11 @@ class CoverageContainerDirectory(ContainerBase):
     def __len__(self) -> int:
         return len(self.data)
 
-    def values(self) -> ValuesView[Union[FileCoverage, CoverageContainerDirectory]]:
+    def values(self) -> ValuesView[FileCoverage | CoverageContainerDirectory]:
         """Get the file coverage data objects."""
         return self.data.values()
 
-    def items(self) -> ItemsView[str, Union[FileCoverage, CoverageContainerDirectory]]:
+    def items(self) -> ItemsView[str, FileCoverage | CoverageContainerDirectory]:
         """Get the file coverage data items."""
         return self.data.items()
 

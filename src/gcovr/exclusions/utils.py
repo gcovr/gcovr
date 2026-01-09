@@ -19,7 +19,7 @@
 
 """Utils for exclusion of lines and branches"""
 
-from typing import Callable, Iterable, Optional
+from typing import Callable, Iterable
 
 from ..data_model.coverage import FileCoverage, FunctionCoverage
 from ..logging import LOGGER
@@ -30,9 +30,9 @@ FunctionListByLine = dict[int, list[FunctionCoverage]]
 
 
 def function_exclude_not_supported(
-    filename: Optional[str] = None,
-    lineno: Optional[int] = None,
-    columnno: Optional[int] = None,
+    filename: str | None = None,
+    lineno: int | None = None,
+    columnno: int | None = None,
 ) -> None:
     """warn that a function exclude isn't supported"""
     if filename is None:

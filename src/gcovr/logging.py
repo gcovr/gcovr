@@ -20,7 +20,7 @@
 import logging
 import os
 import sys
-from typing import Any, Optional, cast, TYPE_CHECKING
+from typing import Any, cast, TYPE_CHECKING
 from colorlog import ColoredFormatter
 
 if TYPE_CHECKING:
@@ -53,7 +53,7 @@ logging.setLoggerClass(GcovrLogger)
 LOGGER = cast("GcovrLogger", logging.getLogger("gcovr"))
 
 
-def __colored_formatter(options: "Optional[Options]" = None) -> ColoredFormatter:
+def __colored_formatter(options: "Options | None" = None) -> ColoredFormatter:
     """Configure the colored logging formatter."""
     if options is not None:
         log_format = (

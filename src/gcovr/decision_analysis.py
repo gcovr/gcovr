@@ -20,7 +20,6 @@
 # cspell:ignore ault
 
 import re
-from typing import Optional
 
 from .data_model.coverage import (
     DecisionCoverageUncheckable,
@@ -162,7 +161,7 @@ class DecisionParser:
 
     def __init__(self, filecov: FileCoverage, lines: list[str]) -> None:
         # If there are several line coverage definitions for the same line we ignore all of them
-        self.linecov_by_line: dict[int, Optional[LineCoverage]] = {}
+        self.linecov_by_line: dict[int, LineCoverage | None] = {}
         for linecov_collection in filecov.lines():
             if len(linecov_collection) == 1:
                 self.linecov_by_line[linecov_collection.lineno] = list(

@@ -22,7 +22,7 @@
 import functools
 import os
 import re
-from typing import Any, Callable, Iterable, Iterator, Optional, Union
+from typing import Any, Callable, Iterable, Iterator
 
 from jinja2 import (
     BaseLoader,
@@ -115,7 +115,7 @@ def templates(options: Options) -> Environment:
 def user_templates() -> Environment:
     """Get the Jinja2 environment for the user templates."""
 
-    def load_user_template(template: str) -> Optional[str]:
+    def load_user_template(template: str) -> str | None:
         contents = None
         try:
             with open(template, "rb") as f:
@@ -239,7 +239,7 @@ class PygmentsHighlighting:
 
 
 @functools.lru_cache(maxsize=1)
-def get_formatter(options: Options) -> Union[PygmentsHighlighting, NullHighlighting]:
+def get_formatter(options: Options) -> PygmentsHighlighting | NullHighlighting:
     """Get the formatter for the selected theme."""
     if options.html_syntax_highlighting:
         highlight_style = (
@@ -255,7 +255,7 @@ def get_formatter(options: Options) -> Union[PygmentsHighlighting, NullHighlight
 
 
 def coverage_to_class(
-    coverage: Optional[float], medium_threshold: float, high_threshold: float
+    coverage: float | None, medium_threshold: float, high_threshold: float
 ) -> str:
     """Get the coverage class depending on the threshold."""
     if coverage is None:
@@ -306,7 +306,7 @@ class RootInfo:
         self.calls = dict[str, Any]()
         self.functions = dict[str, Any]()
         self.lines = dict[str, Any]()
-        self.navigation = dict[str, tuple[Optional[str], Optional[str]]]()
+        self.navigation = dict[str, tuple[str | None, str | None]]()
 
     def set_directory(self, directory: str) -> None:
         """Set the directory for the report."""
@@ -328,19 +328,19 @@ class RootInfo:
         self.decisions = dict_from_stat(stats.decision, self.coverage_class)
         self.calls = dict_from_stat(stats.call, self.coverage_class)
 
-    def line_coverage_class(self, coverage: Optional[float]) -> str:
+    def line_coverage_class(self, coverage: float | None) -> str:
         """Get the coverage class for the line."""
         return coverage_to_class(
             coverage, self.medium_threshold_line, self.high_threshold_line
         )
 
-    def branch_coverage_class(self, coverage: Optional[float]) -> str:
+    def branch_coverage_class(self, coverage: float | None) -> str:
         """Get the coverage class for the branch."""
         return coverage_to_class(
             coverage, self.medium_threshold_branch, self.high_threshold_branch
         )
 
-    def coverage_class(self, coverage: Optional[float]) -> str:
+    def coverage_class(self, coverage: float | None) -> str:
         """Get the coverage class for all other types."""
         return coverage_to_class(coverage, self.medium_threshold, self.high_threshold)
 
@@ -468,7 +468,7 @@ def write_report(
         covdata.populate_directories(sorted_keys, options.root_filter)
 
     cdata_fname = dict[str, str]()
-    cdata_sourcefile = dict[str, Optional[str]]()
+    cdata_sourcefile = dict[str, str | None]()
     for fname in sorted_keys + [v.dirname for v in covdata.directories]:
         filtered_fname = options.root_filter.sub("", fname)
         if filtered_fname != "":
@@ -505,8 +505,8 @@ def write_report(
         if directory != "":
             root_directory = str(directory) + os.sep
 
-    previous_fname: Optional[str] = None
-    previous_link_report: Optional[str] = None
+    previous_fname: str | None = None
+    previous_link_report: str | None = None
     for fname in sorted(cdata_sourcefile.keys()):
         root_info.navigation[fname] = (previous_link_report, None)
         link_report = cdata_sourcefile[fname]
@@ -757,7 +757,7 @@ def write_single_page(
 
 def get_coverage_data(
     root_info: RootInfo,
-    cdata: Union[CoverageContainerDirectory, FileCoverage],
+    cdata: CoverageContainerDirectory | FileCoverage,
     link_report: str,
     cdata_fname: str,
     relative_path: str = "",
@@ -771,18 +771,18 @@ def get_coverage_data(
     medium_threshold_branch = root_info.medium_threshold_branch
     high_threshold_branch = root_info.high_threshold_branch
 
-    def coverage_class(coverage: Optional[float]) -> str:
+    def coverage_class(coverage: float | None) -> str:
         return coverage_to_class(coverage, medium_threshold, high_threshold)
 
-    def line_coverage_class(coverage: Optional[float]) -> str:
+    def line_coverage_class(coverage: float | None) -> str:
         return coverage_to_class(coverage, medium_threshold_line, high_threshold_line)
 
-    def branch_coverage_class(coverage: Optional[float]) -> str:
+    def branch_coverage_class(coverage: float | None) -> str:
         return coverage_to_class(
             coverage, medium_threshold_branch, high_threshold_branch
         )
 
-    def sort_value(coverage_stats: Union[CoverageStat, DecisionCoverageStat]) -> str:
+    def sort_value(coverage_stats: CoverageStat | DecisionCoverageStat) -> str:
         return str(
             coverage_stats.percent_or("-")
             if root_info.sort_percent
@@ -974,7 +974,7 @@ def get_file_data(
                 )
             ] = f_data
 
-    def get_linecovs(lineno: int) -> Optional[list[LineCoverage]]:
+    def get_linecovs(lineno: int) -> list[LineCoverage] | None:
         """Get a list of line coverage objects if available for the line."""
         linecovs = cdata.get_line(lineno)
         return None if linecovs is None else list(linecovs.linecov(sort=True))
@@ -1045,9 +1045,9 @@ def get_file_data(
 
 
 def dict_from_stat(
-    stat: Union[CoverageStat, DecisionCoverageStat],
-    coverage_class: Callable[[Optional[float]], str],
-    default: Optional[float] = None,
+    stat: CoverageStat | DecisionCoverageStat,
+    coverage_class: Callable[[float | None], str],
+    default: float | None = None,
 ) -> dict[str, Any]:
     """Get a dictionary from the stats."""
     coverage_default = "-" if default is None else default
@@ -1070,7 +1070,7 @@ def dict_from_stat(
 def source_row(
     lineno: int,
     source: str,
-    linecov_list: Optional[list[LineCoverage]],
+    linecov_list: list[LineCoverage] | None,
     html_block_ids: bool,
 ) -> dict[str, Any]:
     """Get information for a row"""
@@ -1078,7 +1078,7 @@ def source_row(
     line_conditions = None
     line_decisions = None
     line_calls = None
-    linecount: Union[str, int] = ""
+    linecount: int | str = ""
     covclass = ""
     if linecov_list:
         if all(linecov.is_excluded for linecov in linecov_list):

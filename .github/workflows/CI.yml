@@ -262,7 +262,7 @@ jobs:
     #
     # OS: Linux, Windows
     # Compiler: GCC-5 to GCC-14, Clang-10 to CLANG-19
-    # Python: 3.9 -- 3.13, pypy3
+    # Python: 3.10 -- 3.14, pypy3
     #
     # Instead of testing all combinations, we try to achieve full coverage
     # across each axis. The main test matrix just represents the Python axis on
@@ -274,7 +274,7 @@ jobs:
       matrix:
         os: [ubuntu-22.04]
         gcc: [gcc-11]
-        python-version: ['3.9', '3.10', '3.11', '3.12', '3.13', 'pypy-3.11']
+        python-version: ['3.10', '3.11', '3.12', '3.13', '3.14', 'pypy-3.11']
 
         include:
 
@@ -282,29 +282,28 @@ jobs:
           # Note that all compiler versions are also handled via Docker.
           - os: ubuntu-22.04
             gcc: gcc-11
-            python-version: '3.13'
+            python-version: '3.14'
             upload-app: true
 
           # Test minimum and maximum Python version on Windows.
           - os: windows-2022
             gcc: gcc
-            python-version: '3.9'
+            python-version: '3.10'
           - os: windows-2025
             gcc: gcc
-            python-version: '3.13'
+            python-version: '3.14'
             upload-app: true
 
           # Test minimum and maximum Python version on Mac OS.
           - os: macos-14
             gcc: gcc
-            python-version: '3.9'
+            python-version: '3.10'
           - os: macos-14
             gcc: gcc-13
-            python-version: '3.13'
-            upload-app: true
+            python-version: '3.14'
           - os: macos-15
             gcc: gcc
-            python-version: '3.13'
+            python-version: '3.14'
             upload-app: true
 
 

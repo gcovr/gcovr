@@ -89,8 +89,8 @@ set -e
 curl -fsSL https://pyenv.run | bash
 export PYENV_ROOT="$HOME/.pyenv"
 export PATH="$PYENV_ROOT/bin:$PYENV_ROOT/shims:$PATH"
-pyenv install 3.9
-pyenv global 3.9
+pyenv install 3.10
+pyenv global 3.10
 
 python3 --version
 pip --version

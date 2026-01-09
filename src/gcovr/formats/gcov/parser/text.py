@@ -37,14 +37,7 @@ The behavior of this parser was informed by the following sources:
 
 import enum
 import re
-from typing import (
-    Any,
-    Iterable,
-    NamedTuple,
-    Optional,
-    Pattern,
-    Union,
-)
+from typing import Any, Iterable, NamedTuple, Pattern
 
 from ....data_model.coverage import FileCoverage, LineCoverage
 from ....data_model.merging import FUNCTION_MAX_LINE_MERGE_OPTIONS, MergeOptions
@@ -118,7 +111,7 @@ class _MetadataLine(NamedTuple):
     """A gcov line with metadata: ``-: 0:KEY:VALUE``"""
 
     key: str
-    value: Optional[str]
+    value: str | None
 
 
 class _BlockLine(NamedTuple):
@@ -142,7 +135,7 @@ class _BranchLine(NamedTuple):
 
     branchno: int
     hits: int
-    annotation: Optional[str]
+    annotation: str | None
 
 
 class _UnconditionalLine(NamedTuple):
@@ -162,8 +155,8 @@ class _FunctionLine(NamedTuple):
     """
 
     name: str
-    call_count: Optional[int]
-    blocks_covered: Optional[float]
+    call_count: int | None
+    blocks_covered: float | None
 
 
 class _FunctionSpecializationNameLine(NamedTuple):
@@ -180,17 +173,17 @@ class _FunctionSpecializationSeparatorLine(NamedTuple):
 # so we use a Union type as the _parse_line() return type.
 #
 # Why NamedTuples? Better type safety than tuples, but very low memory overhead.
-_Line = Union[
-    _SourceLine,
-    _MetadataLine,
-    _BlockLine,
-    _CallLine,
-    _BranchLine,
-    _UnconditionalLine,
-    _FunctionLine,
-    _FunctionSpecializationNameLine,
-    _FunctionSpecializationSeparatorLine,
-]
+_Line = (
+    _SourceLine
+    | _MetadataLine
+    | _BlockLine
+    | _CallLine
+    | _BranchLine
+    | _UnconditionalLine
+    | _FunctionLine
+    | _FunctionSpecializationNameLine
+    | _FunctionSpecializationSeparatorLine
+)
 
 
 class UnknownLineType(Exception):
@@ -207,7 +200,7 @@ def parse_metadata(
     *,
     suspicious_hits_threshold: int = SUSPICIOUS_COUNTER,
     activate_trace_logging: bool = False,
-) -> dict[str, Optional[str]]:
+) -> dict[str, str | None]:
     r"""
     Collect the header/metadata lines from a gcov file.
 
@@ -259,11 +252,11 @@ _LineWithError = tuple[str, Exception]
 
 
 def parse_coverage(
-    data_filename: Union[str, set[tuple[str, ...]]],
+    data_filename: str | set[tuple[str, ...]],
     lines: list[str],
     *,
     filename: str,
-    ignore_parse_errors: Optional[set[str]],
+    ignore_parse_errors: set[str] | None,
     suspicious_hits_threshold: int = SUSPICIOUS_COUNTER,
     activate_trace_logging: bool = False,
     use_existing_files: bool = False,
@@ -452,13 +445,13 @@ class _ParserState(NamedTuple):
     """
 
     deferred_functions: list[_FunctionLine] = []
-    function_name: Optional[str] = None
+    function_name: str | None = None
     function_specialization: bool = False
-    last_linecov: Optional[LineCoverage] = None
+    last_linecov: LineCoverage | None = None
     linecov_list: list[LineCoverage] = []
-    block_id: Optional[int] = None
+    block_id: int | None = None
     is_recovering: bool = False
-    previous_state: Optional["_ParserState"] = None
+    previous_state: "_ParserState | None" = None
 
     @classmethod
     def new(cls, **kwargs: Any) -> "_ParserState":
@@ -639,7 +632,7 @@ def _report_lines_with_errors(
     lines_with_errors: list[_LineWithError],
     *,
     filename: str,
-    ignore_parse_errors: Optional[set[str]],
+    ignore_parse_errors: set[str] | None,
 ) -> None:
     """Log warnings and potentially re-throw exceptions"""
 
@@ -679,8 +672,8 @@ def _parse_line(
     filename: str,
     line: str,
     suspicious_hits_threshold: int = SUSPICIOUS_COUNTER,
-    ignore_parse_errors: Optional[set[str]] = None,
-    persistent_states: Optional[dict[str, Any]] = None,
+    ignore_parse_errors: set[str] | None = None,
+    persistent_states: dict[str, Any] | None = None,
 ) -> _Line:
     """
     Categorize/parse individual lines without further processing.
@@ -918,7 +911,7 @@ def _parse_tag_line(  # pylint: disable=too-many-return-statements
     suspicious_hits_threshold: int,
     ignore_parse_errors: set[str],
     persistent_states: dict[str, Any],
-) -> Optional[_Line]:
+) -> _Line | None:
     """A tag line is any gcov line that starts in the first column."""
 
     # Tag lines never start with whitespace.

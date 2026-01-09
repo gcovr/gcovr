@@ -17,8 +17,6 @@
 #
 # ****************************************************************************
 
-from typing import Union
-
 from ...options import GcovrConfigOption, OutputOrDefault
 from ...formats.base import BaseHandler
 
@@ -29,7 +27,7 @@ class CloverHandler(BaseHandler):
     """Class to handle Clover format."""
 
     @classmethod
-    def get_options(cls) -> list[Union[GcovrConfigOption, str]]:
+    def get_options(cls) -> list[GcovrConfigOption | str]:
         return [
             # Global options used for merging.
             "merge_mode_functions",

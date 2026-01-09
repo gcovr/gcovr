@@ -23,7 +23,7 @@ from threading import Thread, Condition, RLock
 from traceback import format_exception
 from contextlib import contextmanager
 from queue import Queue, Empty
-from typing import Any, Callable, Iterator, Optional
+from typing import Any, Callable, Iterator
 
 from ...exceptions import SanityCheckError
 from ...logging import LOGGER
@@ -73,7 +73,7 @@ def locked_directory(directory: str) -> Iterator[None]:
         locked_directory_global_object.done(directory)
 
 
-QueueContent = Optional[tuple[Callable[[str], None], tuple[Any], dict[str, Any]]]
+QueueContent = tuple[Callable[[str], None], tuple[Any], dict[str, Any]] | None
 
 
 def worker(

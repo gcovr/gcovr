@@ -22,7 +22,7 @@ import re
 import sys
 
 from argparse import ArgumentError, ArgumentParser, Namespace
-from typing import Any, Optional
+from typing import Any
 import traceback
 
 from .configuration import (
@@ -182,7 +182,7 @@ COPYRIGHT = (
 )
 
 
-def find_config_name(root: str, filename: str) -> Optional[str]:
+def find_config_name(root: str, filename: str) -> str | None:
     """Find the configuration to use."""
     if root:
         filename = os.path.join(root, filename)
@@ -221,7 +221,7 @@ def load_config(partial_options: Namespace) -> dict[str, Any]:
     return {}
 
 
-def main(args: Optional[list[str]] = None) -> int:  # pylint: disable=too-many-return-statements
+def main(args: list[str] | None = None) -> int:  # pylint: disable=too-many-return-statements
     """The main entry point of GCOVR."""
     configure_logging()
     try:
@@ -324,7 +324,7 @@ def main(args: Optional[list[str]] = None) -> int:  # pylint: disable=too-many-r
     def _setup_filter(
         option: str,
         patterns: list[FilterOption],
-        default_filter: Optional[Filter] = None,
+        default_filter: Filter | None = None,
     ) -> tuple[Filter, ...]:
         """Setup a filter and handle the exception."""
         try:
