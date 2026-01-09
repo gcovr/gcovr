@@ -68,15 +68,7 @@ from __future__ import annotations
 from abc import abstractmethod
 import os
 import re
-from typing import (
-    Any,
-    Callable,
-    Iterable,
-    NoReturn,
-    Optional,
-    TypeVar,
-    Union,
-)
+from typing import Any, Callable, Iterable, NoReturn, TypeVar
 
 from ..exceptions import (
     GcovrDataAssertionError,
@@ -129,7 +121,7 @@ class CoverageBase:
 
     __slots__ = ("data_sources",)
 
-    def __init__(self, data_sources: Union[str, set[tuple[str, ...]]]) -> None:
+    def __init__(self, data_sources: str | set[tuple[str, ...]]) -> None:
         if isinstance(data_sources, str):
             self.data_sources = set[tuple[str, ...]]([(data_sources,)])
         else:
@@ -198,7 +190,7 @@ class CoverageBase:
 
     @property
     @abstractmethod
-    def location(self) -> Optional[str]:
+    def location(self) -> str | None:
         """Get the source location of the coverage data."""
 
 
@@ -260,14 +252,14 @@ class BranchCoverage(CoverageBase):
     def __init__(
         self,
         parent: LineCoverage,
-        data_sources: Union[str, set[tuple[str, ...]]],
+        data_sources: str | set[tuple[str, ...]],
         *,
-        branchno: Optional[int],
+        branchno: int | None,
         count: int,
         fallthrough: bool = False,
         throw: bool = False,
-        source_block_id: Optional[int] = None,
-        destination_block_id: Optional[int] = None,
+        source_block_id: int | None = None,
+        destination_block_id: int | None = None,
         excluded: bool = False,
     ) -> None:
         super().__init__(data_sources)
@@ -392,7 +384,7 @@ class BranchCoverage(CoverageBase):
         )
 
     @property
-    def location(self) -> Optional[str]:
+    def location(self) -> str | None:
         """Get the source location of the coverage data."""
         branch_info = []
         if self.branchno is not None:
@@ -486,7 +478,7 @@ class ConditionCoverage(CoverageBase):
     def __init__(
         self,
         parent: LineCoverage,
-        data_sources: Union[str, set[tuple[str, ...]]],
+        data_sources: str | set[tuple[str, ...]],
         *,
         conditionno: int,
         count: int,
@@ -619,7 +611,7 @@ class ConditionCoverage(CoverageBase):
         return (self.conditionno, self.count)
 
     @property
-    def location(self) -> Optional[str]:
+    def location(self) -> str | None:
         """Get the source location of the coverage data."""
         return f"{self.parent.location} (condition {self.conditionno})"
 
@@ -651,8 +643,8 @@ class DecisionCoverageUncheckable(CoverageBase):
 
     def __init__(
         self,
-        parent: Optional[LineCoverage],
-        data_sources: Union[str, set[tuple[str, ...]]],
+        parent: LineCoverage | None,
+        data_sources: str | set[tuple[str, ...]],
     ) -> None:
         super().__init__(data_sources)
         self.parent = parent
@@ -689,7 +681,7 @@ class DecisionCoverageUncheckable(CoverageBase):
         raise NotImplementedError("Function not implemented for decision objects.")
 
     @property
-    def location(self) -> Optional[str]:
+    def location(self) -> str | None:
         """Get a string defining the source location for the coverage data."""
         return None if self.parent is None else self.parent.location
 
@@ -719,8 +711,8 @@ class DecisionCoverageConditional(CoverageBase):
 
     def __init__(
         self,
-        parent: Optional[LineCoverage],
-        data_sources: Union[str, set[tuple[str, ...]]],
+        parent: LineCoverage | None,
+        data_sources: str | set[tuple[str, ...]],
         *,
         count_true: int,
         count_false: int,
@@ -779,7 +771,7 @@ class DecisionCoverageConditional(CoverageBase):
         raise NotImplementedError("Function not implemented for decision objects.")
 
     @property
-    def location(self) -> Optional[str]:
+    def location(self) -> str | None:
         """Get the source location of the coverage data."""
         return None if self.parent is None else self.parent.location
 
@@ -810,8 +802,8 @@ class DecisionCoverageSwitch(CoverageBase):
 
     def __init__(
         self,
-        parent: Optional[LineCoverage],
-        data_sources: Union[str, set[tuple[str, ...]]],
+        parent: LineCoverage | None,
+        data_sources: str | set[tuple[str, ...]],
         *,
         count: int,
     ) -> None:
@@ -863,7 +855,7 @@ class DecisionCoverageSwitch(CoverageBase):
         raise NotImplementedError("Function not implemented for decision objects.")
 
     @property
-    def location(self) -> Optional[str]:
+    def location(self) -> str | None:
         """Get the source location of the coverage data."""
         return None if self.parent is None else self.parent.location
 
@@ -880,11 +872,9 @@ class DecisionCoverageSwitch(CoverageBase):
         return DecisionCoverageStat(covered, 0, 1)
 
 
-DecisionCoverage = Union[
-    DecisionCoverageUncheckable,
-    DecisionCoverageConditional,
-    DecisionCoverageSwitch,
-]
+DecisionCoverage = (
+    DecisionCoverageUncheckable | DecisionCoverageConditional | DecisionCoverageSwitch
+)
 
 
 class CallCoverage(CoverageBase):
@@ -932,11 +922,11 @@ class CallCoverage(CoverageBase):
     def __init__(
         self,
         parent: LineCoverage,
-        data_sources: Union[str, set[tuple[str, ...]]],
+        data_sources: str | set[tuple[str, ...]],
         *,
-        callno: Optional[int],
+        callno: int | None,
         source_block_id: int,
-        destination_block_id: Optional[int],
+        destination_block_id: int | None,
         returned: int,
         excluded: bool = False,
     ) -> None:
@@ -1068,7 +1058,7 @@ class CallCoverage(CoverageBase):
         )
 
     @property
-    def location(self) -> Optional[str]:
+    def location(self) -> str | None:
         """Get the source location of the coverage data."""
         call_info = (
             f"{self.source_block_id}->{self.destination_block_id}"
@@ -1138,23 +1128,23 @@ class LineCoverage(CoverageBase):
     def __init__(
         self,
         parent: LineCoverageCollection,
-        data_sources: Union[str, set[tuple[str, ...]]],
+        data_sources: str | set[tuple[str, ...]],
         *,
         count: int,
-        function_name: Optional[str],
-        block_ids: Optional[list[int]] = None,
+        function_name: str | None,
+        block_ids: list[int] | None = None,
         excluded: bool = False,
     ) -> None:
         super().__init__(data_sources)
         self.parent = parent
         self.count = count
         self.function_name = function_name
-        self.demangled_function_name: Optional[str] = None
+        self.demangled_function_name: str | None = None
         self.block_ids = block_ids
         self.excluded = excluded
         self.__branches = CoverageDict[BranchcovKeyType, BranchCoverage]()
         self.__conditions = CoverageDict[ConditioncovKeyType, ConditionCoverage]()
-        self.decision: Optional[DecisionCoverage] = None
+        self.decision: DecisionCoverage | None = None
         self.__calls = CoverageDict[CallcovKeyType, CallCoverage]()
 
         if count < 0:
@@ -1285,7 +1275,7 @@ class LineCoverage(CoverageBase):
 
     def __merge_decision(  # pylint: disable=too-many-return-statements
         self,
-        decisioncov: Optional[DecisionCoverage],
+        decisioncov: DecisionCoverage | None,
     ) -> None:
         """Merge DecisionCoverage information.
 
@@ -1315,14 +1305,14 @@ class LineCoverage(CoverageBase):
 
     def insert_branch_coverage(
         self,
-        data_sources: Union[str, set[tuple[str, ...]]],
+        data_sources: str | set[tuple[str, ...]],
         *,
-        branchno: Optional[int],
+        branchno: int | None,
         count: int,
         fallthrough: bool = False,
         throw: bool = False,
-        source_block_id: Optional[int] = None,
-        destination_block_id: Optional[int] = None,
+        source_block_id: int | None = None,
+        destination_block_id: int | None = None,
         excluded: bool = False,
     ) -> BranchCoverage:
         """Add a branch coverage item, merge if needed."""
@@ -1356,7 +1346,7 @@ class LineCoverage(CoverageBase):
 
     def insert_condition_coverage(
         self,
-        data_sources: Union[str, set[tuple[str, ...]]],
+        data_sources: str | set[tuple[str, ...]],
         *,
         conditionno: int,
         count: int,
@@ -1387,7 +1377,7 @@ class LineCoverage(CoverageBase):
 
     def insert_decision_coverage(
         self,
-        decisioncov: Optional[DecisionCoverage],
+        decisioncov: DecisionCoverage | None,
     ) -> None:
         """Add a condition coverage item, merge if needed."""
         self.__merge_decision(decisioncov)
@@ -1396,11 +1386,11 @@ class LineCoverage(CoverageBase):
 
     def insert_call_coverage(
         self,
-        data_sources: Union[str, set[tuple[str, ...]]],
+        data_sources: str | set[tuple[str, ...]],
         *,
-        callno: Optional[int],
+        callno: int | None,
         source_block_id: int,
-        destination_block_id: Optional[int],
+        destination_block_id: int | None,
         returned: int,
         excluded: bool = False,
     ) -> CallCoverage:
@@ -1434,7 +1424,7 @@ class LineCoverage(CoverageBase):
         return str(self.demangled_function_name or self.function_name)
 
     @property
-    def location(self) -> Optional[str]:
+    def location(self) -> str | None:
         """Get the source location of the coverage data."""
         return self.parent.location
 
@@ -1444,7 +1434,7 @@ class LineCoverage(CoverageBase):
         return self.parent.lineno
 
     @property
-    def md5(self) -> Optional[str]:
+    def md5(self) -> str | None:
         """Get the md5of the source line."""
         return self.parent.md5
 
@@ -1626,10 +1616,10 @@ class LineCoverageCollection(CoverageBase):
     def __init__(
         self,
         parent: FileCoverage,
-        data_sources: Union[str, set[tuple[str, ...]]],
+        data_sources: str | set[tuple[str, ...]],
         *,
         lineno: int,
-        md5: Optional[str] = None,
+        md5: str | None = None,
     ) -> None:
         super().__init__(data_sources)
         self.parent = parent
@@ -1764,7 +1754,7 @@ class LineCoverageCollection(CoverageBase):
         return self.lineno
 
     @property
-    def location(self) -> Optional[str]:
+    def location(self) -> str | None:
         """Get the source location of the coverage data."""
         return f"{self.parent.location}:{self.lineno}"
 
@@ -1812,12 +1802,12 @@ class LineCoverageCollection(CoverageBase):
 
     def insert_line_coverage(
         self,
-        data_sources: Union[str, set[tuple[str, ...]]],
+        data_sources: str | set[tuple[str, ...]],
         options: MergeOptions = DEFAULT_MERGE_OPTIONS,
         *,
         count: int,
-        function_name: Optional[str],
-        block_ids: Optional[list[int]] = None,
+        function_name: str | None,
+        block_ids: list[int] | None = None,
         excluded: bool = False,
     ) -> LineCoverage:
         """Add a line coverage item, merge if needed."""
@@ -1922,28 +1912,28 @@ class FunctionCoverage(CoverageBase):
     def __init__(
         self,
         parent: FileCoverage,
-        data_sources: Union[str, set[tuple[str, ...]]],
+        data_sources: str | set[tuple[str, ...]],
         *,
-        mangled_name: Optional[str],
-        demangled_name: Optional[str],
+        mangled_name: str | None,
+        demangled_name: str | None,
         lineno: int,
-        count: Optional[int],
-        blocks: Optional[float],
-        start: Optional[tuple[int, int]] = None,
-        end: Optional[tuple[int, int]] = None,
+        count: int | None,
+        blocks: float | None,
+        start: tuple[int, int] | None = None,
+        end: tuple[int, int] | None = None,
         excluded: bool = False,
     ) -> None:
         super().__init__(data_sources)
         self.parent = parent
-        self.count = CoverageDict[int, Optional[int]]({lineno: count})
-        self.blocks = CoverageDict[int, Optional[float]]({lineno: blocks})
+        self.count = CoverageDict[int, int | None]({lineno: count})
+        self.blocks = CoverageDict[int, float | None]({lineno: blocks})
         self.excluded = CoverageDict[int, bool]({lineno: excluded})
-        self.start: Optional[CoverageDict[int, tuple[int, int]]] = (
+        self.start: CoverageDict[int, tuple[int, int]] | None = (
             None
             if start is None
             else CoverageDict[int, tuple[int, int]]({lineno: start})
         )
-        self.end: Optional[CoverageDict[int, tuple[int, int]]] = (
+        self.end: CoverageDict[int, tuple[int, int]] | None = (
             None if end is None else CoverageDict[int, tuple[int, int]]({lineno: end})
         )
 
@@ -2004,8 +1994,8 @@ class FunctionCoverage(CoverageBase):
         data_dict: dict[str, Any],
     ) -> FunctionCoverage:
         """Deserialize the object."""
-        start: Optional[tuple[int, int]] = None
-        end: Optional[tuple[int, int]] = None
+        start: tuple[int, int] | None = None
+        end: tuple[int, int] | None = None
         if "pos" in data_dict:
             start_l_c = data_dict["pos"][0].split(":", maxsplit=1)
             start = (int(start_l_c[0]), int(start_l_c[1]))
@@ -2133,7 +2123,7 @@ class FunctionCoverage(CoverageBase):
                 raise AssertionError("Unknown merge mode")
 
             # Overwrite data with the sum at the desired line
-            self.count = CoverageDict[int, Optional[int]](
+            self.count = CoverageDict[int, int | None](
                 {
                     lineno: None
                     if None in self.count.values() or None in other.count.values()
@@ -2144,7 +2134,7 @@ class FunctionCoverage(CoverageBase):
                 }
             )
             # or the max value at the desired line
-            self.blocks = CoverageDict[int, Optional[float]](
+            self.blocks = CoverageDict[int, float | None](
                 {
                     lineno: None
                     if None in self.blocks.values() or None in other.blocks.values()
@@ -2178,7 +2168,7 @@ class FunctionCoverage(CoverageBase):
         return self.name
 
     @property
-    def location(self) -> Optional[str]:
+    def location(self) -> str | None:
         """Get the source location of the coverage data."""
         lines = sorted(self.count.keys())
         lines_as_string = str(lines.pop(0))
@@ -2209,7 +2199,7 @@ class FunctionCoverage(CoverageBase):
         """Get the function name. This is the demangled name if present, else the mangled name."""
         return str(self.demangled_name or self.mangled_name)
 
-    def is_function(self, name: Optional[str]) -> bool:
+    def is_function(self, name: str | None) -> bool:
         """Is the name one of the function."""
         return name is not None and (name in (self.mangled_name, self.demangled_name))
 
@@ -2245,7 +2235,7 @@ class FileCoverage(CoverageBase):
 
     def __init__(
         self,
-        data_sources: Union[str, set[tuple[str, ...]]],
+        data_sources: str | set[tuple[str, ...]],
         *,
         filename: str,
     ) -> None:
@@ -2303,7 +2293,7 @@ class FileCoverage(CoverageBase):
         data_dict: dict[str, Any],
         merge_options: MergeOptions,
         options: Options,
-    ) -> Optional[FileCoverage]:
+    ) -> FileCoverage | None:
         """Deserialize the object."""
         filename = os.path.join(
             os.path.abspath(options.root), os.path.normpath(data_dict["file"])
@@ -2361,7 +2351,7 @@ class FileCoverage(CoverageBase):
         )
 
     @property
-    def location(self) -> Optional[str]:
+    def location(self) -> str | None:
         """Get the source location of the coverage data."""
         return self.filename
 
@@ -2373,7 +2363,7 @@ class FileCoverage(CoverageBase):
         self,
         *,
         sort: bool = False,
-        key: Optional[Callable[[FunctionCoverage], Any]] = None,
+        key: Callable[[FunctionCoverage], Any] | None = None,
     ) -> Iterable[FunctionCoverage]:
         """Iterate over the function coverage object."""
         if sort or key:
@@ -2411,7 +2401,7 @@ class FileCoverage(CoverageBase):
         else:
             yield from self.__lines.values()
 
-    def get_line(self, lineno: int) -> Optional[LineCoverageCollection]:
+    def get_line(self, lineno: int) -> LineCoverageCollection | None:
         """Get the line coverage collection of the given line."""
         return self.__lines.get(lineno)
 
@@ -2463,14 +2453,14 @@ class FileCoverage(CoverageBase):
 
     def insert_line_coverage(
         self,
-        data_sources: Union[str, set[tuple[str, ...]]],
+        data_sources: str | set[tuple[str, ...]],
         options: MergeOptions = DEFAULT_MERGE_OPTIONS,
         *,
         lineno: int,
         count: int,
-        function_name: Optional[str],
-        block_ids: Optional[list[int]] = None,
-        md5: Optional[str] = None,
+        function_name: str | None,
+        block_ids: list[int] | None = None,
+        md5: str | None = None,
         excluded: bool = False,
     ) -> LineCoverage:
         """Add a line coverage item, merge if needed."""
@@ -2511,16 +2501,16 @@ class FileCoverage(CoverageBase):
 
     def insert_function_coverage(
         self,
-        data_sources: Union[str, set[tuple[str, ...]]],
+        data_sources: str | set[tuple[str, ...]],
         options: MergeOptions = DEFAULT_MERGE_OPTIONS,
         *,
-        mangled_name: Optional[str],
-        demangled_name: Optional[str],
+        mangled_name: str | None,
+        demangled_name: str | None,
         lineno: int,
-        count: Optional[int],
-        blocks: Optional[float],
-        start: Optional[tuple[int, int]] = None,
-        end: Optional[tuple[int, int]] = None,
+        count: int | None,
+        blocks: float | None,
+        start: tuple[int, int] | None = None,
+        end: tuple[int, int] | None = None,
         excluded: bool = False,
     ) -> FunctionCoverage:
         """Add a function coverage item, merge if needed."""

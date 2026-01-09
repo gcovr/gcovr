@@ -17,8 +17,6 @@
 #
 # ****************************************************************************
 
-from typing import Union
-
 from ..data_model.container import CoverageContainer
 from ..options import GcovrConfigOption, Options
 
@@ -27,7 +25,7 @@ class BaseHandler:
     """Base class for a format handler."""
 
     @classmethod
-    def get_options(cls) -> list[Union[GcovrConfigOption, str]]:
+    def get_options(cls) -> list[GcovrConfigOption | str]:
         """Get the options of the format handler"""
         raise AssertionError("Function 'get_options' not implemented.")
 

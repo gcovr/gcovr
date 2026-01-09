@@ -17,7 +17,7 @@
 #
 # ****************************************************************************
 
-from typing import Callable, Optional
+from typing import Callable
 
 from ..data_model.coverage import FileCoverage
 from ..data_model.container import CoverageContainer
@@ -138,7 +138,7 @@ def write_reports(covdata: CoverageContainer, options: Options) -> None:
     """Write the reports to the given locations."""
     generators: list[
         tuple[
-            list[Optional[OutputOrDefault]],
+            list[OutputOrDefault | None],
             Callable[[CoverageContainer, str], None],
             Callable[[], None],
         ]

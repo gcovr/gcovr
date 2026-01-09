@@ -24,7 +24,7 @@ import re
 import shlex
 import subprocess  # nosec # Commands are trusted.
 from threading import Lock
-from typing import Any, Callable, Optional
+from typing import Any, Callable
 
 from ...data_model.container import CoverageContainer
 from ...data_model.merging import get_merge_mode_from_options
@@ -243,10 +243,10 @@ def process_gcov_json_data(
 #
 def process_gcov_text_data(
     data_fname: str,
-    gcda_fname: Optional[str],
+    gcda_fname: str | None,
     covdata: CoverageContainer,
     options: Options,
-    current_dir: Optional[str] = None,
+    current_dir: str | None = None,
 ) -> None:
     """Process a GCOV text output."""
     activate_trace_logging = not is_file_excluded(
@@ -329,11 +329,11 @@ def process_gcov_text_data(
 def guess_source_file_name(
     source_from_gcov: str,
     data_fname: str,
-    gcda_fname: Optional[str],
+    gcda_fname: str | None,
     root_dir: str,
     starting_dir: str,
-    obj_dir: Optional[str],
-    current_dir: Optional[str] = None,
+    obj_dir: str | None,
+    current_dir: str | None = None,
 ) -> str:
     """Guess the full source filename."""
     if current_dir is None:
@@ -409,7 +409,7 @@ def guess_source_file_name_heuristics(  # pylint: disable=too-many-return-statem
     current_dir: str,
     root_dir: str,
     starting_dir: str,
-    obj_dir: Optional[str],
+    obj_dir: str | None,
 ) -> str:
     """Guess the full source filename with path by a heuristic."""
     # 0. Try using the path to the gcov file

@@ -27,7 +27,7 @@ import subprocess  # nosec # Commands are trusted.
 import sys
 import time
 import datetime
-from typing import Callable, Iterator, Optional
+from typing import Callable, Iterator
 
 SOURCE_DATE_EPOCH = int(time.time())
 SOURCE_DATE_EPOCH_STR = str(SOURCE_DATE_EPOCH)
@@ -336,7 +336,7 @@ def update_source_date_epoch_for_pytest(
     return new_lines
 
 
-def main(version: str, for_file: Optional[str] = None) -> None:
+def main(version: str, for_file: str | None = None) -> None:
     """Main entry point."""
     for root, dirs, files in os.walk(".", topdown=True):
 

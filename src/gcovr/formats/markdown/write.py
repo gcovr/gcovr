@@ -17,7 +17,7 @@
 #
 # ****************************************************************************
 
-from typing import Any, Optional
+from typing import Any
 
 from jinja2 import (
     Environment,
@@ -90,7 +90,7 @@ def write_summary_report(
 
 
 def _coverage_to_badge(
-    coverage: Optional[float],
+    coverage: float | None,
     medium_threshold: float,
     high_threshold: float,
     theme: str,

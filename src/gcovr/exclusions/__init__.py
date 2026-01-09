@@ -28,8 +28,6 @@ via ``apply_all_exclusions()``, which is configured via the usual options object
 
 from dataclasses import dataclass, field
 import re
-from typing import Optional
-
 
 from ..data_model.coverage import FileCoverage
 from ..logging import LOGGER
@@ -237,7 +235,7 @@ def remove_internal_functions(
             filecov.remove_function_coverage(functioncov)
 
 
-def _function_can_be_excluded(*names: Optional[str]) -> bool:
+def _function_can_be_excluded(*names: str | None) -> bool:
     """Special names for construction/destruction of static objects will be ignored"""
     return any(
         name is not None

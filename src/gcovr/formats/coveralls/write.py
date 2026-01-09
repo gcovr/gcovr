@@ -24,7 +24,7 @@ import os
 import re
 import shutil
 import subprocess  # nosec # Commands are trusted.
-from typing import Any, Optional
+from typing import Any
 
 from ...data_model.container import CoverageContainer
 from ...data_model.coverage import FileCoverage
@@ -193,8 +193,8 @@ def _make_source_file(filecov: FileCoverage, options: Options) -> dict[str, Any]
         total_line_count = len(contents.splitlines())
 
     # Initialize coverage array and load with line coverage data
-    coverage = list[Optional[int]]()
-    branches = list[Optional[int]]()
+    coverage = list[int | None]()
+    branches = list[int | None]()
     source_file["coverage"] = coverage
     # source_file['branches'] = []
     for linecov_collection in filecov.lines(sort=True):
@@ -229,6 +229,6 @@ def _make_source_file(filecov: FileCoverage, options: Options) -> dict[str, Any]
     return source_file
 
 
-def _extend_with_none(target: list[Optional[int]], wanted_len: int) -> None:
+def _extend_with_none(target: list[int | None], wanted_len: int) -> None:
     current_len = len(target)
     target.extend(None for _ in range(current_len, wanted_len))
