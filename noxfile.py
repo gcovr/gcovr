@@ -306,7 +306,7 @@ def doc(session: nox.Session) -> None:
         if re.fullmatch(r"\d+\.\d+\s+\(.+\)", line.rstrip()):
             break
         line = re.sub(r"``", r"`", line)
-        line = re.sub(r":(?:option|ref):", r"", line)
+        line = re.sub(r":(?:option|ref):`(.+?)(?:\s*<[^>]+>)?`", r"`\1`", line)
         line = re.sub(r":issue:`(\d+)`", r"#\1", line)
         # Remove the empty lines around sub lists
         if (
