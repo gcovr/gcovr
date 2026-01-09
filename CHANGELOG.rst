@@ -10,7 +10,11 @@ Next Release
 
 Breaking changes:
 
+- Drop support for Python 3.9. (:issue:`1227`)
+
 New features and notable changes:
+
+- Add support for Python 3.14. (:issue:`1227`)
 
 Bug fixes and small improvements:
 
