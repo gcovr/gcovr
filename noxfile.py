@@ -170,6 +170,7 @@ def prepare_next_iteration(session: nox.Session) -> None:
     else:
         session.error(f"Version line not found in {GCOVR_CHANGELOG_RST.name}")
     new_lines += list(lines)
+    new_lines.append("")
 
     GCOVR_CHANGELOG_RST.write_text("\n".join(new_lines))
 
