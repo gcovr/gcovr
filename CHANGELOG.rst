@@ -18,6 +18,8 @@ New features and notable changes:
 
 Bug fixes and small improvements:
 
+- To avoid merge errors, add the line number to the name of the unknown function. (:issue:`1229`)
+
 Documentation:
 
 Internal changes:

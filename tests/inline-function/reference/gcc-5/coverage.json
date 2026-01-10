@@ -6,7 +6,7 @@
             "lines": [
                 {
                     "line_number": 4,
-                    "function_name": "<unknown function>",
+                    "function_name": "<unknown function 4>",
                     "count": 1,
                     "branches": [
                         {
@@ -43,7 +43,7 @@
             ],
             "functions": [
                 {
-                    "name": "<unknown function>",
+                    "name": "<unknown function 4>",
                     "lineno": 4,
                     "gcovr/excluded": true
                 },
