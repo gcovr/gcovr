@@ -374,33 +374,13 @@ def parse_coverage(
             blocks=blocks,
         )
 
-    unknown_function_linecovs = [
-        linecov
-        for linecov in filecov.linecov()
-        if linecov.function_name == UNKNOWN_FUNCTION_NAME_FORMAT_STRING
-    ]
-    if unknown_function_linecovs:
-        # Update the function name to include the first lineno
-        function_name = UNKNOWN_FUNCTION_NAME_FORMAT_STRING.format(
-            unknown_function_linecovs[0].lineno
-        )
-        for linecov in unknown_function_linecovs:
-            linecov.parent.parent.insert_line_coverage(
-                linecov.data_sources,
-                lineno=linecov.lineno,
-                count=linecov.count,
-                function_name=function_name,
-                block_ids=linecov.block_ids,
-                excluded=linecov.excluded,
-            )
-            linecov.parent.remove_line_coverage(linecov)
-
+    if state.unknown_function is not None:
         filecov.insert_function_coverage(
             str(data_filename),
             MergeOptions(func_opts=FUNCTION_MAX_LINE_MERGE_OPTIONS),
-            mangled_name=function_name,
+            mangled_name=state.unknown_function[0],
             demangled_name=None,
-            lineno=unknown_function_linecovs[0].lineno,
+            lineno=state.unknown_function[1],
             count=None,
             blocks=None,
             excluded=True,
@@ -467,6 +447,7 @@ class _ParserState(NamedTuple):
     block_id: int | None = None
     is_recovering: bool = False
     previous_state: "_ParserState | None" = None
+    unknown_function: tuple[str, int] | None = None
 
     @classmethod
     def new(cls, **kwargs: Any) -> "_ParserState":
@@ -487,13 +468,17 @@ class _ParserState(NamedTuple):
         return _ParserState.new(
             previous_state=self,
             linecov_list=self.linecov_list,
+            unknown_function=self.unknown_function,
         )
 
     def restore_state(self) -> "_ParserState":
         """Restore the previous parser state with the current line coverage list."""
         if self.previous_state is None:
             raise SanityCheckError(f"Previous_state of {type(self).__name__} is None.")
-        return self.previous_state._replace(linecov_list=self.linecov_list)
+        return self.previous_state._replace(
+            linecov_list=self.linecov_list,
+            unknown_function=self.unknown_function,
+        )
 
 
 def _gather_coverage_from_line(
@@ -555,7 +540,21 @@ def _gather_coverage_from_line(
                     )
                 filecov.remove_line_coverage(linecov)
 
+            if state.unknown_function == (
+                to_remove[0].function_name,
+                to_remove[0].lineno,
+            ):
+                state = state._replace(unknown_function=None)
+
             state.linecov_list.clear()
+
+        # Add line number to unknown function name and insert the function coverage object.
+        if state.function_name == UNKNOWN_FUNCTION_NAME_FORMAT_STRING:
+            unknown_function_name = UNKNOWN_FUNCTION_NAME_FORMAT_STRING.format(lineno)
+            state = state._replace(
+                function_name=unknown_function_name,
+                unknown_function=(unknown_function_name, lineno),
+            )
 
         linecov = filecov.insert_line_coverage(
             filecov.data_sources,
