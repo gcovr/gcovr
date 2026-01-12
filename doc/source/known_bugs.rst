@@ -9,6 +9,50 @@ Known bugs
 This list contains bugs for version 6.0 and newer, always check the latest
 version of this file available `here <https://gcovr.com/en/latest/known_bugs.html>`_.
 
+.. _fix_1231:
+
+Merge assertion error for functions defined in multiple lines
+-------------------------------------------------------------
+
+.. list-table::
+
+   * - Introduced
+     - :ref:`release_8_5`
+
+   * - Fixed
+     - :ref:`next_release`, :issue:`1231`
+
+The lin number of the first source line which is hit is used for the function
+definition. Correct is the first source line independent from the content.
+This was the behavior before :issue:`1204`.
+
+.. _fix_1229:
+
+Merge assertion error for function ``<unknown function>``
+---------------------------------------------------------
+
+.. list-table::
+
+   * - Introduced
+     - :ref:`release_8_5`
+
+   * - Fixed
+     - :ref:`next_release`, :issue:`1229`
+
+Always add the line numbers for the ``unknown function`` added with :issue:`1204` because the lines
+can be different for different compilation units. E.g.:
+
+.. code-block::
+
+  gcovr.exceptions.GcovrMergeAssertionError: <file>:<line> Got function <unknown function> on multiple lines: 123, 456.
+    You can run gcovr with --merge-mode-functions=MERGE_MODE.
+    The available values for MERGE_MODE are described in the documentation.
+
+With the fix we will have two functions in the report:
+
+- Function: ``<unknown function 123>``
+- Function: ``<unknown function 456>``
+
 .. _fix_1206_1:
 
 Fix excluded functions in HTML report
