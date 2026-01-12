@@ -936,6 +936,17 @@ def run_gcov_and_process_files(
                     f for f in active_gcov_files if os.path.exists(f)
                 )
 
+            if options.keep_intermediate_files:
+                # Keep the files with unique names
+                basename = os.path.basename(abs_filename)
+                renamed_active_gcov_files = set[str]()
+                for gcov_filename in active_gcov_files:
+                    directory, filename = os.path.split(gcov_filename)
+                    new_name = os.path.join(directory, f"{basename}.{filename}")
+                    renamed_active_gcov_files.add(new_name)
+                    os.replace(gcov_filename, new_name)
+                active_gcov_files = renamed_active_gcov_files
+
             # Process *.gcov files
             for gcov_filename in active_gcov_files:
                 if not os.path.exists(gcov_filename):  # pragma: no cover
@@ -973,17 +984,7 @@ def run_gcov_and_process_files(
             done = False
             error(f"With working directory {chdir!r}.\n{str(exc)}")
         finally:
-            if options.keep_intermediate_files and done:
-                # Keep the files with unique names
-                basename = os.path.basename(abs_filename)
-                for gcov_filename in active_gcov_files:
-                    if os.path.exists(gcov_filename):
-                        directory, filename = os.path.split(gcov_filename)
-                        os.replace(
-                            gcov_filename,
-                            os.path.join(directory, f"{basename}.{filename}"),
-                        )
-            else:
+            if not (options.keep_intermediate_files and done):
                 # Remove the used files
                 remove_existing_files(list(active_gcov_files))
 
