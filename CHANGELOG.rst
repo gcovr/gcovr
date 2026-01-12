@@ -19,6 +19,8 @@ New features and notable changes:
 Bug fixes and small improvements:
 
 - To avoid merge errors, add the line number to the name of the unknown function. (:issue:`1229`)
+- If intermediate files are kept, rename the gcov files before processing them to log the
+  final filename. (:issue:`1230`)
 
 Documentation:
 
