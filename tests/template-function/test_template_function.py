@@ -163,7 +163,6 @@ def test_template_function_llvm_profdata(  # type: ignore[no-untyped-def]
         "--merge-lines",
         "--decision",
         "--llvm-cov-binary=./testcase",
-        "--keep-intermediate-files",
         "--json-pretty",
         "--json=coverage.merged.json",
     )

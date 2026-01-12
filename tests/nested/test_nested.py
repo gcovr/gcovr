@@ -38,7 +38,7 @@ from tests.conftest import GCOVR_ISOLATED_TEST, USE_PROFDATA_POSSIBLE, GcovrTest
 @pytest.mark.markdown
 @pytest.mark.sonarqube
 @pytest.mark.txt
-def test_standard(gcovr_test_exec: "GcovrTestExec") -> None:
+def test_standard(gcovr_test_exec: "GcovrTestExec", check) -> None:  # type: ignore[no-untyped-def]
     """Test nested coverage report generation."""
     gcovr_test_exec.cxx_link(
         "subdir/testcase",
@@ -53,8 +53,25 @@ def test_standard(gcovr_test_exec: "GcovrTestExec") -> None:
     )
 
     gcovr_test_exec.run("./subdir/testcase")
-    gcovr_test_exec.gcovr("--root=subdir", "--json-pretty", "--json=coverage.json")
+    all_gcda_files = list[Path](gcovr_test_exec.output_dir.rglob("*.gcda"))
+
+    gcovr_test_exec.gcovr(
+        "--keep-intermediate-files",
+        "--gcov-filter=(?:subdir#|(?i:main|file\\d)).*",
+        "--trace-include=.*",
+        "--root=subdir",
+        "--json-pretty",
+        "--json=coverage.json",
+    )
     gcovr_test_exec.compare_json()
+
+    for file in all_gcda_files:
+        file_pattern = file.with_suffix(file.suffix + "*.gcov*").name
+        matching_files = list(gcovr_test_exec.output_dir.rglob(file_pattern))
+        check.is_true(
+            len(matching_files) == 1,
+            f"Expected exactly one gcov file for {file_pattern}, found {matching_files}",
+        )
 
     gcovr_test_exec.gcovr(
         "--root=subdir",
@@ -363,11 +380,18 @@ def test_use_existing(gcovr_test_exec: "GcovrTestExec") -> None:
         gcovr_test_exec.cxx_compile("subdir/B/main.cpp"),
     )
     gcovr_test_exec.run("./subdir/testcase")
-    # Simulate gcov and subdir/A coverage if needed
+    for file in gcovr_test_exec.output_dir.rglob("*.gcda"):
+        gcovr_test_exec.run(
+            *gcovr_test_exec.gcov(),
+            file,
+            "--branch-counts",
+            "--branch-probabilities",
+            "--preserve-paths",
+        )
+
     gcovr_test_exec.gcovr(
         "--root=subdir",
-        "-g",
-        "-k",
+        "--gcov-use-existing-files",
         "--json-pretty",
         "--json=coverage.json",
     )

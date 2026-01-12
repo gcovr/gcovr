@@ -208,7 +208,7 @@ def test_exclude_line_branch(gcovr_test_exec: "GcovrTestExec") -> None:
     gcovr_test_exec.run("./testcase")
     gcovr_test_exec.gcovr(
         "--exclude-unreachable-branches",
-        "--keep",
+        "--keep-intermediate-files",
         "--json-pretty",
         "--json",
         gcovr_test_exec.output_dir / "coverage.json",
@@ -315,7 +315,7 @@ def test_exclude_lines_by_pattern(gcovr_test_exec: "GcovrTestExec") -> None:
 
     gcovr_test_exec.run("./testcase")
     gcovr_test_exec.gcovr(
-        "-d",
+        "--delete-input-files",
         "--config=config/gcovr.config",
         "--html-details",
         "--html=coverage.html",
@@ -324,7 +324,7 @@ def test_exclude_lines_by_pattern(gcovr_test_exec: "GcovrTestExec") -> None:
 
     gcovr_test_exec.run("./testcase")
     gcovr_test_exec.gcovr(
-        "-d",
+        "--delete-input-files",
         "--exclude-lines-by-pattern= *panic\\([^)]*\\);",
         "--txt=coverage.txt",
     )
@@ -336,7 +336,7 @@ def test_exclude_lines_by_pattern(gcovr_test_exec: "GcovrTestExec") -> None:
 
     gcovr_test_exec.run("./testcase")
     gcovr_test_exec.gcovr(
-        "-d",
+        "--delete-input-files",
         "--cobertura-pretty",
         "--cobertura=cobertura.xml",
     )
@@ -344,7 +344,7 @@ def test_exclude_lines_by_pattern(gcovr_test_exec: "GcovrTestExec") -> None:
 
     gcovr_test_exec.run("./testcase")
     gcovr_test_exec.gcovr(
-        "-d",
+        "--delete-input-files",
         "--coveralls-pretty",
         "--coveralls=coveralls.json",
     )
@@ -352,21 +352,21 @@ def test_exclude_lines_by_pattern(gcovr_test_exec: "GcovrTestExec") -> None:
 
     gcovr_test_exec.run("./testcase")
     gcovr_test_exec.gcovr(
-        "-d",
+        "--delete-input-files",
         "--lcov=coverage.lcov",
     )
     gcovr_test_exec.compare_lcov()
 
     gcovr_test_exec.run("./testcase")
     gcovr_test_exec.gcovr(
-        "-d",
+        "--delete-input-files",
         "--jacoco=jacoco.xml",
     )
     gcovr_test_exec.compare_jacoco()
 
     gcovr_test_exec.run("./testcase")
     gcovr_test_exec.gcovr(
-        "-d",
+        "--delete-input-files",
         "--sonarqube=sonarqube.xml",
     )
     gcovr_test_exec.compare_sonarqube()

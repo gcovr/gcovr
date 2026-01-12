@@ -124,7 +124,7 @@ def test_bazel_coverage(gcovr_test_exec: "GcovrTestExec") -> None:
                 "--root",
                 "/proc/self/cwd",
                 "--gcov-use-existing",
-                "--gcov-keep",
+                "--keep-intermediate-files",
             ]
         gcovr_test_exec.gcovr(
             "--verbose",

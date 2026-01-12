@@ -44,7 +44,7 @@ def test_all(gcovr_test_exec: "GcovrTestExec", check) -> None:  # type: ignore[n
     gcovr_test_exec.gcovr(
         "--gcov-use-existing-files",
         "--gcov-delete",
-        "--gcov-keep",
+        "--keep-intermediate-files",
         "--json-pretty",
         "--json=coverage.json",
     )

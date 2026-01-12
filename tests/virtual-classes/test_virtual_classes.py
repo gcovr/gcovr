@@ -43,7 +43,9 @@ def test(gcovr_test_exec: "GcovrTestExec") -> None:
     )
 
     gcovr_test_exec.run("./testcase")
-    gcovr_test_exec.gcovr("-d", "--json-pretty", "--json=coverage.json.xz")
+    gcovr_test_exec.gcovr(
+        "--delete-input-files", "--json-pretty", "--json=coverage.json.xz"
+    )
     gcovr_test_exec.run("sh", "-c", "unxz -c coverage.json.xz > coverage.json")
     gcovr_test_exec.gcovr(
         "--json-add-tracefile=coverage.json",
