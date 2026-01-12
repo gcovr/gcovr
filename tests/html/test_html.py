@@ -197,7 +197,9 @@ def test(
     )
 
     gcovr_test_exec.run("./testcase")
-    gcovr_test_exec.gcovr("-d", "--html", *options, "--html", "coverage.html")
+    gcovr_test_exec.gcovr(
+        "--delete-input-files", "--html", *options, "--html", "coverage.html"
+    )
     gcovr_test_exec.compare_html()
 
 
@@ -284,7 +286,7 @@ def test_encoding(
         [] if html_encoding == "utf8" else [f"--html-encoding={html_encoding}"]
     )
     gcovr_test_exec.gcovr(
-        "-d",
+        "--delete-input-files",
         "--html-details",
         "--source-encoding=utf8",
         *additional_options,
@@ -324,7 +326,7 @@ def test_template_dir(gcovr_test_exec: "GcovrTestExec") -> None:
 
     gcovr_test_exec.run("./testcase")
     gcovr_test_exec.gcovr(
-        "-d",
+        "--delete-input-files",
         "--html",
         "--html-self-contained",
         "--html-css=user_template/style.css",

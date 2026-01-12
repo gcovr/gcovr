@@ -41,7 +41,7 @@ def test_decisions(gcovr_test_exec: "GcovrTestExec") -> None:
 
     gcovr_test_exec.run("./testcase")
     gcovr_test_exec.gcovr(
-        "--keep",
+        "--keep-intermediate-files",
         "--verbose",
         "--decisions",
         "--json-pretty",

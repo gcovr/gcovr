@@ -44,10 +44,14 @@ def test(gcovr_test_exec: "GcovrTestExec") -> None:
     )
 
     gcovr_test_exec.run("./testcase_foo")
-    gcovr_test_exec.gcovr("-d", "--json-pretty", "--json", "coverage_foo.json")
+    gcovr_test_exec.gcovr(
+        "--delete-input-files", "--json-pretty", "--json", "coverage_foo.json"
+    )
 
     gcovr_test_exec.run("./testcase_bar")
-    gcovr_test_exec.gcovr("-d", "--json-pretty", "--json", "coverage_bar.json")
+    gcovr_test_exec.gcovr(
+        "--delete-input-files", "--json-pretty", "--json", "coverage_bar.json"
+    )
 
     gcovr_test_exec.gcovr(
         "--json-add-tracefile=coverage_*.json",

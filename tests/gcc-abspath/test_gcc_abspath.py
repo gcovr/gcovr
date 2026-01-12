@@ -42,5 +42,7 @@ def test(gcovr_test_exec: "GcovrTestExec") -> None:
     gcovr_test_exec.run("./testcase", cwd=subfolder)
     for file in subfolder.glob("*.gc??"):
         file.rename(file.parent.parent / file.name)
-    gcovr_test_exec.gcovr("-d", "--json-pretty", "--json=coverage.json")
+    gcovr_test_exec.gcovr(
+        "--delete-input-files", "--json-pretty", "--json=coverage.json"
+    )
     gcovr_test_exec.compare_json()

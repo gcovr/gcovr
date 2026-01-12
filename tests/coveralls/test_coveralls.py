@@ -115,7 +115,7 @@ def test_ci(
 
     gcovr_test_exec.run("./testcase")
     gcovr_test_exec.gcovr(
-        "-d",
+        "--delete-input-files",
         "--coveralls-pretty",
         "--coveralls=coveralls.json",
         env=new_env,

@@ -363,11 +363,19 @@ def test_use_existing(gcovr_test_exec: "GcovrTestExec") -> None:
         gcovr_test_exec.cxx_compile("subdir/B/main.cpp"),
     )
     gcovr_test_exec.run("./subdir/testcase")
-    # Simulate gcov and subdir/A coverage if needed
+    for file in gcovr_test_exec.output_dir.rglob("*.gcda"):
+        gcovr_test_exec.run(
+            *gcovr_test_exec.gcov(),
+            file,
+            "--branch-counts",
+            "--branch-probabilities",
+            "--preserve-paths",
+        )
+
     gcovr_test_exec.gcovr(
         "--root=subdir",
-        "-g",
-        "-k",
+        "--gcov-use-existing-files",
+        "--keep-intermediate-files",
         "--json-pretty",
         "--json=coverage.json",
     )

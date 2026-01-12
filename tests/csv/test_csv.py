@@ -34,5 +34,5 @@ def test(gcovr_test_exec: "GcovrTestExec") -> None:
     )
 
     gcovr_test_exec.run("./testcase")
-    gcovr_test_exec.gcovr("-d", "--csv", "coverage.csv")
+    gcovr_test_exec.gcovr("--delete-input-files", "--csv", "coverage.csv")
     gcovr_test_exec.compare_csv()
