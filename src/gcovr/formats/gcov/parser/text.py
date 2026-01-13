@@ -501,10 +501,6 @@ def _gather_coverage_from_line(
     if isinstance(line, _SourceLine):
         raw_count, lineno, source_code, extra_info = line
 
-        is_noncode = extra_info & _ExtraInfo.NONCODE
-        if is_noncode:
-            return state  # skip noncode lines
-
         # handle deferred functions
         if state.deferred_functions:
             for function in state.deferred_functions:
@@ -548,24 +544,27 @@ def _gather_coverage_from_line(
 
             state.linecov_list.clear()
 
-        # Add line number to unknown function name and insert the function coverage object.
-        if state.function_name == UNKNOWN_FUNCTION_NAME_FORMAT_STRING:
-            unknown_function_name = UNKNOWN_FUNCTION_NAME_FORMAT_STRING.format(lineno)
-            state = state._replace(
-                function_name=unknown_function_name,
-                unknown_function=(unknown_function_name, lineno),
-            )
+        if not extra_info & _ExtraInfo.NONCODE:
+            # Add line number to unknown function name and insert the function coverage object.
+            if state.function_name == UNKNOWN_FUNCTION_NAME_FORMAT_STRING:
+                unknown_function_name = UNKNOWN_FUNCTION_NAME_FORMAT_STRING.format(
+                    lineno
+                )
+                state = state._replace(
+                    function_name=unknown_function_name,
+                    unknown_function=(unknown_function_name, lineno),
+                )
 
-        linecov = filecov.insert_line_coverage(
-            filecov.data_sources,
-            lineno=lineno,
-            count=raw_count,
-            function_name=state.function_name,
-            md5=get_md5_hexdigest(source_code.encode("UTF-8")),
-        )
-        state = state._replace(last_linecov=linecov)
-        if not state.function_specialization:
-            state.linecov_list.append(linecov)
+            linecov = filecov.insert_line_coverage(
+                filecov.data_sources,
+                lineno=lineno,
+                count=raw_count,
+                function_name=state.function_name,
+                md5=get_md5_hexdigest(source_code.encode("UTF-8")),
+            )
+            state = state._replace(last_linecov=linecov)
+            if not state.function_specialization:
+                state.linecov_list.append(linecov)
 
         return state
 
