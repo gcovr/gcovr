@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <!DOCTYPE coverage SYSTEM 'http://cobertura.sourceforge.net/xml/coverage-04.dtd'>
-<coverage line-rate="0.78947" branch-rate="0.8" lines-covered="15" lines-valid="19" branches-covered="8" branches-valid="10" complexity="0.0" timestamp="1767911117" version="gcovr 8.5+main">
+<coverage line-rate="0.78947" branch-rate="0.8" lines-covered="15" lines-valid="19" branches-covered="8" branches-valid="10" complexity="0.0" timestamp="1768331147" version="gcovr 8.6">
   <sources>
     <source>tests/exclusion/output</source>
   </sources>
