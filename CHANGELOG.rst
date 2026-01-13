@@ -3,10 +3,10 @@
 .. program is needed to resolve option links
 .. program::  gcovr
 
-.. _next_release:
+.. _release_8_6:
 
-Next Release
-------------
+8.6 (13 January 2026)
+---------------------
 
 Breaking changes:
 
@@ -22,10 +22,6 @@ Bug fixes and small improvements:
 - If intermediate files are kept, rename the gcov files before processing them to log the
   final filename. (:issue:`1230`)
 - Use the first line after a function definition and not the first line which is hit. (:issue:`1231`)
-
-Documentation:
-
-Internal changes:
 
 .. _release_8_5:
 

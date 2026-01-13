@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <!DOCTYPE coverage SYSTEM 'http://cobertura.sourceforge.net/xml/coverage-04.dtd'>
-<coverage line-rate="0.875" branch-rate="0.5" lines-covered="7" lines-valid="8" branches-covered="1" branches-valid="2" complexity="0.0" timestamp="1767911117" version="gcovr 8.5+main">
+<coverage line-rate="0.875" branch-rate="0.5" lines-covered="7" lines-valid="8" branches-covered="1" branches-valid="2" complexity="0.0" timestamp="1768331147" version="gcovr 8.6">
   <sources>
     <source>tests/merging/output/different-functions-merge-use-line-0</source>
   </sources>

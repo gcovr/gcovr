@@ -20,7 +20,7 @@ Merge assertion error for functions defined in multiple lines
      - :ref:`release_8_5`
 
    * - Fixed
-     - :ref:`next_release`, :issue:`1231`
+     - :ref:`release_8_6`, :issue:`1231`
 
 The lin number of the first source line which is hit is used for the function
 definition. Correct is the first source line independent from the content.
@@ -37,7 +37,7 @@ Merge assertion error for function ``<unknown function>``
      - :ref:`release_8_5`
 
    * - Fixed
-     - :ref:`next_release`, :issue:`1229`
+     - :ref:`release_8_6`, :issue:`1229`
 
 Always add the line numbers for the ``unknown function`` added with :issue:`1204` because the lines
 can be different for different compilation units. E.g.:
