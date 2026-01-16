@@ -26,6 +26,7 @@
   --color-fg-muted: #656d76;
   --color-canvas-subtle: #f6f8fa;
   --color-accent-subtle: #ddf4ff;;
+  --color-neutral-muted: rgba(175, 184, 193, 0.2);
 }
 
 .theme-green {
@@ -98,7 +99,24 @@ a:visited
   border-bottom: 5px solid var(--color-border-muted);
 }
 
+div.overview-info-column
+{
+  margin-left: 5px;
+  margin-top: auto !important;
+  margin-bottom: auto !important;
+}
+
 @media (max-width: 544px) {
+  .meter {
+    display: none !important;
+  }
+  .meter-label {
+    display: block !important;
+  }
+  .line-percentage-text {
+    display: none !important;
+  }
+
   .filelist .Box-row {
     flex-direction: column;
   }
@@ -346,140 +364,64 @@ table.coverage td.coverage-high
 }
 
 /*** End of Summary formats ***/
-/*** Meter formats ***/
 
-/* Common */
-meter {
-  -moz-appearance: none;
-
-  width: 200px;
-  min-width: 4em;
-  max-width: 15em;
-  height: 0.75em;
-  padding: 0;
-  vertical-align: baseline;
-  margin-top: 3px;
-  /* Outer background for Mozilla */
-  background: none;
-  background-color: whitesmoke;
-}
-
-/* Webkit */
-
-meter::-webkit-meter-bar {
-  /* Outer background for Webkit */
-  background: none;
-  background-color: whitesmoke;
-  height: 0.75em;
-  border-radius: 0px;
-}
-
-meter::-webkit-meter-optimum-value,
-meter::-webkit-meter-suboptimum-value,
-meter::-webkit-meter-even-less-good-value
-{
-  /* Inner shadow for Webkit */
-  border: solid 1px black;
-}
-
-meter.coverage-none::-webkit-meter-optimum-value,
-meter.coverage-low::-webkit-meter-optimum-value
+span.coverage-none,
+span.coverage-low
 {
   background: var(--low_color);
 }
 
-meter.coverage-medium::-webkit-meter-optimum-value
+span.coverage-medium
 {
   background: var(--medium_color);
 }
 
-meter.coverage-high::-webkit-meter-optimum-value
+span.coverage-high
 {
   background: var(--high_color);
 }
 
-/* Mozilla */
-
-meter::-moz-meter-bar
-{
-  box-sizing: border-box;
-}
-
-meter:-moz-meter-optimum::-moz-meter-bar,
-meter:-moz-meter-sub-optimum::-moz-meter-bar,
-meter:-moz-meter-sub-sub-optimum::-moz-meter-bar
-{
-  /* Inner shadow for Mozilla */
-  border: solid 1px black;
-}
-
-meter.coverage-none:-moz-meter-optimum::-moz-meter-bar,
-meter.coverage-low:-moz-meter-optimum::-moz-meter-bar
-{
-  background: var(--low_color);
-}
-
-meter.coverage-medium:-moz-meter-optimum::-moz-meter-bar
-{
-  background: var(--medium_color);
-}
-
-meter.coverage-high:-moz-meter-optimum::-moz-meter-bar
-{
-  background: var(--high_color);
-}
-
-/*** End of Meter formats ***/
-div.file-list
-{
-  border: 0;
-  border-spacing: 1px;
-}
-
-div.file-list.coverage-unknown > span:not(:has(meter))
+div.coverage-unknown
 {
   background-color: var(--unknown_color) !important;
 }
 
-div.file-list.coverage-none > span:not(:has(meter)),
-div.file-list.coverage-low > span:not(:has(meter))
+div.coverage-none,
+div.coverage-low
 {
   background-color: var(--low_color) !important;
 }
 
-div.file-list.coverage-medium > span:not(:has(meter))
+div.coverage-medium
 {
   background-color: var(--medium_color) !important;
 }
 
-div.file-list.coverage-high > span:not(:has(meter))
+div.coverage-high
 {
   background-color: var(--high_color) !important;
 }
 
-div.file-list > span:has(meter)
-{
-  margin-right: 5px !important;
-}
-
-div.file-list > span:not(:has(meter))
+div.percent,
+div.counter
 {
   color: black !important;
-  padding-left: 5px !important;
-  padding-right: 5px !important;
-  margin-left: 0px !important;
-  margin-right: 0px !important;
+  padding-right: 0.5em !important;
   text-align: right
 }
 
-div.file-list > span:first-child
+div.percent
 {
-  min-width: 3.5em !important;
+  min-width: 3.75em;
+  margin-left: 0px !important;
+  margin-right: auto !important;
 }
 
-div.file-list > span:last-child
+div.counter
 {
-  min-width: 4.5em !important;
+  min-width: 4em;
+  margin-left: auto !important;
+  margin-right: 0px !important;
 }
 td.CoverValue
 {
@@ -815,6 +757,10 @@ pre
   display: flex !important
 }
 
+.d-inline-flex {
+  display: inline-flex !important
+}
+
 .flex-auto {
   flex: auto !important
 }
@@ -877,4 +823,21 @@ pre
 
 .text-center {
   text-align: center !important
+}
+
+.Progress {
+  background-color: var(--color-neutral-muted);
+  border-radius: 6px;
+  display: flex;
+  height: 8px;
+  outline: 1px solid rgba(0, 0, 0, 0);
+  overflow: hidden
+}
+
+.Progress--large {
+  height: 10px
+}
+
+.Progress-item {
+  outline: 2px solid rgba(0, 0, 0, 0)
 }
