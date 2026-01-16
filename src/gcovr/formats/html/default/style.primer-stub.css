@@ -86,6 +86,10 @@
   display: flex !important
 }
 
+.d-inline-flex {
+  display: inline-flex !important
+}
+
 .flex-auto {
   flex: auto !important
 }
@@ -148,4 +152,21 @@
 
 .text-center {
   text-align: center !important
+}
+
+.Progress {
+  background-color: var(--color-neutral-muted);
+  border-radius: 6px;
+  display: flex;
+  height: 8px;
+  outline: 1px solid rgba(0, 0, 0, 0);
+  overflow: hidden
+}
+
+.Progress--large {
+  height: 10px
+}
+
+.Progress-item {
+  outline: 2px solid rgba(0, 0, 0, 0)
 }

@@ -19,6 +19,7 @@
   --color-fg-muted: #656d76;
   --color-canvas-subtle: #f6f8fa;
   --color-accent-subtle: #ddf4ff;;
+  --color-neutral-muted: rgba(175, 184, 193, 0.2);
 }
 
 .theme-green {

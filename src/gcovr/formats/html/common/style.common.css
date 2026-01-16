@@ -26,7 +26,24 @@ a:visited
   border-bottom: 5px solid var(--color-border-muted);
 }
 
+div.overview-info-column
+{
+  margin-left: 5px;
+  margin-top: auto !important;
+  margin-bottom: auto !important;
+}
+
 @media (max-width: 544px) {
+  .meter {
+    display: none !important;
+  }
+  .meter-label {
+    display: block !important;
+  }
+  .line-percentage-text {
+    display: none !important;
+  }
+
   .filelist .Box-row {
     flex-direction: column;
   }
