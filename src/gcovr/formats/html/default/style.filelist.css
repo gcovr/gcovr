@@ -41,7 +41,9 @@ div.counter
 {
   color: black !important;
   padding-right: 0.5em !important;
-  text-align: right
+  text-align: right;
+  height: 100%;
+  align-items: center;
 }
 
 div.percent
