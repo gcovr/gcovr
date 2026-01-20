@@ -16,6 +16,8 @@ Bug fixes and small improvements:
 
 Documentation:
 
+- Add section about ``gcov`` options which should not be used to FAQ. (:issue:`1237`)
+
 Internal changes:
 
 .. _release_8_6:

@@ -160,3 +160,16 @@ The following options are only used if available:
 - ``--demangled-names``: Not available for LLVM based ``gcov``.
 - ``--hash-filenames``: Available since GCC 7, as fallback the option ``--preserve-paths`` is used.
 - ``--conditions``: Available since GCC 14, additionally requires the compiler to be invoked with ``-fcondition-coverage``.
+
+Which options must not be used if you want to run gcov on your own?
+-------------------------------------------------------------------
+
+You must not use the following options when invoking ``gcov`` on your own,
+because the produce output lines which gcovr can't parse.
+
+- ``--conditions`` (if not used together with ``--json-format``)
+- ``--prime-paths``
+- ``--prime-paths-lines``
+- ``--prime-paths-source``
+
+
