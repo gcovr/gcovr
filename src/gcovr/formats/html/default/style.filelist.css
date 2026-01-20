@@ -42,20 +42,14 @@ div.counter
   color: black !important;
   padding-right: 0.5em !important;
   text-align: right;
-  height: 100%;
-  align-items: center;
 }
 
 div.percent
 {
-  min-width: 3.75em;
-  margin-left: 0px !important;
-  margin-right: auto !important;
+  min-width: 4em;
 }
 
 div.counter
 {
   min-width: 4em;
-  margin-left: auto !important;
-  margin-right: 0px !important;
 }
