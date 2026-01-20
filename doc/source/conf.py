@@ -207,6 +207,8 @@ linkcheck_ignore = [
     r"https://github.com/.+/blob/.+",
     r"https://stackoverflow.com/questions/tagged/gcovr",
     r"https://gcovr.com/en/latest/known_bugs.html",
+    # URL results in 403 forbidden from CI but is working locally
+    r"https://developer.arm.com/documentation/101407/0537/Debug-Commands/COVERAGE/COVERAGE-GCOV-Export",
 ]
 
 # -- Jinja2 template context ------------------------------------------
