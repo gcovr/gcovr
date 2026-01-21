@@ -99,9 +99,13 @@ a:visited
   border-bottom: 5px solid var(--color-border-muted);
 }
 
-div.overview-info-column
+div.gcovr-m-l-5
 {
   margin-left: 5px;
+}
+
+div.gcovr-h-100
+{
   height: 100%;
 }
 
@@ -412,24 +416,20 @@ div.percent,
 div.counter
 {
   color: black !important;
-  padding-right: 0.5em !important;
-  text-align: right;
-  height: 100%;
-  align-items: center;
 }
 
 div.percent
 {
-  min-width: 3.75em;
-  margin-left: 0px !important;
-  margin-right: auto !important;
+  min-width: 4em;
+  text-align: right;
+  padding-right: 0.5em !important;
 }
 
 div.counter
 {
   min-width: 4em;
-  margin-left: auto !important;
-  margin-right: 0px !important;
+  text-align: left;
+  padding-left: 0.5em !important;
 }
 td.CoverValue
 {
@@ -677,36 +677,37 @@ pre
 {
   width: 100%;
 }
+
 .color-fg-muted {
-  color: var(--color-fg-muted) !important
+  color: var(--color-fg-muted) !important;
 }
 
 .text-mono {
-  font-family: ui-monospace, SFMono-Regular, SF Mono, Menlo, Consolas, Liberation Mono, monospace !important
+  font-family: ui-monospace, SFMono-Regular, SF Mono, Menlo, Consolas, Liberation Mono, monospace !important;
 }
 .text-small {
-  font-size: 12px !important
+  font-size: 12px !important;
 }
 
 .Layout-main {
-  min-width: 0
+  min-width: 0;
 }
 
 @media(max-width: 543.98px) {
   .Layout {
     grid-auto-flow: row;
-    grid-template-columns: 1fr !important
+    grid-template-columns: 1fr !important;
   }
 
   .Layout .Layout-main {
     grid-column: 1 !important;
-    width: 100% !important
+    width: 100% !important;
   }
 }
 
 .Layout-main .Layout-main-centered-lg {
   margin-left: auto;
-  margin-right: auto
+  margin-right: auto;
 }
 
 .Box {
@@ -718,7 +719,7 @@ pre
   border-color: var(--color-border-default);
   border-radius: var(--borderRadius-medium, 6px);
   border-style: solid;
-  border-width: var(--borderWidth-thin, 1px)
+  border-width: var(--borderWidth-thin, 1px);
 }
 
 .Box-header {
@@ -736,17 +737,17 @@ pre
   border-top: var(--borderWidth-thin, 1px) solid var(--color-border-muted);
   list-style-type: none;
   margin-top: calc(var(--borderWidth-thin, 1px)*-1);
-  padding: var(--stack-padding-normal, 16px)
+  padding: var(--stack-padding-normal, 16px);
 }
 
 .Box-row:first-of-type {
   border-top-left-radius: var(--borderRadius-medium, 6px);
-  border-top-right-radius: var(--borderRadius-medium, 6px)
+  border-top-right-radius: var(--borderRadius-medium, 6px);
 }
 
 .Box-row:last-of-type {
   border-bottom-left-radius: var(--borderRadius-medium, 6px);
-  border-bottom-right-radius: var(--borderRadius-medium, 6px)
+  border-bottom-right-radius: var(--borderRadius-medium, 6px);
 }
 
 .Box-row--focus-gray:hover {
@@ -762,43 +763,47 @@ pre
 }
 
 .d-flex {
-  display: flex !important
+  display: flex !important;
 }
 
 .d-inline-flex {
-  display: inline-flex !important
+  display: inline-flex !important;
 }
 
 .flex-auto {
-  flex: auto !important
+  flex: auto !important;
 }
 
-.flex-justify-end {
-  justify-content: flex-end !important
-}
-
-.flex-justify-center {
-  justify-content: center !important
-}
-
-.flex-wrap {
-  flex-wrap: wrap !important
-}
-
-.flex-items-baseline {
-  align-items: baseline !important
-}
-
-.flex-space-between {
+.flex-justify-between {
   justify-content: space-between !important
 }
 
+.flex-justify-center {
+  justify-content: center !important;
+}
+
+.flex-justify-end {
+  justify-content: flex-end !important;
+}
+
+.flex-wrap {
+  flex-wrap: wrap !important;
+}
+
+.flex-items-baseline {
+  align-items: baseline !important;
+}
+
+.flex-space-between {
+  justify-content: space-between !important;
+}
+
 .min-width-0 {
-  min-width: 0 !important
+  min-width: 0 !important;
 }
 
 .m-3 {
-  margin: var(--base-size-16, 16px) !important
+  margin: var(--base-size-16, 16px) !important;
 }
 
 .py-2 {
@@ -809,7 +814,7 @@ pre
 .col-2,
 .col-md-2
 {
-  width: 12.5%
+  width: 12.5%;
 }
 
 .css-truncate.css-truncate-target {
@@ -818,19 +823,19 @@ pre
   white-space: nowrap;
   display: inline-block;
   max-width: 125px;
-  vertical-align: top
+  vertical-align: top;
 }
 
 .d-block {
-  display: block !important
+  display: block !important;
 }
 
 .width-fit {
-  max-width: 100% !important
+  max-width: 100% !important;
 }
 
 .text-center {
-  text-align: center !important
+  text-align: center !important;
 }
 
 .Progress {
@@ -839,13 +844,13 @@ pre
   display: flex;
   height: 8px;
   outline: 1px solid rgba(0, 0, 0, 0);
-  overflow: hidden
+  overflow: hidden;
 }
 
 .Progress--large {
-  height: 10px
+  height: 10px;
 }
 
 .Progress-item {
-  outline: 2px solid rgba(0, 0, 0, 0)
+  outline: 2px solid rgba(0, 0, 0, 0);
 }
