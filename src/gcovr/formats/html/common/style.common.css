@@ -26,7 +26,34 @@ a:visited
   border-bottom: 5px solid var(--color-border-muted);
 }
 
+div.gcovr-m-l-5
+{
+  margin-left: 5px;
+}
+
+div.gcovr-h-100
+{
+  height: 100%;
+}
+
+.v-center {
+  height: 100%;
+  align-items: stretch;
+  margin-top: auto !important;
+  margin-bottom: auto !important;
+}
+
 @media (max-width: 544px) {
+  .meter {
+    display: none !important;
+  }
+  .meter-label {
+    display: block !important;
+  }
+  .line-percentage-text {
+    display: none !important;
+  }
+
   .filelist .Box-row {
     flex-direction: column;
   }

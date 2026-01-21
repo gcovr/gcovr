@@ -1,51 +1,57 @@
-div.file-list
+
+span.coverage-none,
+span.coverage-low
 {
-  border: 0;
-  border-spacing: 1px;
+  background: var(--low_color);
 }
 
-div.file-list.coverage-unknown > span:not(:has(meter))
+span.coverage-medium
+{
+  background: var(--medium_color);
+}
+
+span.coverage-high
+{
+  background: var(--high_color);
+}
+
+div.coverage-unknown
 {
   background-color: var(--unknown_color) !important;
 }
 
-div.file-list.coverage-none > span:not(:has(meter)),
-div.file-list.coverage-low > span:not(:has(meter))
+div.coverage-none,
+div.coverage-low
 {
   background-color: var(--low_color) !important;
 }
 
-div.file-list.coverage-medium > span:not(:has(meter))
+div.coverage-medium
 {
   background-color: var(--medium_color) !important;
 }
 
-div.file-list.coverage-high > span:not(:has(meter))
+div.coverage-high
 {
   background-color: var(--high_color) !important;
 }
 
-div.file-list > span:has(meter)
-{
-  margin-right: 5px !important;
-}
-
-div.file-list > span:not(:has(meter))
+div.percent,
+div.counter
 {
   color: black !important;
-  padding-left: 5px !important;
-  padding-right: 5px !important;
-  margin-left: 0px !important;
-  margin-right: 0px !important;
-  text-align: right
 }
 
-div.file-list > span:first-child
+div.percent
 {
-  min-width: 3.5em !important;
+  min-width: 4em;
+  text-align: right;
+  padding-right: 0.5em !important;
 }
 
-div.file-list > span:last-child
+div.counter
 {
-  min-width: 4.5em !important;
+  min-width: 4em;
+  text-align: left;
+  padding-left: 0.5em !important;
 }

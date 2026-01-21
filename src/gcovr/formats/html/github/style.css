@@ -117,15 +117,3 @@ td.linenos .normal {
 .functionslist .Box-row:nth-child(2n+3){
   background-color: var(--color-accent-subtle);
 }
-
-@media (max-width: 544px) {
-  .meter {
-    display: none !important;
-  }
-  .meter-label {
-    display: block !important;
-  }
-  .line-percentage-text {
-    display: none !important;
-  }
-}

@@ -36,8 +36,6 @@ hr {
 
 {% include "style.summary.css" %}
 
-{% include "style.meter.css" %}
-
 {% include "style.filelist.css" %}
 
 {% include "style.details.css" %}
