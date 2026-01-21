@@ -74,12 +74,6 @@ def read_report(options: Options) -> CoverageContainer:
         process_file = process_existing_gcov_file
 
     # Get data files
-    if not options.search_paths:
-        options.search_paths = [options.root]
-
-        if options.gcov_objdir is not None:
-            options.search_paths.append(options.gcov_objdir)
-
     for search_path in options.search_paths:
         datafiles.update(find_files(search_path, options.exclude_directory))
 

@@ -404,6 +404,13 @@ def main(args: list[str] | None = None) -> int:  # pylint: disable=too-many-retu
             "It uses a fragile heuristic and depends on the code format."
         )
 
+    # Get data files
+    if not options.search_paths:
+        options.search_paths = [options.root]
+
+        if options.gcov_objdir is not None:
+            options.search_paths.append(options.gcov_objdir)
+
     LOGGER.info("Reading coverage data...")
     try:
         covdata = gcovr_formats.read_reports(options)
