@@ -1503,7 +1503,7 @@ class LineCoverage(CoverageBase):
         If there is a conflict between different types, Uncheckable will be used.
         """
         if options.json_compare and (
-            self.decision is not None or (decisioncov and decisioncov is not None)
+            self.decision is not None or decisioncov is not None
         ):
             msg = "Decision coverage in json compare mode is not supported."
             raise SanityCheckError(msg)
