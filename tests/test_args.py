@@ -959,19 +959,16 @@ def test_json_tracefile_with_useless_option(
     )
 
     options_with_no_effect = [
-        "--exclude-directory",
-        ".*",
+        "--exclude-directory=.*",
         "--exclude-noncode-lines",
         "--exclude-throw-branches",
         "--exclude-unreachable-branches",
         "--exclude-function-lines",
-        "--exclude-function",
-        "xxx",
-        "--exclude-lines-by-pattern",
-        ".*",
-        "--exclude-branches-by-pattern",
-        ".*",
+        "--exclude-function=xxx",
+        "--exclude-lines-by-pattern=.*",
+        "--exclude-branches-by-pattern=.*",
         "--warn-excluded-lines-with-hits",
+        "--gcov-allowed-working-directory-root=.*",
         "--include-internal-functions",
         "--no-markers",
     ]
@@ -985,9 +982,9 @@ def test_json_tracefile_with_useless_option(
         *(
             (
                 logging.WARNING,
-                f"Option {option} has no effect when generating reports from tracefiles.",
+                f"Option {option.split('=', maxsplit=1)[0]} has no effect when generating reports from tracefiles.",
             )
-            for option in [s for s in options_with_no_effect if s.startswith("--")]
+            for option in options_with_no_effect
         ),
         (
             logging.WARNING,

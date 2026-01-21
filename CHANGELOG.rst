@@ -37,6 +37,8 @@ New features and notable changes:
   :option:`--fail-under-decision` as synonyms, change the key for the configuration file. (:issue:`1293`)
 - Add support for multiple metrics in one text report and add support for condition coverage. (:issue:`1302`)
 - Warn if a option is used which has no effect when processing tracefiles. (:issue:`1307`)
+- Add options to restrict where ``GCOV`` is executed to prevent generating temporary files in
+  arbitrary directories. Write protected files are now skipped by default. (:issue:`1311`)
 
 Bug fixes and small improvements:
 

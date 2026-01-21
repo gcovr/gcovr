@@ -73,6 +73,27 @@ def read_report(options: Options) -> CoverageContainer:
         find_files = find_existing_gcov_files
         process_file = process_existing_gcov_file
 
+    if options.gcov_allowed_working_directory_roots:
+        working_directory_roots = options.gcov_allowed_working_directory_roots or []
+        working_directory_roots = sorted(
+            {
+                *working_directory_roots,
+                *options.search_paths,
+                options.root,
+            }
+        )
+
+        options.gcov_allowed_working_directory_roots = sorted(
+            {
+                *[os.path.abspath(p) for p in working_directory_roots],
+                *[os.path.realpath(p) for p in working_directory_roots],
+            }
+        )
+        LOGGER.debug(
+            "Allowed working directory roots:\n   - %s",
+            "\n   - ".join(options.gcov_allowed_working_directory_roots),
+        )
+
     # Get data files
     for search_path in options.search_paths:
         datafiles.update(find_files(search_path, options.exclude_directory))
@@ -503,33 +524,63 @@ def process_datafile(
     activate_trace_logging = not is_file_excluded(
         "trace", filename, options.trace_include_filter, options.trace_exclude_filter
     )
-    if activate_trace_logging:
-        LOGGER.trace("Processing file: %s", filename)
 
     abs_filename = os.path.abspath(filename).replace(
         os.path.sep, "/"
-    )  # gcov requires posix style path
+    )  # GCOV requires posix style path
 
     errors = list[str]()
 
     potential_wd = []
 
+    def append_wd(path: str) -> None:
+        """Add normalized path to list of working directories."""
+        if os.path.altsep is not None:
+            path = path.replace(os.path.altsep, os.path.sep)
+        if path not in potential_wd:
+            potential_wd.append(path)
+
     if options.gcov_objdir:
-        potential_wd = find_potential_working_directories_via_objdir(
+        for path in find_potential_working_directories_via_objdir(
             abs_filename, options.gcov_objdir, error=errors.append
-        )
+        ):
+            append_wd(path)
 
     # no objdir was specified or objdir didn't exist
     consider_parent_directories = not potential_wd
 
     # Always add the root directory
-    potential_wd.append(options.root_dir)
+    append_wd(options.root_dir)
 
     if consider_parent_directories:
         wd = os.path.dirname(abs_filename)
-        while wd != potential_wd[-1]:
-            potential_wd.append(wd)
-            wd = os.path.dirname(wd)
+        while True:
+            if options.gcov_allowed_working_directory_roots:
+                # Add directory to used_working_directories if it is a subdirectory of any allowed root
+                for allowed_root in options.gcov_allowed_working_directory_roots:
+                    abs_directory = os.path.abspath(wd)
+                    if (
+                        os.path.commonpath([abs_directory, allowed_root])
+                        == allowed_root
+                    ):
+                        break
+                else:
+                    break
+            if os.access(wd, os.W_OK):
+                append_wd(wd)
+            else:
+                LOGGER.trace("Skip write protected directory %s.", wd)
+            new_wd = os.path.dirname(wd)
+            if new_wd == wd:
+                break
+            wd = new_wd
+
+    if activate_trace_logging:
+        LOGGER.trace(
+            "Processing file %s in directories:\n   - %s",
+            filename,
+            "\n   - ".join(potential_wd),
+        )
 
     for wd in potential_wd:
         done = run_gcov_and_process_files(
@@ -548,11 +599,20 @@ def process_datafile(
 
     # Join the errors with proper indention
     errors_output = "\n\t".join("\n\t\t".join(e.split("\n")) for e in errors)
-    errors_output = (
-        f"GCOV produced the following errors processing {abs_filename!r}:\n"
-        f"\t{errors_output}\n"
-        "GCOVR could not infer a working directory that resolved it.\n"
-        f"{'' if options.verbose else 'Use option --verbose to get extended information. '}"
+    msg = [
+        (
+            f"GCOV produced the following errors processing {abs_filename!r}:\n"
+            f"\t{errors_output}\n"
+            "GCOVR could not infer a working directory that resolved it."
+        )
+    ]
+    if not options.verbose:
+        msg.append("Use option --verbose to get extended information.")
+    if options.gcov_allowed_working_directory_roots:
+        msg.append(
+            "To fix this error check your --gcov-allowed-working-directory-roots."
+        )
+    msg.append(
         "To ignore this error use option --gcov-ignore-errors=no_working_dir_found."
     )
 
@@ -560,7 +620,7 @@ def process_datafile(
     if options.gcov_ignore_errors is None or not any(
         v in options.gcov_ignore_errors for v in ["all", "no_working_dir_found"]
     ):
-        raise RuntimeError(errors_output)
+        raise RuntimeError("\n".join(msg))
 
 
 def find_potential_working_directories_via_objdir(

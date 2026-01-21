@@ -94,6 +94,10 @@ def validate_options(options: Options) -> None:
             ("--exclude-lines-by-pattern", "exclude_lines_by_pattern"),
             ("--exclude-branches-by-pattern", "exclude_branches_by_pattern"),
             ("--warn-excluded-lines-with-hits", "warn_excluded_lines_with_hits"),
+            (
+                "--gcov-allowed-working-directory-root",
+                "gcov_allowed_working_directory_roots",
+            ),
         ]:
             if options.get(key):
                 LOGGER.warning(

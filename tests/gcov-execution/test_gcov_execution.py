@@ -61,7 +61,7 @@ def test_kill_by_signal(gcovr_exec: "GcovrExecFixture") -> None:
     env.update({"GCOV_STUB_KILL_BY_SIGNAL": "SIGSEGV"})
     gcovr_exec.gcovr(
         "--verbose",
-        "--gcov-executable=./gcov-stub",
+        f"--gcov-executable={gcovr_exec.output_dir / 'gcov-stub'}",
         "--json=coverage.json",
         env=env,
         use_main=False,
@@ -89,7 +89,7 @@ def test_unknown_cla(gcovr_exec: "GcovrExecFixture") -> None:
     env.update({"GCOV_STUB_ADDITIONAL_CLA": "--cla-does-not-exist"})
     gcovr_exec.gcovr(
         "--verbose",
-        "--gcov-executable=./gcov-stub",
+        f"--gcov-executable={gcovr_exec.output_dir / 'gcov-stub'}",
         "--json=coverage.json",
         env=env,
         use_main=False,
@@ -124,7 +124,7 @@ def test_wrong_version(gcovr_exec: "GcovrExecFixture") -> None:
     )
     gcovr_exec.gcovr(
         "--verbose",
-        "--gcov-executable=./gcov-stub",
+        f"--gcov-executable={gcovr_exec.output_dir / 'gcov-stub'}",
         "--json=coverage.json",
         "--trace-include=.*",
         env=env,
@@ -343,7 +343,6 @@ def test_worker_exception(gcovr_exec: "GcovrExecFixture") -> None:
     env = os.environ.copy()
     env.update({"GCOV_STUB_ADDITIONAL_STDOUT": "Creating 'does#not#exist.gcov'"})
     gcovr_exec.gcovr(
-        "--verbose",
         "--gcov-executable=./gcov-stub",
         "--json=coverage.json",
         env=env,
