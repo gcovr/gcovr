@@ -35,6 +35,11 @@
   --color-canvas-subtle: #f6f8fa;
   --color-accent-subtle: #ddf4ff;;
   --color-neutral-muted: rgba(175, 184, 193, 0.2);
+  /* Diff colors */
+  --added_color: #026b17;
+  --removed_color: #d73a49;
+  --changed_color: #dbab09;
+  --approximately_equal_color: #0a84ff;
 }
 
 .theme-green {
@@ -153,7 +158,11 @@ div.gcovr-h-100
 button.button_toggle_coveredLine,
 button.button_toggle_uncoveredLine,
 button.button_toggle_excludedLine,
-button.button_toggle_partialCoveredLine {
+button.button_toggle_partialCoveredLine,
+button.button_toggle_ADDED,
+button.button_toggle_REMOVED,
+button.button_toggle_CHANGED,
+button.button_toggle_APPROXIMATELY_EQUAL {
   margin-left: 1em;
   border: 1px solid;
   border-radius: 6px;
@@ -165,7 +174,11 @@ button.button_toggle_partialCoveredLine {
 button.button_toggle_coveredLine.show_coveredLine,
 button.button_toggle_uncoveredLine.show_uncoveredLine,
 button.button_toggle_excludedLine.show_excludedLine,
-button.button_toggle_partialCoveredLine.show_partialCoveredLine {
+button.button_toggle_partialCoveredLine.show_partialCoveredLine,
+button.button_toggle_ADDED.show_ADDED,
+button.button_toggle_REMOVED.show_REMOVED,
+button.button_toggle_CHANGED.show_CHANGED,
+button.button_toggle_APPROXIMATELY_EQUAL.show_APPROXIMATELY_EQUAL {
   text-decoration: none;
 }
 
@@ -182,7 +195,39 @@ button.button_toggle_partialCoveredLine {
   background-color: var(--partial_covered_color) !important;
 }
 
+button.button_toggle_ADDED {
+  border-right: 20px solid var(--added_color) !important;
+}
+button.button_toggle_REMOVED {
+  border-right: 20px solid var(--removed_color) !important;
+}
+button.button_toggle_CHANGED {
+  border-right: 20px solid var(--changed_color) !important;
+}
+button.button_toggle_APPROXIMATELY_EQUAL {
+  border-right: 20px solid var(--approximately_equal_color) !important;
+}
+
+td.show_ADDED {
+  border-right: 20px solid var(--added_color) !important;
+}
+td.show_REMOVED {
+  border-right: 20px solid var(--removed_color) !important;
+}
+td.show_CHANGED {
+  border-right: 20px solid var(--changed_color) !important;
+}
+td.show_APPROXIMATELY_EQUAL {
+  border-right: 20px solid var(--approximately_equal_color) !important;
+}
+
 div.nav {
+  margin-left: auto;
+}
+
+span.diff {
+  text-align: right;
+  padding-left: 5px;
   margin-left: auto;
 }
 
@@ -819,6 +864,10 @@ pre
   padding-bottom: var(--base-size-8, 8px) !important;
 }
 
+.col-1 {
+  width: 8.33333333%
+}
+
 .col-2,
 .col-md-2
 {
@@ -951,6 +1000,10 @@ gcovr.fileLoaded = function () {
   gcovr.addOnClickHandler(".button_toggle_uncoveredLine", gcovr.toggleLines);
   gcovr.addOnClickHandler(".button_toggle_partialCoveredLine", gcovr.toggleLines);
   gcovr.addOnClickHandler(".button_toggle_excludedLine", gcovr.toggleLines);
+  gcovr.addOnClickHandler(".button_toggle_ADDED", gcovr.toggleLines);
+  gcovr.addOnClickHandler(".button_toggle_REMOVED", gcovr.toggleLines);
+  gcovr.addOnClickHandler(".button_toggle_CHANGED", gcovr.toggleLines);
+  gcovr.addOnClickHandler(".button_toggle_APPROXIMATELY_EQUAL", gcovr.toggleLines);
 
   gcovr.addOnClickHandler("div.sortable", gcovr.sortGridTable);
 
@@ -1703,7 +1756,7 @@ document.addEventListener("DOMContentLoaded", () => {
         <td class="linecondition">
         </td>
         <td class="linecount coveredLine show_coveredLine">1</td>
-        <td class="src  coveredLine show_coveredLine"><span class="kt">int</span><span class="w"> </span><span class="nf">foo6</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">param</span><span class="p">)</span></td>
+        <td class="src coveredLine show_coveredLine"><span class="kt">int</span><span class="w"> </span><span class="nf">foo6</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">param</span><span class="p">)</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="File6.cpp.73326d74f2aeb2719dd6d8a9bcc3e582.html|l2" href="#File6.cpp.73326d74f2aeb2719dd6d8a9bcc3e582.html|l2">2</a></td>
@@ -1712,7 +1765,7 @@ document.addEventListener("DOMContentLoaded", () => {
         <td class="linecondition">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="p">{</span></td>
+        <td class="src"><span class="p">{</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="File6.cpp.73326d74f2aeb2719dd6d8a9bcc3e582.html|l3" href="#File6.cpp.73326d74f2aeb2719dd6d8a9bcc3e582.html|l3">3</a></td>
@@ -1734,7 +1787,7 @@ document.addEventListener("DOMContentLoaded", () => {
               </details>
         </td>
         <td class="linecount partialCoveredLine show_partialCoveredLine">1</td>
-        <td class="src  partialCoveredLine show_partialCoveredLine"><span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">param</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
+        <td class="src partialCoveredLine show_partialCoveredLine"><span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">param</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="File6.cpp.73326d74f2aeb2719dd6d8a9bcc3e582.html|l4" href="#File6.cpp.73326d74f2aeb2719dd6d8a9bcc3e582.html|l4">4</a></td>
@@ -1743,7 +1796,7 @@ document.addEventListener("DOMContentLoaded", () => {
         <td class="linecondition">
         </td>
         <td class="linecount uncoveredLine show_uncoveredLine">&cross;</td>
-        <td class="src  uncoveredLine show_uncoveredLine"><span class="w">     </span><span class="k">return</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span></td>
+        <td class="src uncoveredLine show_uncoveredLine"><span class="w">     </span><span class="k">return</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="File6.cpp.73326d74f2aeb2719dd6d8a9bcc3e582.html|l5" href="#File6.cpp.73326d74f2aeb2719dd6d8a9bcc3e582.html|l5">5</a></td>
@@ -1752,7 +1805,7 @@ document.addEventListener("DOMContentLoaded", () => {
         <td class="linecondition">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="w">  </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span></td>
+        <td class="src"><span class="w">  </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="File6.cpp.73326d74f2aeb2719dd6d8a9bcc3e582.html|l6" href="#File6.cpp.73326d74f2aeb2719dd6d8a9bcc3e582.html|l6">6</a></td>
@@ -1761,7 +1814,7 @@ document.addEventListener("DOMContentLoaded", () => {
         <td class="linecondition">
         </td>
         <td class="linecount coveredLine show_coveredLine">1</td>
-        <td class="src  coveredLine show_coveredLine"><span class="w">     </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span></td>
+        <td class="src coveredLine show_coveredLine"><span class="w">     </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="File6.cpp.73326d74f2aeb2719dd6d8a9bcc3e582.html|l7" href="#File6.cpp.73326d74f2aeb2719dd6d8a9bcc3e582.html|l7">7</a></td>
@@ -1770,7 +1823,7 @@ document.addEventListener("DOMContentLoaded", () => {
         <td class="linecondition">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="w">  </span><span class="p">}</span></td>
+        <td class="src"><span class="w">  </span><span class="p">}</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="File6.cpp.73326d74f2aeb2719dd6d8a9bcc3e582.html|l8" href="#File6.cpp.73326d74f2aeb2719dd6d8a9bcc3e582.html|l8">8</a></td>
@@ -1779,7 +1832,7 @@ document.addEventListener("DOMContentLoaded", () => {
         <td class="linecondition">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="p">}</span></td>
+        <td class="src"><span class="p">}</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="File6.cpp.73326d74f2aeb2719dd6d8a9bcc3e582.html|l9" href="#File6.cpp.73326d74f2aeb2719dd6d8a9bcc3e582.html|l9">9</a></td>
@@ -1788,7 +1841,7 @@ document.addEventListener("DOMContentLoaded", () => {
         <td class="linecondition">
         </td>
         <td class="linecount"></td>
-        <td class="src "></td>
+        <td class="src"></td>
       </tr>
     </table>
   </div>
@@ -1897,7 +1950,7 @@ document.addEventListener("DOMContentLoaded", () => {
         <td class="linecondition">
         </td>
         <td class="linecount coveredLine show_coveredLine">1</td>
-        <td class="src  coveredLine show_coveredLine"><span class="kt">int</span><span class="w"> </span><span class="nf">foo5</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">param</span><span class="p">)</span></td>
+        <td class="src coveredLine show_coveredLine"><span class="kt">int</span><span class="w"> </span><span class="nf">foo5</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">param</span><span class="p">)</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="file5.cpp.4f0be33a4dcfe398ba897b87f58ca7ce.html|l2" href="#file5.cpp.4f0be33a4dcfe398ba897b87f58ca7ce.html|l2">2</a></td>
@@ -1906,7 +1959,7 @@ document.addEventListener("DOMContentLoaded", () => {
         <td class="linecondition">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="p">{</span></td>
+        <td class="src"><span class="p">{</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="file5.cpp.4f0be33a4dcfe398ba897b87f58ca7ce.html|l3" href="#file5.cpp.4f0be33a4dcfe398ba897b87f58ca7ce.html|l3">3</a></td>
@@ -1928,7 +1981,7 @@ document.addEventListener("DOMContentLoaded", () => {
               </details>
         </td>
         <td class="linecount partialCoveredLine show_partialCoveredLine">1</td>
-        <td class="src  partialCoveredLine show_partialCoveredLine"><span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">param</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
+        <td class="src partialCoveredLine show_partialCoveredLine"><span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">param</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="file5.cpp.4f0be33a4dcfe398ba897b87f58ca7ce.html|l4" href="#file5.cpp.4f0be33a4dcfe398ba897b87f58ca7ce.html|l4">4</a></td>
@@ -1937,7 +1990,7 @@ document.addEventListener("DOMContentLoaded", () => {
         <td class="linecondition">
         </td>
         <td class="linecount uncoveredLine show_uncoveredLine">&cross;</td>
-        <td class="src  uncoveredLine show_uncoveredLine"><span class="w">     </span><span class="k">return</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span></td>
+        <td class="src uncoveredLine show_uncoveredLine"><span class="w">     </span><span class="k">return</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="file5.cpp.4f0be33a4dcfe398ba897b87f58ca7ce.html|l5" href="#file5.cpp.4f0be33a4dcfe398ba897b87f58ca7ce.html|l5">5</a></td>
@@ -1946,7 +1999,7 @@ document.addEventListener("DOMContentLoaded", () => {
         <td class="linecondition">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="w">  </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span></td>
+        <td class="src"><span class="w">  </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="file5.cpp.4f0be33a4dcfe398ba897b87f58ca7ce.html|l6" href="#file5.cpp.4f0be33a4dcfe398ba897b87f58ca7ce.html|l6">6</a></td>
@@ -1955,7 +2008,7 @@ document.addEventListener("DOMContentLoaded", () => {
         <td class="linecondition">
         </td>
         <td class="linecount coveredLine show_coveredLine">1</td>
-        <td class="src  coveredLine show_coveredLine"><span class="w">     </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span></td>
+        <td class="src coveredLine show_coveredLine"><span class="w">     </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="file5.cpp.4f0be33a4dcfe398ba897b87f58ca7ce.html|l7" href="#file5.cpp.4f0be33a4dcfe398ba897b87f58ca7ce.html|l7">7</a></td>
@@ -1964,7 +2017,7 @@ document.addEventListener("DOMContentLoaded", () => {
         <td class="linecondition">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="w">  </span><span class="p">}</span></td>
+        <td class="src"><span class="w">  </span><span class="p">}</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="file5.cpp.4f0be33a4dcfe398ba897b87f58ca7ce.html|l8" href="#file5.cpp.4f0be33a4dcfe398ba897b87f58ca7ce.html|l8">8</a></td>
@@ -1973,7 +2026,7 @@ document.addEventListener("DOMContentLoaded", () => {
         <td class="linecondition">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="p">}</span></td>
+        <td class="src"><span class="p">}</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="file5.cpp.4f0be33a4dcfe398ba897b87f58ca7ce.html|l9" href="#file5.cpp.4f0be33a4dcfe398ba897b87f58ca7ce.html|l9">9</a></td>
@@ -1982,7 +2035,7 @@ document.addEventListener("DOMContentLoaded", () => {
         <td class="linecondition">
         </td>
         <td class="linecount"></td>
-        <td class="src "></td>
+        <td class="src"></td>
       </tr>
     </table>
   </div>
@@ -2091,7 +2144,7 @@ document.addEventListener("DOMContentLoaded", () => {
         <td class="linecondition">
         </td>
         <td class="linecount coveredLine show_coveredLine">1</td>
-        <td class="src  coveredLine show_coveredLine"><span class="kt">int</span><span class="w"> </span><span class="nf">foobar</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">param</span><span class="p">)</span></td>
+        <td class="src coveredLine show_coveredLine"><span class="kt">int</span><span class="w"> </span><span class="nf">foobar</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">param</span><span class="p">)</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="File4.cpp.1d7a80554861eb8b5c21bc2e26ff8f70.html|l2" href="#File4.cpp.1d7a80554861eb8b5c21bc2e26ff8f70.html|l2">2</a></td>
@@ -2100,7 +2153,7 @@ document.addEventListener("DOMContentLoaded", () => {
         <td class="linecondition">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="p">{</span></td>
+        <td class="src"><span class="p">{</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="File4.cpp.1d7a80554861eb8b5c21bc2e26ff8f70.html|l3" href="#File4.cpp.1d7a80554861eb8b5c21bc2e26ff8f70.html|l3">3</a></td>
@@ -2122,7 +2175,7 @@ document.addEventListener("DOMContentLoaded", () => {
               </details>
         </td>
         <td class="linecount partialCoveredLine show_partialCoveredLine">1</td>
-        <td class="src  partialCoveredLine show_partialCoveredLine"><span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">param</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
+        <td class="src partialCoveredLine show_partialCoveredLine"><span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">param</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="File4.cpp.1d7a80554861eb8b5c21bc2e26ff8f70.html|l4" href="#File4.cpp.1d7a80554861eb8b5c21bc2e26ff8f70.html|l4">4</a></td>
@@ -2131,7 +2184,7 @@ document.addEventListener("DOMContentLoaded", () => {
         <td class="linecondition">
         </td>
         <td class="linecount coveredLine show_coveredLine">1</td>
-        <td class="src  coveredLine show_coveredLine"><span class="w">     </span><span class="k">return</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span></td>
+        <td class="src coveredLine show_coveredLine"><span class="w">     </span><span class="k">return</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="File4.cpp.1d7a80554861eb8b5c21bc2e26ff8f70.html|l5" href="#File4.cpp.1d7a80554861eb8b5c21bc2e26ff8f70.html|l5">5</a></td>
@@ -2140,7 +2193,7 @@ document.addEventListener("DOMContentLoaded", () => {
         <td class="linecondition">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="w">  </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span></td>
+        <td class="src"><span class="w">  </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="File4.cpp.1d7a80554861eb8b5c21bc2e26ff8f70.html|l6" href="#File4.cpp.1d7a80554861eb8b5c21bc2e26ff8f70.html|l6">6</a></td>
@@ -2149,7 +2202,7 @@ document.addEventListener("DOMContentLoaded", () => {
         <td class="linecondition">
         </td>
         <td class="linecount uncoveredLine show_uncoveredLine">&cross;</td>
-        <td class="src  uncoveredLine show_uncoveredLine"><span class="w">     </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span></td>
+        <td class="src uncoveredLine show_uncoveredLine"><span class="w">     </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="File4.cpp.1d7a80554861eb8b5c21bc2e26ff8f70.html|l7" href="#File4.cpp.1d7a80554861eb8b5c21bc2e26ff8f70.html|l7">7</a></td>
@@ -2158,7 +2211,7 @@ document.addEventListener("DOMContentLoaded", () => {
         <td class="linecondition">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="w">  </span><span class="p">}</span></td>
+        <td class="src"><span class="w">  </span><span class="p">}</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="File4.cpp.1d7a80554861eb8b5c21bc2e26ff8f70.html|l8" href="#File4.cpp.1d7a80554861eb8b5c21bc2e26ff8f70.html|l8">8</a></td>
@@ -2167,7 +2220,7 @@ document.addEventListener("DOMContentLoaded", () => {
         <td class="linecondition">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="p">}</span></td>
+        <td class="src"><span class="p">}</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="File4.cpp.1d7a80554861eb8b5c21bc2e26ff8f70.html|l9" href="#File4.cpp.1d7a80554861eb8b5c21bc2e26ff8f70.html|l9">9</a></td>
@@ -2176,7 +2229,7 @@ document.addEventListener("DOMContentLoaded", () => {
         <td class="linecondition">
         </td>
         <td class="linecount"></td>
-        <td class="src "></td>
+        <td class="src"></td>
       </tr>
     </table>
   </div>
@@ -2285,7 +2338,7 @@ document.addEventListener("DOMContentLoaded", () => {
         <td class="linecondition">
         </td>
         <td class="linecount coveredLine show_coveredLine">1</td>
-        <td class="src  coveredLine show_coveredLine"><span class="kt">int</span><span class="w"> </span><span class="nf">foo</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">param</span><span class="p">)</span></td>
+        <td class="src coveredLine show_coveredLine"><span class="kt">int</span><span class="w"> </span><span class="nf">foo</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">param</span><span class="p">)</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="file1.cpp.11975e1ce5d9c157e76130f444523bea.html|l2" href="#file1.cpp.11975e1ce5d9c157e76130f444523bea.html|l2">2</a></td>
@@ -2294,7 +2347,7 @@ document.addEventListener("DOMContentLoaded", () => {
         <td class="linecondition">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="p">{</span></td>
+        <td class="src"><span class="p">{</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="file1.cpp.11975e1ce5d9c157e76130f444523bea.html|l3" href="#file1.cpp.11975e1ce5d9c157e76130f444523bea.html|l3">3</a></td>
@@ -2316,7 +2369,7 @@ document.addEventListener("DOMContentLoaded", () => {
               </details>
         </td>
         <td class="linecount partialCoveredLine show_partialCoveredLine">1</td>
-        <td class="src  partialCoveredLine show_partialCoveredLine"><span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">param</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
+        <td class="src partialCoveredLine show_partialCoveredLine"><span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">param</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="file1.cpp.11975e1ce5d9c157e76130f444523bea.html|l4" href="#file1.cpp.11975e1ce5d9c157e76130f444523bea.html|l4">4</a></td>
@@ -2325,7 +2378,7 @@ document.addEventListener("DOMContentLoaded", () => {
         <td class="linecondition">
         </td>
         <td class="linecount uncoveredLine show_uncoveredLine">&cross;</td>
-        <td class="src  uncoveredLine show_uncoveredLine"><span class="w">     </span><span class="k">return</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span></td>
+        <td class="src uncoveredLine show_uncoveredLine"><span class="w">     </span><span class="k">return</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="file1.cpp.11975e1ce5d9c157e76130f444523bea.html|l5" href="#file1.cpp.11975e1ce5d9c157e76130f444523bea.html|l5">5</a></td>
@@ -2334,7 +2387,7 @@ document.addEventListener("DOMContentLoaded", () => {
         <td class="linecondition">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="w">  </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span></td>
+        <td class="src"><span class="w">  </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="file1.cpp.11975e1ce5d9c157e76130f444523bea.html|l6" href="#file1.cpp.11975e1ce5d9c157e76130f444523bea.html|l6">6</a></td>
@@ -2343,7 +2396,7 @@ document.addEventListener("DOMContentLoaded", () => {
         <td class="linecondition">
         </td>
         <td class="linecount coveredLine show_coveredLine">1</td>
-        <td class="src  coveredLine show_coveredLine"><span class="w">     </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span></td>
+        <td class="src coveredLine show_coveredLine"><span class="w">     </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="file1.cpp.11975e1ce5d9c157e76130f444523bea.html|l7" href="#file1.cpp.11975e1ce5d9c157e76130f444523bea.html|l7">7</a></td>
@@ -2352,7 +2405,7 @@ document.addEventListener("DOMContentLoaded", () => {
         <td class="linecondition">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="w">  </span><span class="p">}</span></td>
+        <td class="src"><span class="w">  </span><span class="p">}</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="file1.cpp.11975e1ce5d9c157e76130f444523bea.html|l8" href="#file1.cpp.11975e1ce5d9c157e76130f444523bea.html|l8">8</a></td>
@@ -2361,7 +2414,7 @@ document.addEventListener("DOMContentLoaded", () => {
         <td class="linecondition">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="p">}</span></td>
+        <td class="src"><span class="p">}</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="file1.cpp.11975e1ce5d9c157e76130f444523bea.html|l9" href="#file1.cpp.11975e1ce5d9c157e76130f444523bea.html|l9">9</a></td>
@@ -2370,7 +2423,7 @@ document.addEventListener("DOMContentLoaded", () => {
         <td class="linecondition">
         </td>
         <td class="linecount"></td>
-        <td class="src "></td>
+        <td class="src"></td>
       </tr>
     </table>
   </div>
@@ -2487,7 +2540,7 @@ document.addEventListener("DOMContentLoaded", () => {
         <td class="linecondition">
         </td>
         <td class="linecount coveredLine show_coveredLine">1</td>
-        <td class="src  coveredLine show_coveredLine"><span class="kt">int</span><span class="w"> </span><span class="nf">four_bar</span><span class="p">()</span></td>
+        <td class="src coveredLine show_coveredLine"><span class="kt">int</span><span class="w"> </span><span class="nf">four_bar</span><span class="p">()</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="file3.cpp.bcfa344b5512d8cd5857f2fe86511d71.html|l2" href="#file3.cpp.bcfa344b5512d8cd5857f2fe86511d71.html|l2">2</a></td>
@@ -2496,7 +2549,7 @@ document.addEventListener("DOMContentLoaded", () => {
         <td class="linecondition">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="p">{</span></td>
+        <td class="src"><span class="p">{</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="file3.cpp.bcfa344b5512d8cd5857f2fe86511d71.html|l3" href="#file3.cpp.bcfa344b5512d8cd5857f2fe86511d71.html|l3">3</a></td>
@@ -2505,7 +2558,7 @@ document.addEventListener("DOMContentLoaded", () => {
         <td class="linecondition">
         </td>
         <td class="linecount coveredLine show_coveredLine">1</td>
-        <td class="src  coveredLine show_coveredLine"><span class="kt">int</span><span class="w"> </span><span class="n">x</span><span class="o">=</span><span class="mi">1</span><span class="p">;</span></td>
+        <td class="src coveredLine show_coveredLine"><span class="kt">int</span><span class="w"> </span><span class="n">x</span><span class="o">=</span><span class="mi">1</span><span class="p">;</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="file3.cpp.bcfa344b5512d8cd5857f2fe86511d71.html|l4" href="#file3.cpp.bcfa344b5512d8cd5857f2fe86511d71.html|l4">4</a></td>
@@ -2514,7 +2567,7 @@ document.addEventListener("DOMContentLoaded", () => {
         <td class="linecondition">
         </td>
         <td class="linecount coveredLine show_coveredLine">1</td>
-        <td class="src  coveredLine show_coveredLine"><span class="kt">int</span><span class="w"> </span><span class="n">y</span><span class="o">=</span><span class="mi">2</span><span class="p">;</span></td>
+        <td class="src coveredLine show_coveredLine"><span class="kt">int</span><span class="w"> </span><span class="n">y</span><span class="o">=</span><span class="mi">2</span><span class="p">;</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="file3.cpp.bcfa344b5512d8cd5857f2fe86511d71.html|l5" href="#file3.cpp.bcfa344b5512d8cd5857f2fe86511d71.html|l5">5</a></td>
@@ -2523,7 +2576,7 @@ document.addEventListener("DOMContentLoaded", () => {
         <td class="linecondition">
         </td>
         <td class="linecount coveredLine show_coveredLine">1</td>
-        <td class="src  coveredLine show_coveredLine"><span class="k">return</span><span class="w"> </span><span class="n">x</span><span class="o">+</span><span class="n">y</span><span class="p">;</span></td>
+        <td class="src coveredLine show_coveredLine"><span class="k">return</span><span class="w"> </span><span class="n">x</span><span class="o">+</span><span class="n">y</span><span class="p">;</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="file3.cpp.bcfa344b5512d8cd5857f2fe86511d71.html|l6" href="#file3.cpp.bcfa344b5512d8cd5857f2fe86511d71.html|l6">6</a></td>
@@ -2532,7 +2585,7 @@ document.addEventListener("DOMContentLoaded", () => {
         <td class="linecondition">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="p">}</span></td>
+        <td class="src"><span class="p">}</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="file3.cpp.bcfa344b5512d8cd5857f2fe86511d71.html|l7" href="#file3.cpp.bcfa344b5512d8cd5857f2fe86511d71.html|l7">7</a></td>
@@ -2541,7 +2594,7 @@ document.addEventListener("DOMContentLoaded", () => {
         <td class="linecondition">
         </td>
         <td class="linecount"></td>
-        <td class="src "></td>
+        <td class="src"></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="file3.cpp.bcfa344b5512d8cd5857f2fe86511d71.html|l8" href="#file3.cpp.bcfa344b5512d8cd5857f2fe86511d71.html|l8">8</a></td>
@@ -2550,7 +2603,7 @@ document.addEventListener("DOMContentLoaded", () => {
         <td class="linecondition">
         </td>
         <td class="linecount uncoveredLine show_uncoveredLine">&cross;</td>
-        <td class="src  uncoveredLine show_uncoveredLine"><span class="kt">int</span><span class="w"> </span><span class="nf">four_bar_</span><span class="p">()</span></td>
+        <td class="src uncoveredLine show_uncoveredLine"><span class="kt">int</span><span class="w"> </span><span class="nf">four_bar_</span><span class="p">()</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="file3.cpp.bcfa344b5512d8cd5857f2fe86511d71.html|l9" href="#file3.cpp.bcfa344b5512d8cd5857f2fe86511d71.html|l9">9</a></td>
@@ -2559,7 +2612,7 @@ document.addEventListener("DOMContentLoaded", () => {
         <td class="linecondition">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="p">{</span></td>
+        <td class="src"><span class="p">{</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="file3.cpp.bcfa344b5512d8cd5857f2fe86511d71.html|l10" href="#file3.cpp.bcfa344b5512d8cd5857f2fe86511d71.html|l10">10</a></td>
@@ -2568,7 +2621,7 @@ document.addEventListener("DOMContentLoaded", () => {
         <td class="linecondition">
         </td>
         <td class="linecount uncoveredLine show_uncoveredLine">&cross;</td>
-        <td class="src  uncoveredLine show_uncoveredLine"><span class="kt">int</span><span class="w"> </span><span class="n">x</span><span class="o">=</span><span class="mi">1</span><span class="p">;</span></td>
+        <td class="src uncoveredLine show_uncoveredLine"><span class="kt">int</span><span class="w"> </span><span class="n">x</span><span class="o">=</span><span class="mi">1</span><span class="p">;</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="file3.cpp.bcfa344b5512d8cd5857f2fe86511d71.html|l11" href="#file3.cpp.bcfa344b5512d8cd5857f2fe86511d71.html|l11">11</a></td>
@@ -2577,7 +2630,7 @@ document.addEventListener("DOMContentLoaded", () => {
         <td class="linecondition">
         </td>
         <td class="linecount uncoveredLine show_uncoveredLine">&cross;</td>
-        <td class="src  uncoveredLine show_uncoveredLine"><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">x</span><span class="p">)</span></td>
+        <td class="src uncoveredLine show_uncoveredLine"><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">x</span><span class="p">)</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="file3.cpp.bcfa344b5512d8cd5857f2fe86511d71.html|l12" href="#file3.cpp.bcfa344b5512d8cd5857f2fe86511d71.html|l12">12</a></td>
@@ -2586,7 +2639,7 @@ document.addEventListener("DOMContentLoaded", () => {
         <td class="linecondition">
         </td>
         <td class="linecount uncoveredLine show_uncoveredLine">&cross;</td>
-        <td class="src  uncoveredLine show_uncoveredLine"><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="mi">2</span><span class="o">*</span><span class="n">x</span><span class="p">;</span><span class="w">     </span><span class="cm">/* This is a really long comment that confirms whether gcovr colors lines that exceed normal expectations. */</span></td>
+        <td class="src uncoveredLine show_uncoveredLine"><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="mi">2</span><span class="o">*</span><span class="n">x</span><span class="p">;</span><span class="w">     </span><span class="cm">/* This is a really long comment that confirms whether gcovr colors lines that exceed normal expectations. */</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="file3.cpp.bcfa344b5512d8cd5857f2fe86511d71.html|l13" href="#file3.cpp.bcfa344b5512d8cd5857f2fe86511d71.html|l13">13</a></td>
@@ -2595,7 +2648,7 @@ document.addEventListener("DOMContentLoaded", () => {
         <td class="linecondition">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="k">else</span></td>
+        <td class="src"><span class="k">else</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="file3.cpp.bcfa344b5512d8cd5857f2fe86511d71.html|l14" href="#file3.cpp.bcfa344b5512d8cd5857f2fe86511d71.html|l14">14</a></td>
@@ -2604,7 +2657,7 @@ document.addEventListener("DOMContentLoaded", () => {
         <td class="linecondition">
         </td>
         <td class="linecount uncoveredLine show_uncoveredLine">&cross;</td>
-        <td class="src  uncoveredLine show_uncoveredLine"><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">x</span><span class="p">;</span></td>
+        <td class="src uncoveredLine show_uncoveredLine"><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">x</span><span class="p">;</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="file3.cpp.bcfa344b5512d8cd5857f2fe86511d71.html|l15" href="#file3.cpp.bcfa344b5512d8cd5857f2fe86511d71.html|l15">15</a></td>
@@ -2613,7 +2666,7 @@ document.addEventListener("DOMContentLoaded", () => {
         <td class="linecondition">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="p">}</span></td>
+        <td class="src"><span class="p">}</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="file3.cpp.bcfa344b5512d8cd5857f2fe86511d71.html|l16" href="#file3.cpp.bcfa344b5512d8cd5857f2fe86511d71.html|l16">16</a></td>
@@ -2622,7 +2675,7 @@ document.addEventListener("DOMContentLoaded", () => {
         <td class="linecondition">
         </td>
         <td class="linecount"></td>
-        <td class="src "></td>
+        <td class="src"></td>
       </tr>
     </table>
   </div>
@@ -2731,7 +2784,7 @@ document.addEventListener("DOMContentLoaded", () => {
         <td class="linecondition">
         </td>
         <td class="linecount uncoveredLine show_uncoveredLine">&cross;</td>
-        <td class="src  uncoveredLine show_uncoveredLine"><span class="kt">int</span><span class="w"> </span><span class="nf">uncovered</span><span class="p">()</span></td>
+        <td class="src uncoveredLine show_uncoveredLine"><span class="kt">int</span><span class="w"> </span><span class="nf">uncovered</span><span class="p">()</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="file7.cpp.fa9d180b71a3402bed7d24bb1966eaf5.html|l2" href="#file7.cpp.fa9d180b71a3402bed7d24bb1966eaf5.html|l2">2</a></td>
@@ -2740,7 +2793,7 @@ document.addEventListener("DOMContentLoaded", () => {
         <td class="linecondition">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="p">{</span></td>
+        <td class="src"><span class="p">{</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="file7.cpp.fa9d180b71a3402bed7d24bb1966eaf5.html|l3" href="#file7.cpp.fa9d180b71a3402bed7d24bb1966eaf5.html|l3">3</a></td>
@@ -2749,7 +2802,7 @@ document.addEventListener("DOMContentLoaded", () => {
         <td class="linecondition">
         </td>
         <td class="linecount uncoveredLine show_uncoveredLine">&cross;</td>
-        <td class="src  uncoveredLine show_uncoveredLine"><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span></td>
+        <td class="src uncoveredLine show_uncoveredLine"><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="file7.cpp.fa9d180b71a3402bed7d24bb1966eaf5.html|l4" href="#file7.cpp.fa9d180b71a3402bed7d24bb1966eaf5.html|l4">4</a></td>
@@ -2758,7 +2811,7 @@ document.addEventListener("DOMContentLoaded", () => {
         <td class="linecondition">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="p">}</span></td>
+        <td class="src"><span class="p">}</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="file7.cpp.fa9d180b71a3402bed7d24bb1966eaf5.html|l5" href="#file7.cpp.fa9d180b71a3402bed7d24bb1966eaf5.html|l5">5</a></td>
@@ -2767,7 +2820,7 @@ document.addEventListener("DOMContentLoaded", () => {
         <td class="linecondition">
         </td>
         <td class="linecount"></td>
-        <td class="src "></td>
+        <td class="src"></td>
       </tr>
     </table>
   </div>
@@ -2884,7 +2937,7 @@ document.addEventListener("DOMContentLoaded", () => {
         <td class="linecondition">
         </td>
         <td class="linecount coveredLine show_coveredLine">1</td>
-        <td class="src  coveredLine show_coveredLine"><span class="kt">int</span><span class="w"> </span><span class="nf">bar</span><span class="p">()</span></td>
+        <td class="src coveredLine show_coveredLine"><span class="kt">int</span><span class="w"> </span><span class="nf">bar</span><span class="p">()</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="File2.cpp.1aed42bd33fceec1188f2f95c6e8946c.html|l2" href="#File2.cpp.1aed42bd33fceec1188f2f95c6e8946c.html|l2">2</a></td>
@@ -2893,7 +2946,7 @@ document.addEventListener("DOMContentLoaded", () => {
         <td class="linecondition">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="p">{</span></td>
+        <td class="src"><span class="p">{</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="File2.cpp.1aed42bd33fceec1188f2f95c6e8946c.html|l3" href="#File2.cpp.1aed42bd33fceec1188f2f95c6e8946c.html|l3">3</a></td>
@@ -2902,7 +2955,7 @@ document.addEventListener("DOMContentLoaded", () => {
         <td class="linecondition">
         </td>
         <td class="linecount coveredLine show_coveredLine">1</td>
-        <td class="src  coveredLine show_coveredLine"><span class="kt">int</span><span class="w"> </span><span class="n">x</span><span class="o">=</span><span class="mi">1</span><span class="p">;</span></td>
+        <td class="src coveredLine show_coveredLine"><span class="kt">int</span><span class="w"> </span><span class="n">x</span><span class="o">=</span><span class="mi">1</span><span class="p">;</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="File2.cpp.1aed42bd33fceec1188f2f95c6e8946c.html|l4" href="#File2.cpp.1aed42bd33fceec1188f2f95c6e8946c.html|l4">4</a></td>
@@ -2911,7 +2964,7 @@ document.addEventListener("DOMContentLoaded", () => {
         <td class="linecondition">
         </td>
         <td class="linecount coveredLine show_coveredLine">1</td>
-        <td class="src  coveredLine show_coveredLine"><span class="kt">int</span><span class="w"> </span><span class="n">y</span><span class="o">=</span><span class="mi">2</span><span class="p">;</span></td>
+        <td class="src coveredLine show_coveredLine"><span class="kt">int</span><span class="w"> </span><span class="n">y</span><span class="o">=</span><span class="mi">2</span><span class="p">;</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="File2.cpp.1aed42bd33fceec1188f2f95c6e8946c.html|l5" href="#File2.cpp.1aed42bd33fceec1188f2f95c6e8946c.html|l5">5</a></td>
@@ -2920,7 +2973,7 @@ document.addEventListener("DOMContentLoaded", () => {
         <td class="linecondition">
         </td>
         <td class="linecount coveredLine show_coveredLine">1</td>
-        <td class="src  coveredLine show_coveredLine"><span class="k">return</span><span class="w"> </span><span class="n">x</span><span class="o">+</span><span class="n">y</span><span class="p">;</span></td>
+        <td class="src coveredLine show_coveredLine"><span class="k">return</span><span class="w"> </span><span class="n">x</span><span class="o">+</span><span class="n">y</span><span class="p">;</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="File2.cpp.1aed42bd33fceec1188f2f95c6e8946c.html|l6" href="#File2.cpp.1aed42bd33fceec1188f2f95c6e8946c.html|l6">6</a></td>
@@ -2929,7 +2982,7 @@ document.addEventListener("DOMContentLoaded", () => {
         <td class="linecondition">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="p">}</span></td>
+        <td class="src"><span class="p">}</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="File2.cpp.1aed42bd33fceec1188f2f95c6e8946c.html|l7" href="#File2.cpp.1aed42bd33fceec1188f2f95c6e8946c.html|l7">7</a></td>
@@ -2938,7 +2991,7 @@ document.addEventListener("DOMContentLoaded", () => {
         <td class="linecondition">
         </td>
         <td class="linecount"></td>
-        <td class="src "></td>
+        <td class="src"></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="File2.cpp.1aed42bd33fceec1188f2f95c6e8946c.html|l8" href="#File2.cpp.1aed42bd33fceec1188f2f95c6e8946c.html|l8">8</a></td>
@@ -2947,7 +3000,7 @@ document.addEventListener("DOMContentLoaded", () => {
         <td class="linecondition">
         </td>
         <td class="linecount uncoveredLine show_uncoveredLine">&cross;</td>
-        <td class="src  uncoveredLine show_uncoveredLine"><span class="kt">int</span><span class="w"> </span><span class="nf">bar_</span><span class="p">()</span></td>
+        <td class="src uncoveredLine show_uncoveredLine"><span class="kt">int</span><span class="w"> </span><span class="nf">bar_</span><span class="p">()</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="File2.cpp.1aed42bd33fceec1188f2f95c6e8946c.html|l9" href="#File2.cpp.1aed42bd33fceec1188f2f95c6e8946c.html|l9">9</a></td>
@@ -2956,7 +3009,7 @@ document.addEventListener("DOMContentLoaded", () => {
         <td class="linecondition">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="p">{</span></td>
+        <td class="src"><span class="p">{</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="File2.cpp.1aed42bd33fceec1188f2f95c6e8946c.html|l10" href="#File2.cpp.1aed42bd33fceec1188f2f95c6e8946c.html|l10">10</a></td>
@@ -2965,7 +3018,7 @@ document.addEventListener("DOMContentLoaded", () => {
         <td class="linecondition">
         </td>
         <td class="linecount uncoveredLine show_uncoveredLine">&cross;</td>
-        <td class="src  uncoveredLine show_uncoveredLine"><span class="kt">int</span><span class="w"> </span><span class="n">x</span><span class="o">=</span><span class="mi">1</span><span class="p">;</span></td>
+        <td class="src uncoveredLine show_uncoveredLine"><span class="kt">int</span><span class="w"> </span><span class="n">x</span><span class="o">=</span><span class="mi">1</span><span class="p">;</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="File2.cpp.1aed42bd33fceec1188f2f95c6e8946c.html|l11" href="#File2.cpp.1aed42bd33fceec1188f2f95c6e8946c.html|l11">11</a></td>
@@ -2974,7 +3027,7 @@ document.addEventListener("DOMContentLoaded", () => {
         <td class="linecondition">
         </td>
         <td class="linecount uncoveredLine show_uncoveredLine">&cross;</td>
-        <td class="src  uncoveredLine show_uncoveredLine"><span class="k">return</span><span class="w"> </span><span class="mi">2</span><span class="o">*</span><span class="n">x</span><span class="p">;</span></td>
+        <td class="src uncoveredLine show_uncoveredLine"><span class="k">return</span><span class="w"> </span><span class="mi">2</span><span class="o">*</span><span class="n">x</span><span class="p">;</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="File2.cpp.1aed42bd33fceec1188f2f95c6e8946c.html|l12" href="#File2.cpp.1aed42bd33fceec1188f2f95c6e8946c.html|l12">12</a></td>
@@ -2983,7 +3036,7 @@ document.addEventListener("DOMContentLoaded", () => {
         <td class="linecondition">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="p">}</span></td>
+        <td class="src"><span class="p">}</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="File2.cpp.1aed42bd33fceec1188f2f95c6e8946c.html|l13" href="#File2.cpp.1aed42bd33fceec1188f2f95c6e8946c.html|l13">13</a></td>
@@ -2992,7 +3045,7 @@ document.addEventListener("DOMContentLoaded", () => {
         <td class="linecondition">
         </td>
         <td class="linecount"></td>
-        <td class="src "></td>
+        <td class="src"></td>
       </tr>
     </table>
   </div>
