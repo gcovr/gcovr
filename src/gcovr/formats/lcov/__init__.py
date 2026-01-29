@@ -40,6 +40,8 @@ class LcovHandler(BaseHandler):
     @classmethod
     def get_options(cls) -> list[GcovrConfigOption | str]:
         return [
+            # JSON option use for validation
+            "json_compare",
             GcovrConfigOption(
                 "lcov",
                 ["--lcov"],
@@ -92,6 +94,10 @@ class LcovHandler(BaseHandler):
         ]
 
     def validate_options(self) -> None:
+        """Validate options specific to this format."""
+        if self.options.lcov and self.options.json_compare:
+            raise ValueError("A lcov report is not possible with --json-compare.")
+
         if (
             self.options.lcov_test_name is not None
             and " " in self.options.lcov_test_name

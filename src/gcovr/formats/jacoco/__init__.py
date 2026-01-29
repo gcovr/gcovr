@@ -28,6 +28,8 @@ class JaCoCoHandler(BaseHandler):
     @classmethod
     def get_options(cls) -> list[GcovrConfigOption | str]:
         return [
+            # JSON option use for validation
+            "json_compare",
             GcovrConfigOption(
                 "jacoco",
                 ["--jacoco"],
@@ -58,6 +60,11 @@ class JaCoCoHandler(BaseHandler):
                 default="GCOVR report",
             ),
         ]
+
+    def validate_options(self) -> None:
+        """Validate options specific to this format."""
+        if self.options.jacoco and self.options.json_compare:
+            raise ValueError("A jacoco report is not possible with --json-compare.")
 
     def write_report(self, covdata: CoverageContainer, output_file: str) -> None:
         from .write import write_report  # pylint: disable=import-outside-toplevel # Lazy loading is intended here

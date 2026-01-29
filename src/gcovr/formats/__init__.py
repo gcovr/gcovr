@@ -22,6 +22,7 @@ from typing import Callable
 from ..data_model.coverage import FileCoverage
 from ..data_model.container import CoverageContainer
 from ..data_model.merging import get_merge_mode_from_options
+from ..exceptions import SanityCheckError
 from ..filter import is_file_excluded
 from ..logging import LOGGER
 from ..options import GcovrConfigOption, Options, OutputOrDefault
@@ -91,14 +92,23 @@ def read_reports(options: Options) -> CoverageContainer:
     """Read the reports from the given locations."""
     if options.json_tracefile or options.cobertura_tracefile:
         covdata = JsonHandler(options).read_report()
-        covdata.merge(
-            CoberturaHandler(options).read_report(),
-            get_merge_mode_from_options(options),
-        )
+        if not options.json_compare:
+            covdata.merge(
+                CoberturaHandler(options).read_report(),
+                get_merge_mode_from_options(options),
+            )
     elif options.llvm_profdata_cmd:
         covdata = LlvmHandler(options).read_report()
     else:
         covdata = GcovHandler(options).read_report()
+
+    if any(
+        filecov.diff is not filecov.CoverageDiff.UNDEFINED
+        for filecov in covdata.values()
+    ) and any(
+        filecov.diff is filecov.CoverageDiff.UNDEFINED for filecov in covdata.values()
+    ):
+        raise SanityCheckError("Some files have diff information, while others do not.")
 
     if not covdata:
         LOGGER.warning(

@@ -250,19 +250,6 @@ def main(args: list[str] | None = None) -> int:  # pylint: disable=too-many-retu
     # We need to reset the stored information her for our test framework
     GcovProgram.reset()
 
-    if options.sort_branches and options.sort_key not in [
-        "uncovered-number",
-        "uncovered-percent",
-    ]:
-        LOGGER.error(
-            "the options --sort-branches without '--sort uncovered-number' or '--sort uncovered-percent' doesn't make sense."
-        )
-        return EXIT_CMDLINE_ERROR
-
-    if options.html_title == "":
-        LOGGER.error("an empty --html-title= is not allowed.")
-        return EXIT_CMDLINE_ERROR
-
     for postfix in ["", "line", "branch"]:
         key_medium = "medium_threshold"
         key_high = "high_threshold"
@@ -306,6 +293,17 @@ def main(args: list[str] | None = None) -> int:  # pylint: disable=too-many-retu
             return EXIT_CMDLINE_ERROR
 
     try:
+        if options.sort_branches and options.sort_key not in [
+            "uncovered-number",
+            "uncovered-percent",
+        ]:
+            raise RuntimeError(
+                "The options --sort-branches without '--sort uncovered-number' or '--sort uncovered-percent' doesn't make sense."
+            )
+        if options.show_decision and options.json_compare:
+            raise RuntimeError(
+                "Decision coverage in json compare mode is not supported."
+            )
         gcovr_formats.validate_options(options)
     except RuntimeError as exc:
         LOGGER.error("%s", str(exc))

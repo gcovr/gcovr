@@ -32,6 +32,8 @@ class LlvmHandler(BaseHandler):
     @classmethod
     def get_options(cls) -> list[GcovrConfigOption | str]:
         return [
+            # JSON option use for validation
+            "json_compare",
             # Global options needed for processing
             "keep_intermediate_files",
             "delete_input_files",
@@ -77,6 +79,11 @@ class LlvmHandler(BaseHandler):
                 action="append",
             ),
         ]
+
+    def validate_options(self) -> None:
+        """Validate options specific to this format."""
+        if self.options.llvm_profdata_cmd and self.options.json_compare:
+            raise ValueError("A LLVM report is not possible with --json-compare.")
 
     def read_report(self) -> CoverageContainer:
         from .read import read_report  # pylint: disable=import-outside-toplevel # Lazy loading is intended here
