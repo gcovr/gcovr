@@ -83,6 +83,7 @@ Each **file** entry contains coverage data for one source file::
         "lines": [line],
         "functions": [function],
         "gcovr/data_sources": [data_sources]
+        "diff": result
     }
 
 file: string
@@ -99,6 +100,12 @@ functions: list
 gcovr/data_sources: list
   A list of files from which the coverage object was populated.
   This entry is only available if :option:`--json-trace-data-source` is given.
+
+diff: result
+  The result of the :option:`--json-compare` for this file.
+
+.. versionadded:: NEXT
+   The ``diff`` field is added.
 
 .. versionadded:: 8.5
    Change :option:`--verbose` to :option:`--json-trace-data-source` for ``gcovr/data_sources``.
@@ -124,7 +131,9 @@ Each **line** entry contains coverage data for one line::
         "calls": calls,
         "gcovr/md5": md5,
         "gcovr/excluded": excluded,
-        "gcovr/data_sources": [data_sources]
+        "gcovr/data_sources": [data_sources],
+        "diff": result,
+        "diff_details": details
     }
 
 The ordering and merge key is ``(line_number, function_name, number of branches, list of condition counts, list of block ids)``.
@@ -173,6 +182,12 @@ gcovr/data_sources: list
   A list of files from which the coverage object was populated.
   This entry is only available if :option:`--json-trace-data-source` is given.
 
+diff: result
+  The result of the :option:`--json-compare` for this line.
+
+diff_details: details
+  The diff result as a dict with one key per field and the diff result.
+
 
 If there is no line entry for a source code line,
 it either means that the compiler did not generate any code for that line,
@@ -183,6 +198,9 @@ The line entry should be interpreted as follows:
 * if ``gcovr/excluded`` is true, the line should not be included in coverage reports.
 * if ``count`` is 0, the line is uncovered
 * if ``count`` is nonzero, the line is covered
+
+.. versionadded:: NEXT
+   The ``diff`` and ``diff_details`` fields are added.
 
 .. versionadded:: 8.5
    Change :option:`--verbose` to :option:`--json-trace-data-source` for ``gcovr/data_sources``.
@@ -224,7 +242,9 @@ Each **branch** provides information about a branch on that line::
       "source_block_id": number,
       "destination_block_id": number,
       "gcovr/excluded": excluded,
-      "gcovr/data_sources": [data_sources]
+      "gcovr/data_sources": [data_sources],
+      "diff": result,
+      "diff_details": details
     }
 
 The ordering and merge key is ``(branchno, source_block_id, destination_block_id)``.
@@ -258,6 +278,15 @@ gcovr/excluded: boolean
 gcovr/data_sources: list
   A list of files from which the coverage object was populated.
   This entry is only available if :option:`--json-trace-data-source` is given.
+
+diff: result
+  The result of the :option:`--json-compare` for this branch.
+
+diff_details: details
+  The diff result as a dict with one key per field and the diff result.
+
+.. versionadded:: NEXT
+   The ``diff`` and ``diff_details`` fields are added.
 
 .. versionadded:: 8.5
    Change :option:`--verbose` to :option:`--json-trace-data-source` for ``gcovr/data_sources``.
@@ -294,7 +323,9 @@ Each **condition** provides information about a condition on that line::
       "not_covered_false": not_covered_false,
       "not_covered_true": not_covered_true,
       "gcovr/excluded": excluded,
-      "gcovr/data_sources": [data_sources]
+      "gcovr/data_sources": [data_sources],
+      "diff": result,
+      "diff_details": details
     }
 
 The ordering and merge key is ``(conditionno, count)``.
@@ -324,6 +355,15 @@ gcovr/excluded: boolean
 gcovr/data_sources: list
   A list of files from which the coverage object was populated.
   This entry is only available if :option:`--json-trace-data-source` is given.
+
+diff: result
+  The result of the :option:`--json-compare` for this condition.
+
+diff_details: details
+  The diff result as a dict with one key per field and the diff result.
+
+.. versionadded:: NEXT
+   The ``diff`` and ``diff_details`` fields are added.
 
 .. versionadded:: 8.5
    Change :option:`--verbose` to :option:`--json-trace-data-source` for ``gcovr/data_sources``.
@@ -412,7 +452,9 @@ Each **call** provides information about a call on that line::
       "destination_block_id": destination_block_id,
       "returned": returned,
       "gcovr/excluded": excluded,
-      "gcovr/data_sources": [data_sources]
+      "gcovr/data_sources": [data_sources],
+      "diff": result,
+      "diff_details": details
     }
 
 The ordering and merge key is ``(callno, source_block_id, destination_block_id)``.
@@ -437,6 +479,15 @@ gcovr/excluded: boolean
 gcovr/data_sources: list
   A list of files from which the coverage object was populated.
   This entry is only available if :option:`--json-trace-data-source` is given.
+
+diff: result
+  The result of the :option:`--json-compare` for this call.
+
+diff_details: details
+  The diff result as a dict with one key per field and the diff result.
+
+.. versionadded:: NEXT
+   The ``diff`` and ``diff_details`` fields are added.
 
 .. versionadded:: 8.5
    Change :option:`--verbose` to :option:`--json-trace-data-source` for ``gcovr/data_sources``.
@@ -468,7 +519,9 @@ Each **function** entry describes a line in the source file::
         "<end line>:<end column>"
       ]
       "gcovr/excluded": excluded,
-      "gcovr/data_sources": [data_sources]
+      "gcovr/data_sources": [data_sources],
+      "diff": result,
+      "diff_details": details
     }
 
 The ordering and merge key is ``function_name``.
@@ -504,6 +557,15 @@ gcovr/excluded: boolean
 gcovr/data_sources: list
   A list of files from which the coverage object was populated.
   This entry is only available if :option:`--json-trace-data-source` is given.
+
+diff: result
+  The result of the :option:`--json-compare` for this function.
+
+diff_details: details
+  The diff result as a dict with one key per field and the diff result.
+
+.. versionadded:: NEXT
+   The ``diff`` and ``diff_details`` fields are added.
 
 * if ``gcovr/excluded`` is true, the line should not be included in coverage reports.
 
