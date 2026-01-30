@@ -44,7 +44,7 @@ def read_report(options: Options) -> CoverageContainer:
     if len(options.cobertura_tracefile) == 0:
         return covdata
 
-    datafiles = set()
+    datafiles = list[str]()
 
     for trace_files_regex in options.cobertura_tracefile:
         trace_files = glob(trace_files_regex, recursive=True)
@@ -54,8 +54,10 @@ def read_report(options: Options) -> CoverageContainer:
                 "\tThe specified file does not exist."
             )
 
-        for activate_trace_logging in trace_files:
-            datafiles.add(os.path.normpath(activate_trace_logging))
+        for trace_file in trace_files:
+            trace_file = os.path.normpath(trace_file)
+            if trace_file not in datafiles:
+                datafiles.append(trace_file)
 
     for data_sources in datafiles:
         LOGGER.debug("Processing XML file: %s", data_sources)

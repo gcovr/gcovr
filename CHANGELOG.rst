@@ -17,6 +17,8 @@ New features and notable changes:
   - Improve wrapping of the counter in the default theme. (:issue:`1236`)
   - Replace meter with ``div`` elements in the default theme (like in GitHub themes). (:issue:`1236`)
 
+- Add compare mode for JSON, text and HTML reports. (:issue:`1240`)
+
 Bug fixes and small improvements:
 
 Documentation:

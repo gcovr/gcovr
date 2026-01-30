@@ -1,0 +1,138 @@
+{
+    "gcovr/format_version": "0.15",
+    "files": [
+        {
+            "file": "main.cpp",
+            "lines": [
+                {
+                    "line_number": 3,
+                    "function_name": "main",
+                    "count": 1,
+                    "branches": [],
+                    "gcovr/md5": "2a787a1309f19379bb0e3d8434d2a18d",
+                    "diff": "≅",
+                    "diff_details": {
+                        "count": "≅",
+                        "excluded": "≣",
+                        "branches": "≣"
+                    }
+                },
+                {
+                    "line_number": 4,
+                    "function_name": "main",
+                    "count": 1,
+                    "branches": [],
+                    "calls": [
+                        {
+                            "callno": 0,
+                            "source_block_id": 0,
+                            "returned": 1,
+                            "diff": "≅",
+                            "diff_details": {
+                                "callno": "≣",
+                                "source_block_id": "≣",
+                                "returned": "≅",
+                                "excluded": "≣"
+                            }
+                        }
+                    ],
+                    "gcovr/md5": "e33976d28f48c5b6580018d223ccc8a8",
+                    "diff": "≅",
+                    "diff_details": {
+                        "count": "≅",
+                        "excluded": "≣",
+                        "branches": "≣",
+                        "calls": "≅"
+                    }
+                },
+                {
+                    "line_number": 5,
+                    "function_name": "main",
+                    "count": 1,
+                    "branches": [
+                        {
+                            "branchno": 0,
+                            "count": 0,
+                            "fallthrough": true,
+                            "throw": false,
+                            "source_block_id": 0,
+                            "diff": "≣"
+                        },
+                        {
+                            "branchno": 1,
+                            "count": 1,
+                            "fallthrough": false,
+                            "throw": false,
+                            "source_block_id": 0,
+                            "diff": "≅",
+                            "diff_details": {
+                                "branchno": "≣",
+                                "count": "≅",
+                                "fallthrough": "≣",
+                                "throw": "≣",
+                                "source_block_id": "≣",
+                                "excluded": "≣"
+                            }
+                        }
+                    ],
+                    "gcovr/md5": "f76596e8617a28d4318178b2b6834627",
+                    "diff": "≅",
+                    "diff_details": {
+                        "count": "≅",
+                        "excluded": "≣",
+                        "branches": "≅"
+                    }
+                },
+                {
+                    "line_number": 6,
+                    "function_name": "main",
+                    "count": 0,
+                    "branches": [],
+                    "calls": [
+                        {
+                            "callno": 0,
+                            "source_block_id": 0,
+                            "returned": 0,
+                            "diff": "≣"
+                        }
+                    ],
+                    "gcovr/md5": "5202a4bfbe01314337b026e8811f196f",
+                    "diff": "≣"
+                },
+                {
+                    "line_number": 9,
+                    "function_name": "main",
+                    "count": 1,
+                    "branches": [],
+                    "gcovr/md5": "c26ba559a5f34d46a49fafed87946fb7",
+                    "diff": "≅",
+                    "diff_details": {
+                        "count": "≅",
+                        "excluded": "≣",
+                        "branches": "≣"
+                    }
+                }
+            ],
+            "functions": [
+                {
+                    "name": "main",
+                    "lineno": 3,
+                    "execution_count": 1,
+                    "blocks_percent": 80.0,
+                    "diff": "≅",
+                    "diff_details": {
+                        "execution_count": "≅",
+                        "blocks_percent": "≣",
+                        "excluded": "≣"
+                    }
+                }
+            ],
+            "diff": "≅",
+            "diff_details": {
+                "filename": "≣",
+                "functions": "≅",
+                "lines": "≅"
+            }
+        }
+    ]
+}

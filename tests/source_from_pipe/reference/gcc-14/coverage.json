@@ -1,5 +1,5 @@
 {
-    "gcovr/format_version": "0.14",
+    "gcovr/format_version": "0.15",
     "files": [
         {
             "file": "code.cpp",

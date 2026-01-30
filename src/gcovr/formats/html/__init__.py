@@ -222,6 +222,9 @@ class HtmlHandler(BaseHandler):
         ]
 
     def validate_options(self) -> None:
+        if self.options.html_title == "":
+            raise RuntimeError("An empty --html-title= is not allowed.")
+
         if self.options.html_tab_size < 1:
             raise RuntimeError("Value of --html-tab-size should be greater 0.")
 
