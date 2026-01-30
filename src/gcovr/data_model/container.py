@@ -146,6 +146,10 @@ class CoverageContainer(ContainerBase):
         """Serialize the object."""
         return [value.serialize(options) for _, value in sorted(self.items())]
 
+    def is_compare_info_available(self) -> bool:
+        """Check weather the data has compare information or not."""
+        return any(filecov.is_compare_info_available() for filecov in self.values())
+
     @classmethod
     def deserialize(
         cls,
@@ -166,7 +170,6 @@ class CoverageContainer(ContainerBase):
                     filecov,
                     merge_options,
                 )
-
         return covdata
 
     def merge_lines(self, options: Options) -> None:

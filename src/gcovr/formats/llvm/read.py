@@ -65,14 +65,16 @@ EXPECTED_MAJOR_VERSION = 2
 #
 def read_report(options: Options) -> CoverageContainer:
     """Read trace files into internal data model."""
-    profraw_files = set()
+    profraw_files = list[str]()
 
     # Get data files
     if not options.search_paths:
         options.search_paths = [options.root]
 
     for search_path in options.search_paths:
-        profraw_files.update(find_datafiles(search_path, options.exclude_directory))
+        for profraw_file in find_datafiles(search_path, options.exclude_directory):
+            if profraw_file not in profraw_files:
+                profraw_files.append(profraw_file)
 
     covdata = CoverageContainer()
 

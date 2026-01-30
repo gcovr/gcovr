@@ -34,6 +34,8 @@ class MarkdownHandler(BaseHandler):
     @classmethod
     def get_options(cls) -> list[GcovrConfigOption | str]:
         return [
+            # JSON option use for validation
+            "json_compare",
             # Global options needed for report
             "medium_threshold",
             "high_threshold",
@@ -119,6 +121,10 @@ class MarkdownHandler(BaseHandler):
         ]
 
     def validate_options(self) -> None:
+        """Validate options specific to this format."""
+        if self.options.markdown and self.options.json_compare:
+            raise ValueError("A Markdown report is not possible with --json-compare.")
+
         if self.options.markdown_heading_level < 1:
             raise RuntimeError("The markdown heading level must not be less than 0.")
 

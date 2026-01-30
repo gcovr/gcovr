@@ -51,13 +51,21 @@ class CoverageDict(dict[_Key, _T]):
     ) -> None:
         """Helper function to merge items in a dictionary."""
 
+        compare_mode = options.json_compare and self
+        if compare_mode:
+            for key in set(self.keys()) - set(other.keys()):
+                if hasattr(self[key], "set_removed"):
+                    self[key].set_removed()
         # Merge other into self
         for key, item in other.items():
             if key in self:
                 self[key].merge(item, options)
             else:
+                if compare_mode and hasattr(item, "set_added"):
+                    item.set_added()
                 self[key] = item
 
         # At this point, "self" contains all merged items.
         # The caller should not access "other" objects therefore we clear it.
-        other.clear()
+        if not compare_mode:
+            other.clear()

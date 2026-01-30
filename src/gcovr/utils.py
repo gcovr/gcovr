@@ -270,7 +270,11 @@ def write_json_output(
 ) -> None:
     """Helper function to output JSON dictionary to a file/STDOUT."""
     with open_text_for_writing(filename, default_filename, **kwargs) as fh:
-        json.dump(json_dict, fh, indent=PRETTY_JSON_INDENT if pretty else None)
+        json.dump(
+            json_dict,
+            fh,
+            indent=PRETTY_JSON_INDENT if pretty else None,
+        )
 
 
 def write_xml_output(

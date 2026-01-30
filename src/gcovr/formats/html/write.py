@@ -957,8 +957,8 @@ def get_file_data(
             f_data["filename"] = cdata_fname[filename]
             f_data["html_filename"] = os.path.basename(cdata_sourcefile[filename])
             f_data["line"] = lineno
-            f_data["count"] = functioncov.count[lineno]
-            f_data["blocks"] = functioncov.blocks[lineno]
+            f_data["execution_count"] = functioncov.execution_count[lineno]
+            f_data["blocks_percent"] = functioncov.blocks_percent[lineno]
             f_data["excluded"] = functioncov.excluded[lineno]
             function_stats = cdata.filter_for_function(functioncov).stats
             f_data["line_coverage"] = function_stats.line.percent_or(100.0)

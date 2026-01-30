@@ -40,7 +40,7 @@ def read_report(options: Options) -> CoverageContainer:
 
     covdata = CoverageContainer()
     if len(options.json_tracefile) != 0:
-        datafiles = set()
+        datafiles = list[str]()
 
         for trace_file_pattern in options.json_tracefile:
             trace_files = glob(trace_file_pattern, recursive=True)
@@ -50,8 +50,16 @@ def read_report(options: Options) -> CoverageContainer:
                     "\tThe specified file does not exist."
                 )
 
-            for activate_trace_logging in trace_files:
-                datafiles.add(os.path.normpath(activate_trace_logging))
+            for trace_file in trace_files:
+                trace_file = os.path.normpath(trace_file)
+                if trace_file not in datafiles:
+                    datafiles.append(trace_file)
+
+        if options.json_compare and len(datafiles) != 2:
+            raise ValueError(
+                "--json-compare requires exactly two input trace files "
+                f"but {len(datafiles)} were given."
+            )
 
         merge_options = get_merge_mode_from_options(options)
         for data_source in datafiles:
@@ -82,6 +90,9 @@ def read_report(options: Options) -> CoverageContainer:
                     data_source, gcovr_json_data["files"], options, merge_options
                 ),
                 merge_options,
+            )
+            merge_options = get_merge_mode_from_options(
+                options, respect_json_compare=True
             )
 
     return covdata

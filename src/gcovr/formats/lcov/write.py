@@ -79,7 +79,7 @@ def write_report(
                     # FN:<line number of function start>,[<line number of function end>,]<function name>
                     fh.write(f"FN:{lineno},{functioncov.name}{suffix()}\n")
                 for lineno in linenos:
-                    count = functioncov.count[lineno] or 0
+                    count = functioncov.execution_count[lineno] or 0
                     if count:
                         function_hits += 1
                     if lineno in function_line_counts:

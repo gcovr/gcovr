@@ -33,6 +33,8 @@ class GcovHandler(BaseHandler):
     @classmethod
     def get_options(cls) -> list[GcovrConfigOption | str]:
         return [
+            # JSON option use for validation
+            "json_compare",
             # Global options used for output
             "verbose",
             # Global options needed for processing
@@ -190,6 +192,7 @@ class GcovHandler(BaseHandler):
         ]
 
     def validate_options(self) -> None:
+        """Validate options specific to this format."""
         if self.options.gcov_objdir is not None and not os.path.exists(
             self.options.gcov_objdir
         ):
@@ -201,4 +204,6 @@ class GcovHandler(BaseHandler):
     def read_report(self) -> CoverageContainer:
         from .read import read_report  # pylint: disable=import-outside-toplevel # Lazy loading is intended here
 
+        if self.options.json_compare:
+            raise ValueError("A gcov is not possible with --json-compare.")
         return read_report(self.options)
