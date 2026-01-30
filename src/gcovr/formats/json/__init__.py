@@ -115,14 +115,10 @@ class JsonHandler(BaseHandler):
                 ["--json-compare"],
                 group="output_options",
                 help=(
-                    "Compare the two JSON files given with --json-add-tracefile. "
-                    "In 'strict' mode the counters are compared, in 'covered' "
-                    "mode it is only checked whether a line was covered or not."
+                    "Compare exactly two JSON files given with --json-add-tracefile. "
+                    "The comparison result is available for text, JSON and HTML report."
                 ),
-                choices=("strict", "covered"),
-                nargs="?",
-                const="strict",
-                default=None,
+                action="store_true",
             ),
         ]
 
