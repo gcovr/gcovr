@@ -1,4 +1,5 @@
 #include <iostream>
+#include <string.h>
 
 extern int foo(int param);
 extern int foobar(int param);
@@ -15,7 +16,7 @@ int main(int argc, char* argv[]) {
   bar();
   four_bar();
   foo5(0);
-  if (argc != 0) { if (argv[0] != 0) { foo6(0); } }
+  if (argc > 1) { for (int i = 0; i < strlen(argv[1]); ++i) { foo6(0); } }
 
   return 0;
 }
