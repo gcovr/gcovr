@@ -9,14 +9,14 @@
             "name": "A/C/D/File6.cpp",
             "source_digest": "51c81752202f160b25ffc07fb9134018",
             "coverage": [
-                1,
-                null,
-                1,
                 0,
                 null,
-                1,
+                0,
+                0,
                 null,
-                1
+                0,
+                null,
+                0
             ],
             "branches": [
                 3,
@@ -26,7 +26,7 @@
                 3,
                 0,
                 1,
-                1
+                0
             ]
         },
         {
@@ -162,8 +162,9 @@
         },
         {
             "name": "B/main.cpp",
-            "source_digest": "af92b84abd5c314bf9e75ddc12d7abc8",
+            "source_digest": "4f1496cea9d404acb8c6f650528cf0e5",
             "coverage": [
+                null,
                 null,
                 null,
                 null,
@@ -187,20 +188,20 @@
                 null
             ],
             "branches": [
-                18,
+                19,
                 0,
-                0,
-                0,
-                18,
                 0,
                 1,
+                19,
+                0,
                 1,
-                18,
-                1,
+                0,
+                19,
                 2,
-                1,
-                18,
-                1,
+                2,
+                0,
+                19,
+                2,
                 3,
                 0
             ]

@@ -24,6 +24,11 @@ gcovr.fileLoaded = function () {
   gcovr.addOnClickHandler(".button_toggle_uncoveredLine", gcovr.toggleLines);
   gcovr.addOnClickHandler(".button_toggle_partialCoveredLine", gcovr.toggleLines);
   gcovr.addOnClickHandler(".button_toggle_excludedLine", gcovr.toggleLines);
+  gcovr.addOnClickHandler(".button_toggle_REMOVED", gcovr.toggleLines);
+  gcovr.addOnClickHandler(".button_toggle_ADDED", gcovr.toggleLines);
+  gcovr.addOnClickHandler(".button_toggle_CHANGED", gcovr.toggleLines);
+  gcovr.addOnClickHandler(".button_toggle_APPROXIMATELY_EQUAL", gcovr.toggleLines);
+  gcovr.addOnClickHandler(".button_toggle_STRICTLY_EQUAL", gcovr.toggleLines);
 
   gcovr.addOnClickHandler("div.sortable", gcovr.sortGridTable);
 

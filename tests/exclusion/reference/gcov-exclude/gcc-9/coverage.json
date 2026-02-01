@@ -1,0 +1,145 @@
+{
+    "gcovr/format_version": "0.15",
+    "files": [
+        {
+            "file": "B/main.cpp",
+            "lines": [
+                {
+                    "line_number": 13,
+                    "function_name": "main",
+                    "count": 1,
+                    "branches": [],
+                    "gcovr/md5": "2a787a1309f19379bb0e3d8434d2a18d"
+                },
+                {
+                    "line_number": 14,
+                    "function_name": "main",
+                    "count": 1,
+                    "branches": [],
+                    "calls": [
+                        {
+                            "callno": 0,
+                            "source_block_id": 0,
+                            "returned": 1
+                        }
+                    ],
+                    "gcovr/md5": "c18608b3fe9a00042c41d97d382d1e07"
+                },
+                {
+                    "line_number": 15,
+                    "function_name": "main",
+                    "count": 1,
+                    "branches": [],
+                    "calls": [
+                        {
+                            "callno": 0,
+                            "source_block_id": 0,
+                            "returned": 1
+                        }
+                    ],
+                    "gcovr/md5": "a16b1758a01395f320d0ffe89a85defc"
+                },
+                {
+                    "line_number": 16,
+                    "function_name": "main",
+                    "count": 1,
+                    "branches": [],
+                    "calls": [
+                        {
+                            "callno": 0,
+                            "source_block_id": 0,
+                            "returned": 1
+                        }
+                    ],
+                    "gcovr/md5": "86e212ad9e6f4e2f6aeed5ebd8f2d4b2"
+                },
+                {
+                    "line_number": 17,
+                    "function_name": "main",
+                    "count": 1,
+                    "branches": [],
+                    "calls": [
+                        {
+                            "callno": 0,
+                            "source_block_id": 0,
+                            "returned": 1
+                        }
+                    ],
+                    "gcovr/md5": "ac4921f7e0ce489b8e00d83bb18e8474"
+                },
+                {
+                    "line_number": 18,
+                    "function_name": "main",
+                    "count": 1,
+                    "branches": [],
+                    "calls": [
+                        {
+                            "callno": 0,
+                            "source_block_id": 0,
+                            "returned": 1
+                        }
+                    ],
+                    "gcovr/md5": "537738ff9ea76bce1fbf48f1f7ec6a56"
+                },
+                {
+                    "line_number": 19,
+                    "function_name": "main",
+                    "count": 1,
+                    "branches": [
+                        {
+                            "branchno": 0,
+                            "count": 0,
+                            "fallthrough": true,
+                            "throw": false,
+                            "source_block_id": 0
+                        },
+                        {
+                            "branchno": 1,
+                            "count": 1,
+                            "fallthrough": false,
+                            "throw": false,
+                            "source_block_id": 0
+                        },
+                        {
+                            "branchno": 2,
+                            "count": 0,
+                            "fallthrough": false,
+                            "throw": false,
+                            "source_block_id": 1
+                        },
+                        {
+                            "branchno": 3,
+                            "count": 0,
+                            "fallthrough": false,
+                            "throw": false,
+                            "source_block_id": 1
+                        }
+                    ],
+                    "calls": [
+                        {
+                            "callno": 4,
+                            "source_block_id": 2,
+                            "returned": 0
+                        }
+                    ],
+                    "gcovr/md5": "367154f44dffff50d37dec175b6239f4"
+                },
+                {
+                    "line_number": 21,
+                    "function_name": "main",
+                    "count": 1,
+                    "branches": [],
+                    "gcovr/md5": "c26ba559a5f34d46a49fafed87946fb7"
+                }
+            ],
+            "functions": [
+                {
+                    "name": "main",
+                    "lineno": 13,
+                    "execution_count": 1,
+                    "blocks_percent": 67.0
+                }
+            ]
+        }
+    ]
+}

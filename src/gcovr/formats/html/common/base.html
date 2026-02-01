@@ -4,7 +4,7 @@
 
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset={{info.encoding}}"/>
-    <title>{% block html_title %}{{info.head}}{% endblock %}</title>
+    <title>{% block html_title %}{{info.head}}{% endblock %}{% if info.diff_report %} - Diff mode{% endif %}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     {% if css_link is defined %}
     <link rel="stylesheet" href="{{css_link}}"/>
@@ -28,7 +28,7 @@
     <div class="Layout-main">
       <div class="Layout-main-centered-lg" style="max-width: 1280px;">
         <div class="d-flex flex-justify-center">
-          <h1>{{info.head}}</h1>
+          <h1>{{info.head}}{% if info.diff_report %} - Diff mode{% endif %}</h1>
         </div>
         <hr class="block-separator"/>
         <header>

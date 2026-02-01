@@ -132,6 +132,10 @@
   padding-bottom: var(--base-size-8, 8px) !important;
 }
 
+.col-1 {
+  width: 8.33333333%
+}
+
 .col-2,
 .col-md-2
 {

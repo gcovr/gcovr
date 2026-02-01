@@ -40,6 +40,7 @@ PARAMETERS = [
 
 @pytest.mark.json
 @pytest.mark.txt
+@pytest.mark.html
 @pytest.mark.parametrize(
     "_test_id,runs,run_options",
     PARAMETERS,
@@ -108,3 +109,10 @@ def test(
         process.stdout, encoding="utf-8"
     )
     gcovr_test_exec.compare_txt()
+
+    process = gcovr_test_exec.gcovr(
+        "--json-add-tracefile=coverage_compare.json",
+        "--html-details",
+        "--html=coverage.html",
+    )
+    gcovr_test_exec.compare_html()

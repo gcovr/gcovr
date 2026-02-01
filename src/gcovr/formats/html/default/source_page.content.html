@@ -7,6 +7,17 @@
       <button type="button" class="button_toggle_uncoveredLine show_uncoveredLine" value="uncoveredLine" title="Toggle uncovered lines">{{lines.uncovered}} uncovered</button>
       <button type="button" class="button_toggle_partialCoveredLine show_partialCoveredLine" value="partialCoveredLine" title="Toggle partial covered lines">{{lines.partial}} partial covered</button>
       <button type="button" class="button_toggle_excludedLine show_excludedLine" value="excludedLine" title="Toggle excluded lines">{{lines.excluded}} excluded</button>
+      {% if info.diff_report %}
+      {%  if diff == 'ADDED' or diff == 'REMOVED' %}
+      <button type="button" class="button_toggle_{{diff}} show_{{diff}}"value="{{diff}}" title="Toggle {{diff | lower}} lines">All {{diff | lower}}</button>
+      {%  else %}
+      <button type="button" class="button_toggle_REMOVED show_REMOVED" value="REMOVED" title="Toggle removed lines">{{lines.diff.REMOVED}} removed</button>
+      <button type="button" class="button_toggle_ADDED show_ADDED" value="ADDED" title="Toggle added lines">{{lines.diff.ADDED}} added</button>
+      <button type="button" class="button_toggle_CHANGED show_CHANGED" value="CHANGED" title="Toggle changed lines">{{lines.diff.CHANGED}} changed</button>
+      <button type="button" class="button_toggle_APPROXIMATELY_EQUAL show_APPROXIMATELY_EQUAL" value="APPROXIMATELY_EQUAL" title="Toggle approximately equal lines">{{lines.diff.APPROXIMATELY_EQUAL}} approximately equal</button>
+      <button type="button" class="button_toggle_STRICTLY_EQUAL show_STRICTLY_EQUAL" value="STRICTLY_EQUAL" title="Toggle strictly equal lines">{{lines.diff.STRICTLY_EQUAL}} strictly equal</button>
+      {%  endif %}
+      {% endif %}
     </div>
     <div class="nav">
       <a class="nav prev" href="{% if info.single_page %}#{% endif %}{{info.navigation[fname][0] or ROOT_FNAME}}"></a>
@@ -150,7 +161,7 @@
         </td>
         {% endif %}
         <td class="linecount{% if row.covclass %} {{row.covclass}} show_{{row.covclass}}{% endif %}">{% if ( row.covclass == 'uncoveredLine' ) %}&cross;{% elif ( row.covclass == 'excludedLine' ) %}&minus;{% else %}{{row.linecount}}{% endif %}</td>
-        <td class="src {% if row.covclass %} {{row.covclass}} show_{{row.covclass}}{% endif %}">{{row.source}}</td>
+        <td class="src{% if row.covclass %} {{row.covclass}} show_{{row.covclass}}{% endif %}{% for diff in row.diff %} {{diff}} show_{{diff}}{% endfor %}">{{row.source}}</td>
         {% if USE_BLOCK_IDS %}
         <td class="lineblockids">{% if row.block_ids %}{{row.block_ids | join(', ')}}{% endif %}</td>
         {% endif %}

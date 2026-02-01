@@ -1,7 +1,7 @@
-<?xml version='1.0' encoding='UTF-8'?>
+<?xml version='1.0' encoding='utf-8'?>
 <coverage clover="1768334355" generated="1768334355">
   <project name="Test project" timestamp="1768334355">
-    <metrics complexity="0" elements="47" coveredelements="32" conditionals="0" coveredconditionals="0" statements="47" coveredstatements="32" methods="0" coveredmethods="0" packages="4" classes="8" files="8"/>
+    <metrics complexity="0" elements="47" coveredelements="28" conditionals="0" coveredconditionals="0" statements="47" coveredstatements="28" methods="0" coveredmethods="0" packages="4" classes="8" files="8"/>
     <package name="A">
       <metrics complexity="0" elements="29" coveredelements="16" conditionals="0" coveredconditionals="0" statements="29" coveredstatements="16" methods="0" coveredmethods="0" classes="5" files="5"/>
       <file name="File2.cpp" path="A/File2.cpp">
@@ -79,17 +79,17 @@
       </file>
     </package>
     <package name="A.C.D">
-      <metrics complexity="0" elements="5" coveredelements="4" conditionals="0" coveredconditionals="0" statements="5" coveredstatements="4" methods="0" coveredmethods="0" classes="1" files="1"/>
+      <metrics complexity="0" elements="5" coveredelements="0" conditionals="0" coveredconditionals="0" statements="5" coveredstatements="0" methods="0" coveredmethods="0" classes="1" files="1"/>
       <file name="File6.cpp" path="A/C/D/File6.cpp">
-        <metrics complexity="0" elements="5" coveredelements="4" conditionals="0" coveredconditionals="0" statements="5" coveredstatements="4" methods="0" coveredmethods="0" classes="1"/>
+        <metrics complexity="0" elements="5" coveredelements="0" conditionals="0" coveredconditionals="0" statements="5" coveredstatements="0" methods="0" coveredmethods="0" classes="1"/>
         <class name="id$73326d74f2aeb2719dd6d8a9bcc3e582">
-          <metrics complexity="0" elements="5" coveredelements="4" conditionals="0" coveredconditionals="0" statements="5" coveredstatements="4" methods="0" coveredmethods="0"/>
+          <metrics complexity="0" elements="5" coveredelements="0" conditionals="0" coveredconditionals="0" statements="5" coveredstatements="0" methods="0" coveredmethods="0"/>
         </class>
-        <line num="1" type="stmt" count="1"/>
-        <line num="3" type="stmt" count="1"/>
+        <line num="1" type="stmt" count="0"/>
+        <line num="3" type="stmt" count="0"/>
         <line num="4" type="stmt" count="0"/>
-        <line num="6" type="stmt" count="1"/>
-        <line num="8" type="stmt" count="1"/>
+        <line num="6" type="stmt" count="0"/>
+        <line num="8" type="stmt" count="0"/>
       </file>
     </package>
     <package name="B">
@@ -99,14 +99,14 @@
         <class name="id$9ddfb860fa969e91a7bb17e903455bce">
           <metrics complexity="0" elements="8" coveredelements="8" conditionals="0" coveredconditionals="0" statements="8" coveredstatements="8" methods="0" coveredmethods="0"/>
         </class>
-        <line num="12" type="stmt" count="1"/>
         <line num="13" type="stmt" count="1"/>
         <line num="14" type="stmt" count="1"/>
         <line num="15" type="stmt" count="1"/>
         <line num="16" type="stmt" count="1"/>
         <line num="17" type="stmt" count="1"/>
         <line num="18" type="stmt" count="1"/>
-        <line num="20" type="stmt" count="1"/>
+        <line num="19" type="stmt" count="1"/>
+        <line num="21" type="stmt" count="1"/>
       </file>
     </package>
   </project>
