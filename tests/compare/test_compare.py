@@ -39,6 +39,7 @@ PARAMETERS = [
 
 
 @pytest.mark.json
+@pytest.mark.txt
 @pytest.mark.parametrize(
     "_test_id,runs,run_options",
     PARAMETERS,
@@ -97,3 +98,13 @@ def test(
     )
     (gcovr_test_exec.output_dir / "coverage_compare_roundtrip.json").unlink()
     gcovr_test_exec.compare_json()
+
+    process = gcovr_test_exec.gcovr(
+        "--json-add-tracefile=coverage_compare.json",
+        "--txt-summary",
+        "--txt=coverage.txt",
+    )
+    (gcovr_test_exec.output_dir / "coverage_summary.txt").write_text(
+        process.stdout, encoding="utf-8"
+    )
+    gcovr_test_exec.compare_txt()

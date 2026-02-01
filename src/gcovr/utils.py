@@ -21,7 +21,7 @@ import gzip
 from hashlib import md5
 import json
 import lzma
-from typing import Any, Callable, Iterator
+from typing import Any, BinaryIO, Callable, Iterator, TextIO
 import os
 import functools
 import re
@@ -198,7 +198,7 @@ def commonpath(files: list[str]) -> str:
 @contextmanager
 def open_text_for_writing(
     filename: str | None, default_filename: str | None = None, **kwargs: Any
-) -> Iterator[Any]:
+) -> Iterator[TextIO | Any]:
     """Context manager to open and close a file for text writing.
 
     Stdout is used if `filename` is None or '-'.
@@ -237,7 +237,7 @@ def open_binary_for_writing(
     filename: str | None,
     default_filename: str,
     **kwargs: Any,
-) -> Iterator[Any]:
+) -> Iterator[BinaryIO | Any]:
     """Context manager to open and close a file for binary writing.
 
     Stdout is used if `filename` is None or '-'.

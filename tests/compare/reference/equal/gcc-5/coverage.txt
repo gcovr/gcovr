@@ -1,0 +1,14 @@
+------------------------------------------------------------------------------
+                     GCC Code Coverage Report (Diff mode)
+Directory: .
+------------------------------------------------------------------------------
+File                                                   State   Lines
+subdir/A/C/D/File6.cpp                        Strictly equal
+subdir/A/C/file5.cpp                          Strictly equal
+subdir/A/file1.cpp                            Strictly equal
+subdir/A/File2.cpp                            Strictly equal
+subdir/A/file3.cpp                            Strictly equal
+subdir/A/File4.cpp                            Strictly equal
+subdir/A/file7.cpp                            Strictly equal
+subdir/B/main.cpp                             Strictly equal
+------------------------------------------------------------------------------
