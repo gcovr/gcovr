@@ -588,8 +588,8 @@ With the :option:`--merge-mode-functions` you can change this:
 JSON Format compare
 -------------------
 
-You can merge coverage data from two runs by adding them with
-:option:`--json-add-tracefile` and :option:`--json-compare`.
+You can compare coverage data from two runs by using :option:`--json-compare`
+and adding the two files with :option:`--json-add-tracefile`.
 
 For each run, generate :ref:`JSON output <json_output>`:
 
@@ -617,19 +617,20 @@ can use the :option:`--json-base` to get the same root directory for all reports
 If a JSON report is created with :option:`--json-compare` each file, line, branch,
 condition, function and call is extended with two additional fields:
 
-diff: result
+gcovr/diff: result
   The result for the element.
 
-diff_details:
+gcovr/diff_details:
   The detailed diff result as a dict with one key per field and the diff result.
+  This key is not available if ``gcovr/diff`` is ``Strictly equal``
 
 Following results are possible:
 
-- Removed: The data is only available in first report.
-- Added: The data is only available in second report.
-- Changed: The data is covered in one report but uncovered in the other report.
-- Approximately equal: The data is covered in both reports but with different hit counts.
-- Strict equal: The data has the exact same coverage in both reports.
+- ``Removed``: The data is only available in first report.
+- ``Added``: The data is only available in second report.
+- ``Changed``: The data is covered in one report but uncovered in the other report.
+- ``Approximately equal``: The data is covered in both reports but with different hit counts.
+- ``Strictly equal``: The data has the exact same coverage in both reports.
 
 .. versionadded:: NEXT
 

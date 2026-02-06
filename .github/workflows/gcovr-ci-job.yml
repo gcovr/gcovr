@@ -49,7 +49,7 @@ jobs:
       NOX_CONTAINER_ARGUMENTS: >-
         ${{ inputs.container && format(' --session docker_run_compiler({0}) --', inputs.gcc) || '' }}
       GENERATE_DOCUMENTATION: >-
-        ${{ inputs.container && contains(fromJSON('["gcc-5", "gcc-6", "gcc-8", "gcc-9", "clang-10"]'), inputs.gcc) }}
+        ${{ inputs.container && contains(fromJSON('["gcc-5", "gcc-6", "gcc-7", "gcc-8", "gcc-9", "clang-10"]'), inputs.gcc) }}
     timeout-minutes: 25
     steps:
       - uses: actions/checkout@v4

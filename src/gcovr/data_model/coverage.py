@@ -148,12 +148,12 @@ class CoverageBase:
         data_dict = dict[str, Any]()
         data_dict.update(get_data_sources(self))
         if self.diff != CoverageBase.CoverageDiff.UNDEFINED:
-            data_dict["diff"] = self.diff.value
+            data_dict["gcovr/diff"] = self.diff.value
             if (
                 self.diff != CoverageBase.CoverageDiff.STRICTLY_EQUAL
                 and self.diff_details is not None
             ):
-                data_dict["diff_details"] = {
+                data_dict["gcovr/diff_details"] = {
                     key: value.value for key, value in self.diff_details.items()
                 }
 
@@ -164,13 +164,12 @@ class CoverageBase:
         data_dict: dict[str, Any],
     ) -> None:
         """Serialize the object."""
-        if "diff" in data_dict:
-            self.diff = CoverageBase.CoverageDiff(data_dict["diff"])
-            if "diff_details" in data_dict:
-                self.diff_details = {
-                    key: CoverageBase.CoverageDiff(value)
-                    for key, value in data_dict["diff_details"].items()
-                }
+        self.diff = CoverageBase.CoverageDiff(data_dict.get("gcovr/diff"))
+        if self.diff and "gcovr/diff_details" in data_dict:
+            self.diff_details = {
+                key: CoverageBase.CoverageDiff(value)
+                for key, value in data_dict["gcovr/diff_details"].items()
+            }
 
     def __summarize_diff(
         self, diffs: set[CoverageBase.CoverageDiff]

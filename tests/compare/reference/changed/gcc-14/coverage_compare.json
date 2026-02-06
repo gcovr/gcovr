@@ -11,8 +11,8 @@
                     "count": 0,
                     "branches": [],
                     "gcovr/md5": "abb3720e6b8a9cf7dc926235f89cc801",
-                    "diff": "Changed",
-                    "diff_details": {
+                    "gcovr/diff": "Changed",
+                    "gcovr/diff_details": {
                         "count": "Changed",
                         "demangled_function_name": "Strictly equal",
                         "block_ids": "Strictly equal",
@@ -34,7 +34,7 @@
                             "throw": false,
                             "source_block_id": 2,
                             "destination_block_id": 3,
-                            "diff": "Strictly equal"
+                            "gcovr/diff": "Strictly equal"
                         },
                         {
                             "count": 0,
@@ -42,8 +42,8 @@
                             "throw": false,
                             "source_block_id": 2,
                             "destination_block_id": 4,
-                            "diff": "Changed",
-                            "diff_details": {
+                            "gcovr/diff": "Changed",
+                            "gcovr/diff_details": {
                                 "count": "Changed",
                                 "fallthrough": "Strictly equal",
                                 "throw": "Strictly equal",
@@ -64,8 +64,8 @@
                             "not_covered_true": [
                                 0
                             ],
-                            "diff": "Changed",
-                            "diff_details": {
+                            "gcovr/diff": "Changed",
+                            "gcovr/diff_details": {
                                 "conditionno": "Strictly equal",
                                 "count": "Strictly equal",
                                 "covered": "Changed",
@@ -76,8 +76,8 @@
                         }
                     ],
                     "gcovr/md5": "81fff94209b659e33b1459a477e1e747",
-                    "diff": "Changed",
-                    "diff_details": {
+                    "gcovr/diff": "Changed",
+                    "gcovr/diff_details": {
                         "count": "Changed",
                         "demangled_function_name": "Strictly equal",
                         "block_ids": "Strictly equal",
@@ -95,7 +95,7 @@
                     "count": 0,
                     "branches": [],
                     "gcovr/md5": "2c49a86f5754f8103995fc6d32bc207e",
-                    "diff": "Strictly equal"
+                    "gcovr/diff": "Strictly equal"
                 },
                 {
                     "line_number": 6,
@@ -106,8 +106,8 @@
                     "count": 0,
                     "branches": [],
                     "gcovr/md5": "9e509d19a37174e72bead0ea24176228",
-                    "diff": "Changed",
-                    "diff_details": {
+                    "gcovr/diff": "Changed",
+                    "gcovr/diff_details": {
                         "count": "Changed",
                         "demangled_function_name": "Strictly equal",
                         "block_ids": "Strictly equal",
@@ -127,8 +127,8 @@
                         "1:5",
                         "8:1"
                     ],
-                    "diff": "Changed",
-                    "diff_details": {
+                    "gcovr/diff": "Changed",
+                    "gcovr/diff_details": {
                         "execution_count": "Changed",
                         "blocks_percent": "Changed",
                         "start": "Strictly equal",
@@ -137,8 +137,8 @@
                     }
                 }
             ],
-            "diff": "Changed",
-            "diff_details": {
+            "gcovr/diff": "Changed",
+            "gcovr/diff_details": {
                 "filename": "Strictly equal",
                 "functions": "Changed",
                 "lines": "Changed"
@@ -154,8 +154,8 @@
                     "count": 1,
                     "branches": [],
                     "gcovr/md5": "326f108928b04264c1f3d79bf4ca248b",
-                    "diff": "Approximately equal",
-                    "diff_details": {
+                    "gcovr/diff": "Approximately equal",
+                    "gcovr/diff_details": {
                         "count": "Approximately equal",
                         "demangled_function_name": "Strictly equal",
                         "block_ids": "Strictly equal",
@@ -177,7 +177,7 @@
                             "throw": false,
                             "source_block_id": 2,
                             "destination_block_id": 3,
-                            "diff": "Strictly equal"
+                            "gcovr/diff": "Strictly equal"
                         },
                         {
                             "count": 1,
@@ -185,8 +185,8 @@
                             "throw": false,
                             "source_block_id": 2,
                             "destination_block_id": 4,
-                            "diff": "Approximately equal",
-                            "diff_details": {
+                            "gcovr/diff": "Approximately equal",
+                            "gcovr/diff_details": {
                                 "count": "Approximately equal",
                                 "fallthrough": "Strictly equal",
                                 "throw": "Strictly equal",
@@ -205,12 +205,12 @@
                             "not_covered_true": [
                                 0
                             ],
-                            "diff": "Strictly equal"
+                            "gcovr/diff": "Strictly equal"
                         }
                     ],
                     "gcovr/md5": "81fff94209b659e33b1459a477e1e747",
-                    "diff": "Approximately equal",
-                    "diff_details": {
+                    "gcovr/diff": "Approximately equal",
+                    "gcovr/diff_details": {
                         "count": "Approximately equal",
                         "demangled_function_name": "Strictly equal",
                         "block_ids": "Strictly equal",
@@ -228,7 +228,7 @@
                     "count": 0,
                     "branches": [],
                     "gcovr/md5": "2c49a86f5754f8103995fc6d32bc207e",
-                    "diff": "Strictly equal"
+                    "gcovr/diff": "Strictly equal"
                 },
                 {
                     "line_number": 6,
@@ -239,8 +239,8 @@
                     "count": 1,
                     "branches": [],
                     "gcovr/md5": "9e509d19a37174e72bead0ea24176228",
-                    "diff": "Approximately equal",
-                    "diff_details": {
+                    "gcovr/diff": "Approximately equal",
+                    "gcovr/diff_details": {
                         "count": "Approximately equal",
                         "demangled_function_name": "Strictly equal",
                         "block_ids": "Strictly equal",
@@ -260,8 +260,8 @@
                         "1:5",
                         "8:1"
                     ],
-                    "diff": "Approximately equal",
-                    "diff_details": {
+                    "gcovr/diff": "Approximately equal",
+                    "gcovr/diff_details": {
                         "execution_count": "Approximately equal",
                         "blocks_percent": "Strictly equal",
                         "start": "Strictly equal",
@@ -270,8 +270,8 @@
                     }
                 }
             ],
-            "diff": "Approximately equal",
-            "diff_details": {
+            "gcovr/diff": "Approximately equal",
+            "gcovr/diff_details": {
                 "filename": "Strictly equal",
                 "functions": "Approximately equal",
                 "lines": "Approximately equal"
@@ -287,8 +287,8 @@
                     "count": 1,
                     "branches": [],
                     "gcovr/md5": "4beba7179d45a57456569f6941093571",
-                    "diff": "Approximately equal",
-                    "diff_details": {
+                    "gcovr/diff": "Approximately equal",
+                    "gcovr/diff_details": {
                         "count": "Approximately equal",
                         "demangled_function_name": "Strictly equal",
                         "block_ids": "Strictly equal",
@@ -303,8 +303,8 @@
                     "count": 1,
                     "branches": [],
                     "gcovr/md5": "13847171c9ac9ee50c67f6c9b494b03c",
-                    "diff": "Approximately equal",
-                    "diff_details": {
+                    "gcovr/diff": "Approximately equal",
+                    "gcovr/diff_details": {
                         "count": "Approximately equal",
                         "demangled_function_name": "Strictly equal",
                         "block_ids": "Strictly equal",
@@ -319,8 +319,8 @@
                     "count": 1,
                     "branches": [],
                     "gcovr/md5": "524766693a21dc700232729ac36807d7",
-                    "diff": "Approximately equal",
-                    "diff_details": {
+                    "gcovr/diff": "Approximately equal",
+                    "gcovr/diff_details": {
                         "count": "Approximately equal",
                         "demangled_function_name": "Strictly equal",
                         "block_ids": "Strictly equal",
@@ -337,8 +337,8 @@
                     "count": 1,
                     "branches": [],
                     "gcovr/md5": "c745797c27df531f2e2d3d23f80088c9",
-                    "diff": "Approximately equal",
-                    "diff_details": {
+                    "gcovr/diff": "Approximately equal",
+                    "gcovr/diff_details": {
                         "count": "Approximately equal",
                         "demangled_function_name": "Strictly equal",
                         "block_ids": "Strictly equal",
@@ -353,7 +353,7 @@
                     "count": 0,
                     "branches": [],
                     "gcovr/md5": "99fb4f6f9391300edd09b8f8a586e881",
-                    "diff": "Strictly equal"
+                    "gcovr/diff": "Strictly equal"
                 },
                 {
                     "line_number": 10,
@@ -362,7 +362,7 @@
                     "count": 0,
                     "branches": [],
                     "gcovr/md5": "13847171c9ac9ee50c67f6c9b494b03c",
-                    "diff": "Strictly equal"
+                    "gcovr/diff": "Strictly equal"
                 },
                 {
                     "line_number": 11,
@@ -373,7 +373,7 @@
                     "count": 0,
                     "branches": [],
                     "gcovr/md5": "e4b0e3a6768bef118c4318103f20b805",
-                    "diff": "Strictly equal"
+                    "gcovr/diff": "Strictly equal"
                 }
             ],
             "functions": [
@@ -387,8 +387,8 @@
                         "1:5",
                         "6:1"
                     ],
-                    "diff": "Approximately equal",
-                    "diff_details": {
+                    "gcovr/diff": "Approximately equal",
+                    "gcovr/diff_details": {
                         "execution_count": "Approximately equal",
                         "blocks_percent": "Strictly equal",
                         "start": "Strictly equal",
@@ -406,11 +406,11 @@
                         "8:5",
                         "12:1"
                     ],
-                    "diff": "Strictly equal"
+                    "gcovr/diff": "Strictly equal"
                 }
             ],
-            "diff": "Approximately equal",
-            "diff_details": {
+            "gcovr/diff": "Approximately equal",
+            "gcovr/diff_details": {
                 "filename": "Strictly equal",
                 "functions": "Approximately equal",
                 "lines": "Approximately equal"
@@ -426,8 +426,8 @@
                     "count": 1,
                     "branches": [],
                     "gcovr/md5": "12ad0375e88bc9a7418a8d84c0757032",
-                    "diff": "Approximately equal",
-                    "diff_details": {
+                    "gcovr/diff": "Approximately equal",
+                    "gcovr/diff_details": {
                         "count": "Approximately equal",
                         "demangled_function_name": "Strictly equal",
                         "block_ids": "Strictly equal",
@@ -449,8 +449,8 @@
                             "throw": false,
                             "source_block_id": 2,
                             "destination_block_id": 3,
-                            "diff": "Approximately equal",
-                            "diff_details": {
+                            "gcovr/diff": "Approximately equal",
+                            "gcovr/diff_details": {
                                 "count": "Approximately equal",
                                 "fallthrough": "Strictly equal",
                                 "throw": "Strictly equal",
@@ -465,7 +465,7 @@
                             "throw": false,
                             "source_block_id": 2,
                             "destination_block_id": 4,
-                            "diff": "Strictly equal"
+                            "gcovr/diff": "Strictly equal"
                         }
                     ],
                     "conditions": [
@@ -477,12 +477,12 @@
                                 0
                             ],
                             "not_covered_true": [],
-                            "diff": "Strictly equal"
+                            "gcovr/diff": "Strictly equal"
                         }
                     ],
                     "gcovr/md5": "81fff94209b659e33b1459a477e1e747",
-                    "diff": "Approximately equal",
-                    "diff_details": {
+                    "gcovr/diff": "Approximately equal",
+                    "gcovr/diff_details": {
                         "count": "Approximately equal",
                         "demangled_function_name": "Strictly equal",
                         "block_ids": "Strictly equal",
@@ -500,8 +500,8 @@
                     "count": 1,
                     "branches": [],
                     "gcovr/md5": "2c49a86f5754f8103995fc6d32bc207e",
-                    "diff": "Approximately equal",
-                    "diff_details": {
+                    "gcovr/diff": "Approximately equal",
+                    "gcovr/diff_details": {
                         "count": "Approximately equal",
                         "demangled_function_name": "Strictly equal",
                         "block_ids": "Strictly equal",
@@ -518,7 +518,7 @@
                     "count": 0,
                     "branches": [],
                     "gcovr/md5": "9e509d19a37174e72bead0ea24176228",
-                    "diff": "Strictly equal"
+                    "gcovr/diff": "Strictly equal"
                 }
             ],
             "functions": [
@@ -532,8 +532,8 @@
                         "1:5",
                         "8:1"
                     ],
-                    "diff": "Approximately equal",
-                    "diff_details": {
+                    "gcovr/diff": "Approximately equal",
+                    "gcovr/diff_details": {
                         "execution_count": "Approximately equal",
                         "blocks_percent": "Strictly equal",
                         "start": "Strictly equal",
@@ -542,8 +542,8 @@
                     }
                 }
             ],
-            "diff": "Approximately equal",
-            "diff_details": {
+            "gcovr/diff": "Approximately equal",
+            "gcovr/diff_details": {
                 "filename": "Strictly equal",
                 "functions": "Approximately equal",
                 "lines": "Approximately equal"
@@ -559,7 +559,7 @@
                     "count": 2,
                     "branches": [],
                     "gcovr/md5": "2cfc07b9a0f8cdd3eb4553562d5875b6",
-                    "diff": "Added"
+                    "gcovr/diff": "Added"
                 },
                 {
                     "line_number": 3,
@@ -575,7 +575,7 @@
                             "throw": false,
                             "source_block_id": 2,
                             "destination_block_id": 3,
-                            "diff": "Added"
+                            "gcovr/diff": "Added"
                         },
                         {
                             "count": 2,
@@ -583,7 +583,7 @@
                             "throw": false,
                             "source_block_id": 2,
                             "destination_block_id": 4,
-                            "diff": "Added"
+                            "gcovr/diff": "Added"
                         }
                     ],
                     "conditions": [
@@ -595,11 +595,11 @@
                             "not_covered_true": [
                                 0
                             ],
-                            "diff": "Added"
+                            "gcovr/diff": "Added"
                         }
                     ],
                     "gcovr/md5": "81fff94209b659e33b1459a477e1e747",
-                    "diff": "Added"
+                    "gcovr/diff": "Added"
                 },
                 {
                     "line_number": 4,
@@ -610,7 +610,7 @@
                     "count": 0,
                     "branches": [],
                     "gcovr/md5": "2c49a86f5754f8103995fc6d32bc207e",
-                    "diff": "Added"
+                    "gcovr/diff": "Added"
                 },
                 {
                     "line_number": 6,
@@ -621,7 +621,7 @@
                     "count": 2,
                     "branches": [],
                     "gcovr/md5": "9e509d19a37174e72bead0ea24176228",
-                    "diff": "Added"
+                    "gcovr/diff": "Added"
                 }
             ],
             "functions": [
@@ -635,10 +635,10 @@
                         "1:5",
                         "8:1"
                     ],
-                    "diff": "Added"
+                    "gcovr/diff": "Added"
                 }
             ],
-            "diff": "Added"
+            "gcovr/diff": "Added"
         },
         {
             "file": "subdir/A/file3.cpp",
@@ -650,7 +650,7 @@
                     "count": 1,
                     "branches": [],
                     "gcovr/md5": "8ce3c51d6f9f0f061d9e9b30994b92de",
-                    "diff": "Removed"
+                    "gcovr/diff": "Removed"
                 },
                 {
                     "line_number": 3,
@@ -659,7 +659,7 @@
                     "count": 1,
                     "branches": [],
                     "gcovr/md5": "13847171c9ac9ee50c67f6c9b494b03c",
-                    "diff": "Removed"
+                    "gcovr/diff": "Removed"
                 },
                 {
                     "line_number": 4,
@@ -668,7 +668,7 @@
                     "count": 1,
                     "branches": [],
                     "gcovr/md5": "524766693a21dc700232729ac36807d7",
-                    "diff": "Removed"
+                    "gcovr/diff": "Removed"
                 },
                 {
                     "line_number": 5,
@@ -679,7 +679,7 @@
                     "count": 1,
                     "branches": [],
                     "gcovr/md5": "c745797c27df531f2e2d3d23f80088c9",
-                    "diff": "Removed"
+                    "gcovr/diff": "Removed"
                 },
                 {
                     "line_number": 8,
@@ -688,7 +688,7 @@
                     "count": 0,
                     "branches": [],
                     "gcovr/md5": "3ed9b59dcb4cd2fd0dd6bb519068f77a",
-                    "diff": "Removed"
+                    "gcovr/diff": "Removed"
                 },
                 {
                     "line_number": 10,
@@ -697,7 +697,7 @@
                     "count": 0,
                     "branches": [],
                     "gcovr/md5": "13847171c9ac9ee50c67f6c9b494b03c",
-                    "diff": "Removed"
+                    "gcovr/diff": "Removed"
                 },
                 {
                     "line_number": 11,
@@ -713,7 +713,7 @@
                             "throw": false,
                             "source_block_id": 2,
                             "destination_block_id": 3,
-                            "diff": "Removed"
+                            "gcovr/diff": "Removed"
                         },
                         {
                             "count": 0,
@@ -721,7 +721,7 @@
                             "throw": false,
                             "source_block_id": 2,
                             "destination_block_id": 4,
-                            "diff": "Removed"
+                            "gcovr/diff": "Removed"
                         }
                     ],
                     "conditions": [
@@ -735,11 +735,11 @@
                             "not_covered_true": [
                                 0
                             ],
-                            "diff": "Removed"
+                            "gcovr/diff": "Removed"
                         }
                     ],
                     "gcovr/md5": "9434a5cf95e3d6216db37a5c606f758c",
-                    "diff": "Removed"
+                    "gcovr/diff": "Removed"
                 },
                 {
                     "line_number": 12,
@@ -750,7 +750,7 @@
                     "count": 0,
                     "branches": [],
                     "gcovr/md5": "9c3c3237650659f0d0c38a1ec7b9b7b1",
-                    "diff": "Removed"
+                    "gcovr/diff": "Removed"
                 },
                 {
                     "line_number": 14,
@@ -761,7 +761,7 @@
                     "count": 0,
                     "branches": [],
                     "gcovr/md5": "4cc8fff4a918e9ece82b2b5ebba1dd71",
-                    "diff": "Removed"
+                    "gcovr/diff": "Removed"
                 }
             ],
             "functions": [
@@ -775,7 +775,7 @@
                         "1:5",
                         "6:1"
                     ],
-                    "diff": "Removed"
+                    "gcovr/diff": "Removed"
                 },
                 {
                     "name": "_Z9four_bar_v",
@@ -787,10 +787,10 @@
                         "8:5",
                         "15:1"
                     ],
-                    "diff": "Removed"
+                    "gcovr/diff": "Removed"
                 }
             ],
-            "diff": "Removed"
+            "gcovr/diff": "Removed"
         },
         {
             "file": "subdir/A/file7.cpp",
@@ -802,7 +802,7 @@
                     "count": 0,
                     "branches": [],
                     "gcovr/md5": "ec6fe56e89ba9f33e08f0cd30c7597ec",
-                    "diff": "Strictly equal"
+                    "gcovr/diff": "Strictly equal"
                 },
                 {
                     "line_number": 3,
@@ -813,7 +813,7 @@
                     "count": 0,
                     "branches": [],
                     "gcovr/md5": "05bb1004c704227bb4fdf1a90d37ad91",
-                    "diff": "Strictly equal"
+                    "gcovr/diff": "Strictly equal"
                 }
             ],
             "functions": [
@@ -827,10 +827,10 @@
                         "1:5",
                         "4:1"
                     ],
-                    "diff": "Strictly equal"
+                    "gcovr/diff": "Strictly equal"
                 }
             ],
-            "diff": "Strictly equal"
+            "gcovr/diff": "Strictly equal"
         },
         {
             "file": "subdir/B/main.cpp",
@@ -842,8 +842,8 @@
                     "count": 1,
                     "branches": [],
                     "gcovr/md5": "2a787a1309f19379bb0e3d8434d2a18d",
-                    "diff": "Approximately equal",
-                    "diff_details": {
+                    "gcovr/diff": "Approximately equal",
+                    "gcovr/diff_details": {
                         "count": "Approximately equal",
                         "demangled_function_name": "Strictly equal",
                         "block_ids": "Strictly equal",
@@ -864,8 +864,8 @@
                             "source_block_id": 2,
                             "destination_block_id": 1,
                             "returned": 1,
-                            "diff": "Approximately equal",
-                            "diff_details": {
+                            "gcovr/diff": "Approximately equal",
+                            "gcovr/diff_details": {
                                 "source_block_id": "Strictly equal",
                                 "destination_block_id": "Strictly equal",
                                 "returned": "Approximately equal",
@@ -874,8 +874,8 @@
                         }
                     ],
                     "gcovr/md5": "c18608b3fe9a00042c41d97d382d1e07",
-                    "diff": "Approximately equal",
-                    "diff_details": {
+                    "gcovr/diff": "Approximately equal",
+                    "gcovr/diff_details": {
                         "count": "Approximately equal",
                         "demangled_function_name": "Strictly equal",
                         "block_ids": "Strictly equal",
@@ -897,8 +897,8 @@
                             "source_block_id": 3,
                             "destination_block_id": 1,
                             "returned": 1,
-                            "diff": "Approximately equal",
-                            "diff_details": {
+                            "gcovr/diff": "Approximately equal",
+                            "gcovr/diff_details": {
                                 "source_block_id": "Strictly equal",
                                 "destination_block_id": "Strictly equal",
                                 "returned": "Approximately equal",
@@ -907,8 +907,8 @@
                         }
                     ],
                     "gcovr/md5": "a16b1758a01395f320d0ffe89a85defc",
-                    "diff": "Approximately equal",
-                    "diff_details": {
+                    "gcovr/diff": "Approximately equal",
+                    "gcovr/diff_details": {
                         "count": "Approximately equal",
                         "demangled_function_name": "Strictly equal",
                         "block_ids": "Strictly equal",
@@ -930,8 +930,8 @@
                             "source_block_id": 4,
                             "destination_block_id": 1,
                             "returned": 1,
-                            "diff": "Approximately equal",
-                            "diff_details": {
+                            "gcovr/diff": "Approximately equal",
+                            "gcovr/diff_details": {
                                 "source_block_id": "Strictly equal",
                                 "destination_block_id": "Strictly equal",
                                 "returned": "Approximately equal",
@@ -940,8 +940,8 @@
                         }
                     ],
                     "gcovr/md5": "86e212ad9e6f4e2f6aeed5ebd8f2d4b2",
-                    "diff": "Approximately equal",
-                    "diff_details": {
+                    "gcovr/diff": "Approximately equal",
+                    "gcovr/diff_details": {
                         "count": "Approximately equal",
                         "demangled_function_name": "Strictly equal",
                         "block_ids": "Strictly equal",
@@ -963,8 +963,8 @@
                             "source_block_id": 5,
                             "destination_block_id": 1,
                             "returned": 1,
-                            "diff": "Approximately equal",
-                            "diff_details": {
+                            "gcovr/diff": "Approximately equal",
+                            "gcovr/diff_details": {
                                 "source_block_id": "Strictly equal",
                                 "destination_block_id": "Strictly equal",
                                 "returned": "Approximately equal",
@@ -973,8 +973,8 @@
                         }
                     ],
                     "gcovr/md5": "ac4921f7e0ce489b8e00d83bb18e8474",
-                    "diff": "Approximately equal",
-                    "diff_details": {
+                    "gcovr/diff": "Approximately equal",
+                    "gcovr/diff_details": {
                         "count": "Approximately equal",
                         "demangled_function_name": "Strictly equal",
                         "block_ids": "Strictly equal",
@@ -996,8 +996,8 @@
                             "source_block_id": 6,
                             "destination_block_id": 1,
                             "returned": 1,
-                            "diff": "Approximately equal",
-                            "diff_details": {
+                            "gcovr/diff": "Approximately equal",
+                            "gcovr/diff_details": {
                                 "source_block_id": "Strictly equal",
                                 "destination_block_id": "Strictly equal",
                                 "returned": "Approximately equal",
@@ -1006,8 +1006,8 @@
                         }
                     ],
                     "gcovr/md5": "537738ff9ea76bce1fbf48f1f7ec6a56",
-                    "diff": "Approximately equal",
-                    "diff_details": {
+                    "gcovr/diff": "Approximately equal",
+                    "gcovr/diff_details": {
                         "count": "Approximately equal",
                         "demangled_function_name": "Strictly equal",
                         "block_ids": "Strictly equal",
@@ -1034,8 +1034,8 @@
                             "throw": false,
                             "source_block_id": 7,
                             "destination_block_id": 8,
-                            "diff": "Changed",
-                            "diff_details": {
+                            "gcovr/diff": "Changed",
+                            "gcovr/diff_details": {
                                 "count": "Changed",
                                 "fallthrough": "Strictly equal",
                                 "throw": "Strictly equal",
@@ -1050,8 +1050,8 @@
                             "throw": false,
                             "source_block_id": 7,
                             "destination_block_id": 12,
-                            "diff": "Changed",
-                            "diff_details": {
+                            "gcovr/diff": "Changed",
+                            "gcovr/diff_details": {
                                 "count": "Changed",
                                 "fallthrough": "Strictly equal",
                                 "throw": "Strictly equal",
@@ -1066,8 +1066,8 @@
                             "throw": false,
                             "source_block_id": 11,
                             "destination_block_id": 9,
-                            "diff": "Changed",
-                            "diff_details": {
+                            "gcovr/diff": "Changed",
+                            "gcovr/diff_details": {
                                 "count": "Changed",
                                 "fallthrough": "Strictly equal",
                                 "throw": "Strictly equal",
@@ -1082,8 +1082,8 @@
                             "throw": false,
                             "source_block_id": 11,
                             "destination_block_id": 12,
-                            "diff": "Changed",
-                            "diff_details": {
+                            "gcovr/diff": "Changed",
+                            "gcovr/diff_details": {
                                 "count": "Changed",
                                 "fallthrough": "Strictly equal",
                                 "throw": "Strictly equal",
@@ -1102,8 +1102,8 @@
                             "not_covered_true": [
                                 0
                             ],
-                            "diff": "Changed",
-                            "diff_details": {
+                            "gcovr/diff": "Changed",
+                            "gcovr/diff_details": {
                                 "conditionno": "Strictly equal",
                                 "count": "Strictly equal",
                                 "covered": "Strictly equal",
@@ -1122,8 +1122,8 @@
                             "not_covered_true": [
                                 0
                             ],
-                            "diff": "Changed",
-                            "diff_details": {
+                            "gcovr/diff": "Changed",
+                            "gcovr/diff_details": {
                                 "conditionno": "Strictly equal",
                                 "count": "Strictly equal",
                                 "covered": "Changed",
@@ -1138,8 +1138,8 @@
                             "source_block_id": 9,
                             "destination_block_id": 1,
                             "returned": 0,
-                            "diff": "Changed",
-                            "diff_details": {
+                            "gcovr/diff": "Changed",
+                            "gcovr/diff_details": {
                                 "source_block_id": "Strictly equal",
                                 "destination_block_id": "Strictly equal",
                                 "returned": "Changed",
@@ -1148,8 +1148,8 @@
                         }
                     ],
                     "gcovr/md5": "367154f44dffff50d37dec175b6239f4",
-                    "diff": "Changed",
-                    "diff_details": {
+                    "gcovr/diff": "Changed",
+                    "gcovr/diff_details": {
                         "count": "Approximately equal",
                         "demangled_function_name": "Strictly equal",
                         "block_ids": "Strictly equal",
@@ -1168,8 +1168,8 @@
                     "count": 1,
                     "branches": [],
                     "gcovr/md5": "c26ba559a5f34d46a49fafed87946fb7",
-                    "diff": "Approximately equal",
-                    "diff_details": {
+                    "gcovr/diff": "Approximately equal",
+                    "gcovr/diff_details": {
                         "count": "Approximately equal",
                         "demangled_function_name": "Strictly equal",
                         "block_ids": "Strictly equal",
@@ -1189,8 +1189,8 @@
                         "13:5",
                         "22:1"
                     ],
-                    "diff": "Changed",
-                    "diff_details": {
+                    "gcovr/diff": "Changed",
+                    "gcovr/diff_details": {
                         "execution_count": "Approximately equal",
                         "blocks_percent": "Changed",
                         "start": "Strictly equal",
@@ -1199,8 +1199,8 @@
                     }
                 }
             ],
-            "diff": "Changed",
-            "diff_details": {
+            "gcovr/diff": "Changed",
+            "gcovr/diff_details": {
                 "filename": "Strictly equal",
                 "functions": "Changed",
                 "lines": "Changed"
