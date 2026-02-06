@@ -326,7 +326,6 @@ def test_linked(gcovr_test_exec: "GcovrTestExec") -> None:
         "--json-add-tracefile=coverage.json",
         "--html-theme=github.green",
         "--html-details",
-        "--html-static-report",
         "--html=coverage.html",
     )
     gcovr_test_exec.compare_html()
@@ -439,7 +438,6 @@ def test_oos(gcovr_test_exec: "GcovrTestExec") -> None:
         "--root=subdir",
         "--json-add-tracefile=coverage.json",
         "--html-details",
-        "--no-html-details-syntax-highlighting",
         "--html=coverage.html",
     )
     gcovr_test_exec.compare_html()
