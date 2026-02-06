@@ -28,6 +28,8 @@ class CoberturaHandler(BaseHandler):
     @classmethod
     def get_options(cls) -> list[GcovrConfigOption | str]:
         return [
+            # JSON option use for validation
+            "json_compare",
             # Global options used for merging.
             "merge_mode_functions",
             # Local options
@@ -65,6 +67,19 @@ class CoberturaHandler(BaseHandler):
                 default=[],
             ),
         ]
+
+    def validate_options(self) -> None:
+        """Validate options specific to this format."""
+        if self.options.json_compare:
+            if self.options.cobertura:
+                raise ValueError(
+                    "A cobertura report is not possible with --json-compare."
+                )
+
+            if self.options.cobertura_tracefile:
+                raise ValueError(
+                    "A cobertura tracefile is not possible with --json-compare."
+                )
 
     def read_report(self) -> CoverageContainer:
         from .read import read_report  # pylint: disable=import-outside-toplevel # Lazy loading is intended here

@@ -110,7 +110,25 @@ class JsonHandler(BaseHandler):
                 help="Write the data source to the tracefile.",
                 action="store_true",
             ),
+            GcovrConfigOption(
+                "json_compare",
+                ["--json-compare"],
+                group="output_options",
+                help=(
+                    "Compare exactly two JSON files given with --json-add-tracefile. "
+                    "The comparison result is available for text, JSON and HTML report."
+                ),
+                action="store_true",
+            ),
         ]
+
+    def validate_options(self) -> None:
+        """Validate options specific to JSON handler."""
+        if self.options.json_compare and len(self.options.json_tracefile) != 2:
+            raise ValueError(
+                "--json-compare requires exactly two input trace files "
+                f"but {len(self.options.json_tracefile)} were given."
+            )
 
     def read_report(self) -> CoverageContainer:
         from .read import read_report  # pylint: disable=import-outside-toplevel # Lazy loading is intended here

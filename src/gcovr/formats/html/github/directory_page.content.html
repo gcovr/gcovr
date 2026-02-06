@@ -15,6 +15,9 @@
     {% if SHOW_CALLS %}
     <div role="rowheader" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2 gcovr-m-l-5{{class_sortable}}">Calls</div>
     {% endif %}
+    {% if info.diff_report %}
+    <div role="rowheader" class="color-fg-muted d-flex flex-justify-end flex-wrap col-1 gcovr-m-l-5{{class_sortable}}">Diff</div>
+    {% endif %}
   </div>
   {% for row in entries %}
   <div class="Box-row Box-row--focus-gray py-2 d-flex">
@@ -79,6 +82,13 @@
       <div class="Label--minw">
         <span class="Label mr-1 Label--{{row.calls.class}}">{{row.calls.coverage}}%</span>
       </div>
+    </div>
+    {% endif %}
+    {% if info.diff_report %}
+    <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-1 gcovr-m-l-5" data-sort="{{row.diff}}">
+      <span class="diff">
+        {{row.diff}}
+      </span>
     </div>
     {% endif %}
   </div>

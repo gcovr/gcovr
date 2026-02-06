@@ -528,11 +528,11 @@ def test_trailing_function_tag() -> None:
         "example",
     ]
     functioncov = coverage.get_functioncov("example")
-    assert list(functioncov.count.keys()) == [3]  # previous lineno + 1
+    assert list(functioncov.execution_count.keys()) == [3]  # previous lineno + 1
     assert functioncov.mangled_name == "example"
     assert functioncov.demangled_name is None
     assert functioncov.name == "example"
-    assert functioncov.count[3] == 17  # number of calls
+    assert functioncov.execution_count[3] == 17  # number of calls
 
 
 @pytest.mark.parametrize(

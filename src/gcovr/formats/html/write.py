@@ -272,7 +272,7 @@ def coverage_to_class(
 class RootInfo:
     """Class holding the information used in Jinja2 template."""
 
-    def __init__(self, options: Options) -> None:
+    def __init__(self, options: Options, diff_report: bool) -> None:
         self.sort_by = (
             "filename"
             if options.sort_key == "filename"
@@ -294,6 +294,7 @@ class RootInfo:
         self.relative_anchors = options.html_relative_anchors
         self.single_page = options.html_single_page
         self.static_report = options.html_static_report
+        self.diff_report = diff_report
 
         self.version = get_version_for_report()
         self.head = options.html_title
@@ -363,7 +364,7 @@ def write_report(
     show_decision = options.show_decision
 
     data = dict[str, Any]()
-    root_info = RootInfo(options)
+    root_info = RootInfo(options, diff_report=covdata.is_compare_info_available())
     data["info"] = root_info
 
     data["SHOW_DECISION"] = show_decision
@@ -412,6 +413,8 @@ def write_report(
         if options.html_single_page:
             # Remove the prefix to get shorter links
             data["FUNCTIONS_FNAME"] = data["FUNCTIONS_FNAME"].split(".", maxsplit=1)[1]
+    else:
+        functions_output_file = "NOT USED"
 
     javascript_data = (
         None
@@ -864,6 +867,7 @@ def get_coverage_data(
 
     return {
         "filename": display_filename,
+        "diff": cdata.diff.name if isinstance(cdata, FileCoverage) else None,
         "link": link_report,
         "lines": lines,
         "branches": branches,
@@ -929,7 +933,7 @@ def get_file_data(
     filename: str,
     cdata_fname: dict[str, str],
     cdata_sourcefile: dict[str, str],
-    cdata: FileCoverage,
+    filecov: FileCoverage,
 ) -> tuple[dict[str, Any], dict[tuple[str, str, int], dict[str, Any]], bool]:
     """Get the data for a file to generate the HTML"""
     formatter = get_formatter(options)
@@ -945,22 +949,24 @@ def get_file_data(
     )
     file_data.update(
         get_coverage_data(
-            root_info, cdata, cdata_sourcefile[filename], cdata_fname[filename]
+            root_info, filecov, cdata_sourcefile[filename], cdata_fname[filename]
         )
     )
+    if filecov.diff != filecov.CoverageDiff.UNDEFINED:
+        file_data["diff"] = filecov.diff.name
     functions = dict[tuple[FunctioncovKeyType, str, int], dict[str, Any]]()
     # Only use demangled names (containing a brace)
-    for functioncov in cdata.functioncov(key=lambda functioncov: functioncov.key):
+    for functioncov in filecov.functioncov(key=lambda functioncov: functioncov.key):
         for lineno in functioncov.linenos:
             f_data = dict[str, Any]()
             f_data["name"] = functioncov.name
             f_data["filename"] = cdata_fname[filename]
             f_data["html_filename"] = os.path.basename(cdata_sourcefile[filename])
             f_data["line"] = lineno
-            f_data["count"] = functioncov.count[lineno]
-            f_data["blocks"] = functioncov.blocks[lineno]
+            f_data["execution_count"] = functioncov.execution_count[lineno]
+            f_data["blocks_percent"] = functioncov.blocks_percent[lineno]
             f_data["excluded"] = functioncov.excluded[lineno]
-            function_stats = cdata.filter_for_function(functioncov).stats
+            function_stats = filecov.filter_for_function(functioncov).stats
             f_data["line_coverage"] = function_stats.line.percent_or(100.0)
             f_data["branch_coverage"] = function_stats.branch.percent_or("-")
             f_data["condition_coverage"] = function_stats.condition.percent_or("-")
@@ -976,11 +982,11 @@ def get_file_data(
 
     def get_linecovs(lineno: int) -> list[LineCoverage] | None:
         """Get a list of line coverage objects if available for the line."""
-        linecovs = cdata.get_line(lineno)
+        linecovs = filecov.get_line(lineno)
         return None if linecovs is None else list(linecovs.linecov(sort=True))
 
     with chdir(options.root_dir):
-        linecov_collections = list(cdata.lines())
+        linecov_collections = list(filecov.lines())
         max_line_from_cdata = (
             linecov_collections[-1].lineno if linecov_collections else 0
         )
@@ -1040,6 +1046,12 @@ def get_file_data(
             if row["covclass"] == "partialCoveredLine"
         ]
     )
+    if filecov.is_compare_info_available():
+        file_data["lines"]["diff"] = dict[str, int]()
+        for kind in filecov.CoverageDiff:
+            file_data["lines"]["diff"][kind.name] = len(
+                [row for row in file_data["source_lines"] if kind.name in row["diff"]]
+            )
 
     return file_data, functions, file_not_found
 
@@ -1117,6 +1129,13 @@ def source_row(
         ]
     return {
         "lineno": lineno,
+        "diff": []
+        if linecov_list is None or all(linecov is None for linecov in linecov_list)
+        else [
+            linecov.diff.name
+            for linecov in linecov_list
+            if linecov.diff != linecov.CoverageDiff.UNDEFINED
+        ],
         "block_ids": []
         if linecov_list is None
         or not html_block_ids
@@ -1154,6 +1173,8 @@ def source_row_branch(
         else:
             items[-1]["source_block_id"] = branchcov.source_block_id
             items[-1]["destination_block_id"] = branchcov.destination_block_id
+        if branchcov.diff != branchcov.CoverageDiff.UNDEFINED:
+            items[-1]["diff"] = branchcov.diff.name
 
     stats = linecov.branch_coverage()
     return {
@@ -1194,6 +1215,8 @@ def source_row_condition(
                     "excluded": conditioncov.is_excluded,
                 }
             )
+            if conditioncov.diff != conditioncov.CoverageDiff.UNDEFINED:
+                items[-1]["diff"] = conditioncov.diff.name
     stats = linecov.condition_coverage()
     return {
         "function_name": linecov.report_function_name,
@@ -1256,7 +1279,7 @@ def source_row_decision(
 
 def source_row_call(linecov: LineCoverage) -> dict[str, Any]:
     """Get call information for a source row."""
-    items = []
+    items = list[dict[str, Any]]()
 
     for callno, callcov in enumerate(
         callcov for callcov in linecov.calls(sort=True) if callcov.is_reportable
@@ -1268,6 +1291,8 @@ def source_row_call(linecov: LineCoverage) -> dict[str, Any]:
                 "excluded": callcov.is_excluded,
             }
         )
+        if callcov.diff != callcov.CoverageDiff.UNDEFINED:
+            items[-1]["diff"] = callcov.diff.name
 
     stats = linecov.call_coverage()
     return {

@@ -453,7 +453,7 @@ def test_html_title_empty_string(caplog: pytest.LogCaptureFixture) -> None:
     c = log_capture(caplog, ["--html-title", ""])
     message = c.record_tuples[0]
     assert message[1] == logging.ERROR
-    assert message[2] == "an empty --html-title= is not allowed."
+    assert message[2] == "An empty --html-title= is not allowed."
     assert c.exitcode != 0
 
 
@@ -850,7 +850,7 @@ def test_sort_branch_and_not_uncovered_or_percent(
     message = c.record_tuples[0]
     assert message[1] == logging.ERROR
     assert message[2].startswith(
-        "the options --sort-branches without '--sort uncovered-number' or '--sort uncovered-percent' doesn't make sense."
+        "The options --sort-branches without '--sort uncovered-number' or '--sort uncovered-percent' doesn't make sense."
     )
     assert c.exitcode == 1
 

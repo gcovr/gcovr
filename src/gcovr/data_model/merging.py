@@ -56,15 +56,20 @@ SEPARATE_FUNCTION_MERGE_OPTIONS = MergeFunctionOptions(
 class MergeOptions:
     """Data class to store the merge options."""
 
+    json_compare: bool = False
     func_opts: MergeFunctionOptions = field(default_factory=MergeFunctionOptions)
 
 
 DEFAULT_MERGE_OPTIONS = MergeOptions()
 
 
-def get_merge_mode_from_options(options: Options) -> MergeOptions:
+def get_merge_mode_from_options(
+    options: Options, respect_json_compare: bool = False
+) -> MergeOptions:
     """Get the function merge mode."""
     merge_opts = MergeOptions()
+    if respect_json_compare and options.json_compare:
+        merge_opts.json_compare = True
     if options.merge_mode_functions == "strict":
         merge_opts.func_opts = FUNCTION_STRICT_MERGE_OPTIONS
     elif options.merge_mode_functions == "merge-use-line-0":

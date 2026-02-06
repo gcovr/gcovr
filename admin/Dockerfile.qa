@@ -108,6 +108,9 @@ RUN <<EOS
 set -ex
 export DEBIAN_FRONTEND=noninteractive
 
+# Update package lists if previous layer is used from cache.
+apt-get update
+
 # Install compiler
 # cspell:ignore libclang
 for cc in $COMPILER_VERSIONS ; do

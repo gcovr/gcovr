@@ -20,6 +20,12 @@
   --color-canvas-subtle: #f6f8fa;
   --color-accent-subtle: #ddf4ff;;
   --color-neutral-muted: rgba(175, 184, 193, 0.2);
+  /* Diff colors */
+  --added_color: #026b17;
+  --removed_color: #d73a49;
+  --changed_color: #dbab09;
+  --approximately_equal_color: #0a84ff;
+  --strictly_equal_color: #777777;
 }
 
 .theme-green {

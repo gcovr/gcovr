@@ -52,7 +52,7 @@ def test_examples(gcovr_test_exec: "GcovrTestExec", shell_script: Path) -> None:
         and (gcovr_test_exec.cc_version() not in [8, 9, 10, 11, 12, 13])
     ):
         gcovr_test_exec.skip(
-            f"GCC {gcovr_test_exec.cc_version()} have broken HTML output."
+            f"GCC {gcovr_test_exec.cc_version()} has broken HTML output."
         )
 
     if (

@@ -28,6 +28,8 @@ class SonarqubeHandler(BaseHandler):
     @classmethod
     def get_options(cls) -> list[GcovrConfigOption | str]:
         return [
+            # JSON option use for validation
+            "json_compare",
             # Global options needed for report
             "show_decision",
             GcovrConfigOption(
@@ -63,6 +65,10 @@ class SonarqubeHandler(BaseHandler):
         ]
 
     def validate_options(self) -> None:
+        """Validate options specific to this format."""
+        if self.options.sonarqube and self.options.json_compare:
+            raise ValueError("A sonarqube report is not possible with --json-compare.")
+
         if (
             self.options.sonarqube_metric == "decision"
             and not self.options.show_decision

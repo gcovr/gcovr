@@ -1,0 +1,13 @@
+Removed file coverage:
+  subdir/A/file3.cpp
+Added file coverage:
+  subdir/A/file1.cpp
+Changed file coverage:
+  subdir/A/C/D/File6.cpp
+  subdir/B/main.cpp
+Approximately equal file coverage:
+  subdir/A/C/file5.cpp
+  subdir/A/File2.cpp
+  subdir/A/File4.cpp
+Strictly equal file coverage:
+  subdir/A/file7.cpp

@@ -16,6 +16,9 @@
     {% if SHOW_CALLS %}
     <div role="rowheader" class="color-fg-muted d-flex flex-justify-end col-2{{class_sortable}}">Calls</div>
     {% endif %}
+    {% if info.diff_report %}
+    <div role="rowheader" class="color-fg-muted d-flex flex-justify-end col-1{{class_sortable}}">Diff</div>
+    {% endif %}
   </div>
   {% for row in entries %}
   <div class="Box-row Box-row--focus-gray py-2 d-flex">
@@ -75,6 +78,13 @@
         <div class="percent">{{row.calls.coverage}}%</div>
         <div class="counter" title="Exec / Excl / Total">{{row.calls.exec}} / {{row.calls.excluded}} / {{row.calls.total}}</div>
       </div>
+    </div>
+    {% endif %}
+    {% if info.diff_report %}
+    <div role="gridcell" class="color-fg-muted d-flex col-1" data-sort="{{row.diff}}">
+      <span class="diff">
+        {{row.diff.replace('_', ' ').capitalize()}}
+      </span>
     </div>
     {% endif %}
   </div>

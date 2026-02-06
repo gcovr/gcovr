@@ -49,7 +49,7 @@ jobs:
       NOX_CONTAINER_ARGUMENTS: >-
         ${{ inputs.container && format(' --session docker_run_compiler({0}) --', inputs.gcc) || '' }}
       GENERATE_DOCUMENTATION: >-
-        ${{ inputs.container && contains(fromJSON('["gcc-5", "gcc-6", "gcc-8", "gcc-9", "clang-10"]'), inputs.gcc) }}
+        ${{ inputs.container && contains(fromJSON('["gcc-5", "gcc-6", "gcc-7", "gcc-8", "gcc-9", "clang-10"]'), inputs.gcc) }}
     timeout-minutes: 25
     steps:
       - uses: actions/checkout@v4
@@ -116,7 +116,7 @@ jobs:
           nox --non-interactive $NOX_CONTAINER_ARGUMENTS --session tests --  --archive-differences
           # There must not be any modifications to get the correct versions later
           if [ -n "$(git status --porcelain)" ] ; then
-            echo "Following files are modified:"
+            git status
             git diff
             exit 1
           fi

@@ -173,7 +173,6 @@ gcovr/data_sources: list
   A list of files from which the coverage object was populated.
   This entry is only available if :option:`--json-trace-data-source` is given.
 
-
 If there is no line entry for a source code line,
 it either means that the compiler did not generate any code for that line,
 or that gcovr ignored this coverage data due to heuristics.
@@ -583,6 +582,59 @@ With the :option:`--merge-mode-functions` you can change this:
 
    The :option:`gcovr --json-base` option.
    The :option:`gcovr --merge-mode-functions` option.
+
+.. _comparing_coverage:
+
+JSON Format compare
+-------------------
+
+You can compare coverage data from two runs by using :option:`--json-compare`
+and adding the two files with :option:`--json-add-tracefile`.
+
+For each run, generate :ref:`JSON output <json_output>`:
+
+.. code-block:: bash
+
+    ...  # compile and run first test case
+    gcovr ... --json run-1.json
+    ...  # compile and run second test case
+    gcovr ... --json run-2.json
+
+
+Next, compare the json files and generate the desired report::
+
+    gcovr --json-add-tracefile run-1.json --json-add-tracefile run-2.json --json-compare --html-details coverage.html
+
+You can also use unix style wildcards to compare the json files without
+duplicating :option:`--json-add-tracefile`. With this option
+you have to place your pathnames with wildcards in double quotation marks::
+
+    gcovr --json-add-tracefile "run-*.json" --json-compare --html-details coverage.html
+
+If you want to merge coverage reports generated in different :option:`--root` directories you
+can use the :option:`--json-base` to get the same root directory for all reports.
+
+If a JSON report is created with :option:`--json-compare` each file, line, branch,
+condition, function and call is extended with two additional fields:
+
+gcovr/diff: result
+  The result for the element.
+
+gcovr/diff_details:
+  The detailed diff result as a dict with one key per field and the diff result.
+  This key is not available if ``gcovr/diff`` is ``Strictly equal``
+
+Following results are possible:
+
+- ``Removed``: The data is only available in first report.
+- ``Added``: The data is only available in second report.
+- ``Changed``: The data is covered in one report but uncovered in the other report.
+- ``Approximately equal``: The data is covered in both reports but with different hit counts.
+- ``Strictly equal``: The data has the exact same coverage in both reports.
+
+.. versionadded:: NEXT
+
+  The :option:`--json-compare` option.
 
 .. _json_summary_output:
 

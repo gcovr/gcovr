@@ -35,6 +35,12 @@
   --color-canvas-subtle: #f6f8fa;
   --color-accent-subtle: #ddf4ff;;
   --color-neutral-muted: rgba(175, 184, 193, 0.2);
+  /* Diff colors */
+  --added_color: #026b17;
+  --removed_color: #d73a49;
+  --changed_color: #dbab09;
+  --approximately_equal_color: #0a84ff;
+  --strictly_equal_color: #777777;
 }
 
 .theme-green {
@@ -153,7 +159,12 @@ div.gcovr-h-100
 button.button_toggle_coveredLine,
 button.button_toggle_uncoveredLine,
 button.button_toggle_excludedLine,
-button.button_toggle_partialCoveredLine {
+button.button_toggle_partialCoveredLine,
+button.button_toggle_REMOVED,
+button.button_toggle_ADDED,
+button.button_toggle_CHANGED,
+button.button_toggle_APPROXIMATELY_EQUAL,
+button.button_toggle_STRICTLY_EQUAL {
   margin-left: 1em;
   border: 1px solid;
   border-radius: 6px;
@@ -165,7 +176,12 @@ button.button_toggle_partialCoveredLine {
 button.button_toggle_coveredLine.show_coveredLine,
 button.button_toggle_uncoveredLine.show_uncoveredLine,
 button.button_toggle_excludedLine.show_excludedLine,
-button.button_toggle_partialCoveredLine.show_partialCoveredLine {
+button.button_toggle_partialCoveredLine.show_partialCoveredLine,
+button.button_toggle_REMOVED.show_REMOVED,
+button.button_toggle_ADDED.show_ADDED,
+button.button_toggle_CHANGED.show_CHANGED,
+button.button_toggle_APPROXIMATELY_EQUAL.show_APPROXIMATELY_EQUAL,
+button.button_toggle_STRICTLY_EQUAL.show_STRICTLY_EQUAL {
   text-decoration: none;
 }
 
@@ -180,6 +196,36 @@ button.button_toggle_excludedLine {
 }
 button.button_toggle_partialCoveredLine {
   background-color: var(--partial_covered_color) !important;
+}
+button.button_toggle_REMOVED {
+  border-right: 20px solid var(--removed_color) !important;
+}
+button.button_toggle_ADDED {
+  border-right: 20px solid var(--added_color) !important;
+}
+button.button_toggle_CHANGED {
+  border-right: 20px solid var(--changed_color) !important;
+}
+button.button_toggle_APPROXIMATELY_EQUAL {
+  border-right: 20px solid var(--approximately_equal_color) !important;
+}
+button.button_toggle_STRICTLY_EQUAL {
+  border-right: 20px solid var(--strictly_equal_color) !important;
+}
+td.show_REMOVED {
+  border-right: 20px solid var(--removed_color) !important;
+}
+td.show_ADDED {
+  border-right: 20px solid var(--added_color) !important;
+}
+td.show_CHANGED {
+  border-right: 20px solid var(--changed_color) !important;
+}
+td.show_APPROXIMATELY_EQUAL {
+  border-right: 20px solid var(--approximately_equal_color) !important;
+}
+td.show_STRICTLY_EQUAL {
+  border-right: 20px solid var(--strictly_equal_color) !important;
 }
 
 div.nav {
@@ -208,6 +254,12 @@ a.nav.index::after {
 
 a.nav.next::after {
   content: "» next";
+}
+
+span.diff {
+  text-align: right;
+  padding-left: 5px;
+  margin-left: auto;
 }
 
 .sortable {
@@ -819,6 +871,10 @@ pre
   padding-bottom: var(--base-size-8, 8px) !important;
 }
 
+.col-1 {
+  width: 8.33333333%
+}
+
 .col-2,
 .col-md-2
 {
@@ -951,6 +1007,11 @@ gcovr.fileLoaded = function () {
   gcovr.addOnClickHandler(".button_toggle_uncoveredLine", gcovr.toggleLines);
   gcovr.addOnClickHandler(".button_toggle_partialCoveredLine", gcovr.toggleLines);
   gcovr.addOnClickHandler(".button_toggle_excludedLine", gcovr.toggleLines);
+  gcovr.addOnClickHandler(".button_toggle_REMOVED", gcovr.toggleLines);
+  gcovr.addOnClickHandler(".button_toggle_ADDED", gcovr.toggleLines);
+  gcovr.addOnClickHandler(".button_toggle_CHANGED", gcovr.toggleLines);
+  gcovr.addOnClickHandler(".button_toggle_APPROXIMATELY_EQUAL", gcovr.toggleLines);
+  gcovr.addOnClickHandler(".button_toggle_STRICTLY_EQUAL", gcovr.toggleLines);
 
   gcovr.addOnClickHandler("div.sortable", gcovr.sortGridTable);
 
@@ -1491,7 +1552,7 @@ document.addEventListener("DOMContentLoaded", () => {
         <td class="linedecision">
         </td>
         <td class="linecount"></td>
-        <td class="src "></td>
+        <td class="src"></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l2" href="#merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l2">2</a></td>
@@ -1502,7 +1563,7 @@ document.addEventListener("DOMContentLoaded", () => {
         <td class="linedecision">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;iostream&gt;</span></td>
+        <td class="src"><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;iostream&gt;</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l3" href="#merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l3">3</a></td>
@@ -1513,7 +1574,7 @@ document.addEventListener("DOMContentLoaded", () => {
         <td class="linedecision">
         </td>
         <td class="linecount"></td>
-        <td class="src "></td>
+        <td class="src"></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l4" href="#merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l4">4</a></td>
@@ -1524,7 +1585,7 @@ document.addEventListener("DOMContentLoaded", () => {
         <td class="linedecision">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span><span class="w"> </span><span class="nc">T</span><span class="o">&gt;</span></td>
+        <td class="src"><span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span><span class="w"> </span><span class="nc">T</span><span class="o">&gt;</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l5" href="#merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l5">5</a></td>
@@ -1535,7 +1596,7 @@ document.addEventListener("DOMContentLoaded", () => {
         <td class="linedecision">
         </td>
         <td class="linecount coveredLine show_coveredLine">10</td>
-        <td class="src  coveredLine show_coveredLine"><span class="kt">void</span><span class="w"> </span><span class="n">foo</span><span class="p">(</span><span class="n">T</span><span class="w"> </span><span class="n">s</span><span class="p">)</span></td>
+        <td class="src coveredLine show_coveredLine"><span class="kt">void</span><span class="w"> </span><span class="n">foo</span><span class="p">(</span><span class="n">T</span><span class="w"> </span><span class="n">s</span><span class="p">)</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l6" href="#merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l6">6</a></td>
@@ -1546,7 +1607,7 @@ document.addEventListener("DOMContentLoaded", () => {
         <td class="linedecision">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="p">{</span></td>
+        <td class="src"><span class="p">{</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l7" href="#merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l7">7</a></td>
@@ -1557,7 +1618,7 @@ document.addEventListener("DOMContentLoaded", () => {
         <td class="linedecision">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="w">  </span><span class="k">static</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span></td>
+        <td class="src"><span class="w">  </span><span class="k">static</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l8" href="#merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l8">8</a></td>
@@ -1568,7 +1629,7 @@ document.addEventListener("DOMContentLoaded", () => {
         <td class="linedecision">
         </td>
         <td class="linecount"></td>
-        <td class="src "></td>
+        <td class="src"></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l9" href="#merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l9">9</a></td>
@@ -1592,7 +1653,7 @@ document.addEventListener("DOMContentLoaded", () => {
         <td class="linedecision">
         </td>
         <td class="linecount partialCoveredLine show_partialCoveredLine">10</td>
-        <td class="src  partialCoveredLine show_partialCoveredLine"><span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">i</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
+        <td class="src partialCoveredLine show_partialCoveredLine"><span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">i</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l10" href="#merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l10">10</a></td>
@@ -1603,7 +1664,7 @@ document.addEventListener("DOMContentLoaded", () => {
         <td class="linedecision">
         </td>
         <td class="linecount coveredLine show_coveredLine">10</td>
-        <td class="src  coveredLine show_coveredLine"><span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot; is greater or equal 0: &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">s</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span></td>
+        <td class="src coveredLine show_coveredLine"><span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot; is greater or equal 0: &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">s</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l11" href="#merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l11">11</a></td>
@@ -1614,7 +1675,7 @@ document.addEventListener("DOMContentLoaded", () => {
         <td class="linedecision">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="w">  </span><span class="p">}</span></td>
+        <td class="src"><span class="w">  </span><span class="p">}</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l12" href="#merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l12">12</a></td>
@@ -1644,7 +1705,7 @@ document.addEventListener("DOMContentLoaded", () => {
         <td class="linedecision">
         </td>
         <td class="linecount coveredLine show_coveredLine">10</td>
-        <td class="src  coveredLine show_coveredLine"><span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">i</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">2</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">4</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot; is between 0 and 2 or greater 4: &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">s</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span></td>
+        <td class="src coveredLine show_coveredLine"><span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">i</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">2</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">4</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot; is between 0 and 2 or greater 4: &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">s</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l13" href="#merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l13">13</a></td>
@@ -1668,7 +1729,7 @@ document.addEventListener("DOMContentLoaded", () => {
         <td class="linedecision">
         </td>
         <td class="linecount coveredLine show_coveredLine">10</td>
-        <td class="src  coveredLine show_coveredLine"><span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">i</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="mi">5</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
+        <td class="src coveredLine show_coveredLine"><span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">i</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="mi">5</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l14" href="#merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l14">14</a></td>
@@ -1679,7 +1740,7 @@ document.addEventListener("DOMContentLoaded", () => {
         <td class="linedecision">
         </td>
         <td class="linecount coveredLine show_coveredLine">1</td>
-        <td class="src  coveredLine show_coveredLine"><span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot; is greater 5: &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">s</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span></td>
+        <td class="src coveredLine show_coveredLine"><span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot; is greater 5: &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">s</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l15" href="#merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l15">15</a></td>
@@ -1690,7 +1751,7 @@ document.addEventListener("DOMContentLoaded", () => {
         <td class="linedecision">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="w">  </span><span class="p">}</span></td>
+        <td class="src"><span class="w">  </span><span class="p">}</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l16" href="#merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l16">16</a></td>
@@ -1701,7 +1762,7 @@ document.addEventListener("DOMContentLoaded", () => {
         <td class="linedecision">
         </td>
         <td class="linecount"></td>
-        <td class="src "></td>
+        <td class="src"></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l17" href="#merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l17">17</a></td>
@@ -1712,7 +1773,7 @@ document.addEventListener("DOMContentLoaded", () => {
         <td class="linedecision">
         </td>
         <td class="linecount coveredLine show_coveredLine">10</td>
-        <td class="src  coveredLine show_coveredLine"><span class="w">  </span><span class="o">++</span><span class="n">i</span><span class="p">;</span></td>
+        <td class="src coveredLine show_coveredLine"><span class="w">  </span><span class="o">++</span><span class="n">i</span><span class="p">;</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l18" href="#merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l18">18</a></td>
@@ -1723,7 +1784,7 @@ document.addEventListener("DOMContentLoaded", () => {
         <td class="linedecision">
         </td>
         <td class="linecount coveredLine show_coveredLine">10</td>
-        <td class="src  coveredLine show_coveredLine"><span class="p">}</span></td>
+        <td class="src coveredLine show_coveredLine"><span class="p">}</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l19" href="#merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l19">19</a></td>
@@ -1734,7 +1795,7 @@ document.addEventListener("DOMContentLoaded", () => {
         <td class="linedecision">
         </td>
         <td class="linecount"></td>
-        <td class="src "></td>
+        <td class="src"></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l20" href="#merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l20">20</a></td>
@@ -1745,7 +1806,7 @@ document.addEventListener("DOMContentLoaded", () => {
         <td class="linedecision">
         </td>
         <td class="linecount coveredLine show_coveredLine">4</td>
-        <td class="src  coveredLine show_coveredLine"><span class="kt">void</span><span class="w"> </span><span class="n">bar</span><span class="p">()</span></td>
+        <td class="src coveredLine show_coveredLine"><span class="kt">void</span><span class="w"> </span><span class="n">bar</span><span class="p">()</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l21" href="#merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l21">21</a></td>
@@ -1756,7 +1817,7 @@ document.addEventListener("DOMContentLoaded", () => {
         <td class="linedecision">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="p">{</span></td>
+        <td class="src"><span class="p">{</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l22" href="#merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l22">22</a></td>
@@ -1767,7 +1828,7 @@ document.addEventListener("DOMContentLoaded", () => {
         <td class="linedecision">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="w">  </span><span class="k">static</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span></td>
+        <td class="src"><span class="w">  </span><span class="k">static</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l23" href="#merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l23">23</a></td>
@@ -1778,7 +1839,7 @@ document.addEventListener("DOMContentLoaded", () => {
         <td class="linedecision">
         </td>
         <td class="linecount"></td>
-        <td class="src "></td>
+        <td class="src"></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l24" href="#merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l24">24</a></td>
@@ -1809,7 +1870,7 @@ document.addEventListener("DOMContentLoaded", () => {
           </details>
         </td>
         <td class="linecount partialCoveredLine show_partialCoveredLine">4</td>
-        <td class="src  partialCoveredLine show_partialCoveredLine"><span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">i</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
+        <td class="src partialCoveredLine show_partialCoveredLine"><span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">i</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l25" href="#merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l25">25</a></td>
@@ -1820,7 +1881,7 @@ document.addEventListener("DOMContentLoaded", () => {
         <td class="linedecision">
         </td>
         <td class="linecount coveredLine show_coveredLine">4</td>
-        <td class="src  coveredLine show_coveredLine"><span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot; is greater or equal 0&quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span></td>
+        <td class="src coveredLine show_coveredLine"><span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot; is greater or equal 0&quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l26" href="#merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l26">26</a></td>
@@ -1831,7 +1892,7 @@ document.addEventListener("DOMContentLoaded", () => {
         <td class="linedecision">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="w">  </span><span class="p">}</span></td>
+        <td class="src"><span class="w">  </span><span class="p">}</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l27" href="#merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l27">27</a></td>
@@ -1868,7 +1929,7 @@ document.addEventListener("DOMContentLoaded", () => {
           </details>
         </td>
         <td class="linecount partialCoveredLine show_partialCoveredLine">4</td>
-        <td class="src  partialCoveredLine show_partialCoveredLine"><span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">i</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">2</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">4</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot; is between 0 and 2 or greater 4&quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span></td>
+        <td class="src partialCoveredLine show_partialCoveredLine"><span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">i</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">2</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">4</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot; is between 0 and 2 or greater 4&quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l28" href="#merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l28">28</a></td>
@@ -1899,7 +1960,7 @@ document.addEventListener("DOMContentLoaded", () => {
           </details>
         </td>
         <td class="linecount partialCoveredLine show_partialCoveredLine">4</td>
-        <td class="src  partialCoveredLine show_partialCoveredLine"><span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">i</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="mi">5</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
+        <td class="src partialCoveredLine show_partialCoveredLine"><span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">i</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="mi">5</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l29" href="#merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l29">29</a></td>
@@ -1910,7 +1971,7 @@ document.addEventListener("DOMContentLoaded", () => {
         <td class="linedecision">
         </td>
         <td class="linecount uncoveredLine show_uncoveredLine">&cross;</td>
-        <td class="src  uncoveredLine show_uncoveredLine"><span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot; is greater 5&quot;</span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span></td>
+        <td class="src uncoveredLine show_uncoveredLine"><span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot; is greater 5&quot;</span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l30" href="#merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l30">30</a></td>
@@ -1921,7 +1982,7 @@ document.addEventListener("DOMContentLoaded", () => {
         <td class="linedecision">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="w">  </span><span class="p">}</span></td>
+        <td class="src"><span class="w">  </span><span class="p">}</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l31" href="#merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l31">31</a></td>
@@ -1932,7 +1993,7 @@ document.addEventListener("DOMContentLoaded", () => {
         <td class="linedecision">
         </td>
         <td class="linecount"></td>
-        <td class="src "></td>
+        <td class="src"></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l32" href="#merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l32">32</a></td>
@@ -1943,7 +2004,7 @@ document.addEventListener("DOMContentLoaded", () => {
         <td class="linedecision">
         </td>
         <td class="linecount coveredLine show_coveredLine">4</td>
-        <td class="src  coveredLine show_coveredLine"><span class="w">  </span><span class="o">++</span><span class="n">i</span><span class="p">;</span></td>
+        <td class="src coveredLine show_coveredLine"><span class="w">  </span><span class="o">++</span><span class="n">i</span><span class="p">;</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l33" href="#merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l33">33</a></td>
@@ -1954,7 +2015,7 @@ document.addEventListener("DOMContentLoaded", () => {
         <td class="linedecision">
         </td>
         <td class="linecount coveredLine show_coveredLine">4</td>
-        <td class="src  coveredLine show_coveredLine"><span class="p">}</span></td>
+        <td class="src coveredLine show_coveredLine"><span class="p">}</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l34" href="#merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l34">34</a></td>
@@ -1965,7 +2026,7 @@ document.addEventListener("DOMContentLoaded", () => {
         <td class="linedecision">
         </td>
         <td class="linecount"></td>
-        <td class="src "></td>
+        <td class="src"></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l35" href="#merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l35">35</a></td>
@@ -1976,7 +2037,7 @@ document.addEventListener("DOMContentLoaded", () => {
         <td class="linedecision">
         </td>
         <td class="linecount coveredLine show_coveredLine">1</td>
-        <td class="src  coveredLine show_coveredLine"><span class="kt">int</span><span class="w"> </span><span class="n">main</span><span class="p">()</span><span class="w"> </span><span class="p">{</span></td>
+        <td class="src coveredLine show_coveredLine"><span class="kt">int</span><span class="w"> </span><span class="n">main</span><span class="p">()</span><span class="w"> </span><span class="p">{</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l36" href="#merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l36">36</a></td>
@@ -1987,7 +2048,7 @@ document.addEventListener("DOMContentLoaded", () => {
         <td class="linedecision">
         </td>
         <td class="linecount coveredLine show_coveredLine">1</td>
-        <td class="src  coveredLine show_coveredLine"><span class="w">  </span><span class="n">foo</span><span class="o">&lt;&gt;</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span></td>
+        <td class="src coveredLine show_coveredLine"><span class="w">  </span><span class="n">foo</span><span class="o">&lt;&gt;</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l37" href="#merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l37">37</a></td>
@@ -1998,7 +2059,7 @@ document.addEventListener("DOMContentLoaded", () => {
         <td class="linedecision">
         </td>
         <td class="linecount coveredLine show_coveredLine">1</td>
-        <td class="src  coveredLine show_coveredLine"><span class="w">  </span><span class="n">foo</span><span class="o">&lt;&gt;</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span></td>
+        <td class="src coveredLine show_coveredLine"><span class="w">  </span><span class="n">foo</span><span class="o">&lt;&gt;</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l38" href="#merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l38">38</a></td>
@@ -2009,7 +2070,7 @@ document.addEventListener("DOMContentLoaded", () => {
         <td class="linedecision">
         </td>
         <td class="linecount coveredLine show_coveredLine">1</td>
-        <td class="src  coveredLine show_coveredLine"><span class="w">  </span><span class="n">foo</span><span class="o">&lt;&gt;</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span></td>
+        <td class="src coveredLine show_coveredLine"><span class="w">  </span><span class="n">foo</span><span class="o">&lt;&gt;</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l39" href="#merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l39">39</a></td>
@@ -2020,7 +2081,7 @@ document.addEventListener("DOMContentLoaded", () => {
         <td class="linedecision">
         </td>
         <td class="linecount coveredLine show_coveredLine">1</td>
-        <td class="src  coveredLine show_coveredLine"><span class="w">  </span><span class="n">foo</span><span class="o">&lt;&gt;</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span></td>
+        <td class="src coveredLine show_coveredLine"><span class="w">  </span><span class="n">foo</span><span class="o">&lt;&gt;</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l40" href="#merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l40">40</a></td>
@@ -2031,7 +2092,7 @@ document.addEventListener("DOMContentLoaded", () => {
         <td class="linedecision">
         </td>
         <td class="linecount coveredLine show_coveredLine">1</td>
-        <td class="src  coveredLine show_coveredLine"><span class="w">  </span><span class="n">foo</span><span class="o">&lt;&gt;</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span></td>
+        <td class="src coveredLine show_coveredLine"><span class="w">  </span><span class="n">foo</span><span class="o">&lt;&gt;</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l41" href="#merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l41">41</a></td>
@@ -2042,7 +2103,7 @@ document.addEventListener("DOMContentLoaded", () => {
         <td class="linedecision">
         </td>
         <td class="linecount coveredLine show_coveredLine">1</td>
-        <td class="src  coveredLine show_coveredLine"><span class="w">  </span><span class="n">foo</span><span class="o">&lt;&gt;</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span></td>
+        <td class="src coveredLine show_coveredLine"><span class="w">  </span><span class="n">foo</span><span class="o">&lt;&gt;</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l42" href="#merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l42">42</a></td>
@@ -2053,7 +2114,7 @@ document.addEventListener("DOMContentLoaded", () => {
         <td class="linedecision">
         </td>
         <td class="linecount"></td>
-        <td class="src "></td>
+        <td class="src"></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l43" href="#merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l43">43</a></td>
@@ -2064,7 +2125,7 @@ document.addEventListener("DOMContentLoaded", () => {
         <td class="linedecision">
         </td>
         <td class="linecount coveredLine show_coveredLine">1</td>
-        <td class="src  coveredLine show_coveredLine"><span class="w">  </span><span class="n">foo</span><span class="o">&lt;&gt;</span><span class="p">(</span><span class="mf">0.0</span><span class="p">);</span></td>
+        <td class="src coveredLine show_coveredLine"><span class="w">  </span><span class="n">foo</span><span class="o">&lt;&gt;</span><span class="p">(</span><span class="mf">0.0</span><span class="p">);</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l44" href="#merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l44">44</a></td>
@@ -2075,7 +2136,7 @@ document.addEventListener("DOMContentLoaded", () => {
         <td class="linedecision">
         </td>
         <td class="linecount coveredLine show_coveredLine">1</td>
-        <td class="src  coveredLine show_coveredLine"><span class="w">  </span><span class="n">foo</span><span class="o">&lt;&gt;</span><span class="p">(</span><span class="mf">0.0</span><span class="p">);</span></td>
+        <td class="src coveredLine show_coveredLine"><span class="w">  </span><span class="n">foo</span><span class="o">&lt;&gt;</span><span class="p">(</span><span class="mf">0.0</span><span class="p">);</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l45" href="#merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l45">45</a></td>
@@ -2086,7 +2147,7 @@ document.addEventListener("DOMContentLoaded", () => {
         <td class="linedecision">
         </td>
         <td class="linecount coveredLine show_coveredLine">1</td>
-        <td class="src  coveredLine show_coveredLine"><span class="w">  </span><span class="n">foo</span><span class="o">&lt;&gt;</span><span class="p">(</span><span class="mf">0.0</span><span class="p">);</span></td>
+        <td class="src coveredLine show_coveredLine"><span class="w">  </span><span class="n">foo</span><span class="o">&lt;&gt;</span><span class="p">(</span><span class="mf">0.0</span><span class="p">);</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l46" href="#merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l46">46</a></td>
@@ -2097,7 +2158,7 @@ document.addEventListener("DOMContentLoaded", () => {
         <td class="linedecision">
         </td>
         <td class="linecount coveredLine show_coveredLine">1</td>
-        <td class="src  coveredLine show_coveredLine"><span class="w">  </span><span class="n">foo</span><span class="o">&lt;&gt;</span><span class="p">(</span><span class="mf">0.0</span><span class="p">);</span></td>
+        <td class="src coveredLine show_coveredLine"><span class="w">  </span><span class="n">foo</span><span class="o">&lt;&gt;</span><span class="p">(</span><span class="mf">0.0</span><span class="p">);</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l47" href="#merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l47">47</a></td>
@@ -2108,7 +2169,7 @@ document.addEventListener("DOMContentLoaded", () => {
         <td class="linedecision">
         </td>
         <td class="linecount"></td>
-        <td class="src "></td>
+        <td class="src"></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l48" href="#merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l48">48</a></td>
@@ -2119,7 +2180,7 @@ document.addEventListener("DOMContentLoaded", () => {
         <td class="linedecision">
         </td>
         <td class="linecount coveredLine show_coveredLine">1</td>
-        <td class="src  coveredLine show_coveredLine"><span class="w">  </span><span class="n">bar</span><span class="p">();</span></td>
+        <td class="src coveredLine show_coveredLine"><span class="w">  </span><span class="n">bar</span><span class="p">();</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l49" href="#merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l49">49</a></td>
@@ -2130,7 +2191,7 @@ document.addEventListener("DOMContentLoaded", () => {
         <td class="linedecision">
         </td>
         <td class="linecount coveredLine show_coveredLine">1</td>
-        <td class="src  coveredLine show_coveredLine"><span class="w">  </span><span class="n">bar</span><span class="p">();</span></td>
+        <td class="src coveredLine show_coveredLine"><span class="w">  </span><span class="n">bar</span><span class="p">();</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l50" href="#merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l50">50</a></td>
@@ -2141,7 +2202,7 @@ document.addEventListener("DOMContentLoaded", () => {
         <td class="linedecision">
         </td>
         <td class="linecount coveredLine show_coveredLine">1</td>
-        <td class="src  coveredLine show_coveredLine"><span class="w">  </span><span class="n">bar</span><span class="p">();</span></td>
+        <td class="src coveredLine show_coveredLine"><span class="w">  </span><span class="n">bar</span><span class="p">();</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l51" href="#merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l51">51</a></td>
@@ -2152,7 +2213,7 @@ document.addEventListener("DOMContentLoaded", () => {
         <td class="linedecision">
         </td>
         <td class="linecount coveredLine show_coveredLine">1</td>
-        <td class="src  coveredLine show_coveredLine"><span class="w">  </span><span class="n">bar</span><span class="p">();</span></td>
+        <td class="src coveredLine show_coveredLine"><span class="w">  </span><span class="n">bar</span><span class="p">();</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l52" href="#merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l52">52</a></td>
@@ -2163,7 +2224,7 @@ document.addEventListener("DOMContentLoaded", () => {
         <td class="linedecision">
         </td>
         <td class="linecount"></td>
-        <td class="src "></td>
+        <td class="src"></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l53" href="#merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l53">53</a></td>
@@ -2174,7 +2235,7 @@ document.addEventListener("DOMContentLoaded", () => {
         <td class="linedecision">
         </td>
         <td class="linecount coveredLine show_coveredLine">1</td>
-        <td class="src  coveredLine show_coveredLine"><span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span></td>
+        <td class="src coveredLine show_coveredLine"><span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l54" href="#merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l54">54</a></td>
@@ -2185,7 +2246,7 @@ document.addEventListener("DOMContentLoaded", () => {
         <td class="linedecision">
         </td>
         <td class="linecount"></td>
-        <td class="src "><span class="p">}</span></td>
+        <td class="src"><span class="p">}</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l55" href="#merged.main.cpp.118fcbaaba162ba17933c7893247df3a.html|l55">55</a></td>
@@ -2196,7 +2257,7 @@ document.addEventListener("DOMContentLoaded", () => {
         <td class="linedecision">
         </td>
         <td class="linecount"></td>
-        <td class="src "></td>
+        <td class="src"></td>
       </tr>
     </table>
   </div>

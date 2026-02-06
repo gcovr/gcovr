@@ -9,6 +9,12 @@
   --excluded_color: var(--color-severe-subtle);
   --warning_color: orangered;
   --invokedCall_color: var(--color-success-fg);
+  /* Diff colors */
+  --added_color: #026b17;
+  --removed_color: #d73a49;
+  --changed_color: #dbab09;
+  --approximately_equal_color: #0a84ff;
+  --strictly_equal_color: #777777;
 }
 
 .theme-green, .theme-dark-green {
