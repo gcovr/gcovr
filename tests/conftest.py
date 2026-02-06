@@ -593,6 +593,10 @@ class GcovrTestCompare:
                     reference_file = self.__update_reference_data(
                         reference_file, test_content, encoding
                     )
+                    if self.archive_differences:
+                        self.__archive_difference_data(
+                            test_content, reference_file, encoding
+                        )
             except AssertionError as e:  # pragma: no cover
                 all_compare_errors.append(str(e) + "\n")
                 if self.update_reference:
