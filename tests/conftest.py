@@ -303,8 +303,8 @@ class GcovrTestCompare:
         self.update_reference = update_reference
         self.archive_differences = archive_differences
         # Get a list of all reference files. Compared files are removed, at the end all files must be compared.
-        seen_files = set([])
-        reference_files = set([])
+        seen_files = set[str]()
+        reference_files = set[Path]()
         for reference_dir in self.reference_dirs():
             if reference_dir.exists():
                 for reference_file in reference_dir.glob("*"):
@@ -315,7 +315,7 @@ class GcovrTestCompare:
                             if self.generate_reference
                             else reference_file
                         )
-        self.reference_files = reference_files
+        self.reference_files = list(sorted(reference_files))
         if reference_files:
             with self.capsys.disabled():
                 files = "\n  - ".join(str(p) for p in reference_files)
@@ -375,11 +375,11 @@ class GcovrTestCompare:
     def __find_reference_files(
         self, output_pattern: list[str]
     ) -> Generator[tuple[Path, Path], None, None]:
-        seen_files = set()
-        missing_files = set()
+        seen_files = set[str]()
+        missing_files = set[str]()
         for pattern in output_pattern:
             # Iterate over a shallow copy to allow removal during iteration
-            for reference_file in list(sorted(self.reference_files)):
+            for reference_file in list(self.reference_files):
                 if fnmatch.fnmatch(reference_file.name, pattern):
                     seen_files.add(reference_file.name)
                     test_file = self.output_dir / reference_file.name
@@ -539,6 +539,7 @@ class GcovrTestCompare:
         scrub: Callable[[str], str] | None = None,
         translate_new_line: bool = True,
         encoding: str = "utf-8",
+        lambda_force_files_present: Callable[[Path, Path], bool] | None = None,
     ) -> None:
         """Compare the files with the given patterns."""
         if self.generate_reference:  # pragma: no cover
@@ -570,6 +571,11 @@ class GcovrTestCompare:
                 with reference_file.open(encoding=encoding, newline="") as fh_in:
                     reference_content = fh_in.read()
 
+            # This files should always be created if there is an HTML report
+            force_file_present = (
+                lambda_force_files_present
+                and lambda_force_files_present(self.main_reference, test_file)
+            )
             try:
                 self.assert_equals(
                     reference_file,
@@ -582,6 +588,11 @@ class GcovrTestCompare:
                     else test_content,
                     encoding,
                 )
+
+                if force_file_present and reference_file.parent != self.main_reference:
+                    reference_file = self.__update_reference_data(
+                        reference_file, test_content, encoding
+                    )
             except AssertionError as e:  # pragma: no cover
                 all_compare_errors.append(str(e) + "\n")
                 if self.update_reference:
@@ -593,7 +604,11 @@ class GcovrTestCompare:
                         test_content, reference_file, encoding
                     )
 
-            if self.generate_reference or self.update_reference:  # pragma: no cover
+            if (
+                (self.generate_reference or self.update_reference)
+                and reference_file.parent == self.main_reference
+                and not force_file_present
+            ):  # pragma: no cover
                 self.__remove_duplicate_data(
                     encoding, test_content, test_file, reference_file
                 )
@@ -948,6 +963,12 @@ class GcovrTestExec:
             self._compare.compare_files(
                 output_pattern=["coverage*.html", "coverage*.js", "coverage*.css"],
                 encoding=encoding,
+                lambda_force_files_present=(
+                    lambda reference_dir, test_file: bool(
+                        test_file.suffix in (".css", ".js")
+                        and list(reference_dir.glob("*.html"))
+                    )
+                ),
             )
 
     def compare_txt(self) -> None:

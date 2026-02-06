@@ -25,6 +25,8 @@ Documentation:
 
 Internal changes:
 
+- Add CSS and JS files to all folders where a HTML reference file is present. (:issue:`1241`)
+
 .. _release_8_6:
 
 8.6 (13 January 2026)
