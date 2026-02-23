@@ -18,6 +18,7 @@ New features and notable changes:
   - Replace meter with ``div`` elements in the default theme (like in GitHub themes). (:issue:`1236`)
 
 - Add compare mode for JSON, text and HTML reports. (:issue:`1240`)
+- Stub missing line coverage for branches in LLVM source based code coverage format. (:issue:`1245`)
 
 Bug fixes and small improvements:
 
