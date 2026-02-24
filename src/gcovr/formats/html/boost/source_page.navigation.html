@@ -1,0 +1,17 @@
+{# -*- engine: jinja -*- #}
+{% if info.navigation is defined and fname in info.navigation %}
+<div class="nav-links">
+  <a class="nav-link nav-prev" href="{% if info.single_page %}#{% endif %}{{info.navigation[fname][0] or ROOT_FNAME}}" title="Previous file">
+    <svg viewBox="0 0 16 16" width="16" height="16"><path fill="currentColor" d="M9.78 12.78a.75.75 0 01-1.06 0L4.47 8.53a.75.75 0 010-1.06l4.25-4.25a.75.75 0 011.06 1.06L6.06 8l3.72 3.72a.75.75 0 010 1.06z"></path></svg>
+    Prev
+  </a>
+  <a class="nav-link nav-index" href="{% if info.single_page %}#{% else %}{{ROOT_FNAME}}{% endif %}" title="Back to index">
+    <svg viewBox="0 0 16 16" width="16" height="16"><path fill="currentColor" d="M6.906.664a1.749 1.749 0 012.187 0l5.25 4.2c.415.332.657.835.657 1.367v7.019A1.75 1.75 0 0113.25 15h-3.5a.75.75 0 01-.75-.75V9H7v5.25a.75.75 0 01-.75.75h-3.5A1.75 1.75 0 011 13.25V6.23c0-.531.242-1.034.657-1.366l5.25-4.2z"></path></svg>
+    Index
+  </a>
+  <a class="nav-link nav-next" href="{% if info.single_page %}#{% endif %}{{info.navigation[fname][1] or ROOT_FNAME}}" title="Next file">
+    Next
+    <svg viewBox="0 0 16 16" width="16" height="16"><path fill="currentColor" d="M6.22 3.22a.75.75 0 011.06 0l4.25 4.25a.75.75 0 010 1.06l-4.25 4.25a.75.75 0 01-1.06-1.06L9.94 8 6.22 4.28a.75.75 0 010-1.06z"></path></svg>
+  </a>
+</div>
+{% endif %}

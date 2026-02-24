@@ -1,0 +1,16 @@
+{# -*- engine: jinja -*- #}
+<div class="summary-inline">
+  <div class="summary-stat">
+    <span class="stat-label">Functions:</span>
+    <span class="stat-value {{info.functions.class}}">{{info.functions.coverage}}%</span>
+    <span class="stat-detail">({{info.functions.exec}} / {{info.functions.total}})</span>
+  </div>
+  <div class="summary-stat">
+    <span class="stat-label">Lines:</span>
+    <span class="stat-value {{info.lines.class}}">{{info.lines.coverage}}%</span>
+  </div>
+  <div class="summary-stat">
+    <span class="stat-label">Branches:</span>
+    <span class="stat-value {{info.branches.class}}">{{info.branches.coverage}}%</span>
+  </div>
+</div>
