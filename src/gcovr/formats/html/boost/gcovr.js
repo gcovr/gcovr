@@ -10,6 +10,7 @@
     initSidebarResize();
     initMobileMenu();
     initFileTree();
+    initNavOverride();
     initBreadcrumbs();
     initSearch();
     initSorting();
@@ -413,7 +414,8 @@
         collapseSingleChildDirs(window.GCOVR_TREE_DATA);
         deduplicateTree(window.GCOVR_TREE_DATA);
         renderTree(treeContainer, window.GCOVR_TREE_DATA);
-        // Re-run breadcrumbs and search now that the tree exists
+        // Re-run dependent init now that the tree exists
+        initNavOverride();
         initBreadcrumbs();
         initSearch();
       })
@@ -1295,6 +1297,45 @@
         });
       });
     });
+  }
+
+  // ===========================================
+  // Nav Override (prev/next follows tree order)
+  // ===========================================
+
+  function initNavOverride() {
+    if (!window.GCOVR_TREE_DATA) return;
+
+    var navPrevs = document.querySelectorAll('.nav-prev');
+    var navNexts = document.querySelectorAll('.nav-next');
+    if (navPrevs.length === 0 && navNexts.length === 0) return;
+
+    // DFS-flatten tree to collect file links in sidebar order
+    function collectLinks(nodes) {
+      var links = [];
+      for (var i = 0; i < nodes.length; i++) {
+        var node = nodes[i];
+        if (node.isDirectory && node.children && node.children.length > 0) {
+          links = links.concat(collectLinks(node.children));
+        } else if (!node.isDirectory && node.link) {
+          links.push(node.link);
+        }
+      }
+      return links;
+    }
+
+    var fileLinks = collectLinks(window.GCOVR_TREE_DATA);
+    if (fileLinks.length === 0) return;
+
+    var currentPage = window.location.pathname.split('/').pop() || 'index.html';
+    var idx = fileLinks.indexOf(currentPage);
+    if (idx === -1) return;
+
+    var prev = idx > 0 ? fileLinks[idx - 1] : 'index.html';
+    var next = idx < fileLinks.length - 1 ? fileLinks[idx + 1] : 'index.html';
+
+    navPrevs.forEach(function(el) { el.setAttribute('href', prev); });
+    navNexts.forEach(function(el) { el.setAttribute('href', next); });
   }
 
   // ===========================================
