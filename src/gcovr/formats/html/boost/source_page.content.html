@@ -92,6 +92,9 @@
           <th class="col-tla">TLA</th>
           <th class="col-count">Hits</th>
           <th class="col-source">Source Code</th>
+          {% if USE_BLOCK_IDS %}
+          <th class="col-blockids">Block IDs</th>
+          {% endif %}
         </tr>
       </thead>
       <tbody>
@@ -219,6 +222,9 @@
             {% if row.covclass == 'uncoveredLine' %}<span class="hit-miss">&cross;</span>{% elif row.covclass == 'excludedLine' %}<span class="hit-excluded">&minus;</span>{% elif row.linecount %}{{row.linecount}}x{% endif %}
           </td>
           <td class="col-source">{{row.source}}</td>
+          {% if USE_BLOCK_IDS %}
+          <td class="col-blockids">{% if row.block_ids %}{{row.block_ids | join(', ')}}{% endif %}</td>
+          {% endif %}
         </tr>
         {% endfor %}
       </tbody>
