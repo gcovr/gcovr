@@ -3,24 +3,29 @@
 {% set has_branches = source_lines | selectattr('line_branches', 'defined') | selectattr('line_branches') | list | length > 0 %}
 {% set partial_count = lines.partial if lines.partial is defined else 0 %}
 {% set excluded_count = lines.excluded if lines.excluded is defined else 0 %}
+{% set col_count = 3 %}
+{% if has_branches %}{% set col_count = col_count + 1 %}{% endif %}
+{% if SHOW_CONDITION_COVERAGE %}{% set col_count = col_count + 1 %}{% endif %}
+{% if SHOW_DECISION %}{% set col_count = col_count + 1 %}{% endif %}
+{% if SHOW_CALLS %}{% set col_count = col_count + 1 %}{% endif %}
+{% set uncovered_total = (lines.total - lines.exec) + partial_count %}
 <div class="source-container{% if not has_branches %} no-branches{% endif %}">
   <div class="source-header">
-    <div class="source-title">{{filename}}</div>
     <div class="source-line-filters">
       <button type="button" class="btn btn-sm button_toggle_coveredLine show_coveredLine" value="coveredLine" title="Toggle covered lines">
-        <span class="btn-count">{{lines.exec - partial_count}}</span> covered
+        covered
       </button>
       <button type="button" class="btn btn-sm button_toggle_uncoveredLine show_uncoveredLine" value="uncoveredLine" title="Toggle uncovered lines">
-        <span class="btn-count">{{lines.total - lines.exec}}</span> uncovered
+        uncovered
       </button>
       {% if partial_count > 0 %}
       <button type="button" class="btn btn-sm button_toggle_partialCoveredLine show_partialCoveredLine" value="partialCoveredLine" title="Toggle partial covered lines">
-        <span class="btn-count">{{partial_count}}</span> partial
+        partial
       </button>
       {% endif %}
       {% if excluded_count > 0 %}
       <button type="button" class="btn btn-sm button_toggle_excludedLine show_excludedLine" value="excludedLine" title="Toggle excluded lines">
-        <span class="btn-count">{{excluded_count}}</span> excluded
+        excluded
       </button>
       {% endif %}
     </div>
@@ -33,18 +38,36 @@
     </div>
     {% if info.navigation is defined and fname in info.navigation %}
     <div class="source-nav-links">
-      <a class="nav-link nav-prev" href="{% if info.single_page %}#{% endif %}{{info.navigation[fname][0] or ROOT_FNAME}}" title="Previous file">
-        <svg viewBox="0 0 16 16" width="16" height="16"><path fill="currentColor" d="M9.78 12.78a.75.75 0 01-1.06 0L4.47 8.53a.75.75 0 010-1.06l4.25-4.25a.75.75 0 011.06 1.06L6.06 8l3.72 3.72a.75.75 0 010 1.06z"></path></svg>
-        Prev
+      {% if info.navigation[fname][0] %}
+      <a class="nav-link nav-prev" href="{% if info.single_page %}#{% endif %}{{info.navigation[fname][0]}}" title="Previous file">
+        <svg viewBox="0 0 16 16" width="16" height="16"><path fill="currentColor" d="M8 2a.75.75 0 01.75.75v8.69l3.22-3.22a.75.75 0 111.06 1.06l-4.5 4.5a.75.75 0 01-1.06 0l-4.5-4.5a.75.75 0 011.06-1.06l3.22 3.22V2.75A.75.75 0 018 2z" transform="rotate(180 8 8)"/></svg>
       </a>
-      <a class="nav-link nav-index" href="{% if info.single_page %}#{% else %}{{ROOT_FNAME}}{% endif %}" title="Back to index">
-        <svg viewBox="0 0 16 16" width="16" height="16"><path fill="currentColor" d="M6.906.664a1.749 1.749 0 012.187 0l5.25 4.2c.415.332.657.835.657 1.367v7.019A1.75 1.75 0 0113.25 15h-3.5a.75.75 0 01-.75-.75V9H7v5.25a.75.75 0 01-.75.75h-3.5A1.75 1.75 0 011 13.25V6.23c0-.531.242-1.034.657-1.366l5.25-4.2z"></path></svg>
-        Index
+      {% else %}
+      <span class="nav-link nav-prev disabled" title="Previous file">
+        <svg viewBox="0 0 16 16" width="16" height="16"><path fill="currentColor" d="M8 2a.75.75 0 01.75.75v8.69l3.22-3.22a.75.75 0 111.06 1.06l-4.5 4.5a.75.75 0 01-1.06 0l-4.5-4.5a.75.75 0 011.06-1.06l3.22 3.22V2.75A.75.75 0 018 2z" transform="rotate(180 8 8)"/></svg>
+      </span>
+      {% endif %}
+      {% if info.navigation[fname][1] %}
+      <a class="nav-link nav-next" href="{% if info.single_page %}#{% endif %}{{info.navigation[fname][1]}}" title="Next file">
+        <svg viewBox="0 0 16 16" width="16" height="16"><path fill="currentColor" d="M8 2a.75.75 0 01.75.75v8.69l3.22-3.22a.75.75 0 111.06 1.06l-4.5 4.5a.75.75 0 01-1.06 0l-4.5-4.5a.75.75 0 011.06-1.06l3.22 3.22V2.75A.75.75 0 018 2z"/></svg>
       </a>
-      <a class="nav-link nav-next" href="{% if info.single_page %}#{% endif %}{{info.navigation[fname][1] or ROOT_FNAME}}" title="Next file">
-        Next
-        <svg viewBox="0 0 16 16" width="16" height="16"><path fill="currentColor" d="M6.22 3.22a.75.75 0 011.06 0l4.25 4.25a.75.75 0 010 1.06l-4.25 4.25a.75.75 0 01-1.06-1.06L9.94 8 6.22 4.28a.75.75 0 010-1.06z"></path></svg>
-      </a>
+      {% else %}
+      <span class="nav-link nav-next disabled" title="Next file">
+        <svg viewBox="0 0 16 16" width="16" height="16"><path fill="currentColor" d="M8 2a.75.75 0 01.75.75v8.69l3.22-3.22a.75.75 0 111.06 1.06l-4.5 4.5a.75.75 0 01-1.06 0l-4.5-4.5a.75.75 0 011.06-1.06l3.22 3.22V2.75A.75.75 0 018 2z"/></svg>
+      </span>
+      {% endif %}
+    </div>
+    {% endif %}
+    {% if uncovered_total > 0 %}
+    {% if info.navigation is defined and fname in info.navigation %}<span class="source-header-sep"></span>{% endif %}
+    <div id="coverage-nav">
+      <button type="button" id="nav-prev" class="nav-link" title="Previous uncovered line (p)">
+        <svg viewBox="0 0 16 16" width="16" height="16"><path fill="currentColor" d="M8 2a.75.75 0 01.75.75v8.69l3.22-3.22a.75.75 0 111.06 1.06l-4.5 4.5a.75.75 0 01-1.06 0l-4.5-4.5a.75.75 0 011.06-1.06l3.22 3.22V2.75A.75.75 0 018 2z" transform="rotate(90 8 8)"/></svg>
+      </button>
+      <span id="nav-counter" class="nav-counter"></span>
+      <button type="button" id="nav-next" class="nav-link" title="Next uncovered line (n)">
+        <svg viewBox="0 0 16 16" width="16" height="16"><path fill="currentColor" d="M8 2a.75.75 0 01.75.75v8.69l3.22-3.22a.75.75 0 111.06 1.06l-4.5 4.5a.75.75 0 01-1.06 0l-4.5-4.5a.75.75 0 011.06-1.06l3.22 3.22V2.75A.75.75 0 018 2z" transform="rotate(-90 8 8)"/></svg>
+      </button>
     </div>
     {% endif %}
   </div>
@@ -193,7 +216,7 @@
           {% endif %}
           <td class="col-tla"></td>
           <td class="col-count{% if row.covclass %} {{row.covclass}}{% endif %}">
-            {% if row.covclass == 'uncoveredLine' %}<span class="hit-miss">&cross;</span>{% elif row.covclass == 'excludedLine' %}<span class="hit-excluded">&minus;</span>{% else %}{{row.linecount}}{% endif %}
+            {% if row.covclass == 'uncoveredLine' %}<span class="hit-miss">&cross;</span>{% elif row.covclass == 'excludedLine' %}<span class="hit-excluded">&minus;</span>{% elif row.linecount %}{{row.linecount}}x{% endif %}
           </td>
           <td class="col-source">{{row.source}}</td>
         </tr>

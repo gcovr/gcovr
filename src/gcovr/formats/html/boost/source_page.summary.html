@@ -1,4 +1,6 @@
 {# -*- engine: jinja -*- #}
+{% set partial_count = lines.partial if lines.partial is defined else 0 %}
+{% set uncovered_total = (lines.total - lines.exec) + partial_count %}
 <div class="source-summary">
   <div class="source-info">
     <h2 class="source-filename">{{filename}}</h2>
@@ -15,5 +17,13 @@
       </span>
       {% endif %}
     </div>
+  </div>
+  <div class="nav-hint">
+    {% if info.navigation is defined and fname in info.navigation %}
+    <span><kbd>[</kbd> <kbd>]</kbd> prev/next file</span>
+    {% endif %}
+    {% if uncovered_total > 0 %}
+    <span><kbd>n</kbd> <kbd>p</kbd> prev/next uncovered line</span>
+    {% endif %}
   </div>
 </div>

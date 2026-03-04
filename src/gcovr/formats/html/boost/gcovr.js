@@ -15,12 +15,16 @@
     initSearch();
     initSorting();
     initToggleButtons();
+    initCoverageNav();
     initTreeControls();
     initViewToggle();
+    initSettingsDropdown();
     initTlaNavigation();
     initLineHighlight();
     initColumnToggles();
     initPopupResize();
+    initFileNavTooltips();
+    initFileNavKeys();
 
     // Reveal page now that all init is done
     document.documentElement.classList.remove('no-transitions');
@@ -994,6 +998,12 @@
     const buttons = document.querySelectorAll('.button_toggle_coveredLine, .button_toggle_uncoveredLine, .button_toggle_partialCoveredLine, .button_toggle_excludedLine');
 
     buttons.forEach(function(button) {
+      var lineClass = button.value;
+      if (!document.querySelector('.' + lineClass)) {
+        button.disabled = true;
+        button.classList.remove('show_' + lineClass);
+        return;
+      }
       button.addEventListener('click', function() {
         const lineClass = this.value;
         const showClass = 'show_' + lineClass;
@@ -1006,6 +1016,7 @@
         lines.forEach(function(line) {
           line.classList.toggle(showClass);
         });
+        document.dispatchEvent(new CustomEvent('coverage-toggled'));
       });
     });
 
@@ -1023,8 +1034,102 @@
         lines.forEach(function(line) {
           line.classList.toggle(showClass);
         });
+        document.dispatchEvent(new CustomEvent('coverage-toggled'));
       });
     });
+  }
+
+  // ===========================================
+  // Coverage Navigation (prev/next uncovered)
+  // ===========================================
+
+  function initCoverageNav() {
+    var prevBtn = document.getElementById('nav-prev');
+    var nextBtn = document.getElementById('nav-next');
+    var counter = document.getElementById('nav-counter');
+
+    if (!prevBtn || !nextBtn || !counter) return;
+
+    var gapLines = [];
+    var currentIndex = -1;
+
+    function collectGapLines() {
+      var uncovered = document.querySelectorAll('tr.uncoveredLine.show_uncoveredLine');
+      var partial = document.querySelectorAll('tr.partialCoveredLine.show_partialCoveredLine');
+      var merged = [];
+      var i;
+      for (i = 0; i < uncovered.length; i++) merged.push(uncovered[i]);
+      for (i = 0; i < partial.length; i++) merged.push(partial[i]);
+      // Sort by DOM order
+      merged.sort(function(a, b) {
+        var pos = a.compareDocumentPosition(b);
+        if (pos & Node.DOCUMENT_POSITION_FOLLOWING) return -1;
+        if (pos & Node.DOCUMENT_POSITION_PRECEDING) return 1;
+        return 0;
+      });
+      gapLines = merged;
+      currentIndex = -1;
+      updateCounter();
+    }
+
+    function updateCounter() {
+      if (gapLines.length === 0) {
+        counter.textContent = 'All lines covered';
+        prevBtn.disabled = true;
+        nextBtn.disabled = true;
+      } else {
+        var display = currentIndex >= 0 ? (currentIndex + 1) : 0;
+        counter.textContent = display + ' / ' + gapLines.length;
+        prevBtn.disabled = false;
+        nextBtn.disabled = false;
+      }
+    }
+
+    function navigateTo(index) {
+      if (gapLines.length === 0) return;
+      // Remove previous highlight
+      var prev = document.querySelector('tr.source-line.nav-highlight');
+      if (prev) prev.classList.remove('nav-highlight');
+
+      currentIndex = index;
+      var row = gapLines[currentIndex];
+      row.scrollIntoView({ block: 'center', behavior: 'instant' });
+      row.classList.add('nav-highlight');
+      setTimeout(function() {
+        row.classList.remove('nav-highlight');
+      }, 1500);
+      updateCounter();
+    }
+
+    function nextGap() {
+      if (gapLines.length === 0) return;
+      var next = currentIndex + 1;
+      if (next >= gapLines.length) next = 0;
+      navigateTo(next);
+    }
+
+    function prevGap() {
+      if (gapLines.length === 0) return;
+      var prev = currentIndex - 1;
+      if (prev < 0) prev = gapLines.length - 1;
+      navigateTo(prev);
+    }
+
+    prevBtn.addEventListener('click', prevGap);
+    nextBtn.addEventListener('click', nextGap);
+
+    document.addEventListener('keydown', function(e) {
+      var tag = (e.target.tagName || '').toLowerCase();
+      if (tag === 'input' || tag === 'textarea' || e.target.isContentEditable) return;
+      if (e.key === 'n') nextGap();
+      if (e.key === 'p') prevGap();
+    });
+
+    document.addEventListener('coverage-toggled', function() {
+      collectGapLines();
+    });
+
+    collectGapLines();
   }
 
   // ===========================================
@@ -1275,6 +1380,79 @@
   }
 
   // ===========================================
+  // Settings Dropdown (mobile gear icon)
+  // ===========================================
+
+  function initSettingsDropdown() {
+    var btn = document.getElementById('settings-btn');
+    var dropdown = document.getElementById('settings-dropdown');
+    var header = document.querySelector('.main-header');
+    if (!btn || !dropdown || !header) return;
+
+    var viewToggle = document.getElementById('view-toggle');
+    var themeToggle = document.getElementById('theme-toggle');
+    var isMobile = false;
+
+    // Reference node: settings-btn, so we can insert before it when moving back
+    function moveToDropdown() {
+      if (viewToggle && viewToggle.parentNode !== dropdown) {
+        dropdown.appendChild(viewToggle);
+      }
+      if (themeToggle && themeToggle.parentNode !== dropdown) {
+        dropdown.appendChild(themeToggle);
+      }
+    }
+
+    function moveToHeader() {
+      // Insert before settings-btn so they appear in original order
+      if (viewToggle && viewToggle.parentNode !== header) {
+        header.insertBefore(viewToggle, btn);
+      }
+      if (themeToggle && themeToggle.parentNode !== header) {
+        header.insertBefore(themeToggle, btn);
+      }
+    }
+
+    function checkBreakpoint() {
+      var nowMobile = window.innerWidth <= 1024;
+      if (nowMobile === isMobile) return;
+      isMobile = nowMobile;
+      if (isMobile) {
+        moveToDropdown();
+      } else {
+        dropdown.classList.remove('open');
+        moveToHeader();
+      }
+    }
+
+    // Toggle dropdown on button click
+    btn.addEventListener('click', function(e) {
+      e.stopPropagation();
+      dropdown.classList.toggle('open');
+    });
+
+    // Close on outside click
+    document.addEventListener('click', function(e) {
+      if (!dropdown.contains(e.target) && e.target !== btn) {
+        dropdown.classList.remove('open');
+      }
+    });
+
+    // Close on Escape
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') {
+        dropdown.classList.remove('open');
+      }
+    });
+
+    // Respond to resize
+    window.addEventListener('resize', checkBreakpoint);
+
+    // Initial check
+    checkBreakpoint();
+  }
+
+  // ===========================================
   // Popup Resize (only when overflowing)
   // ===========================================
 
@@ -1331,11 +1509,42 @@
     var idx = fileLinks.indexOf(currentPage);
     if (idx === -1) return;
 
-    var prev = idx > 0 ? fileLinks[idx - 1] : 'index.html';
-    var next = idx < fileLinks.length - 1 ? fileLinks[idx + 1] : 'index.html';
+    var prev = idx > 0 ? fileLinks[idx - 1] : null;
+    var next = idx < fileLinks.length - 1 ? fileLinks[idx + 1] : null;
 
-    navPrevs.forEach(function(el) { el.setAttribute('href', prev); });
-    navNexts.forEach(function(el) { el.setAttribute('href', next); });
+    function updateNavLinks(els, href) {
+      for (var i = 0; i < els.length; i++) {
+        var el = els[i];
+        if (href) {
+          // Enable: ensure it's an <a> with the correct href
+          if (el.tagName === 'A') {
+            el.setAttribute('href', href);
+          } else {
+            // Replace disabled <span> with an <a>
+            var a = document.createElement('a');
+            a.className = el.className.replace(/\bdisabled\b/, '').trim();
+            a.href = href;
+            a.title = el.title;
+            a.innerHTML = el.innerHTML;
+            el.parentNode.replaceChild(a, el);
+          }
+        } else {
+          // Disable: ensure it's a <span> with disabled class
+          if (el.tagName === 'A') {
+            var span = document.createElement('span');
+            span.className = el.className + ' disabled';
+            span.title = el.title;
+            span.innerHTML = el.innerHTML;
+            el.parentNode.replaceChild(span, el);
+          } else {
+            el.classList.add('disabled');
+          }
+        }
+      }
+    }
+
+    updateNavLinks(navPrevs, prev);
+    updateNavLinks(navNexts, next);
   }
 
   // ===========================================
@@ -1548,6 +1757,62 @@
         localStorage.setItem('gcovr-hidden-columns', JSON.stringify(current));
       });
     });
+  }
+
+  // ===========================================
+  // File nav keyboard shortcuts ([ and ])
+  // ===========================================
+
+  function initFileNavKeys() {
+    var prevLink = document.querySelector('.source-nav-links .nav-prev') || document.querySelector('.nav-links .nav-prev');
+    var nextLink = document.querySelector('.source-nav-links .nav-next') || document.querySelector('.nav-links .nav-next');
+    if (!prevLink && !nextLink) return;
+
+    document.addEventListener('keydown', function(e) {
+      var tag = (e.target.tagName || '').toLowerCase();
+      if (tag === 'input' || tag === 'textarea' || e.target.isContentEditable) return;
+      // Re-query to pick up any DOM replacements by initNavOverride
+      var prev = document.querySelector('.source-nav-links a.nav-prev') || document.querySelector('.nav-links a.nav-prev');
+      var next = document.querySelector('.source-nav-links a.nav-next') || document.querySelector('.nav-links a.nav-next');
+      if (e.key === '[' && prev) {
+        window.location.href = prev.href;
+      }
+      if (e.key === ']' && next) {
+        window.location.href = next.href;
+      }
+    });
+  }
+
+  // ===========================================
+  // Enrich file nav tooltips with actual filenames
+  // ===========================================
+
+  function initFileNavTooltips() {
+    if (!window.GCOVR_TREE_DATA) return;
+    var links = document.querySelectorAll('.source-nav-links .nav-prev, .source-nav-links .nav-next, .nav-links .nav-prev, .nav-links .nav-next');
+    for (var i = 0; i < links.length; i++) {
+      var anchor = links[i];
+      var href = anchor.getAttribute('href');
+      if (!href || href === '#') continue;
+      var filename = href.replace(/^.*\//, '').replace(/#.*$/, '');
+      var node = findNodeInTree(window.GCOVR_TREE_DATA, filename);
+      if (node && node.name) {
+        var direction = anchor.classList.contains('nav-prev') ? 'Previous' : 'Next';
+        anchor.title = direction + ': ' + node.name;
+      }
+    }
+  }
+
+  function findNodeInTree(nodes, targetLink) {
+    for (var i = 0; i < nodes.length; i++) {
+      var node = nodes[i];
+      if (node.link === targetLink) return node;
+      if (node.children) {
+        var found = findNodeInTree(node.children, targetLink);
+        if (found) return found;
+      }
+    }
+    return null;
   }
 
   // ===========================================
