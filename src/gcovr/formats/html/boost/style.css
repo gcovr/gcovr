@@ -1119,7 +1119,7 @@ body.sidebar-resizing .main-content {
 
 .file-list-header {
   display: grid;
-  grid-template-columns: minmax(200px, 2fr) minmax(150px, 1fr) 90px 90px 90px{% if SHOW_CONDITION_COVERAGE %} 100px{% endif %}{% if SHOW_DECISION %} 100px{% endif %}{% if SHOW_CALLS %} 100px{% endif %}{% if info.diff_report %} 95px{% endif %};
+  grid-template-columns: minmax(200px, 2fr) minmax(150px, 1fr) 100px 100px 100px{% if SHOW_CONDITION_COVERAGE %} 100px{% endif %}{% if SHOW_DECISION %} 100px{% endif %}{% if SHOW_CALLS %} 100px{% endif %}{% if info.diff_report %} 95px{% endif %};
   gap: 8px;
   padding: 12px 16px;
   background: var(--bg-tertiary);
@@ -1156,7 +1156,7 @@ body.sidebar-resizing .main-content {
 
 .file-row {
   display: grid;
-  grid-template-columns: minmax(200px, 2fr) minmax(150px, 1fr) 90px 90px 90px{% if SHOW_CONDITION_COVERAGE %} 100px{% endif %}{% if SHOW_DECISION %} 100px{% endif %}{% if SHOW_CALLS %} 100px{% endif %}{% if info.diff_report %} 95px{% endif %};
+  grid-template-columns: minmax(200px, 2fr) minmax(150px, 1fr) 100px 100px 100px{% if SHOW_CONDITION_COVERAGE %} 100px{% endif %}{% if SHOW_DECISION %} 100px{% endif %}{% if SHOW_CALLS %} 100px{% endif %}{% if info.diff_report %} 95px{% endif %};
   gap: 8px;
   padding: 4px 16px;
   border-bottom: 1px solid var(--border-muted);
@@ -1263,7 +1263,8 @@ body.sidebar-resizing .main-content {
 .col-branches,
 .col-conditions,
 .col-decisions,
-.col-calls {
+.col-calls,
+.col.diff {
   text-align: right;
   font-size: var(--font-size-sm);
 }
@@ -1273,7 +1274,8 @@ body.sidebar-resizing .main-content {
 .file-list-header .col-branches,
 .file-list-header .col-conditions,
 .file-list-header .col-decisions,
-.file-list-header .col-calls {
+.file-list-header .col-calls,
+.file-list-header .col-diff {
   justify-content: flex-end;
 }
 
@@ -2203,7 +2205,8 @@ tr.source-line.nav-highlight > td {
   .col-branches,
   .col-conditions,
   .col-decisions,
-  .col-calls {
+  .col-calls,
+  .col-diff {
     display: none;
   }
 
@@ -2233,7 +2236,8 @@ tr.source-line.nav-highlight > td {
   .col-branches ,
   .col-conditions,
   .col-decisions,
-  .col-calls {
+  .col-calls,
+  .col-diff {
     display: none !important;
   }
 

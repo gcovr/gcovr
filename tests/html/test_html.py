@@ -147,6 +147,22 @@ PARAMETERS = [
         ),
     ),
     (
+        "theme-boost-green",
+        (
+            "--html-details",
+            "--html-block-ids",
+            "--html-theme=boost.green",
+        ),
+    ),
+    (
+        "theme-boost-blue",
+        (
+            "--html-details",
+            "--html-block-ids",
+            "--html-theme=boost.blue",
+        ),
+    ),
+    (
         "theme-github-green",
         (
             "--html-details",
@@ -407,6 +423,24 @@ PARAMETERS_NESTED = [
             "--html-details=./",
             "--html-single-page",
             "--html-theme=github.blue",
+        ),
+    ),
+    (
+        "boost-theme-green",
+        (
+            "--filter",
+            "subdir/A",
+            "--html-nested=./",
+            "--html-theme=boost.green",
+        ),
+    ),
+    (
+        "boost-theme-blue",
+        (
+            "--filter",
+            "subdir/A",
+            "--html-nested=./",
+            "--html-theme=boost.blue",
         ),
     ),
 ]
