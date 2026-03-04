@@ -64,7 +64,7 @@
 
     // Find current page in tree by its HTML filename — this is unambiguous
     // since each page only appears once in the tree.
-    var currentPage = window.location.pathname.split('/').pop() || 'index.html';
+    var currentPage = window.location.pathname.split('/').pop() || '{{ROOT_FNAME}}';
     var treePath = findPathInTree(window.GCOVR_TREE_DATA, currentPage);
 
     if (!treePath || treePath.length === 0) {
@@ -567,7 +567,7 @@
 
   function expandToCurrentFile(container) {
     // Get current page filename
-    var currentPage = window.location.pathname.split('/').pop() || 'index.html';
+    var currentPage = window.location.pathname.split('/').pop() || '{{ROOT_FNAME}}';
 
     // Find the link matching current page
     var currentLink = container.querySelector('a[href="' + currentPage + '"]');
@@ -1282,6 +1282,9 @@
       var container = fileList.closest('.file-list-container');
       var hasFunctions = !container || !container.classList.contains('no-functions');
       var hasBranches = !container || !container.classList.contains('no-branches');
+      var hasConditions = !container || !container.classList.contains('no-conditions');
+      var hasDecision = !container || !container.classList.contains('no-decision');
+      var hasCalls = !container || !container.classList.contains('no-calls');
 
       if (hasFunctions) {
         var colFunc = document.createElement('div');
@@ -1306,6 +1309,55 @@
         colBr.appendChild(brVal);
         row.appendChild(colBr);
       }
+
+      if (hasConditions) {
+        var colCond = document.createElement('div');
+        colCond.className = 'col-conditions';
+        var condVal = document.createElement('span');
+        var condCov = file.conditionsCoverage || '';
+        var condClass = file.conditionsClass || '';
+        condVal.className = 'stat-value ' + condClass;
+        condVal.textContent = (condCov && condCov !== '-') ? condCov + '%' : '-';
+        colCond.appendChild(condVal);
+        row.appendChild(colCond);
+      }
+
+      if (hasDecision) {
+        var colDec = document.createElement('div');
+        colDec.className = 'col-decision';
+        var decVal = document.createElement('span');
+        var decCov = file.decisionCoverage || '';
+        var decClass = file.decisionClass || '';
+        decVal.className = 'stat-value ' + decClass;
+        decVal.textContent = (decCov && decCov !== '-') ? decCov + '%' : '-';
+        colDec.appendChild(decVal);
+        row.appendChild(colDec);
+      }
+
+      if (hasCalls) {
+        var colCalls = document.createElement('div');
+        colCalls.className = 'col-calls';
+        var callsVal = document.createElement('span');
+        var callsCov = file.callsCoverage || '';
+        var callsClass = file.callsClass || '';
+        callsVal.className = 'stat-value ' + callsClass;
+        callsVal.textContent = (callsCov && callsCov !== '-') ? callsCov + '%' : '-';
+        colCalls.appendChild(callsVal);
+        row.appendChild(colCalls);
+      }
+
+{% if info.diff_report %}
+      {
+        var colDiff = document.createElement('div');
+        colDiff.className = 'col-diff';
+        var diffVal = document.createElement('span');
+        var diffText = file.diff || '';
+        diffVal.className = 'stat-value';
+        diffVal.textContent = diffText;
+        colDiff.appendChild(diffVal);
+        row.appendChild(colDiff);
+      }
+{% endif %}
 
       return row;
     }
@@ -1505,7 +1557,7 @@
     var fileLinks = collectLinks(window.GCOVR_TREE_DATA);
     if (fileLinks.length === 0) return;
 
-    var currentPage = window.location.pathname.split('/').pop() || 'index.html';
+    var currentPage = window.location.pathname.split('/').pop() || '{{ROOT_FNAME}}';
     var idx = fileLinks.indexOf(currentPage);
     if (idx === -1) return;
 

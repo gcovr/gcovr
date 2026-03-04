@@ -6,11 +6,14 @@
     <div class="col-calls{{class_sortable}}" data-sort="calls">Calls</div>
     <div class="col-lines{{class_sortable}}" data-sort="lines">Lines</div>
     <div class="col-branches{{class_sortable}}" data-sort="branches">Branches</div>
+    {% if SHOW_CONDITION_COVERAGE %}
+    <div class="col-conditions{{class_sortable}}" data-sort="conditions">Conditions</div>
+    {% endif %}
   </div>
 
   <div class="functions-body">
     {% for entry in function_list %}
-    <div class="function-row" data-name="{{entry.name}}" data-calls="{{'-' if entry['excluded'] else entry['count']}}" data-lines="{{entry.line_coverage}}" data-branches="{{entry.branch_coverage}}">
+    <div class="function-row" data-name="{{entry.name}}" data-calls="{{'-' if entry['excluded'] else entry['execution_count']}}" data-lines="{{entry.line_coverage}}" data-branches="{{entry.branch_coverage}}" data-conditions="{{entry.condition_coverage}}">
       <div class="col-function">
         <a href="{%- if info.single_page %}#{{ entry['html_filename'] }}|
                  {%- elif (html_filename != entry['html_filename']) %}{{ entry['html_filename'] }}#
@@ -23,13 +26,16 @@
       <div class="col-calls">
         {%- if entry["excluded"] %}<span class="excluded">excluded</span>
         {%- else %}
-        {%-  if entry["count"] == 0 %}<span class="not-called">not called</span>
-        {%-  else %}<span class="called">{{ entry["count"] }}x</span>
+        {%-  if entry["execution_count"] == 0 %}<span class="not-called">not called</span>
+        {%-  else %}<span class="called">{{ entry["execution_count"] }}x</span>
         {%-  endif -%}
         {%- endif -%}
       </div>
       <div class="col-lines">{{ entry["line_coverage"] }}%</div>
       <div class="col-branches">{{ entry["branch_coverage"] }}%</div>
+      {% if SHOW_CONDITION_COVERAGE %}
+      <div class="col-conditions">{{ entry["condition_coverage"] }}%</div>
+      {% endif %}
     </div>
     {% endfor %}
   </div>

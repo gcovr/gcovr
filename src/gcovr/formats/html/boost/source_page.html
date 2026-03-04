@@ -3,19 +3,19 @@
 
 {% block html_title %}{{filename}} - {{info.head}}{% endblock %}
 
-{% block breadcrumb %}<a href="index.html" class="breadcrumb-home">Index</a><span class="separator">/</span><span class="current">{{filename | replace("/", " / ")}}</span>{% endblock %}
+{% block breadcrumb %}<a href="{{ROOT_FNAME}}" class="breadcrumb-home">Index</a><span class="separator">/</span><span class="current">{{filename | replace("/", " / ")}}</span>{% endblock %}
 
 {% block sidebar_tree %}
 {# Show current file in sidebar #}
 <div class="tree-item">
   <div class="tree-item-header">
-    <a href="index.html" class="tree-toggle" title="Back to directory">
+    <a href="{{ROOT_FNAME}}" class="tree-toggle" title="Back to directory">
       <span class="toggle-icon">&larr;</span>
     </a>
     <span class="tree-icon folder">
       <svg viewBox="0 0 16 16" width="16" height="16"><path fill="currentColor" d="M1.75 1A1.75 1.75 0 000 2.75v10.5C0 14.216.784 15 1.75 15h12.5A1.75 1.75 0 0016 13.25v-8.5A1.75 1.75 0 0014.25 3H7.5a.25.25 0 01-.2-.1l-.9-1.2C6.07 1.26 5.55 1 5 1H1.75z"></path></svg>
     </span>
-    <a class="tree-label" href="index.html">Back to Index</a>
+    <a class="tree-label" href="{{ROOT_FNAME}}">Back to Index</a>
   </div>
 </div>
 <div class="tree-item active">
