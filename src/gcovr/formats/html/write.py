@@ -147,10 +147,10 @@ class CssRenderer:
         return templates(options).get_template("style.css")
 
     @staticmethod
-    def render(options: Options) -> str:
+    def render(options: Options, root_info: "RootInfo") -> str:
         """Get the rendered CSS content."""
         template = CssRenderer.__load_css_template(options)
-        return template.render(tab_size=options.html_tab_size)
+        return template.render(tab_size=options.html_tab_size, info=root_info)
 
 
 class NullHighlighting:
@@ -353,7 +353,6 @@ def write_report(
     covdata: CoverageContainer, output_file: str, options: Options
 ) -> None:
     """Write the HTML report"""
-    css_data = CssRenderer.render(options).strip()
     medium_threshold = options.medium_threshold
     high_threshold = options.high_threshold
     medium_threshold_line = options.medium_threshold_line
@@ -397,6 +396,7 @@ def write_report(
         else:
             output_file += "coverage.html"
 
+    css_data = CssRenderer.render(options, root_info).strip()
     if PYGMENTS_CSS_MARKER in css_data:
         LOGGER.info(
             "Skip adding of pygments styles since %r found in user stylesheet",
