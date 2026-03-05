@@ -16,6 +16,7 @@ New features and notable changes:
 
   - Improve wrapping of the counter in the default theme. (:issue:`1236`)
   - Replace meter with ``div`` elements in the default theme (like in GitHub themes). (:issue:`1236`)
+  - Add jinja2 rendering for CSS files. (:issue:`1252`)
 
 - Add compare mode for JSON, text and HTML reports. (:issue:`1240`)
 - Stub missing line coverage for branches in LLVM source based code coverage format. (:issue:`1245`)
