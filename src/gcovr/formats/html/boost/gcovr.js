@@ -1577,7 +1577,7 @@
             a.className = el.className.replace(/\bdisabled\b/, '').trim();
             a.href = href;
             a.title = el.title;
-            a.innerHTML = el.innerHTML;
+            while (el.firstChild) a.appendChild(el.firstChild.cloneNode(true));
             el.parentNode.replaceChild(a, el);
           }
         } else {
@@ -1586,7 +1586,7 @@
             var span = document.createElement('span');
             span.className = el.className + ' disabled';
             span.title = el.title;
-            span.innerHTML = el.innerHTML;
+            while (el.firstChild) span.appendChild(el.firstChild.cloneNode(true));
             el.parentNode.replaceChild(span, el);
           } else {
             el.classList.add('disabled');
