@@ -16,8 +16,10 @@ New features and notable changes:
 
   - Improve wrapping of the counter in the default theme. (:issue:`1236`)
   - Replace meter with ``div`` elements in the default theme (like in GitHub themes). (:issue:`1236`)
+  - Add jinja2 rendering for CSS files. (:issue:`1252`)
 
 - Add compare mode for JSON, text and HTML reports. (:issue:`1240`)
+- Stub missing line coverage for branches in LLVM source based code coverage format. (:issue:`1245`)
 
 Bug fixes and small improvements:
 
@@ -534,7 +536,7 @@ New features and notable changes:
 - Add a second theme for ``HTML`` report inspired by GitHub. (:issue:`793`)
 - Add :option:`--fail-under-decision` and :option:`--fail-under-function` which will error under a given minimum coverage. (:issue:`773`)
 - Add function coverage to data model. (:issue:`822`)
-- Add support for importing Cobertura XML files with ``--cobertura-add-tracefile`` option. (:issue:`805`)
+- Add support for importing Cobertura XML files with :option:`--cobertura-add-tracefile` option. (:issue:`805`)
 - Add :option:`--jacoco` to generate JaCoCo XML format. (:issue:`823`))
 - Add function coverage to ``HTML`` report. (:issue:`828`)
 - Improve sorting of data in reports. (:issue:`817`):

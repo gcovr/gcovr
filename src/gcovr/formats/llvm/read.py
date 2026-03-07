@@ -340,10 +340,22 @@ def read_json_files(
         for line, branch_regions in branches_by_line.items():
             linecov_collection = filecov.get_line(line)
             if linecov_collection is None:
-                filecov.raise_data_error(
-                    f"Missing line coverage for line {line} required by branch record."
+                linecov = filecov.insert_line_coverage(
+                    data_source,
+                    merge_options,
+                    lineno=line,
+                    count=0,
+                    function_name=None,
+                    block_ids=None,
+                    md5=None,
+                    excluded=False,
                 )
-            linecov = list(linecov_collection.linecov())[0]
+                LOGGER.warning(
+                    "%s: Missing line coverage required by branch record, using 0 hits.",
+                    linecov.location,
+                )
+            else:
+                linecov = list(linecov_collection.linecov())[0]
             for index, branch_region in enumerate(branch_regions):
                 linecov.insert_branch_coverage(
                     data_source,

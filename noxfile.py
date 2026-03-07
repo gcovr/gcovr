@@ -41,6 +41,8 @@ else:
     import tomli as tomllib
 
 
+IS_DARWIN = platform.system() == "Darwin"
+IS_WINDOWS = platform.system() == "Windows"
 GCOVR_ISOLATED_TEST = os.getenv("GCOVR_ISOLATED_TEST") == "zkQEVaBpXF1i"
 ALL_COMPILER_VERSIONS = [
     *[f"gcc-{v}" for v in range(5, 16)],
@@ -207,7 +209,10 @@ def lint(session: nox.Session) -> None:
     session.notify("ruff_format")
     session.notify("bandit")
     session.notify("pylint")
-    session.notify("mypy")
+    if CI_RUN and IS_WINDOWS:
+        session.skip("Skip mypy in windows CI because of false positives.")
+    else:
+        session.notify("mypy")
 
 
 @nox.session
@@ -341,7 +346,7 @@ def doc(session: nox.Session) -> None:
 
     if not GCOVR_ISOLATED_TEST and not (
         # Github actions on MacOs can't use Docker
-        CI_RUN and platform.system() == "Darwin"
+        CI_RUN and IS_DARWIN
     ):
         docker_build_compiler(session, "gcc-8")
         # We need to inject the arguments
@@ -489,13 +494,13 @@ def check_distribution(session: nox.Session) -> None:
 @functools.lru_cache(maxsize=1)
 def get_executable_name() -> Path:
     """Get the executable name."""
-    if platform.system() == "Windows":
+    if IS_WINDOWS:
         suffix = ".exe"
     else:
         suffix = ""
-    if platform.system() == "Windows":
+    if IS_WINDOWS:
         platform_suffix = "win"
-    elif platform.system() == "Darwin":
+    elif IS_DARWIN:
         platform_suffix = "macos"
     else:
         platform_suffix = "linux"
