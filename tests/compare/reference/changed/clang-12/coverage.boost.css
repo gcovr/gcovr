@@ -957,6 +957,7 @@ body.sidebar-resizing .main-content {
   min-height: 0;
   display: flex;
   flex-direction: column;
+  overflow-y: auto;
 }
 
 .main-footer {
@@ -1115,6 +1116,16 @@ body.sidebar-resizing .main-content {
   border: 1px solid var(--border-color);
   border-radius: var(--radius-lg);
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+}
+
+.file-list-body {
+  overflow-y: auto;
+  flex: 1;
+  min-height: 200px;
 }
 
 .file-list-header {
@@ -1686,7 +1697,7 @@ tr.source-line.nav-highlight > td {
 }
 
 .source-table .col-count,
-.source-table .col-blockids {
+.source-table .col-lineblockids {
   text-align: right;
   white-space: nowrap;
   width: 1%;
@@ -1695,7 +1706,7 @@ tr.source-line.nav-highlight > td {
 }
 
 .source-table td.col-count,
-.source-table td.col-blockids {
+.source-table td.col-lineblockids {
   color: var(--text-muted);
 }
 

@@ -429,6 +429,7 @@
       });
   }
 
+  // cspell:ignore capy
   // Collapse single-child directory chains: if a directory has exactly
   // one child and that child is also a directory, absorb the grandchildren.
   // e.g. include > boost > capy > [items] becomes include > [items]
@@ -1536,9 +1537,9 @@
   function initNavOverride() {
     if (!window.GCOVR_TREE_DATA) return;
 
-    var navPrevs = document.querySelectorAll('.nav-prev');
-    var navNexts = document.querySelectorAll('.nav-next');
-    if (navPrevs.length === 0 && navNexts.length === 0) return;
+    var navPrev = document.querySelectorAll('.nav-prev');
+    var navNext = document.querySelectorAll('.nav-next');
+    if (navPrev.length === 0 && navNext.length === 0) return;
 
     // DFS-flatten tree to collect file links in sidebar order
     function collectLinks(nodes) {
@@ -1595,8 +1596,8 @@
       }
     }
 
-    updateNavLinks(navPrevs, prev);
-    updateNavLinks(navNexts, next);
+    updateNavLinks(navPrev, prev);
+    updateNavLinks(navNext, next);
   }
 
   // ===========================================

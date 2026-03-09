@@ -1697,7 +1697,7 @@ tr.source-line.nav-highlight > td {
 }
 
 .source-table .col-count,
-.source-table .col-blockids {
+.source-table .col-lineblockids {
   text-align: right;
   white-space: nowrap;
   width: 1%;
@@ -1706,7 +1706,7 @@ tr.source-line.nav-highlight > td {
 }
 
 .source-table td.col-count,
-.source-table td.col-blockids {
+.source-table td.col-lineblockids {
   color: var(--text-muted);
 }
 

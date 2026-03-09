@@ -93,7 +93,7 @@
           <th class="col-count">Hits</th>
           <th class="col-source">Source Code</th>
           {% if USE_BLOCK_IDS %}
-          <th class="col-blockids">Block IDs</th>
+          <th class="col-lineblockids">Block IDs</th>
           {% endif %}
         </tr>
       </thead>
@@ -223,7 +223,7 @@
           </td>
           <td class="col-source">{{row.source}}</td>
           {% if USE_BLOCK_IDS %}
-          <td class="col-blockids">{% if row.block_ids %}{{row.block_ids | join(', ')}}{% endif %}</td>
+          <td class="col-lineblockids">{% if row.block_ids %}{{row.block_ids | join(', ')}}{% endif %}</td>
           {% endif %}
         </tr>
         {% endfor %}
