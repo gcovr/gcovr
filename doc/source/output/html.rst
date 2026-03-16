@@ -98,6 +98,11 @@ The :option:`--html-theme` option controls the theme and color of HTML report.
 
     :option:`--html-theme github.dark-blue <--html-theme>`
 
+.. figure:: ../../images/screenshot-html-boost-green-src.jpeg
+    :align: center
+
+    :option:`--html-theme boost.green <--html-theme>`
+
 The :option:`--html-template-dir` option allows you to use an
 alternate directory with Jinja2 templates to fully customize the HTML output in detail.
 If a template is missing from this directory the original is used. It is advised that you
