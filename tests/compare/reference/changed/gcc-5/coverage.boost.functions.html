@@ -130,16 +130,142 @@
 
           <section class="main-section">
 <div class="functions-container">
-  <div class="functions-header">
-    <div class="col-function" data-sort="name">Function</div>
-    <div class="col-calls" data-sort="calls">Calls</div>
-    <div class="col-lines" data-sort="lines">Lines</div>
-    <div class="col-branches" data-sort="branches">Branches</div>
-  </div>
-
   <div class="functions-body">
+    <div class="functions-header">
+      <div class="col-function sortable sorted-ascending" data-sort="name">Function</div>
+      <div class="col-calls sortable" data-sort="calls">Calls</div>
+      <div class="col-lines sortable" data-sort="lines">Lines</div>
+      <div class="col-branches sortable" data-sort="branches">Branches</div>
+    </div>
+    <div class="functions-loading" id="functions-loading">
+      <div class="functions-loading-spinner"></div>
+      <span class="functions-loading-text">Loading functions…</span>
+    </div>
   </div>
-</div>          </section>
+</div>
+
+<script type="application/json" id="functions-data">
+[
+  {
+    "name": "bar()",
+    "filename": "subdir/A/File2.cpp",
+    "line": 1,
+    "html_filename": "coverage.boost.File2.cpp.0b63fd09c7d89df6cfd850bed4aef633.html",
+    "execution_count": 1,
+    "excluded": false,
+    "line_coverage": "100.0",
+    "branch_coverage": "-",
+    "condition_coverage": "-"
+  }
+,  {
+    "name": "bar_()",
+    "filename": "subdir/A/File2.cpp",
+    "line": 8,
+    "html_filename": "coverage.boost.File2.cpp.0b63fd09c7d89df6cfd850bed4aef633.html",
+    "execution_count": 0,
+    "excluded": false,
+    "line_coverage": "0.0",
+    "branch_coverage": "-",
+    "condition_coverage": "-"
+  }
+,  {
+    "name": "foo(int)",
+    "filename": "subdir/A/file1.cpp",
+    "line": 1,
+    "html_filename": "coverage.boost.file1.cpp.46c73eeafdf12f5341eb32413a90169e.html",
+    "execution_count": 2,
+    "excluded": false,
+    "line_coverage": "75.0",
+    "branch_coverage": "50.0",
+    "condition_coverage": "-"
+  }
+,  {
+    "name": "foo5(int)",
+    "filename": "subdir/A/C/file5.cpp",
+    "line": 1,
+    "html_filename": "coverage.boost.file5.cpp.cde4c7e07f79b4a315bd6b72e5bfe2dd.html",
+    "execution_count": 1,
+    "excluded": false,
+    "line_coverage": "75.0",
+    "branch_coverage": "50.0",
+    "condition_coverage": "-"
+  }
+,  {
+    "name": "foo6(int)",
+    "filename": "subdir/A/C/D/File6.cpp",
+    "line": 1,
+    "html_filename": "coverage.boost.File6.cpp.d50a8531ab312aa3faac8eaedb567137.html",
+    "execution_count": 0,
+    "excluded": false,
+    "line_coverage": "0.0",
+    "branch_coverage": "0.0",
+    "condition_coverage": "-"
+  }
+,  {
+    "name": "foobar(int)",
+    "filename": "subdir/A/File4.cpp",
+    "line": 1,
+    "html_filename": "coverage.boost.File4.cpp.65a4d8d1a16f0b88f258c253517669ec.html",
+    "execution_count": 1,
+    "excluded": false,
+    "line_coverage": "75.0",
+    "branch_coverage": "50.0",
+    "condition_coverage": "-"
+  }
+,  {
+    "name": "four_bar()",
+    "filename": "subdir/A/file3.cpp",
+    "line": 1,
+    "html_filename": "coverage.boost.file3.cpp.05c5eb887e5d0a7183edce836a6718cd.html",
+    "execution_count": 1,
+    "excluded": false,
+    "line_coverage": "100.0",
+    "branch_coverage": "-",
+    "condition_coverage": "-"
+  }
+,  {
+    "name": "four_bar_()",
+    "filename": "subdir/A/file3.cpp",
+    "line": 8,
+    "html_filename": "coverage.boost.file3.cpp.05c5eb887e5d0a7183edce836a6718cd.html",
+    "execution_count": 0,
+    "excluded": false,
+    "line_coverage": "0.0",
+    "branch_coverage": "0.0",
+    "condition_coverage": "-"
+  }
+,  {
+    "name": "main",
+    "filename": "subdir/B/main.cpp",
+    "line": 13,
+    "html_filename": "coverage.boost.main.cpp.13fb8fc771195717481a98e084ed0848.html",
+    "execution_count": 1,
+    "excluded": false,
+    "line_coverage": "100.0",
+    "branch_coverage": "25.0",
+    "condition_coverage": "-"
+  }
+,  {
+    "name": "uncovered()",
+    "filename": "subdir/A/file7.cpp",
+    "line": 1,
+    "html_filename": "coverage.boost.file7.cpp.f551d0ebeb9c429aba16ade7468659dd.html",
+    "execution_count": 0,
+    "excluded": false,
+    "line_coverage": "0.0",
+    "branch_coverage": "-",
+    "condition_coverage": "-"
+  }
+]
+</script>
+<script>
+  window.__functionsPageConfig = {
+    singlePage: false,
+    htmlFilename: "",
+    showBranches: true,
+    showConditions: false
+  };
+</script>          </section>
         </div>
 
         <footer class="main-footer">

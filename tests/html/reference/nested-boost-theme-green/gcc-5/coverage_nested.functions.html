@@ -130,16 +130,131 @@
 
           <section class="main-section">
 <div class="functions-container">
-  <div class="functions-header">
-    <div class="col-function" data-sort="name">Function</div>
-    <div class="col-calls" data-sort="calls">Calls</div>
-    <div class="col-lines" data-sort="lines">Lines</div>
-    <div class="col-branches" data-sort="branches">Branches</div>
-  </div>
-
   <div class="functions-body">
+    <div class="functions-header">
+      <div class="col-function sortable sorted-ascending" data-sort="name">Function</div>
+      <div class="col-calls sortable" data-sort="calls">Calls</div>
+      <div class="col-lines sortable" data-sort="lines">Lines</div>
+      <div class="col-branches sortable" data-sort="branches">Branches</div>
+    </div>
+    <div class="functions-loading" id="functions-loading">
+      <div class="functions-loading-spinner"></div>
+      <span class="functions-loading-text">Loading functions…</span>
+    </div>
   </div>
-</div>          </section>
+</div>
+
+<script type="application/json" id="functions-data">
+[
+  {
+    "name": "bar()",
+    "filename": "A/subdir_0/subdir_1/subdir_2/subdir_3/subdir_4/subdir_5/subdir_6/subdir_7/subdir_8/subdir_9/File2.cpp",
+    "line": 1,
+    "html_filename": "coverage_nested.File2.cpp.1aed42bd33fceec1188f2f95c6e8946c.html",
+    "execution_count": 1,
+    "excluded": false,
+    "line_coverage": "100.0",
+    "branch_coverage": "-",
+    "condition_coverage": "-"
+  }
+,  {
+    "name": "bar_()",
+    "filename": "A/subdir_0/subdir_1/subdir_2/subdir_3/subdir_4/subdir_5/subdir_6/subdir_7/subdir_8/subdir_9/File2.cpp",
+    "line": 8,
+    "html_filename": "coverage_nested.File2.cpp.1aed42bd33fceec1188f2f95c6e8946c.html",
+    "execution_count": 0,
+    "excluded": false,
+    "line_coverage": "0.0",
+    "branch_coverage": "-",
+    "condition_coverage": "-"
+  }
+,  {
+    "name": "foo(int)",
+    "filename": "A/file1.cpp",
+    "line": 1,
+    "html_filename": "coverage_nested.file1.cpp.11975e1ce5d9c157e76130f444523bea.html",
+    "execution_count": 1,
+    "excluded": false,
+    "line_coverage": "75.0",
+    "branch_coverage": "50.0",
+    "condition_coverage": "-"
+  }
+,  {
+    "name": "foo5(int)",
+    "filename": "A/C/file5.cpp",
+    "line": 1,
+    "html_filename": "coverage_nested.file5.cpp.4f0be33a4dcfe398ba897b87f58ca7ce.html",
+    "execution_count": 1,
+    "excluded": false,
+    "line_coverage": "75.0",
+    "branch_coverage": "50.0",
+    "condition_coverage": "-"
+  }
+,  {
+    "name": "foo6(int)",
+    "filename": "A/C/D/File6.cpp",
+    "line": 1,
+    "html_filename": "coverage_nested.File6.cpp.73326d74f2aeb2719dd6d8a9bcc3e582.html",
+    "execution_count": 0,
+    "excluded": false,
+    "line_coverage": "0.0",
+    "branch_coverage": "0.0",
+    "condition_coverage": "-"
+  }
+,  {
+    "name": "foobar(int)",
+    "filename": "A/File4.cpp",
+    "line": 1,
+    "html_filename": "coverage_nested.File4.cpp.1d7a80554861eb8b5c21bc2e26ff8f70.html",
+    "execution_count": 1,
+    "excluded": false,
+    "line_coverage": "75.0",
+    "branch_coverage": "50.0",
+    "condition_coverage": "-"
+  }
+,  {
+    "name": "four_bar()",
+    "filename": "A/file3.cpp",
+    "line": 1,
+    "html_filename": "coverage_nested.file3.cpp.bcfa344b5512d8cd5857f2fe86511d71.html",
+    "execution_count": 1,
+    "excluded": false,
+    "line_coverage": "100.0",
+    "branch_coverage": "-",
+    "condition_coverage": "-"
+  }
+,  {
+    "name": "four_bar_()",
+    "filename": "A/file3.cpp",
+    "line": 8,
+    "html_filename": "coverage_nested.file3.cpp.bcfa344b5512d8cd5857f2fe86511d71.html",
+    "execution_count": 0,
+    "excluded": false,
+    "line_coverage": "0.0",
+    "branch_coverage": "0.0",
+    "condition_coverage": "-"
+  }
+,  {
+    "name": "uncovered()",
+    "filename": "A/file7.cpp",
+    "line": 1,
+    "html_filename": "coverage_nested.file7.cpp.fa9d180b71a3402bed7d24bb1966eaf5.html",
+    "execution_count": 0,
+    "excluded": false,
+    "line_coverage": "0.0",
+    "branch_coverage": "-",
+    "condition_coverage": "-"
+  }
+]
+</script>
+<script>
+  window.__functionsPageConfig = {
+    singlePage: false,
+    htmlFilename: "",
+    showBranches: true,
+    showConditions: false
+  };
+</script>          </section>
         </div>
 
         <footer class="main-footer">

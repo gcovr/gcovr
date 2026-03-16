@@ -122,24 +122,46 @@
     <span class="stat-label">Lines:</span>
     <span class="stat-value coverage-high">100.0%</span>
   </div>
-  <div class="summary-stat">
-    <span class="stat-label">Branches:</span>
-    <span class="stat-value coverage-unknown">-%</span>
-  </div>
 </div>          </section>
 
           <section class="main-section">
-<div class="functions-container">
-  <div class="functions-header">
-    <div class="col-function" data-sort="name">Function</div>
-    <div class="col-calls" data-sort="calls">Calls</div>
-    <div class="col-lines" data-sort="lines">Lines</div>
-    <div class="col-branches" data-sort="branches">Branches</div>
-  </div>
-
+<div class="functions-container no-branches">
   <div class="functions-body">
+    <div class="functions-header">
+      <div class="col-function" data-sort="name">Function</div>
+      <div class="col-calls" data-sort="calls">Calls</div>
+      <div class="col-lines" data-sort="lines">Lines</div>
+    </div>
+    <div class="functions-loading" id="functions-loading">
+      <div class="functions-loading-spinner"></div>
+      <span class="functions-loading-text">Loading functions…</span>
+    </div>
   </div>
-</div>          </section>
+</div>
+
+<script type="application/json" id="functions-data">
+[
+  {
+    "name": "main",
+    "filename": "main.cpp",
+    "line": 2,
+    "html_filename": "coverage.main.cpp.118fcbaaba162ba17933c7893247df3a.html",
+    "execution_count": 1,
+    "excluded": false,
+    "line_coverage": "100.0",
+    "branch_coverage": "-",
+    "condition_coverage": "-"
+  }
+]
+</script>
+<script>
+  window.__functionsPageConfig = {
+    singlePage: false,
+    htmlFilename: "",
+    showBranches: false,
+    showConditions: false
+  };
+</script>          </section>
         </div>
 
         <footer class="main-footer">
