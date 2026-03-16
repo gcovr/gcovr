@@ -1,42 +1,48 @@
 {# -*- engine: jinja -*- #}
-<div class="functions-container">
-  <div class="functions-header">
-    {% set class_sortable = " sortable" if not info.static_report and function_list | length > 1 else "" %}
-    <div class="col-function{{class_sortable}}{% if class_sortable %} sorted-ascending{% endif %}" data-sort="name">Function</div>
-    <div class="col-calls{{class_sortable}}" data-sort="calls">Calls</div>
-    <div class="col-lines{{class_sortable}}" data-sort="lines">Lines</div>
-    <div class="col-branches{{class_sortable}}" data-sort="branches">Branches</div>
-    {% if SHOW_CONDITION_COVERAGE %}
-    <div class="col-conditions{{class_sortable}}" data-sort="conditions">Conditions</div>
-    {% endif %}
-  </div>
-
+<div class="functions-container{% if not (info.branches.total > info.branches.excluded) %} no-branches{% endif %}">
   <div class="functions-body">
-    {% for entry in function_list %}
-    <div class="function-row" data-name="{{entry.name}}" data-calls="{{'-' if entry['excluded'] else entry['execution_count']}}" data-lines="{{entry.line_coverage}}" data-branches="{{entry.branch_coverage}}" data-conditions="{{entry.condition_coverage}}">
-      <div class="col-function">
-        <a href="{%- if info.single_page %}#{{ entry['html_filename'] }}|
-                 {%- elif (html_filename != entry['html_filename']) %}{{ entry['html_filename'] }}#
-                 {%- else %}#
-                 {%- endif %}l{{ entry['line'] }}">
-          <span class="function-name">{{ entry["name"] }}</span>
-          <span class="function-location">{{ entry["filename"] }}:{{ entry["line"] }}</span>
-        </a>
-      </div>
-      <div class="col-calls">
-        {%- if entry["excluded"] %}<span class="excluded">excluded</span>
-        {%- else %}
-        {%-  if entry["execution_count"] == 0 %}<span class="not-called">not called</span>
-        {%-  else %}<span class="called">{{ entry["execution_count"] }}x</span>
-        {%-  endif -%}
-        {%- endif -%}
-      </div>
-      <div class="col-lines">{{ entry["line_coverage"] }}%</div>
-      <div class="col-branches">{{ entry["branch_coverage"] }}%</div>
+    <div class="functions-header">
+      {% set class_sortable = " sortable" if not info.static_report and function_list | length > 1 else "" %}
+      <div class="col-function{{class_sortable}}{% if class_sortable %} sorted-ascending{% endif %}" data-sort="name">Function</div>
+      <div class="col-calls{{class_sortable}}" data-sort="calls">Calls</div>
+      <div class="col-lines{{class_sortable}}" data-sort="lines">Lines</div>
+      {% if info.branches.total > info.branches.excluded %}
+      <div class="col-branches{{class_sortable}}" data-sort="branches">Branches</div>
+      {% endif %}
       {% if SHOW_CONDITION_COVERAGE %}
-      <div class="col-conditions">{{ entry["condition_coverage"] }}%</div>
+      <div class="col-conditions{{class_sortable}}" data-sort="conditions">Conditions</div>
       {% endif %}
     </div>
-    {% endfor %}
+    <div class="functions-loading" id="functions-loading">
+      <div class="functions-loading-spinner"></div>
+      <span class="functions-loading-text">Loading functions…</span>
+    </div>
   </div>
 </div>
+
+<script type="application/json" id="functions-data">
+[
+  {% for entry in function_list %}
+  {% if not loop.first %},{% endif %}
+  {
+    "name": {{ entry.name | tojson }},
+    "filename": {{ entry.filename | tojson }},
+    "line": {{ entry.line }},
+    "html_filename": {{ entry.html_filename | tojson }},
+    "execution_count": {{ entry.execution_count if entry.execution_count is defined and entry.execution_count is not none else 0 }},
+    "excluded": {{ "true" if entry.excluded else "false" }},
+    "line_coverage": "{{ entry.line_coverage }}",
+    "branch_coverage": "{{ entry.branch_coverage }}",
+    "condition_coverage": "{{ entry.condition_coverage }}"
+  }
+  {% endfor %}
+]
+</script>
+<script>
+  window.__functionsPageConfig = {
+    singlePage: {{ "true" if info.single_page else "false" }},
+    htmlFilename: "{{ html_filename }}",
+    showBranches: {{ "true" if info.branches.total > info.branches.excluded else "false" }},
+    showConditions: {{ "true" if SHOW_CONDITION_COVERAGE else "false" }}
+  };
+</script>

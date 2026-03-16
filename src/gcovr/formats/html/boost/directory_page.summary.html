@@ -84,4 +84,11 @@
   <span class="legend-item coverage-medium">Medium: &ge; {{COVERAGE_MED}}%</span>
   {% endif %}
   <span class="legend-item coverage-low">Low: &lt; {{COVERAGE_MED}}%</span>
+  {% if info.link_function_list %}
+  <span class="legend-separator"></span>
+  <a href="{{ FUNCTIONS_FNAME }}" class="legend-item legend-functions-link" title="List of all functions">
+    <span class="fx-icon" aria-hidden="true"><i>f</i>(x)</span>
+    List of functions
+  </a>
+  {% endif %}
 </div>

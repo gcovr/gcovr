@@ -72,6 +72,58 @@
     {% endif %}
   </div>
 
+  {% if info.single_page %}
+  {%  set anchor_prefix = html_filename + "|" %}
+  {% else %}
+  {%  set anchor_prefix = '' %}
+  {% endif %}
+
+  {% if function_list is defined and function_list | length > 0 %}
+  <details class="source-functions">
+    <summary class="source-functions-toggle">
+      <span class="fx-icon"><i>f</i>(x)</span>
+      Functions ({{ function_list | length }})
+    </summary>
+    <div class="source-functions-list">
+      {% set sortable = " sortable" if function_list | length > 1 else "" %}
+      <div class="source-function-header">
+        <span class="source-function-col-name{{ sortable }}{% if sortable %} sorted-ascending{% endif %}" data-sort="name">Function</span>
+        <span class="source-function-col-stat{{ sortable }}" data-sort="calls">Calls</span>
+        <span class="source-function-col-stat{{ sortable }}" data-sort="lines">Lines</span>
+        {% if has_branches %}
+        <span class="source-function-col-stat col-branches{{ sortable }}" data-sort="branches">Branches</span>
+        {% endif %}
+        <span class="source-function-col-stat{{ sortable }}" data-sort="blocks">Blocks</span>
+      </div>
+      {% for entry in function_list | sort(attribute='line') %}
+      {% set calls = entry.count if entry.count is defined else entry.execution_count if entry.execution_count is defined else none %}
+      {% set blks = entry.blocks if entry.blocks is defined else entry.blocks_percent if entry.blocks_percent is defined else none %}
+      <a href="#{{ anchor_prefix }}l{{ entry.line }}" class="source-function-item{% if entry.excluded %} fn-excluded{% elif calls is not none and calls > 0 %}{% else %} fn-uncovered{% endif %}"
+         data-name="{{ entry.name }}" data-calls="{{ calls if calls is not none else -1 }}" data-lines="{{ entry.line_coverage if entry.line_coverage is defined else -1 }}" data-branches="{{ entry.branch_coverage if entry.branch_coverage is defined and entry.branch_coverage != '-' else -1 }}" data-blocks="{{ blks if blks is not none else -1 }}">
+        <span class="source-function-col-name">
+          <span class="source-function-name">{{ entry.name }}</span>
+          <span class="source-function-line">:{{ entry.line }}</span>
+        </span>
+        <span class="source-function-col-stat{% if entry.excluded %} excluded{% elif not (calls is not none and calls > 0) %} not-called{% endif %}">
+          {%- if entry.excluded %}&ndash;{% elif calls is not none and calls > 0 %}{{ calls }}x{% else %}0{% endif -%}
+        </span>
+        <span class="source-function-col-stat{% if entry.excluded %} excluded{% elif entry.line_coverage is defined and entry.line_coverage == 100.0 %} cov-high{% elif entry.line_coverage is defined and entry.line_coverage > 0 %} cov-med{% else %} cov-low{% endif %}">
+          {%- if entry.excluded %}&ndash;{% elif entry.line_coverage is defined %}{{ entry.line_coverage | round(1) }}%{% else %}&ndash;{% endif -%}
+        </span>
+        {% if has_branches %}
+        <span class="source-function-col-stat col-branches{% if entry.excluded %} excluded{% elif entry.branch_coverage is defined and entry.branch_coverage != '-' %}{% if entry.branch_coverage == 100.0 %} cov-high{% elif entry.branch_coverage > 0 %} cov-med{% else %} cov-low{% endif %}{% endif %}">
+          {%- if entry.excluded %}&ndash;{% elif entry.branch_coverage is defined and entry.branch_coverage != '-' %}{{ entry.branch_coverage | round(1) }}%{% else %}&ndash;{% endif -%}
+        </span>
+        {% endif %}
+        <span class="source-function-col-stat{% if entry.excluded %} excluded{% elif blks is not none %}{% if blks == 100.0 %} cov-high{% elif blks > 0 %} cov-med{% else %} cov-low{% endif %}{% endif %}">
+          {%- if entry.excluded %}&ndash;{% elif blks is not none %}{{ blks | round(1) }}%{% else %}&ndash;{% endif -%}
+        </span>
+      </a>
+      {% endfor %}
+    </div>
+  </details>
+  {% endif %}
+
   <div class="source-table-container">
     <table class="source-table">
       <thead>
@@ -98,11 +150,6 @@
         </tr>
       </thead>
       <tbody>
-        {% if info.single_page %}
-        {%  set anchor_prefix = html_filename + "|" %}
-        {% else %}
-        {%  set anchor_prefix = '' %}
-        {% endif %}
         {% for row in source_lines %}
         <tr class="source-line{% if row.covclass %} {{row.covclass}} show_{{row.covclass}}{% endif %}">
           <td class="col-lineno">

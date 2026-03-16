@@ -9,8 +9,10 @@
     <span class="stat-label">Lines:</span>
     <span class="stat-value {{info.lines.class}}">{{info.lines.coverage}}%</span>
   </div>
+  {% if info.branches.coverage != '-' %}
   <div class="summary-stat">
     <span class="stat-label">Branches:</span>
     <span class="stat-value {{info.branches.class}}">{{info.branches.coverage}}%</span>
   </div>
+  {% endif %}
 </div>
