@@ -77,6 +77,10 @@
   --coverage-low: #f85149;
   --coverage-low-bg: rgba(248, 81, 73, 0.15);
   --coverage-unknown: #6e7681;
+  --coverage-high-border: rgba(63, 185, 80, 0.7);
+  --coverage-high-highlight: rgba(63, 185, 80, 0.18);
+  --coverage-high-btn-border: rgba(63, 185, 80, 0.4);
+  --coverage-high-btn-accent: rgba(63, 185, 80, 0.5);
 
   /* Buttons */
   --btn-primary-bg: var(--brand-gold);
@@ -169,6 +173,10 @@
   --coverage-medium-bg: rgba(154, 103, 0, 0.15);
   --coverage-low: #cf222e;
   --coverage-low-bg: rgba(207, 34, 46, 0.15);
+  --coverage-high-border: rgba(26, 127, 55, 0.7);
+  --coverage-high-highlight: rgba(26, 127, 55, 0.18);
+  --coverage-high-btn-border: rgba(26, 127, 55, 0.4);
+  --coverage-high-btn-accent: rgba(26, 127, 55, 0.5);
 
   /* Buttons */
   --btn-primary-bg: var(--accent-brand);
@@ -188,6 +196,27 @@
   --code-string: #0550ae;
 }
 
+/* ===========================================
+   Blue Theme Overrides (--html-theme blue)
+   =========================================== */
+.theme-blue {
+  --coverage-high: #58a6ff;
+  --coverage-high-bg: rgba(88, 166, 255, 0.15);
+  --coverage-high-border: rgba(88, 166, 255, 0.7);
+  --coverage-high-highlight: rgba(88, 166, 255, 0.18);
+  --coverage-high-btn-border: rgba(88, 166, 255, 0.4);
+  --coverage-high-btn-accent: rgba(88, 166, 255, 0.5);
+}
+
+.theme-blue[data-theme="light"] {
+  --coverage-high: #0969da;
+  --coverage-high-bg: rgba(9, 105, 218, 0.15);
+  --coverage-high-border: rgba(9, 105, 218, 0.7);
+  --coverage-high-highlight: rgba(9, 105, 218, 0.18);
+  --coverage-high-btn-border: rgba(9, 105, 218, 0.4);
+  --coverage-high-btn-accent: rgba(9, 105, 218, 0.5);
+}
+
 /* Suppress transitions and hide content on initial load to prevent flash */
 html.no-transitions,
 html.no-transitions *,
@@ -204,7 +233,7 @@ html.no-transitions body {
 body, .sidebar, .main-content, .main-header, .main-footer,
 .sidebar-header, .sidebar-nav,
 .summary-card, .file-list-container, .source-container,
-.tree-item-header, .coverage-badge, .tree-coverage,
+.tree-item-header,
 .btn, .nav-link, input {
   transition: background-color 0.25s ease, border-color 0.25s ease, color 0.25s ease;
 }
@@ -632,25 +661,6 @@ body.sidebar-resizing .main-content {
   gap: 8px;
 }
 
-.coverage-badge {
-  padding: 4px 10px;
-  border-radius: var(--radius-sm);
-  font-weight: 600;
-  font-size: var(--font-size-sm);
-}
-
-.coverage-badge.coverage-high {
-  background: var(--coverage-high-bg);
-}
-
-.coverage-badge.coverage-medium {
-  background: var(--coverage-medium-bg);
-}
-
-.coverage-badge.coverage-low {
-  background: var(--coverage-low-bg);
-}
-
 .coverage-label {
   color: var(--text-secondary);
   font-size: var(--font-size-xs);
@@ -810,25 +820,6 @@ body.sidebar-resizing .main-content {
   color: var(--text-primary);
 }
 
-.tree-coverage {
-  font-size: var(--font-size-xs);
-  font-weight: 600;
-  padding: 2px 6px;
-  border-radius: var(--radius-sm);
-  flex-shrink: 0;
-}
-
-.tree-coverage.coverage-high {
-  background: var(--coverage-high-bg);
-}
-
-.tree-coverage.coverage-medium {
-  background: var(--coverage-medium-bg);
-}
-
-.tree-coverage.coverage-low {
-  background: var(--coverage-low-bg);
-}
 
 .tree-children {
   display: none;
@@ -1894,21 +1885,21 @@ tr.source-line.nav-highlight > td {
 
 .highlight-target.coveredLine td {
   box-shadow:
-    inset 0 2px 0 0 rgba(63, 185, 80, 0.7),
-    inset 0 -2px 0 0 rgba(63, 185, 80, 0.7),
-    inset 0 0 0 100px rgba(63, 185, 80, 0.18);
+    inset 0 2px 0 0 var(--coverage-high-border),
+    inset 0 -2px 0 0 var(--coverage-high-border),
+    inset 0 0 0 100px var(--coverage-high-highlight);
 }
 .highlight-target.coveredLine td:first-child {
   box-shadow:
-    inset 2px 2px 0 0 rgba(63, 185, 80, 0.7),
-    inset 0 -2px 0 0 rgba(63, 185, 80, 0.7),
-    inset 0 0 0 100px rgba(63, 185, 80, 0.18);
+    inset 2px 2px 0 0 var(--coverage-high-border),
+    inset 0 -2px 0 0 var(--coverage-high-border),
+    inset 0 0 0 100px var(--coverage-high-highlight);
 }
 .highlight-target.coveredLine td:last-child {
   box-shadow:
-    inset 0 2px 0 0 rgba(63, 185, 80, 0.7),
-    inset -2px -2px 0 0 rgba(63, 185, 80, 0.7),
-    inset 0 0 0 100px rgba(63, 185, 80, 0.18);
+    inset 0 2px 0 0 var(--coverage-high-border),
+    inset -2px -2px 0 0 var(--coverage-high-border),
+    inset 0 0 0 100px var(--coverage-high-highlight);
 }
 
 .highlight-target.uncoveredLine td {
@@ -2734,8 +2725,8 @@ tr.source-line.nav-highlight > td {
 
 /* Source line filter color tints */
 .source-line-filters .button_toggle_coveredLine {
-  border: 1px solid rgba(63, 185, 80, 0.4);
-  border-left: 3px solid rgba(63, 185, 80, 0.5);
+  border: 1px solid var(--coverage-high-btn-border);
+  border-left: 3px solid var(--coverage-high-btn-accent);
   background: var(--coverage-high-bg);
 }
 
