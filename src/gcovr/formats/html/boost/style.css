@@ -854,6 +854,7 @@ body.sidebar-resizing .main-content {
   display: flex;
   flex-direction: column;
   height: 100vh;
+  overflow-y: auto;
   transition: margin-left var(--transition-normal);
 }
 
@@ -868,12 +869,21 @@ body.sidebar-resizing .main-content {
   display: flex;
   align-items: center;
   gap: 16px;
-  margin: 0 12px 12px 0;
+  margin: 15px 12px 12px 0;
   padding: 12px 10px 12px 12px;
   background: var(--bg-secondary);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-lg);
   height: var(--header-height);
+}
+
+/* On source pages, the header scrolls away instead of staying sticky */
+.main-content:has(.source-container) .main-header {
+  position: static;
+}
+
+.main-content:has(.source-container) .main-footer {
+  display: none;
 }
 
 
@@ -958,6 +968,13 @@ body.sidebar-resizing .main-content {
   display: flex;
   flex-direction: column;
   overflow-y: auto;
+}
+
+/* On source pages, main-section doesn't need its own scroll — main-content scrolls */
+.main-content:has(.source-container) .main-section {
+  flex: initial;
+  min-height: initial;
+  overflow-y: visible;
 }
 
 .main-footer {
@@ -1244,10 +1261,6 @@ body.sidebar-resizing .main-content {
   transition: background var(--transition-fast);
 }
 
-.file-row:last-child {
-  border-bottom: none;
-}
-
 .file-row:hover {
   background: var(--bg-hover);
 }
@@ -1475,11 +1488,8 @@ body.sidebar-resizing .main-content {
   background: var(--bg-secondary);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-lg);
-  overflow: clip;
   display: flex;
   flex-direction: column;
-  flex: 1;
-  min-height: 0;
 }
 
 .source-header {
@@ -1491,6 +1501,20 @@ body.sidebar-resizing .main-content {
   flex-wrap: wrap;
   gap: 8px;
   flex-shrink: 0;
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+}
+
+.source-header-filename {
+  font-family: var(--font-mono);
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .source-title {
@@ -1774,10 +1798,9 @@ tr.source-line.nav-highlight > td {
 }
 
 .source-table-container {
-  overflow: auto;
+  overflow-x: auto;
   max-width: 100%;
-  flex: 1;
-  min-height: 0;
+  border-radius: 0 0 var(--radius-lg) var(--radius-lg);
 }
 
 .source-table {

@@ -11,6 +11,7 @@
 {% set uncovered_total = (lines.total - lines.exec) + partial_count %}
 <div class="source-container{% if not has_branches %} no-branches{% endif %}">
   <div class="source-header">
+    <span class="source-header-filename">{{filename.split('/')[-1]}}</span>
     <div class="source-line-filters">
       <button type="button" class="btn btn-sm button_toggle_coveredLine show_coveredLine" value="coveredLine" title="Toggle covered lines">
         covered
