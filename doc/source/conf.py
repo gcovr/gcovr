@@ -199,7 +199,7 @@ todo_include_todos = True
 # see http://www.sphinx-doc.org/en/master/ext/extlinks.html
 extlinks = {"issue": ("https://github.com/gcovr/gcovr/issues/%s", "#%s")}
 
-# -- linkcheck extenstion ------------------------------------------
+# -- linkcheck extension ------------------------------------------
 linkcheck_report_timeouts_as_broken = False
 linkcheck_anchors_ignore_for_url = [r"https://github.com/.+/blob/.+"]
 linkcheck_ignore = [
