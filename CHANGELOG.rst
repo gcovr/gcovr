@@ -43,6 +43,7 @@ Breaking changes:
 New features and notable changes:
 
 - Add support for Python 3.14. (:issue:`1227`)
+- Support arbitrary file names for toml configuration files (:issue:`1257`)
 
 Bug fixes and small improvements:
 

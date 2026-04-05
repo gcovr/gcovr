@@ -197,8 +197,14 @@ def load_config(partial_options: Namespace) -> dict[str, Any]:
     """Load a config file if configured or found by default names"""
     filename = getattr(partial_options, "config", None)
     if filename is not None:
-        with open(filename, encoding="utf-8") as buf:
-            return parse_config_into_dict(parse_config_file(buf, filename))
+        if filename.endswith(".toml"):
+            with open(filename, "rb") as buf:
+                data = tomllib.load(buf)
+                tmp = config_entries_from_dict(data, filename)
+        else:
+            with open(filename, encoding="utf-8") as buf:
+                tmp = parse_config_file(buf, filename)
+        return parse_config_into_dict(tmp)
 
     root = getattr(partial_options, "root", "")
     if filename := find_config_name(root, "gcovr.cfg"):
