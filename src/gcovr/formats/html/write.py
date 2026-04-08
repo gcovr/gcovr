@@ -184,7 +184,7 @@ class PygmentsHighlighting:
             self.markers_regex = markers_regex
 
         def filter(
-            self, lexer: Lexer, stream: Iterable[tuple[_TokenType, str]]
+            self, lexer: Lexer | None, stream: Iterable[tuple[_TokenType, str]]
         ) -> Iterator[tuple[_TokenType, str]]:
             for ttype, value in stream:
                 if _EXCLUDE_FLAG in value:

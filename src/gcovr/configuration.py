@@ -457,8 +457,8 @@ GCOVR_CONFIG_OPTIONS = [
         ["--config"],
         config=False,
         help=(
-            "Load that configuration file. "
-            "Defaults to gcovr.cfg in the --root directory."
+            "Load that configuration file. Defaults to gcovr.cfg, "
+            "gcovr.toml or pyproject.toml (section tool.gcovr) in the --root directory."
         ),
         type=relative_path,
     ),

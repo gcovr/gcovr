@@ -20,6 +20,7 @@ New features and notable changes:
 
 - Add compare mode for JSON, text and HTML reports. (:issue:`1240`)
 - Stub missing line coverage for branches in LLVM source based code coverage format. (:issue:`1245`)
+- Add support for TOML files with :option:`--config` (:issue:`1258`)
 
 Bug fixes and small improvements:
 
