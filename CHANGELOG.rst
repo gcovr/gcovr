@@ -20,6 +20,7 @@ New features and notable changes:
 
 - Add compare mode for JSON, text and HTML reports. (:issue:`1240`)
 - Stub missing line coverage for branches in LLVM source based code coverage format. (:issue:`1245`)
+- Add support for TOML files with :option:`--config` (:issue:`1258`)
 
 Bug fixes and small improvements:
 
@@ -43,7 +44,6 @@ Breaking changes:
 New features and notable changes:
 
 - Add support for Python 3.14. (:issue:`1227`)
-- Support arbitrary file names for toml configuration files (:issue:`1257`)
 
 Bug fixes and small improvements:
 
