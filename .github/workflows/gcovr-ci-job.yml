@@ -52,7 +52,7 @@ jobs:
         ${{ inputs.container && contains(fromJSON('["gcc-5", "gcc-6", "gcc-7", "gcc-8", "gcc-9", "clang-10"]'), inputs.gcc) }}
     timeout-minutes: 25
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           fetch-depth: 75
 
@@ -100,7 +100,7 @@ jobs:
           echo "CC=${{ inputs.gcc }}" >> $GITHUB_ENV
 
       - name: Expose GitHub Runtime for Docker cache
-        uses: crazy-max/ghaction-github-runtime@b3a9207c0e1ef41f4cf215303c976869d0c2c1c4
+        uses: crazy-max/ghaction-github-runtime@04d248b84655b509d8c44dc1d6f990c879747487
 
       - name: Build Docker
         if: ${{ inputs.container }}
@@ -123,7 +123,7 @@ jobs:
 
       - name: Upload pytest test results
         if: ${{ failure() }}
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: >-
             diffs-
@@ -135,7 +135,7 @@ jobs:
 
       - name: Upload coverage
         if: ${{ env.USE_COVERAGE == 'true' }}
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: >-
             coverage-pytest-${{
@@ -170,7 +170,7 @@ jobs:
 
       - name: Upload app bundle artifacts
         if: ${{ inputs.upload-app == true }}
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: app-${{ inputs.os }}
           path: build/gcovr*
