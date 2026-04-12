@@ -2448,7 +2448,13 @@ class FunctionCoverage(CoverageBase):
 class FileCoverage(CoverageBase):
     """Represent coverage information about a file."""
 
-    __slots__ = "filename", "_functions", "_lines", "__linecov_by_function"
+    __slots__ = (
+        "filename",
+        "_functions",
+        "_lines",
+        "__properties",
+        "__linecov_by_function",
+    )
 
     def __init__(
         self,
@@ -2460,7 +2466,13 @@ class FileCoverage(CoverageBase):
         self.filename: str = filename
         self._functions = CoverageDict[FunctioncovKeyType, FunctionCoverage]()
         self._lines = CoverageDict[LinecovCollectionKeyType, LineCoverageCollection]()
+        self.__properties = dict[str, Any]()
         self.__linecov_by_function = CoverageDict[str, list[LineCoverage]]()
+
+    @property
+    def properties(self) -> dict[str, Any]:
+        """Get the user defined properties."""
+        return self.__properties
 
     def serialize(self, options: Options) -> dict[str, Any]:
         """Serialize the object."""

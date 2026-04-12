@@ -66,21 +66,22 @@ def write_summary_report(
     json_dict["files"] = files
 
     # Data
-    sorted_keys = covdata.sort_coverage(
+    filecov_list = covdata.sorted_filecov(
         sort_key=options.sort_key,
         sort_reverse=options.sort_reverse,
         by_metric="branch" if options.sort_branches else "line",
+        recurse=True,
     )
 
-    for key in sorted_keys:
-        filename = covdata[key].presentable_filename(options.root_filter)
+    for filecov in filecov_list:
+        filename = filecov.presentable_filename(options.root_filter)
         if options.json_base:
             filename = "/".join([options.json_base, filename])
 
         files.append(
             {
                 "filename": filename,
-                **covdata[key].stats.serialize(None, options),
+                **filecov.stats.serialize(None, options),
             }
         )
 

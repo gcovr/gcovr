@@ -31,6 +31,9 @@ Documentation:
 Internal changes:
 
 - Add CSS and JS files to all folders where a HTML reference file is present. (:issue:`1241`)
+- Refactor internal data model from a flat list to a tree which matches the folder structure of the
+  source files. Also add a properties element which is cleared after each report format to store meta
+  data for the report generation and update the dicts in the HTML report to use it. (:issue:`1261`)
 
 .. _release_8_6:
 

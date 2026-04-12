@@ -162,7 +162,9 @@ def write_report(
 
     # Loop through each coverage file collecting details
     json_dict["source_files"] = []
-    for _, filecov in sorted(covdata.items()):
+    for filecov in sorted(
+        covdata.filecov(recurse=True), key=lambda filecov: filecov.filename
+    ):
         # File data has been compiled
         json_dict["source_files"].append(_make_source_file(filecov, options))
 

@@ -83,7 +83,11 @@ def read_report(options: Options) -> CoverageContainer:
     # Get coverage data
     with Workers(
         options.gcov_parallel,
-        lambda: {"covdata": CoverageContainer(), "to_erase": set(), "options": options},
+        lambda: {
+            "covdata": CoverageContainer(options.root),
+            "to_erase": set(),
+            "options": options,
+        },
     ) as pool:
         LOGGER.debug("Pool started with %d threads", pool.size())
         for filename in sorted(datafiles):
@@ -96,7 +100,7 @@ def read_report(options: Options) -> CoverageContainer:
             raise exc from None
 
     to_erase = set()
-    covdata = CoverageContainer()
+    covdata = CoverageContainer(options.root)
     for context in contexts:
         covdata.merge(context["covdata"], get_merge_mode_from_options(options))
         to_erase.update(context["to_erase"])
