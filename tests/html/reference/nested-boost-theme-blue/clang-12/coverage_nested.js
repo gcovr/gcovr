@@ -398,37 +398,10 @@
     var treeContainer = document.getElementById('file-tree');
     if (!treeContainer) return;
 
-    // Check for embedded tree data first (works for local file:// access)
-    if (window.GCOVR_TREE_DATA) {
-      window.GCOVR_TREE_DATA = normalizeTree(window.GCOVR_TREE_DATA);
-      deduplicateTree(window.GCOVR_TREE_DATA);
-      collapseSingleChildDirs(window.GCOVR_TREE_DATA);
-      deduplicateTree(window.GCOVR_TREE_DATA);
-      renderTree(treeContainer, window.GCOVR_TREE_DATA);
-      return;
-    }
-
-    // Fallback: try to load tree.json for full hierarchy
-    fetch('tree.json')
-      .then(function(response) {
-        if (!response.ok) throw new Error('No tree.json');
-        return response.json();
-      })
-      .then(function(tree) {
-        window.GCOVR_TREE_DATA = normalizeTree(tree);
-        deduplicateTree(window.GCOVR_TREE_DATA);
-        collapseSingleChildDirs(window.GCOVR_TREE_DATA);
-        deduplicateTree(window.GCOVR_TREE_DATA);
-        renderTree(treeContainer, window.GCOVR_TREE_DATA);
-        // Re-run dependent init now that the tree exists
-        initNavOverride();
-        initBreadcrumbs();
-        initSearch();
-      })
-      .catch(function(err) {
-        console.log('tree.json not found, using static sidebar');
-        // Keep existing static content from Jinja template
-      });
+    deduplicateTree(window.GCOVR_TREE_DATA);
+    collapseSingleChildDirs(window.GCOVR_TREE_DATA);
+    deduplicateTree(window.GCOVR_TREE_DATA);
+    renderTree(treeContainer, window.GCOVR_TREE_DATA);
   }
 
   // cspell:ignore capy
@@ -473,74 +446,6 @@
       }
       deduplicateTree(node.children);
     }
-  }
-
-  // Normalize tree: expand multi-segment node names (e.g. "capy/buffers")
-  // into proper nested directory structures so the tree and breadcrumbs
-  // display correctly.
-  function normalizeTree(nodes) {
-    if (!nodes || nodes.length === 0) return nodes;
-
-    var groups = {};
-    var order = [];
-
-    for (var i = 0; i < nodes.length; i++) {
-      var node = nodes[i];
-      var slashIdx = node.name.indexOf('/');
-
-      if (slashIdx === -1) {
-        // Simple name — add directly or merge with existing group
-        if (groups[node.name]) {
-          var existing = groups[node.name];
-          if (node.link) existing.link = node.link;
-          if (node.coverage) existing.coverage = node.coverage;
-          if (node.coverageClass) existing.coverageClass = node.coverageClass;
-          if (node.children && node.children.length > 0) {
-            existing.children = (existing.children || []).concat(node.children);
-          }
-        } else {
-          var copy = {};
-          for (var key in node) {
-            if (node.hasOwnProperty(key)) copy[key] = node[key];
-          }
-          groups[node.name] = copy;
-          order.push(node.name);
-        }
-      } else {
-        // Multi-segment name — split on first '/' and group
-        var prefix = node.name.substring(0, slashIdx);
-        var rest = node.name.substring(slashIdx + 1);
-
-        if (!groups[prefix]) {
-          groups[prefix] = {
-            name: prefix,
-            isDirectory: true,
-            children: []
-          };
-          order.push(prefix);
-        }
-        if (!groups[prefix].children) groups[prefix].children = [];
-
-        // Create child node with remaining path as name
-        var childNode = {};
-        for (var key in node) {
-          if (node.hasOwnProperty(key)) childNode[key] = node[key];
-        }
-        childNode.name = rest;
-        groups[prefix].children.push(childNode);
-      }
-    }
-
-    // Build result with recursive normalization
-    var result = [];
-    for (var i = 0; i < order.length; i++) {
-      var node = groups[order[i]];
-      if (node.children && node.children.length > 0) {
-        node.children = normalizeTree(node.children);
-      }
-      result.push(node);
-    }
-    return result;
   }
 
   // Save expanded folder paths to localStorage
@@ -2179,3 +2084,339 @@
   }
 
 })();
+
+window.GCOVR_TREE_DATA = [
+  {
+    "branchesClass": "coverage-low",
+    "branchesCoverage": "30.0",
+    "children": [
+      {
+        "branchesClass": "coverage-low",
+        "branchesCoverage": "25.0",
+        "children": [
+          {
+            "branchesClass": "coverage-none",
+            "branchesCoverage": "0.0",
+            "children": [
+              {
+                "branchesClass": "coverage-none",
+                "branchesCoverage": "0.0",
+                "children": [],
+                "coverage": "0.0",
+                "coverageClass": "coverage-none",
+                "functionsClass": "coverage-none",
+                "functionsCoverage": "0.0",
+                "isDirectory": false,
+                "linesClass": "coverage-none",
+                "linesCoverage": "0.0",
+                "linesExec": "0",
+                "linesTotal": "5",
+                "link": "coverage_nested.File6.cpp.73326d74f2aeb2719dd6d8a9bcc3e582.html",
+                "name": "File6.cpp"
+              }
+            ],
+            "coverage": "0.0",
+            "coverageClass": "coverage-none",
+            "functionsClass": "coverage-none",
+            "functionsCoverage": "0.0",
+            "isDirectory": true,
+            "linesClass": "coverage-none",
+            "linesCoverage": "0.0",
+            "linesExec": "0",
+            "linesTotal": "5",
+            "link": "coverage_nested.D.de4bee21461092ca61985814ef11fc54.html",
+            "name": "D"
+          },
+          {
+            "branchesClass": "coverage-low",
+            "branchesCoverage": "50.0",
+            "children": [],
+            "coverage": "80.0",
+            "coverageClass": "coverage-medium",
+            "functionsClass": "coverage-high",
+            "functionsCoverage": "100.0",
+            "isDirectory": false,
+            "linesClass": "coverage-medium",
+            "linesCoverage": "80.0",
+            "linesExec": "4",
+            "linesTotal": "5",
+            "link": "coverage_nested.file5.cpp.4f0be33a4dcfe398ba897b87f58ca7ce.html",
+            "name": "file5.cpp"
+          }
+        ],
+        "coverage": "40.0",
+        "coverageClass": "coverage-low",
+        "functionsClass": "coverage-low",
+        "functionsCoverage": "50.0",
+        "isDirectory": true,
+        "linesClass": "coverage-low",
+        "linesCoverage": "40.0",
+        "linesExec": "4",
+        "linesTotal": "10",
+        "link": "coverage_nested.C.65c6818f1beed0acac61ab4a271ddda2.html",
+        "name": "C"
+      },
+      {
+        "branchesClass": "coverage-low",
+        "branchesCoverage": "50.0",
+        "children": [],
+        "coverage": "80.0",
+        "coverageClass": "coverage-medium",
+        "functionsClass": "coverage-high",
+        "functionsCoverage": "100.0",
+        "isDirectory": false,
+        "linesClass": "coverage-medium",
+        "linesCoverage": "80.0",
+        "linesExec": "4",
+        "linesTotal": "5",
+        "link": "coverage_nested.File4.cpp.1d7a80554861eb8b5c21bc2e26ff8f70.html",
+        "name": "File4.cpp"
+      },
+      {
+        "branchesClass": "coverage-low",
+        "branchesCoverage": "50.0",
+        "children": [],
+        "coverage": "80.0",
+        "coverageClass": "coverage-medium",
+        "functionsClass": "coverage-high",
+        "functionsCoverage": "100.0",
+        "isDirectory": false,
+        "linesClass": "coverage-medium",
+        "linesCoverage": "80.0",
+        "linesExec": "4",
+        "linesTotal": "5",
+        "link": "coverage_nested.file1.cpp.11975e1ce5d9c157e76130f444523bea.html",
+        "name": "file1.cpp"
+      },
+      {
+        "branchesClass": "coverage-none",
+        "branchesCoverage": "0.0",
+        "children": [],
+        "coverage": "40.0",
+        "coverageClass": "coverage-low",
+        "functionsClass": "coverage-low",
+        "functionsCoverage": "50.0",
+        "isDirectory": false,
+        "linesClass": "coverage-low",
+        "linesCoverage": "40.0",
+        "linesExec": "4",
+        "linesTotal": "10",
+        "link": "coverage_nested.file3.cpp.bcfa344b5512d8cd5857f2fe86511d71.html",
+        "name": "file3.cpp"
+      },
+      {
+        "branchesClass": "coverage-unknown",
+        "branchesCoverage": "-",
+        "children": [],
+        "coverage": "0.0",
+        "coverageClass": "coverage-none",
+        "functionsClass": "coverage-none",
+        "functionsCoverage": "0.0",
+        "isDirectory": false,
+        "linesClass": "coverage-none",
+        "linesCoverage": "0.0",
+        "linesExec": "0",
+        "linesTotal": "2",
+        "link": "coverage_nested.file7.cpp.fa9d180b71a3402bed7d24bb1966eaf5.html",
+        "name": "file7.cpp"
+      },
+      {
+        "branchesClass": "coverage-unknown",
+        "branchesCoverage": "-",
+        "children": [
+          {
+            "branchesClass": "coverage-unknown",
+            "branchesCoverage": "-",
+            "children": [
+              {
+                "branchesClass": "coverage-unknown",
+                "branchesCoverage": "-",
+                "children": [
+                  {
+                    "branchesClass": "coverage-unknown",
+                    "branchesCoverage": "-",
+                    "children": [
+                      {
+                        "branchesClass": "coverage-unknown",
+                        "branchesCoverage": "-",
+                        "children": [
+                          {
+                            "branchesClass": "coverage-unknown",
+                            "branchesCoverage": "-",
+                            "children": [
+                              {
+                                "branchesClass": "coverage-unknown",
+                                "branchesCoverage": "-",
+                                "children": [
+                                  {
+                                    "branchesClass": "coverage-unknown",
+                                    "branchesCoverage": "-",
+                                    "children": [
+                                      {
+                                        "branchesClass": "coverage-unknown",
+                                        "branchesCoverage": "-",
+                                        "children": [
+                                          {
+                                            "branchesClass": "coverage-unknown",
+                                            "branchesCoverage": "-",
+                                            "children": [
+                                              {
+                                                "branchesClass": "coverage-unknown",
+                                                "branchesCoverage": "-",
+                                                "children": [],
+                                                "coverage": "57.1",
+                                                "coverageClass": "coverage-low",
+                                                "functionsClass": "coverage-low",
+                                                "functionsCoverage": "50.0",
+                                                "isDirectory": false,
+                                                "linesClass": "coverage-low",
+                                                "linesCoverage": "57.1",
+                                                "linesExec": "4",
+                                                "linesTotal": "7",
+                                                "link": "coverage_nested.File2.cpp.1aed42bd33fceec1188f2f95c6e8946c.html",
+                                                "name": "File2.cpp"
+                                              }
+                                            ],
+                                            "coverage": "57.1",
+                                            "coverageClass": "coverage-low",
+                                            "functionsClass": "coverage-low",
+                                            "functionsCoverage": "50.0",
+                                            "isDirectory": true,
+                                            "linesClass": "coverage-low",
+                                            "linesCoverage": "57.1",
+                                            "linesExec": "4",
+                                            "linesTotal": "7",
+                                            "link": "coverage_nested.subdir_9.63bd3dc96170cd4173f6130222e788f0.html",
+                                            "name": "subdir_9"
+                                          }
+                                        ],
+                                        "coverage": "57.1",
+                                        "coverageClass": "coverage-low",
+                                        "functionsClass": "coverage-low",
+                                        "functionsCoverage": "50.0",
+                                        "isDirectory": true,
+                                        "linesClass": "coverage-low",
+                                        "linesCoverage": "57.1",
+                                        "linesExec": "4",
+                                        "linesTotal": "7",
+                                        "link": "coverage_nested.subdir_8.c9bb5c32535bccd4db3864c33283e753.html",
+                                        "name": "subdir_8"
+                                      }
+                                    ],
+                                    "coverage": "57.1",
+                                    "coverageClass": "coverage-low",
+                                    "functionsClass": "coverage-low",
+                                    "functionsCoverage": "50.0",
+                                    "isDirectory": true,
+                                    "linesClass": "coverage-low",
+                                    "linesCoverage": "57.1",
+                                    "linesExec": "4",
+                                    "linesTotal": "7",
+                                    "link": "coverage_nested.subdir_7.607fc585b25ad2283e45af72e64c1701.html",
+                                    "name": "subdir_7"
+                                  }
+                                ],
+                                "coverage": "57.1",
+                                "coverageClass": "coverage-low",
+                                "functionsClass": "coverage-low",
+                                "functionsCoverage": "50.0",
+                                "isDirectory": true,
+                                "linesClass": "coverage-low",
+                                "linesCoverage": "57.1",
+                                "linesExec": "4",
+                                "linesTotal": "7",
+                                "link": "coverage_nested.subdir_6.d14fbea4b83f43c6b1d4a5546c08fd71.html",
+                                "name": "subdir_6"
+                              }
+                            ],
+                            "coverage": "57.1",
+                            "coverageClass": "coverage-low",
+                            "functionsClass": "coverage-low",
+                            "functionsCoverage": "50.0",
+                            "isDirectory": true,
+                            "linesClass": "coverage-low",
+                            "linesCoverage": "57.1",
+                            "linesExec": "4",
+                            "linesTotal": "7",
+                            "link": "coverage_nested.subdir_5.7129c868782471944ed640eec2b947c4.html",
+                            "name": "subdir_5"
+                          }
+                        ],
+                        "coverage": "57.1",
+                        "coverageClass": "coverage-low",
+                        "functionsClass": "coverage-low",
+                        "functionsCoverage": "50.0",
+                        "isDirectory": true,
+                        "linesClass": "coverage-low",
+                        "linesCoverage": "57.1",
+                        "linesExec": "4",
+                        "linesTotal": "7",
+                        "link": "coverage_nested.subdir_4.c6f928ea4c98c29e958d18007db98aa4.html",
+                        "name": "subdir_4"
+                      }
+                    ],
+                    "coverage": "57.1",
+                    "coverageClass": "coverage-low",
+                    "functionsClass": "coverage-low",
+                    "functionsCoverage": "50.0",
+                    "isDirectory": true,
+                    "linesClass": "coverage-low",
+                    "linesCoverage": "57.1",
+                    "linesExec": "4",
+                    "linesTotal": "7",
+                    "link": "coverage_nested.subdir_3.a28d6490188c53d4cd1734642dc6c15b.html",
+                    "name": "subdir_3"
+                  }
+                ],
+                "coverage": "57.1",
+                "coverageClass": "coverage-low",
+                "functionsClass": "coverage-low",
+                "functionsCoverage": "50.0",
+                "isDirectory": true,
+                "linesClass": "coverage-low",
+                "linesCoverage": "57.1",
+                "linesExec": "4",
+                "linesTotal": "7",
+                "link": "coverage_nested.subdir_2.ce032c1a9f78050104da37d90d58d186.html",
+                "name": "subdir_2"
+              }
+            ],
+            "coverage": "57.1",
+            "coverageClass": "coverage-low",
+            "functionsClass": "coverage-low",
+            "functionsCoverage": "50.0",
+            "isDirectory": true,
+            "linesClass": "coverage-low",
+            "linesCoverage": "57.1",
+            "linesExec": "4",
+            "linesTotal": "7",
+            "link": "coverage_nested.subdir_1.aa1487424860a86a341f457d1ea3b74e.html",
+            "name": "subdir_1"
+          }
+        ],
+        "coverage": "57.1",
+        "coverageClass": "coverage-low",
+        "functionsClass": "coverage-low",
+        "functionsCoverage": "50.0",
+        "isDirectory": true,
+        "linesClass": "coverage-low",
+        "linesCoverage": "57.1",
+        "linesExec": "4",
+        "linesTotal": "7",
+        "link": "coverage_nested.subdir_0.0b949f558680d9f888873cf6b4308fa9.html",
+        "name": "subdir_0"
+      }
+    ],
+    "coverage": "51.3",
+    "coverageClass": "coverage-low",
+    "functionsClass": "coverage-low",
+    "functionsCoverage": "55.6",
+    "isDirectory": true,
+    "linesClass": "coverage-low",
+    "linesCoverage": "51.3",
+    "linesExec": "20",
+    "linesTotal": "39",
+    "link": "coverage_nested.A.7fc56270e7a70fa81a5935b72eacbe29.html",
+    "name": "A"
+  }
+];

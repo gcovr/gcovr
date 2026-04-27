@@ -142,9 +142,6 @@ def read_reports(options: Options) -> CoverageContainer:
     if options.merge_lines:
         covdata.merge_lines(options)
 
-    LOGGER.debug("Removing directories with only one child...")
-    covdata.remove_container_with_single_item()
-
     return covdata
 
 

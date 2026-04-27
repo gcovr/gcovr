@@ -383,6 +383,8 @@ def write_report(
     data["BRANCH_COVERAGE_HIGH"] = high_threshold_branch
     data["GCOVR_TREE_DATA"] = []
 
+    boost_theme = options.html_theme.startswith("boost")
+
     self_contained = options.html_self_contained
     if self_contained is None:
         self_contained = (
@@ -400,16 +402,7 @@ def write_report(
         else:
             output_file += "coverage.html"
 
-    css_data = CssRenderer.render(options, root_info).strip()
-    if PYGMENTS_CSS_MARKER in css_data:
-        LOGGER.info(
-            "Skip adding of pygments styles since %r found in user stylesheet",
-            PYGMENTS_CSS_MARKER,
-        )
-    else:
-        css_data += get_formatter(options).get_css()
-
-    if options.html_details or options.html_nested:
+    if options.html_details or options.html_nested or boost_theme:
         data["ROOT_FNAME"] = os.path.basename(output_file)
         (output_prefix, output_suffix) = _get_prefix_and_suffix(output_file)
         functions_output_file = f"{output_prefix}.functions{output_suffix}"
@@ -419,6 +412,139 @@ def write_report(
             data["FUNCTIONS_FNAME"] = data["FUNCTIONS_FNAME"].split(".", maxsplit=1)[1]
     else:
         functions_output_file = "NOT USED"
+
+    data["theme"] = get_theme_color(options.html_theme)
+
+    root_info.set_coverage(covdata)
+    if root_info.link_function_list and root_info.functions["total"] == 0:
+        root_info.link_function_list = False
+
+    # Generate the coverage output (on a per-package basis)
+    # source_dirs = set()
+    filecov_list = covdata.sorted_filecov(
+        sort_key=options.sort_key,
+        sort_reverse=options.sort_reverse,
+        by_metric="branch" if options.sort_branches else "line",
+        filename_uses_relative_pathname=True,
+        recurse=True,
+    )
+
+    if options.html_nested and not boost_theme:
+        LOGGER.debug("Removing directories with only one child...")
+        covdata.remove_container_with_single_item()
+
+    dircov_list = list(covdata.dircov(recurse=True))
+
+    files = []
+    sourcefiles = dict[str, str | None]()
+
+    def _store_filenames(cdata: CoverageContainer | FileCoverage) -> None:
+        """Store the filenames and the source file links for the report."""
+        filtered_name = options.root_filter.sub("", cdata.filename)
+        if filtered_name != "":
+            files.append(filtered_name)
+        cdata.properties["filtered_name"] = force_unix_separator(filtered_name)
+        if (
+            options.html_details
+            or options.html_nested
+            or options.html_single_page
+            or boost_theme
+        ):
+            if os.path.normpath(cdata.filename) == os.path.normpath(options.root_dir):
+                cdata.properties["sourcefile"] = (
+                    output_file[: -len(GZIP_SUFFIX)]
+                    if output_file.endswith(GZIP_SUFFIX)
+                    else output_file
+                )
+            else:
+                cdata.properties["sourcefile"] = _make_short_source_filename(
+                    output_file, filtered_name.rstrip(os.sep)
+                )
+                if (
+                    options.html_single_page
+                    and cdata.properties["sourcefile"] is not None
+                ):
+                    # Remove the prefix to get shorter links
+                    cdata.properties["sourcefile"] = str(
+                        cdata.properties["sourcefile"]
+                    ).split(".", maxsplit=1)[1]
+        else:
+            cdata.properties["sourcefile"] = None
+        sourcefiles[cdata.properties["filtered_name"]] = cdata.properties["sourcefile"]
+
+    for filecov in filecov_list:
+        _store_filenames(filecov)
+    if options.html_nested or boost_theme:
+        for dircov in dircov_list:
+            _store_filenames(dircov)
+
+    # Define the common root directory, which may differ from options.root_dir
+    # when source files share a common prefix.
+    root_directory = ""
+    if len(files) > 1:
+        common_dir = commonpath(files)
+        if common_dir != "":
+            root_directory = common_dir
+    else:
+        directory, _ = os.path.split(
+            files[0] if files else options.root_filter.sub("", covdata.dirname)
+        )
+        if directory != "":
+            root_directory = str(directory) + os.sep
+
+    previous_fname: str | None = None
+    previous_link_report: str | None = None
+    for fname in sorted(sourcefiles):
+        root_info.navigation[fname] = (previous_link_report, None)
+        link_report = sourcefiles[fname]
+        if link_report is not None:
+            if root_info.relative_anchors or root_info.single_page:
+                link_report = os.path.basename(link_report)
+        if previous_fname is not None:
+            root_info.navigation[previous_fname] = (
+                root_info.navigation[previous_fname][0],
+                link_report,
+            )
+        previous_fname = fname
+        previous_link_report = link_report
+
+    root_info.set_directory(force_unix_separator(root_directory))
+
+    if boost_theme:
+        for cdata in covdata.traverse():
+            cdata_data = get_coverage_data(root_info, cdata)
+            cdata.properties["tree_data"] = {
+                "coverage": str(cdata_data["lines"]["coverage"]),
+                "coverageClass": str(cdata_data["lines"]["class"]),
+                "linesTotal": str(cdata_data["lines"]["total"]),
+                "linesExec": str(cdata_data["lines"]["exec"]),
+                "linesCoverage": str(cdata_data["lines"]["coverage"]),
+                "linesClass": str(cdata_data["lines"]["class"]),
+                "functionsCoverage": str(cdata_data["functions"]["coverage"]),
+                "functionsClass": str(cdata_data["functions"]["class"]),
+                "branchesCoverage": str(cdata_data["branches"]["coverage"]),
+                "branchesClass": str(cdata_data["branches"]["class"]),
+                "isDirectory": isinstance(cdata, CoverageContainer),
+                "link": cdata_data["link"],
+                "children": [],
+            }
+            if isinstance(cdata, CoverageContainer):
+                children = cdata.properties["tree_data"]["children"]
+                for c in cdata.values():
+                    c.properties["tree_data"]["name"] = c.filename.removeprefix(
+                        cdata.filename
+                    ).removesuffix(os.sep)
+                    children.append(c.properties["tree_data"])
+        data["GCOVR_TREE_DATA"].extend(covdata.properties["tree_data"]["children"])
+
+    css_data = CssRenderer.render(options, root_info).strip()
+    if PYGMENTS_CSS_MARKER in css_data:
+        LOGGER.info(
+            "Skip adding of pygments styles since %r found in user stylesheet",
+            PYGMENTS_CSS_MARKER,
+        )
+    else:
+        css_data += get_formatter(options).get_css()
 
     javascript_data = (
         None
@@ -454,93 +580,6 @@ def write_report(
                 javascript_link = javascript_output
             data["javascript_link"] = javascript_link
 
-    data["theme"] = get_theme_color(options.html_theme)
-
-    root_info.set_coverage(covdata)
-    if root_info.link_function_list and root_info.functions["total"] == 0:
-        root_info.link_function_list = False
-
-    # Generate the coverage output (on a per-package basis)
-    # source_dirs = set()
-    filecov_list = covdata.sorted_filecov(
-        sort_key=options.sort_key,
-        sort_reverse=options.sort_reverse,
-        by_metric="branch" if options.sort_branches else "line",
-        filename_uses_relative_pathname=True,
-        recurse=True,
-    )
-
-    dircov_list = list(covdata.dircov(recurse=True)) if options.html_nested else []
-
-    files = []
-    sourcefiles = dict[str, str | None]()
-
-    def _store_filenames(cdata: CoverageContainer | FileCoverage) -> None:
-        """Store the filenames and the source file links for the report."""
-        filtered_name = options.root_filter.sub("", cdata.filename)
-        if filtered_name != "":
-            files.append(filtered_name)
-        cdata.properties["filtered_name"] = force_unix_separator(filtered_name)
-        if options.html_details or options.html_nested or options.html_single_page:
-            if os.path.normpath(cdata.filename) == os.path.normpath(options.root_dir):
-                cdata.properties["sourcefile"] = (
-                    output_file[: -len(GZIP_SUFFIX)]
-                    if output_file.endswith(GZIP_SUFFIX)
-                    else output_file
-                )
-            else:
-                cdata.properties["sourcefile"] = _make_short_source_filename(
-                    output_file, filtered_name.rstrip(os.sep)
-                )
-                if (
-                    options.html_single_page
-                    and cdata.properties["sourcefile"] is not None
-                ):
-                    # Remove the prefix to get shorter links
-                    cdata.properties["sourcefile"] = str(
-                        cdata.properties["sourcefile"]
-                    ).split(".", maxsplit=1)[1]
-        else:
-            cdata.properties["sourcefile"] = None
-        sourcefiles[cdata.properties["filtered_name"]] = cdata.properties["sourcefile"]
-
-    for filecov in filecov_list:
-        _store_filenames(filecov)
-    for dircov in dircov_list:
-        _store_filenames(dircov)
-
-    # Define the common root directory, which may differ from options.root_dir
-    # when source files share a common prefix.
-    root_directory = ""
-    if len(files) > 1:
-        common_dir = commonpath(files)
-        if common_dir != "":
-            root_directory = common_dir
-    else:
-        directory, _ = os.path.split(
-            files[0] if files else options.root_filter.sub("", covdata.dirname)
-        )
-        if directory != "":
-            root_directory = str(directory) + os.sep
-
-    previous_fname: str | None = None
-    previous_link_report: str | None = None
-    for fname in sorted(sourcefiles):
-        root_info.navigation[fname] = (previous_link_report, None)
-        link_report = sourcefiles[fname]
-        if link_report is not None:
-            if root_info.relative_anchors or root_info.single_page:
-                link_report = os.path.basename(link_report)
-        if previous_fname is not None:
-            root_info.navigation[previous_fname] = (
-                root_info.navigation[previous_fname][0],
-                link_report,
-            )
-        previous_fname = fname
-        previous_link_report = link_report
-
-    root_info.set_directory(force_unix_separator(root_directory))
-
     if options.html_single_page:
         write_single_page(
             options,
@@ -551,7 +590,7 @@ def write_report(
             data,
         )
     else:
-        if dircov_list:
+        if options.html_nested or boost_theme:
             write_directory_pages(
                 options,
                 root_info,
@@ -567,16 +606,15 @@ def write_report(
                 data,
                 filecov_list,
             )
-            if not options.html_details:
-                return
 
-        write_source_pages(
-            options,
-            root_info,
-            functions_output_file,
-            covdata,
-            data,
-        )
+        if options.html_details or options.html_nested or boost_theme:
+            write_source_pages(
+                options,
+                root_info,
+                functions_output_file,
+                covdata,
+                data,
+            )
 
 
 def write_root_page(
@@ -918,8 +956,7 @@ def get_file_data(
             filecov,
         )
     )
-    if filecov.diff != filecov.CoverageDiff.UNDEFINED:
-        file_data["diff"] = filecov.diff.name
+
     functions = dict[tuple[FunctioncovKeyType, str, int], dict[str, Any]]()
     # Only use demangled names (containing a brace)
     for functioncov in filecov.functioncov(key=lambda functioncov: functioncov.key):
@@ -1015,6 +1052,7 @@ def get_file_data(
         ]
     )
     if filecov.is_compare_info_available():
+        file_data["diff"] = filecov.diff.name
         file_data["lines"]["diff"] = dict[str, int]()
         for kind in filecov.CoverageDiff:
             file_data["lines"]["diff"][kind.name] = len(
@@ -1102,7 +1140,7 @@ def source_row(
         else [
             linecov.diff.name
             for linecov in linecov_list
-            if linecov.diff != linecov.CoverageDiff.UNDEFINED
+            if linecov.is_compare_info_available()
         ],
         "block_ids": []
         if linecov_list is None
@@ -1141,7 +1179,7 @@ def source_row_branch(
         else:
             items[-1]["source_block_id"] = branchcov.source_block_id
             items[-1]["destination_block_id"] = branchcov.destination_block_id
-        if branchcov.diff != branchcov.CoverageDiff.UNDEFINED:
+        if branchcov.is_compare_info_available():
             items[-1]["diff"] = branchcov.diff.name
 
     stats = linecov.branch_coverage()
@@ -1183,7 +1221,7 @@ def source_row_condition(
                     "excluded": conditioncov.is_excluded,
                 }
             )
-            if conditioncov.diff != conditioncov.CoverageDiff.UNDEFINED:
+            if conditioncov.is_compare_info_available():
                 items[-1]["diff"] = conditioncov.diff.name
     stats = linecov.condition_coverage()
     return {
@@ -1259,7 +1297,7 @@ def source_row_call(linecov: LineCoverage) -> dict[str, Any]:
                 "excluded": callcov.is_excluded,
             }
         )
-        if callcov.diff != callcov.CoverageDiff.UNDEFINED:
+        if callcov.is_compare_info_available():
             items[-1]["diff"] = callcov.diff.name
 
     stats = linecov.call_coverage()
