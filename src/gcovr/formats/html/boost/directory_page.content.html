@@ -1,0 +1,143 @@
+{# -*- engine: jinja -*- #}
+{# Check if we have any function or branch data #}
+{% set has_functions = entries | selectattr('functions.coverage', 'ne', '-') | list | length > 0 %}
+{% set has_branches = entries | selectattr('branches.coverage', 'ne', '-') | list | length > 0 %}
+{% set has_conditions = SHOW_CONDITION_COVERAGE and (entries | selectattr('conditions.coverage', 'ne', '-') | list | length > 0) %}
+{% set has_decisions = SHOW_DECISION and (entries | selectattr('decisions.coverage', 'ne', '-') | list | length > 0) %}
+{% set has_calls = SHOW_CALLS and (entries | selectattr('calls.coverage', 'ne', '-') | list | length > 0) %}
+<div class="file-list-container{% if not has_functions %} no-functions{% endif %}{% if not has_branches %} no-branches{% endif %}{% if not has_conditions %} no-conditions{% endif %}{% if not has_decisions %} no-decisions{% endif %}{% if not has_calls %} no-calls{% endif %}">
+  <div class="file-list-header">
+    <div class="col-name sortable{% if info.sort_by == 'filename' %} {{info.sorted}}{% endif %}" data-sort="filename">
+      Name
+    </div>
+    <div class="col-coverage sortable" data-sort="coverage">
+      Coverage
+    </div>
+    <div class="col-lines sortable{% if info.sort_by == 'lines' %} {{info.sorted}}{% endif %}" data-sort="lines">
+      Lines
+    </div>
+    {% if has_functions %}
+    <div class="col-functions sortable" data-sort="functions">
+      Functions
+    </div>
+    {% endif %}
+    {% if has_branches %}
+    <div class="col-branches sortable{% if info.sort_by == 'branches' %} {{info.sorted}}{% endif %}" data-sort="branches">
+      Branches
+    </div>
+    {% endif %}
+    {% if has_conditions %}
+    <div class="col-conditions sortable" data-sort="conditions">
+      Conditions
+    </div>
+    {% endif %}
+    {% if has_decisions %}
+    <div class="col-decisions sortable" data-sort="decisions">
+      Decisions
+    </div>
+    {% endif %}
+    {% if has_calls %}
+    <div class="col-calls sortable" data-sort="calls">
+      Calls
+    </div>
+    {% endif %}
+    {% if info.diff_report %}
+    <div class="col-diff sortable" data-sort="diff">
+      Diff
+    </div>
+    {% endif %}
+  </div>
+
+  <div class="file-list-body" id="file-list">
+    {% for row in entries %}
+      {# Extract clean display name: just filename or last path segment #}
+      {% set clean_path = row.filename.rstrip('/') %}
+      {% set display_name = clean_path.split('/')[-1] if '/' in clean_path else clean_path %}
+      {% set display_name = display_name if display_name else row.filename %}
+      {% set is_file = '.' in display_name and not display_name.endswith('...') %}
+    <div class="file-row {% if is_file %}file{% else %}directory{% endif %}"
+         data-filename="{{row.filename}}"
+         data-coverage="{{row.lines.sort}}"
+         data-lines="{{row.lines.total}}"
+         data-lines-exec="{{row.lines.exec}}"
+         data-lines-coverage="{{row.lines.coverage}}"
+         data-lines-class="{{row.lines.class}}"
+         data-functions="{{row.functions.sort}}"
+         data-functions-coverage="{{row.functions.coverage}}"
+         data-functions-class="{{row.functions.class}}"
+         data-branches="{{row.branches.sort}}"
+         data-branches-coverage="{{row.branches.coverage}}"
+         data-branches-class="{{row.branches.class}}"
+         data-conditions="{{row.conditions.sort}}"
+         data-conditions-coverage="{{row.conditions.coverage}}"
+         data-conditions-class="{{row.conditions.class}}"
+         data-decisions="{{row.decisions.sort}}"
+         data-decisions-coverage="{{row.decisions.coverage}}"
+         data-decisions-class="{{row.decisions.class}}"
+         data-calls="{{row.calls.sort}}"
+         data-calls-coverage="{{row.calls.coverage}}"
+         data-calls-class="{{row.calls.class}}"
+         data-diff="{{row.diff}}">
+      <div class="col-name">
+        <span class="file-icon">
+          {% if row.link is none %}
+          <svg viewBox="0 0 16 16" width="16" height="16"><path fill="currentColor" d="M1.75 1A1.75 1.75 0 000 2.75v10.5C0 14.216.784 15 1.75 15h12.5A1.75 1.75 0 0016 13.25v-8.5A1.75 1.75 0 0014.25 3H7.5a.25.25 0 01-.2-.1l-.9-1.2C6.07 1.26 5.55 1 5 1H1.75z"></path></svg>
+          {% elif is_file %}
+          <svg viewBox="0 0 16 16" width="16" height="16"><path fill="currentColor" d="M3.75 1.5a.25.25 0 00-.25.25v12.5c0 .138.112.25.25.25h9.5a.25.25 0 00.25-.25V6h-2.75A1.75 1.75 0 019 4.25V1.5H3.75zm6.75.062V4.25c0 .138.112.25.25.25h2.688a.252.252 0 00-.011-.013l-2.914-2.914a.272.272 0 00-.013-.011zM2 1.75C2 .784 2.784 0 3.75 0h6.586c.464 0 .909.184 1.237.513l2.914 2.914c.329.328.513.773.513 1.237v9.586A1.75 1.75 0 0113.25 16h-9.5A1.75 1.75 0 012 14.25V1.75z"></path></svg>
+          {% else %}
+          <svg viewBox="0 0 16 16" width="16" height="16"><path fill="currentColor" d="M1.75 1A1.75 1.75 0 000 2.75v10.5C0 14.216.784 15 1.75 15h12.5A1.75 1.75 0 0016 13.25v-8.5A1.75 1.75 0 0014.25 3H7.5a.25.25 0 01-.2-.1l-.9-1.2C6.07 1.26 5.55 1 5 1H1.75z"></path></svg>
+          {% endif %}
+        </span>
+        {% if row.link is not none %}
+        <a href="{% if info.single_page %}#{% endif %}{{row.link}}" title="{{row.filename}}">{{display_name}}</a>
+        {% else %}
+        <span class="no-link" title="{{row.filename}}">{{display_name}}</span>
+        {% endif %}
+      </div>
+
+      <div class="col-coverage">
+        <div class="coverage-bar-container">
+          <div class="coverage-bar {{row.lines.class}}" style="width: {% if row.lines.coverage != '-' %}{{row.lines.coverage}}%{% else %}0%{% endif %}"></div>
+        </div>
+        <span class="coverage-percent {{row.lines.class}}">{% if row.lines.coverage != '-' %}{{row.lines.coverage}}%{% else %}-{% endif %}</span>
+      </div>
+
+      <div class="col-lines">
+        <span class="stat-value">{{row.lines.exec}}</span>
+        <span class="stat-separator">/</span>
+        <span class="stat-total">{{row.lines.total}}</span>
+      </div>
+      {% if has_functions %}
+      <div class="col-functions">
+        <span class="stat-value {{row.functions.class}}">{% if row.functions.coverage != '-' %}{{row.functions.coverage}}%{% else %}-{% endif %}</span>
+      </div>
+      {% endif %}
+      {% if has_branches %}
+      <div class="col-branches">
+        <span class="stat-value {{row.branches.class}}">{% if row.branches.coverage != '-' %}{{row.branches.coverage}}%{% else %}-{% endif %}</span>
+      </div>
+      {% endif %}
+      {% if has_conditions %}
+      <div class="col-conditions">
+        <span class="stat-value {{row.conditions.class}}">{% if row.conditions.coverage != '-' %}{{row.conditions.coverage}}%{% else %}-{% endif %}</span>
+      </div>
+      {% endif %}
+      {% if has_decisions %}
+      <div class="col-decisions">
+        <span class="stat-value {{row.decisions.class}}">{% if row.decisions.coverage != '-' %}{{row.decisions.coverage}}%{% else %}-{% endif %}</span>
+      </div>
+      {% endif %}
+      {% if has_calls %}
+      <div class="col-calls">
+        <span class="stat-value {{row.calls.class}}">{% if row.calls.coverage != '-' %}{{row.calls.coverage}}%{% else %}-{% endif %}</span>
+      </div>
+      {% endif %}
+      {% if info.diff_report %}
+      <div class="col-diff">
+        <span class="stat-value">{{row.diff.replace('_', ' ').capitalize()}}</span>
+      </div>
+      {% endif %}
+    </div>
+    {% endfor %}
+  </div>
+</div>

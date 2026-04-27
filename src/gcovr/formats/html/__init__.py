@@ -29,6 +29,8 @@ from ...options import (
 THEMES = (
     "green",
     "blue",
+    "boost.blue",
+    "boost.green",
     "github.blue",
     "github.green",
     "github.dark-green",
@@ -280,6 +282,13 @@ class HtmlHandler(BaseHandler):
             and not self.options.html_single_page
         ):
             raise RuntimeError("only self contained reports can be printed to STDOUT")
+
+        if self.options.html_theme.startswith("boost") and (
+            self.options.html_single_page or self.options.html_static_report
+        ):
+            raise RuntimeError(
+                "Boost theme is not compatible with --html-single-page or --html-static-report"
+            )
 
     def write_report(self, covdata: CoverageContainer, output_file: str) -> None:
         from .write import write_report  # pylint: disable=import-outside-toplevel # Lazy loading is intended here

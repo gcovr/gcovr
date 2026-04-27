@@ -1,0 +1,281 @@
+{# -*- engine: jinja -*- #}
+{# Check if we have any branch data #}
+{% set has_branches = source_lines | selectattr('line_branches', 'defined') | selectattr('line_branches') | list | length > 0 %}
+{% set partial_count = lines.partial if lines.partial is defined else 0 %}
+{% set excluded_count = lines.excluded if lines.excluded is defined else 0 %}
+{% set col_count = 3 %}
+{% if has_branches %}{% set col_count = col_count + 1 %}{% endif %}
+{% if SHOW_CONDITION_COVERAGE %}{% set col_count = col_count + 1 %}{% endif %}
+{% if SHOW_DECISION %}{% set col_count = col_count + 1 %}{% endif %}
+{% if SHOW_CALLS %}{% set col_count = col_count + 1 %}{% endif %}
+{% set uncovered_total = (lines.total - lines.exec) + partial_count %}
+<div class="source-container{% if not has_branches %} no-branches{% endif %}">
+  <div class="source-header">
+    <span class="source-header-filename">{{filename.split('/')[-1]}}</span>
+    <div class="source-line-filters">
+      <button type="button" class="btn btn-sm button_toggle_coveredLine show_coveredLine" value="coveredLine" title="Toggle covered lines">
+        covered
+      </button>
+      <button type="button" class="btn btn-sm button_toggle_uncoveredLine show_uncoveredLine" value="uncoveredLine" title="Toggle uncovered lines">
+        uncovered
+      </button>
+      {% if partial_count > 0 %}
+      <button type="button" class="btn btn-sm button_toggle_partialCoveredLine show_partialCoveredLine" value="partialCoveredLine" title="Toggle partial covered lines">
+        partial
+      </button>
+      {% endif %}
+      {% if excluded_count > 0 %}
+      <button type="button" class="btn btn-sm button_toggle_excludedLine show_excludedLine" value="excludedLine" title="Toggle excluded lines">
+        excluded
+      </button>
+      {% endif %}
+    </div>
+    <div class="source-column-filters">
+      {% if has_branches %}
+      <button type="button" class="btn btn-sm col-toggle show-col" data-col="branch" title="Toggle Branch column">Branch</button>
+      {% endif %}
+      <button type="button" class="btn btn-sm col-toggle show-col" data-col="tla" title="Toggle TLA column">TLA</button>
+      <button type="button" class="btn btn-sm col-toggle show-col" data-col="count" title="Toggle Hits column">Hits</button>
+    </div>
+    {% if info.navigation is defined and fname in info.navigation %}
+    <div class="source-nav-links">
+      {% if info.navigation[fname][0] %}
+      <a class="nav-link nav-prev" href="{% if info.single_page %}#{% endif %}{{info.navigation[fname][0]}}" title="Previous file">
+        <svg viewBox="0 0 16 16" width="16" height="16"><path fill="currentColor" d="M8 2a.75.75 0 01.75.75v8.69l3.22-3.22a.75.75 0 111.06 1.06l-4.5 4.5a.75.75 0 01-1.06 0l-4.5-4.5a.75.75 0 011.06-1.06l3.22 3.22V2.75A.75.75 0 018 2z" transform="rotate(180 8 8)"/></svg>
+      </a>
+      {% else %}
+      <span class="nav-link nav-prev disabled" title="Previous file">
+        <svg viewBox="0 0 16 16" width="16" height="16"><path fill="currentColor" d="M8 2a.75.75 0 01.75.75v8.69l3.22-3.22a.75.75 0 111.06 1.06l-4.5 4.5a.75.75 0 01-1.06 0l-4.5-4.5a.75.75 0 011.06-1.06l3.22 3.22V2.75A.75.75 0 018 2z" transform="rotate(180 8 8)"/></svg>
+      </span>
+      {% endif %}
+      {% if info.navigation[fname][1] %}
+      <a class="nav-link nav-next" href="{% if info.single_page %}#{% endif %}{{info.navigation[fname][1]}}" title="Next file">
+        <svg viewBox="0 0 16 16" width="16" height="16"><path fill="currentColor" d="M8 2a.75.75 0 01.75.75v8.69l3.22-3.22a.75.75 0 111.06 1.06l-4.5 4.5a.75.75 0 01-1.06 0l-4.5-4.5a.75.75 0 011.06-1.06l3.22 3.22V2.75A.75.75 0 018 2z"/></svg>
+      </a>
+      {% else %}
+      <span class="nav-link nav-next disabled" title="Next file">
+        <svg viewBox="0 0 16 16" width="16" height="16"><path fill="currentColor" d="M8 2a.75.75 0 01.75.75v8.69l3.22-3.22a.75.75 0 111.06 1.06l-4.5 4.5a.75.75 0 01-1.06 0l-4.5-4.5a.75.75 0 011.06-1.06l3.22 3.22V2.75A.75.75 0 018 2z"/></svg>
+      </span>
+      {% endif %}
+    </div>
+    {% endif %}
+    {% if uncovered_total > 0 %}
+    {% if info.navigation is defined and fname in info.navigation %}<span class="source-header-sep"></span>{% endif %}
+    <div id="coverage-nav">
+      <button type="button" id="nav-prev" class="nav-link" title="Previous uncovered line (p)">
+        <svg viewBox="0 0 16 16" width="16" height="16"><path fill="currentColor" d="M8 2a.75.75 0 01.75.75v8.69l3.22-3.22a.75.75 0 111.06 1.06l-4.5 4.5a.75.75 0 01-1.06 0l-4.5-4.5a.75.75 0 011.06-1.06l3.22 3.22V2.75A.75.75 0 018 2z" transform="rotate(90 8 8)"/></svg>
+      </button>
+      <span id="nav-counter" class="nav-counter"></span>
+      <button type="button" id="nav-next" class="nav-link" title="Next uncovered line (n)">
+        <svg viewBox="0 0 16 16" width="16" height="16"><path fill="currentColor" d="M8 2a.75.75 0 01.75.75v8.69l3.22-3.22a.75.75 0 111.06 1.06l-4.5 4.5a.75.75 0 01-1.06 0l-4.5-4.5a.75.75 0 011.06-1.06l3.22 3.22V2.75A.75.75 0 018 2z" transform="rotate(-90 8 8)"/></svg>
+      </button>
+    </div>
+    {% endif %}
+  </div>
+
+  {% if info.single_page %}
+  {%  set anchor_prefix = html_filename + "|" %}
+  {% else %}
+  {%  set anchor_prefix = '' %}
+  {% endif %}
+
+  {% if function_list is defined and function_list | length > 0 %}
+  <details class="source-functions">
+    <summary class="source-functions-toggle">
+      <span class="fx-icon"><i>f</i>(x)</span>
+      Functions ({{ function_list | length }})
+    </summary>
+    <div class="source-functions-list">
+      {% set sortable = " sortable" if function_list | length > 1 else "" %}
+      <div class="source-function-header">
+        <span class="source-function-col-name{{ sortable }}{% if sortable %} sorted-ascending{% endif %}" data-sort="name">Function</span>
+        <span class="source-function-col-stat{{ sortable }}" data-sort="calls">Calls</span>
+        <span class="source-function-col-stat{{ sortable }}" data-sort="lines">Lines</span>
+        {% if has_branches %}
+        <span class="source-function-col-stat col-branches{{ sortable }}" data-sort="branches">Branches</span>
+        {% endif %}
+        <span class="source-function-col-stat{{ sortable }}" data-sort="blocks">Blocks</span>
+      </div>
+      {% for entry in function_list | sort(attribute='line') %}
+      {% set calls = entry.count if entry.count is defined else entry.execution_count if entry.execution_count is defined else none %}
+      {% set blks = entry.blocks if entry.blocks is defined else entry.blocks_percent if entry.blocks_percent is defined else none %}
+      <a href="#{{ anchor_prefix }}l{{ entry.line }}" class="source-function-item{% if entry.excluded %} fn-excluded{% elif calls is not none and calls > 0 %}{% else %} fn-uncovered{% endif %}"
+         data-name="{{ entry.name }}" data-calls="{{ calls if calls is not none else -1 }}" data-lines="{{ entry.line_coverage if entry.line_coverage is defined else -1 }}" data-branches="{{ entry.branch_coverage if entry.branch_coverage is defined and entry.branch_coverage != '-' else -1 }}" data-blocks="{{ blks if blks is not none else -1 }}">
+        <span class="source-function-col-name">
+          <span class="source-function-name">{{ entry.name }}</span>
+          <span class="source-function-line">:{{ entry.line }}</span>
+        </span>
+        <span class="source-function-col-stat{% if entry.excluded %} excluded{% elif not (calls is not none and calls > 0) %} not-called{% endif %}">
+          {%- if entry.excluded %}&ndash;{% elif calls is not none and calls > 0 %}{{ calls }}x{% else %}0{% endif -%}
+        </span>
+        <span class="source-function-col-stat{% if entry.excluded %} excluded{% elif entry.line_coverage is defined and entry.line_coverage == 100.0 %} cov-high{% elif entry.line_coverage is defined and entry.line_coverage > 0 %} cov-med{% else %} cov-low{% endif %}">
+          {%- if entry.excluded %}&ndash;{% elif entry.line_coverage is defined %}{{ entry.line_coverage | round(1) }}%{% else %}&ndash;{% endif -%}
+        </span>
+        {% if has_branches %}
+        <span class="source-function-col-stat col-branches{% if entry.excluded %} excluded{% elif entry.branch_coverage is defined and entry.branch_coverage != '-' %}{% if entry.branch_coverage == 100.0 %} cov-high{% elif entry.branch_coverage > 0 %} cov-med{% else %} cov-low{% endif %}{% endif %}">
+          {%- if entry.excluded %}&ndash;{% elif entry.branch_coverage is defined and entry.branch_coverage != '-' %}{{ entry.branch_coverage | round(1) }}%{% else %}&ndash;{% endif -%}
+        </span>
+        {% endif %}
+        <span class="source-function-col-stat{% if entry.excluded %} excluded{% elif blks is not none %}{% if blks == 100.0 %} cov-high{% elif blks > 0 %} cov-med{% else %} cov-low{% endif %}{% endif %}">
+          {%- if entry.excluded %}&ndash;{% elif blks is not none %}{{ blks | round(1) }}%{% else %}&ndash;{% endif -%}
+        </span>
+      </a>
+      {% endfor %}
+    </div>
+  </details>
+  {% endif %}
+
+  <div class="source-table-container">
+    <table class="source-table">
+      <thead>
+        <tr>
+          <th class="col-lineno">Line</th>
+          {% if has_branches %}
+          <th class="col-branch">Branch</th>
+          {% endif %}
+          {% if SHOW_CONDITION_COVERAGE %}
+          <th class="col-condition">Condition</th>
+          {% endif %}
+          {% if SHOW_DECISION %}
+          <th class="col-decision">Decision</th>
+          {% endif %}
+          {% if SHOW_CALLS %}
+          <th class="col-call">Call</th>
+          {% endif %}
+          <th class="col-tla">TLA</th>
+          <th class="col-count">Hits</th>
+          <th class="col-source">Source Code</th>
+          {% if USE_BLOCK_IDS %}
+          <th class="col-lineblockids">Block IDs</th>
+          {% endif %}
+        </tr>
+      </thead>
+      <tbody>
+        {% for row in source_lines %}
+        <tr class="source-line{% if row.covclass %} {{row.covclass}} show_{{row.covclass}}{% endif %}">
+          <td class="col-lineno">
+            <a id="{{ anchor_prefix }}l{{row.lineno}}">{{row.lineno}}</a>
+          </td>
+          {% if has_branches %}
+          <td class="col-branch">
+            {% if row.line_branches %}
+            <details class="branch-details">
+              <summary class="branch-summary">{{row.line_branches | sum(attribute='taken')}}/{{row.line_branches | sum(attribute='total')}}</summary>
+              <div class="branch-popup">
+                {% for linebranch in row.line_branches %}
+                {% if loop.length > 1 %}
+                <div class="function-name">{{linebranch.function_name}}:</div>
+                {% endif %}
+                {% for branch in linebranch.branches %}
+                {% if branch.branchno is defined %}
+                {%  set branch_info = branch.branchno %}
+                {% else %}
+                {%  set branch_info = "%d &rightarrow; %d" | format(branch.source_block_id, branch.destination_block_id) | safe %}
+                {% endif %}
+                {% if branch.excluded %}
+                <div class="branch-excluded">&ndash; Branch {{branch_info}} excluded.</div>
+                {% elif branch.taken %}
+                <div class="branch-taken">&check; Branch {{branch_info}} taken {{branch.count}} time{% if branch.count > 1 %}s{% endif %}.</div>
+                {% else %}
+                <div class="branch-not-taken">&cross; Branch {{branch_info}} not taken.</div>
+                {% endif %}
+                {% endfor %}
+                {% endfor %}
+              </div>
+            </details>
+            {% endif %}
+          </td>
+          {% endif %}
+          {% if SHOW_CONDITION_COVERAGE %}
+          <td class="col-condition">
+            {% if row.line_conditions %}
+            <details class="condition-details">
+              <summary class="condition-summary">{{row.line_conditions | sum(attribute='covered') }}/{{row.line_conditions | sum(attribute='count')}}</summary>
+              <div class="condition-popup">
+                {% for linecondition in row.line_conditions %}
+                {% if loop.length > 1 %}
+                <div class="function-name">{{linecondition.function_name}}:</div>
+                {% endif %}
+                {% for condition in linecondition.condition %}
+                {% if condition.excluded %}
+                <div class="condition-excluded">&ndash; {{condition.prefix}}excluded.</div>
+                {% elif condition.not_covered_true and condition.not_covered_false %}
+                <div class="condition-not-covered">&cross; {{condition.prefix}}Not covered.</div>
+                {% elif condition.not_covered_true %}
+                <div class="condition-not-covered">&cross; {{condition.prefix}}True not covered.</div>
+                {% elif condition.not_covered_false %}
+                <div class="condition-not-covered">&cross; {{condition.prefix}}False not covered.</div>
+                {% else %}
+                <div class="condition-covered">&check; {{condition.prefix}}Fully covered.</div>
+                {% endif%}
+                {% endfor %}
+                {% endfor %}
+              </div>
+            </details>
+            {% endif %}
+          </td>
+          {% endif %}
+          {% if SHOW_DECISION %}
+          <td class="col-decision">
+            {% if row.line_decisions %}
+            <details class="decision-details">
+              <summary class="decision-summary">{{row.line_decisions | sum(attribute='taken')}}/{{row.line_decisions | sum(attribute='total')}}</summary>
+              <div class="decision-popup">
+                {% for linedecision in row.line_decisions %}
+                {% if loop.length > 1 %}
+                <div class="function-name">{{linedecision.function_name}}:</div>
+                {% endif %}
+                {% for decision in linedecision.decisions %}
+                {% if decision.uncheckable %}
+                <div class="decision-uncheckable">? Decision couldn't be analyzed.</div>
+                {% elif decision.taken %}
+                <div class="decision-taken">&check; Decision '{{decision.name}}' taken {{decision.count}} time{% if decision.count > 1 %}s{% endif %}.</div>
+                {% else %}
+                <div class="decision-not-taken">&cross; Decision '{{decision.name}}' not taken.</div>
+                {% endif %}
+                {% endfor %}
+                {% endfor %}
+              </div>
+            </details>
+            {% endif %}
+          </td>
+          {% endif %}
+          {% if SHOW_CALLS %}
+          <td class="col-call">
+            {% if row.line_calls %}
+            <details class="call-details">
+              <summary class="call-summary">{{row.line_calls | sum(attribute='invoked')}}/{{row.line_calls | sum(attribute='total')}}</summary>
+              <div class="call-popup">
+                {% for linecall in row.line_calls %}
+                {% if loop.length > 1 %}
+                <div class="function-name">{{linecall.function_name}}:</div>
+                {% endif %}
+                {% for call in linecall.calls %}
+                {% if call.excluded %}
+                <div class="call-excluded">&ndash; Call {{call.name}} excluded.</div>
+                {% elif call.invoked %}
+                <div class="call-invoked">&check; Call {{call.name}} invoked.</div>
+                {% else %}
+                <div class="call-not-invoked">&cross; Call {{call.name}} not invoked.</div>
+                {% endif%}
+                {% endfor %}
+                {% endfor %}
+              </div>
+            </details>
+            {% endif %}
+          </td>
+          {% endif %}
+          <td class="col-tla"></td>
+          <td class="col-count{% if row.covclass %} {{row.covclass}}{% endif %}">
+            {% if row.covclass == 'uncoveredLine' %}<span class="hit-miss">&cross;</span>{% elif row.covclass == 'excludedLine' %}<span class="hit-excluded">&minus;</span>{% elif row.linecount %}{{row.linecount}}x{% endif %}
+          </td>
+          <td class="col-source">{{row.source}}</td>
+          {% if USE_BLOCK_IDS %}
+          <td class="col-lineblockids">{% if row.block_ids %}{{row.block_ids | join(', ')}}{% endif %}</td>
+          {% endif %}
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>

@@ -126,8 +126,7 @@ jobs:
         uses: actions/upload-artifact@v6
         with:
           name: >-
-            diffs-
-            ${{
+            diffs-${{
               inputs.container && format('docker-{0}', inputs.gcc)
               || format('{0}-{1}-{2}', inputs.os, inputs.gcc, inputs.python-version)
             }}

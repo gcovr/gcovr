@@ -381,6 +381,7 @@ def write_report(
     data["LINE_COVERAGE_HIGH"] = high_threshold_line
     data["BRANCH_COVERAGE_MED"] = medium_threshold_branch
     data["BRANCH_COVERAGE_HIGH"] = high_threshold_branch
+    data["GCOVR_TREE_DATA"] = []
 
     self_contained = options.html_self_contained
     if self_contained is None:

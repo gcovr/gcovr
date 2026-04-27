@@ -1,0 +1,94 @@
+{# -*- engine: jinja -*- #}
+<div class="summary-cards">
+  <div class="summary-card">
+    <div class="summary-card-header">
+      <h3>Lines</h3>
+    </div>
+    <div class="summary-card-body">
+      <div class="coverage-ring {{info.lines.class}}">
+        <svg viewBox="0 0 36 36">
+          <path class="ring-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
+          <path class="ring-fill" stroke-dasharray="{% if info.lines.coverage != '-' %}{{info.lines.coverage}}{% else %}0{% endif %}, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
+        </svg>
+        <span class="ring-text">{{info.lines.coverage}}%</span>
+      </div>
+      <div class="summary-stats">
+        <div class="stat-row">
+          <span class="stat-label">Hit</span>
+          <span class="stat-value">{{info.lines.exec}}</span>
+        </div>
+        <div class="stat-row">
+          <span class="stat-label">Total</span>
+          <span class="stat-value">{{info.lines.total}}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="summary-card">
+    <div class="summary-card-header">
+      <h3>Functions</h3>
+    </div>
+    <div class="summary-card-body">
+      <div class="coverage-ring {{info.functions.class}}">
+        <svg viewBox="0 0 36 36">
+          <path class="ring-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
+          <path class="ring-fill" stroke-dasharray="{% if info.functions.coverage != '-' %}{{info.functions.coverage}}{% else %}0{% endif %}, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
+        </svg>
+        <span class="ring-text">{{info.functions.coverage}}%</span>
+      </div>
+      <div class="summary-stats">
+        <div class="stat-row">
+          <span class="stat-label">Hit</span>
+          <span class="stat-value">{{info.functions.exec}}</span>
+        </div>
+        <div class="stat-row">
+          <span class="stat-label">Total</span>
+          <span class="stat-value">{{info.functions.total}}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  {% if info.branches.total > info.branches.excluded %}
+  <div class="summary-card">
+    <div class="summary-card-header">
+      <h3>Branches</h3>
+    </div>
+    <div class="summary-card-body">
+      <div class="coverage-ring {{info.branches.class}}">
+        <svg viewBox="0 0 36 36">
+          <path class="ring-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
+          <path class="ring-fill" stroke-dasharray="{% if info.branches.coverage != '-' %}{{info.branches.coverage}}{% else %}0{% endif %}, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
+        </svg>
+        <span class="ring-text">{{info.branches.coverage}}%</span>
+      </div>
+      <div class="summary-stats">
+        <div class="stat-row">
+          <span class="stat-label">Hit</span>
+          <span class="stat-value">{{info.branches.exec}}</span>
+        </div>
+        <div class="stat-row">
+          <span class="stat-label">Total</span>
+          <span class="stat-value">{{info.branches.total - info.branches.excluded}}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endif %}
+</div>
+
+<div class="coverage-legend">
+  <span class="legend-item coverage-high">High: &ge; {{COVERAGE_HIGH}}%</span>
+  {% if COVERAGE_MED != COVERAGE_HIGH %}
+  <span class="legend-item coverage-medium">Medium: &ge; {{COVERAGE_MED}}%</span>
+  {% endif %}
+  <span class="legend-item coverage-low">Low: &lt; {{COVERAGE_MED}}%</span>
+  {% if info.link_function_list %}
+  <span class="legend-separator"></span>
+  <a href="{{ FUNCTIONS_FNAME }}" class="legend-item legend-functions-link" title="List of all functions">
+    <span class="fx-icon" aria-hidden="true"><i>f</i>(x)</span>
+    List of functions
+  </a>
+  {% endif %}
+</div>
