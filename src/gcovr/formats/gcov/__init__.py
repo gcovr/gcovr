@@ -117,7 +117,7 @@ class GcovHandler(BaseHandler):
                 help=(
                     "Set the threshold for detecting suspicious hits "
                     "in gcov output files. "
-                    "Set to 0 to turn the detection of."
+                    "Set to 0 to turn the detection off."
                 ),
                 type=int,
                 default=2**32,

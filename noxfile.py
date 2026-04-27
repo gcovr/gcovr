@@ -744,7 +744,7 @@ def docker_build(session: nox.Session) -> None:
 
 @nox.session(python=False, name="docker_build_compiler(all)")
 def docker_build_compiler_all(session: nox.Session) -> None:
-    """Build the docker containers vor all compiler versions."""
+    """Build the docker containers for all compiler versions."""
     for version in ALL_COMPILER_VERSIONS:
         session_id = f"docker_build_compiler({version})"
         session.log(f"Notify session {session_id}")
@@ -753,7 +753,7 @@ def docker_build_compiler_all(session: nox.Session) -> None:
 
 @nox.session(python=False, name="docker_build_compiler(gcc)")
 def docker_build_compiler_gcc(session: nox.Session) -> None:
-    """Build the docker containers vor all GCC versions."""
+    """Build the docker containers for all GCC versions."""
     for version in ALL_GCC_VERSIONS:
         session_id = f"docker_build_compiler({version})"
         session.log(f"Notify session {session_id}")
@@ -762,7 +762,7 @@ def docker_build_compiler_gcc(session: nox.Session) -> None:
 
 @nox.session(python=False, name="docker_build_compiler(clang)")
 def docker_build_compiler_clang(session: nox.Session) -> None:
-    """Build the docker containers vor all CLANG versions."""
+    """Build the docker containers for all CLANG versions."""
     for version in ALL_CLANG_VERSIONS:
         session_id = f"docker_build_compiler({version})"
         session.log(f"Notify session {session_id}")
@@ -844,7 +844,7 @@ def docker_run_compiler_all(session: nox.Session) -> None:
 
 @nox.session(python=False, name="docker_run_compiler(gcc)")
 def docker_run_compiler_gcc(session: nox.Session) -> None:
-    """Run the docker containers vor all GCC versions."""
+    """Run the docker containers for all GCC versions."""
     for version in ALL_GCC_VERSIONS:
         session_id = f"docker_run_compiler({version})"
         session.log(f"Notify session {session_id}")
@@ -853,7 +853,7 @@ def docker_run_compiler_gcc(session: nox.Session) -> None:
 
 @nox.session(python=False, name="docker_run_compiler(clang)")
 def docker_run_compiler_clang(session: nox.Session) -> None:
-    """Run the docker containers vor all CLANG versions."""
+    """Run the docker containers for all CLANG versions."""
     for version in ALL_CLANG_VERSIONS:
         session_id = f"docker_run_compiler({version})"
         session.log(f"Notify session {session_id}")
@@ -912,7 +912,7 @@ def docker_compiler_all(session: nox.Session) -> None:
 
 @nox.session(python=False, name="docker_compiler(gcc)")
 def docker_compiler_gcc(session: nox.Session) -> None:
-    """Build and run the docker containers vor all GCC versions."""
+    """Build and run the docker containers for all GCC versions."""
     for version in ALL_GCC_VERSIONS:
         session_id = f"docker_compiler({version})"
         session.log(f"Notify session {session_id}")
@@ -921,7 +921,7 @@ def docker_compiler_gcc(session: nox.Session) -> None:
 
 @nox.session(python=False, name="docker_compiler(clang)")
 def docker_compiler_clang(session: nox.Session) -> None:
-    """Build and run the docker containers vor all CLANG versions."""
+    """Build and run the docker containers for all CLANG versions."""
     for version in ALL_CLANG_VERSIONS:
         session_id = f"docker_compiler({version})"
         session.log(f"Notify session {session_id}")

@@ -27,6 +27,7 @@ import re
 import pytest
 
 from gcovr.__main__ import main
+from gcovr.data_model.coverage import FileCoverage
 from gcovr.version import __version__
 from gcovr.data_model.version import FORMAT_VERSION
 
@@ -689,6 +690,7 @@ def test_import_valid_cobertura_file(tmp_path: Path) -> None:
             {
                 "cobertura_tracefile": [filename],
                 "include_filter": [re.compile(".")],
+                "root": str(tmp_path),
             }
         ]
     )
@@ -697,15 +699,16 @@ def test_import_valid_cobertura_file(tmp_path: Path) -> None:
     assert covdata is not None
     testfile = os.path.join(tmp_path, testfile)
     assert testfile in covdata
-    filecov = covdata[testfile]
-    assert len(list(filecov.lines())) == 10
+    cov = covdata[testfile]
+    assert isinstance(cov, FileCoverage)
+    assert len(list(cov.lines())) == 10
     for line, count, branches in [
         (7, 1, None),
         (9, 3, None),
         (16, 0, None),
         (13, 2, [1, 0]),
     ]:
-        linecovs = filecov.get_line(line)
+        linecovs = cov.get_line(line)
         assert linecovs is not None
         assert linecovs.count == count
         branchcov_list = list(linecovs[""].branches())

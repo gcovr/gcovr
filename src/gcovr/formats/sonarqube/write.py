@@ -32,14 +32,19 @@ def write_report(
     """produce an XML report in the SonarQube generic coverage format"""
 
     if not any(
-        filter(lambda filecov: filecov.condition_coverage().total > 0, covdata.values())  # type: ignore [arg-type]
+        filter(
+            lambda filecov: filecov.condition_coverage().total > 0,  # type: ignore [arg-type]
+            covdata.filecov(recurse=True),
+        )
     ) and (options.sonarqube_metric == "condition"):
         LOGGER.warning("No condition coverage data found.")
 
     root_elem = etree.Element("coverage")
     root_elem.set("version", "1")
 
-    for _, filecov in sorted(covdata.items()):
+    for filecov in sorted(
+        covdata.filecov(recurse=True), key=lambda filecov: filecov.filename
+    ):
         filename = filecov.presentable_filename(options.root_filter)
 
         file_node = etree.Element("file")

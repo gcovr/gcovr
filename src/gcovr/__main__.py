@@ -182,43 +182,36 @@ COPYRIGHT = (
 )
 
 
-def find_config_name(root: str, filename: str) -> str | None:
+def find_config_name(root: str, *filenames: str) -> str | None:
     """Find the configuration to use."""
-    if root:
-        filename = os.path.join(root, filename)
+    for filename in filenames:
+        if root:
+            filename = os.path.join(root, filename)
 
-    if os.path.isfile(filename):
-        return filename
+        if os.path.isfile(filename):
+            return filename
 
     return None
 
 
 def load_config(partial_options: Namespace) -> dict[str, Any]:
     """Load a config file if configured or found by default names"""
-    filename = getattr(partial_options, "config", None)
-    if filename is not None:
-        with open(filename, encoding="utf-8") as buf:
-            return parse_config_into_dict(parse_config_file(buf, filename))
-
     root = getattr(partial_options, "root", "")
-    if filename := find_config_name(root, "gcovr.cfg"):
+    filename = getattr(partial_options, "config", None)
+    if filename is None:
+        filename = find_config_name(root, "gcovr.cfg", "gcovr.toml", "pyproject.toml")
+        if filename is None:
+            return {}
+
+    if filename.endswith(".toml"):
+        with open(filename, "rb") as buf:
+            data = tomllib.load(buf)
+            if os.path.split(filename)[1] == "pyproject.toml":
+                data = data.get("tool", {}).get("gcovr", {})
+            return parse_config_into_dict(config_entries_from_dict(data, filename))
+    else:
         with open(filename, encoding="utf-8") as buf:
             return parse_config_into_dict(parse_config_file(buf, filename))
-
-    if filename := find_config_name(root, "gcovr.toml"):
-        with open(filename, "rb") as buf:
-            data = tomllib.load(buf)
-        return parse_config_into_dict(config_entries_from_dict(data, filename))
-
-    if filename := find_config_name(root, "pyproject.toml"):
-        with open(filename, "rb") as buf:
-            data = tomllib.load(buf)
-        if (gcovr_section := data.get("tool", {}).get("gcovr")) is not None:
-            return parse_config_into_dict(
-                config_entries_from_dict(gcovr_section, filename)
-            )
-
-    return {}
 
 
 def main(args: list[str] | None = None) -> int:  # pylint: disable=too-many-return-statements

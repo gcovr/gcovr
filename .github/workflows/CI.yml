@@ -32,7 +32,7 @@ jobs:
       tag_message: ${{ steps.changelog.outputs.tag_message || '' }}
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           fetch-depth: 75
       - run: git fetch --tags
@@ -80,11 +80,11 @@ jobs:
       contents: read
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - name: Install spellchecker
         run: |
           npm install -g cspell@8.19.4
-      - uses: tj-actions/changed-files@ed68ef82c095e0d48ec87eccea555d944a631a4c  # v46
+      - uses: tj-actions/changed-files@22103cc46bda19c2b464ffe86db46df6922fd323  # v47.0.5
         id: changed-files
         with:
           separator: ","
@@ -106,7 +106,7 @@ jobs:
       contents: read
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - name: Copy coverage reports
         run: |
           mkdir -p /tmp/coverage-upload
@@ -116,7 +116,7 @@ jobs:
           # Patch the paths inside the coverage files
           find /tmp/coverage-upload -type f -name '*' -exec sed -e 's^output/^source/^g ; s^output^source^g ;' -i '' {} \;
       - name: Upload coverage
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: coverage-reference
           path: /tmp/coverage-upload/*.*
@@ -150,7 +150,7 @@ jobs:
     timeout-minutes: 10
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           fetch-depth: 75
 
@@ -193,7 +193,7 @@ jobs:
             | tee --append $GITHUB_OUTPUT
 
       - name: Upload distribution 📦
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: python-package-distributions
           path: dist/**
@@ -209,7 +209,7 @@ jobs:
     timeout-minutes: 10
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           fetch-depth: 75
 
@@ -237,7 +237,7 @@ jobs:
           cat doc/build/job_summary.md >> $GITHUB_STEP_SUMMARY
 
       - name: Upload release notes
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: release-notes
           path: doc/build/release_notes.md
@@ -274,7 +274,8 @@ jobs:
       matrix:
         os: [ubuntu-22.04]
         gcc: [gcc-11]
-        python-version: ['3.10', '3.11', '3.12', '3.13', '3.14', 'pypy-3.11']
+        # FIXME: Temporary version pin to avoid PyPy 7.3.21
+        python-version: ['3.10', '3.11', '3.12', '3.13', '3.14', 'pypy-3.11-v7.3.20']
 
         include:
 
@@ -336,7 +337,7 @@ jobs:
     timeout-minutes: 5
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - name: Print job variables
         run: echo '''${{ toJSON(needs) }}'''
@@ -371,7 +372,7 @@ jobs:
     timeout-minutes: 5
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - name: Print job variables
         run: echo '''${{ toJSON(needs) }}'''
@@ -383,7 +384,7 @@ jobs:
           python-version: 3.12
 
       - name: Download artifacts
-        uses: actions/download-artifact@v5
+        uses: actions/download-artifact@v8
         with:
           pattern: coverage-pytest-*
 
@@ -392,7 +393,7 @@ jobs:
           nox --non-interactive --session combine_coverage -- $(find . -name '.coverage_*')
 
       - name: Upload coverage
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: coverage-merged
           path: |
@@ -421,14 +422,14 @@ jobs:
           jobs: ${{ toJSON(needs) }}
 
       - name: Download all applications
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           pattern: app-*
           path: build/
           merge-multiple: true
 
       - name: Download the release notes
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: release-notes
 
@@ -464,7 +465,7 @@ jobs:
           jobs: ${{ toJSON(needs) }}
 
       - name: Download all the distribution 📦
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: python-package-distributions
           path: dist/

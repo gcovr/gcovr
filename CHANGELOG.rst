@@ -21,6 +21,7 @@ New features and notable changes:
 
 - Add compare mode for JSON, text and HTML reports. (:issue:`1240`)
 - Stub missing line coverage for branches in LLVM source based code coverage format. (:issue:`1245`)
+- Add support for TOML files with :option:`--config` (:issue:`1258`)
 
 Bug fixes and small improvements:
 
@@ -31,6 +32,9 @@ Documentation:
 Internal changes:
 
 - Add CSS and JS files to all folders where a HTML reference file is present. (:issue:`1241`)
+- Refactor internal data model from a flat list to a tree which matches the folder structure of the
+  source files. Also add a properties element which is cleared after each report format to store meta
+  data for the report generation and update the dicts in the HTML report to use it. (:issue:`1261`)
 
 .. _release_8_6:
 
