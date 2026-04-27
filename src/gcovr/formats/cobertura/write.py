@@ -55,7 +55,9 @@ def write_report(
     packages_elem = etree.SubElement(root_elem, "packages")
     packages = dict[str, PackageData]()
 
-    for _, filecov in sorted(covdata.items()):
+    for filecov in sorted(
+        covdata.filecov(recurse=True), key=lambda filecov: filecov.filename
+    ):
         filename = filecov.presentable_filename(options.root_filter)
         if "/" in filename:
             directory, fname = filename.rsplit("/", 1)

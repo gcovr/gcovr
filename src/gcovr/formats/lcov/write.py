@@ -37,10 +37,11 @@ def write_report(
     """produce gcovr csv report"""
 
     with open_text_for_writing(output_file, "coverage.lcov") as fh:
-        sorted_keys = covdata.sort_coverage(
+        filecov_list = covdata.sorted_filecov(
             sort_key=options.sort_key,
             sort_reverse=options.sort_reverse,
             by_metric="branch" if options.sort_branches else "line",
+            recurse=True,
         )
         if options.lcov_comment is not None:
             # #comment_string
@@ -51,8 +52,7 @@ def write_report(
         def suffix() -> str:
             return f"_{lineno}" if len(linenos) > 1 else ""
 
-        for key in sorted_keys:
-            filecov = covdata[key]
+        for filecov in filecov_list:
             filename = force_unix_separator(filecov.filename)
 
             # SF:<path to the source file>

@@ -38,7 +38,7 @@ from ...utils import GZIP_SUFFIX
 def read_report(options: Options) -> CoverageContainer:
     """Read trace files into internal data model."""
 
-    covdata = CoverageContainer()
+    covdata = CoverageContainer(options.root)
     if len(options.json_tracefile) != 0:
         datafiles = list[str]()
 

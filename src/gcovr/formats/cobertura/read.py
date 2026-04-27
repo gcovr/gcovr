@@ -40,7 +40,7 @@ def read_report(options: Options) -> CoverageContainer:
     """merge a coverage from multiple reports in the format
     compatible with Cobertura"""
 
-    covdata = CoverageContainer()
+    covdata = CoverageContainer(options.root)
     if len(options.cobertura_tracefile) == 0:
         return covdata
 

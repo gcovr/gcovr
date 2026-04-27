@@ -76,7 +76,7 @@ def read_report(options: Options) -> CoverageContainer:
             if profraw_file not in profraw_files:
                 profraw_files.append(profraw_file)
 
-    covdata = CoverageContainer()
+    covdata = CoverageContainer(options.root)
 
     merge_options = get_merge_mode_from_options(options)
     for profraw_file in profraw_files:
@@ -118,7 +118,7 @@ def read_report(options: Options) -> CoverageContainer:
             for profraw_file in profraw_files:
                 os.unlink(profraw_file)
 
-    for filecov in covdata.values():
+    for filecov in covdata.filecov(recurse=True):
         source_lines = read_source_file(
             options.source_encoding,
             filecov.filename,
@@ -255,7 +255,7 @@ def read_json(
     version: tuple[int, ...],
 ) -> CoverageContainer:
     """Read one clang JSON coverage report."""
-    covdata = CoverageContainer()
+    covdata = CoverageContainer(options.root)
     for data in json_data["data"]:
         if any(
             "mcdc_records" in entry
@@ -269,7 +269,7 @@ def read_json(
         read_json_files(data_source, data, options, merge_options, covdata, version)
         read_json_functions(data_source, data, options, merge_options, covdata)
 
-    for filecov in covdata.values():
+    for filecov in covdata.filecov(recurse=True):
         activate_trace_logging = not is_file_excluded(
             "trace",
             filecov.filename,

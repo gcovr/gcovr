@@ -34,10 +34,11 @@ def write_report(
     # The CSV writer uses as default line endings "\r\n" (according to
     # https://datatracker.ietf.org/doc/html/rfc4180)
     with open_text_for_writing(output_file, "coverage.csv", newline="") as fh:
-        sorted_keys = covdata.sort_coverage(
+        filecov_list = covdata.sorted_filecov(
             sort_key=options.sort_key,
             sort_reverse=options.sort_reverse,
             by_metric="branch" if options.sort_branches else "line",
+            recurse=True,
         )
 
         writer = csv.writer(fh)
@@ -55,9 +56,9 @@ def write_report(
                 "function_percent",
             )
         )
-        for key in sorted_keys:
-            filename = covdata[key].presentable_filename(options.root_filter)
-            stats = covdata[key].stats
+        for filecov in filecov_list:
+            filename = filecov.presentable_filename(options.root_filter)
+            stats = filecov.stats
             writer.writerow(
                 [
                     filename,

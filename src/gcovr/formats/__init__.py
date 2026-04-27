@@ -104,9 +104,10 @@ def read_reports(options: Options) -> CoverageContainer:
 
     if any(
         filecov.diff is not filecov.CoverageDiff.UNDEFINED
-        for filecov in covdata.values()
+        for filecov in covdata.filecov(recurse=True)
     ) and any(
-        filecov.diff is filecov.CoverageDiff.UNDEFINED for filecov in covdata.values()
+        filecov.diff is filecov.CoverageDiff.UNDEFINED
+        for filecov in covdata.filecov(recurse=True)
     ):
         raise SanityCheckError("Some files have diff information, while others do not.")
 
@@ -140,6 +141,9 @@ def read_reports(options: Options) -> CoverageContainer:
 
     if options.merge_lines:
         covdata.merge_lines(options)
+
+    LOGGER.debug("Removing directories with only one child...")
+    covdata.remove_container_with_single_item()
 
     return covdata
 
@@ -323,6 +327,9 @@ def write_reports(covdata: CoverageContainer, options: Options) -> None:
                 default_output = None
         if output is not None:
             try:
+                # Clear the properties before calling each writer
+                for data in covdata.traverse():
+                    data.properties.clear()
                 format_writer(covdata, output.abspath)
             except RuntimeError as e:
                 writer_errors.append(str(e))

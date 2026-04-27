@@ -56,15 +56,16 @@ def write_report(
         "summary": _summary_from_stats(covdata.stats, options),
     }
 
-    sorted_keys = covdata.sort_coverage(
+    filecov_list = covdata.sorted_filecov(
         sort_key=options.sort_key,
         sort_reverse=options.sort_reverse,
         by_metric="branch" if options.sort_branches else "line",
+        recurse=True,
     )
     data["entries"] = list[dict[str, Any]]()
-    for key in sorted_keys:
-        summary = _summary_from_stats(covdata[key].stats, options)
-        summary["filename"] = covdata[key].presentable_filename(options.root_filter)
+    for filecov in filecov_list:
+        summary = _summary_from_stats(filecov.stats, options)
+        summary["filename"] = filecov.presentable_filename(options.root_filter)
         data["entries"].append(summary)
 
     markdown_string = templates().get_template("report_template.md.j2").render(**data)

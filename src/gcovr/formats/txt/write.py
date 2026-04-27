@@ -61,10 +61,11 @@ def write_report(
 
         fh.write("-" * LINE_WIDTH + "\n")
         # Data
-        sorted_keys = covdata.sort_coverage(
+        filecov_list = covdata.sorted_filecov(
             sort_key=options.sort_key,
             sort_reverse=options.sort_reverse,
             by_metric=options.txt_metric,
+            recurse=True,
         )
         if diff_report:
             fh.write(
@@ -73,8 +74,8 @@ def write_report(
                 + SEPARATOR
                 + "Lines\n"
             )
-            for key in sorted_keys:
-                txt = _diff_report_file(covdata[key], options)
+            for filecov in filecov_list:
+                txt = _diff_report_file(filecov, options)
                 fh.write(txt + "\n")
         else:
             if options.txt_metric == "branch":
@@ -101,8 +102,8 @@ def write_report(
             fh.write("-" * LINE_WIDTH + "\n")
 
             total_stat = CoverageStat.new_empty()
-            for key in sorted_keys:
-                (stat, txt) = _report_file(covdata[key], options)
+            for filecov in filecov_list:
+                (stat, txt) = _report_file(filecov, options)
                 total_stat += stat
                 fh.write(txt + "\n")
 
@@ -125,7 +126,7 @@ def write_summary_report(
             for current_diff in FileCoverage.CoverageDiff:
                 filecov_list = [
                     filecov
-                    for filecov in covdata.values()
+                    for filecov in covdata.filecov(recurse=True)
                     if filecov.diff == current_diff
                 ]
                 if filecov_list:
