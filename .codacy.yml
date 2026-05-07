@@ -1,0 +1,29 @@
+---
+exclude_paths:
+  - "doc/examples/*.*"
+  - "tests/**/reference/**"
+include_paths:
+  - "doc/examples/*.sh"
+  - "tests/exclusion/reference/exclude-line-branch/gcc-5/*.*"
+  - "tests/exclusion/reference/exclude-line-branch/gcc-14/*.*"
+languages:
+  c:
+    enabled: true
+  cpp:
+    enabled: true
+  css:
+    enabled: true
+  javascript:
+    enabled: true
+  json:
+    enabled: true
+  markdown:
+    enabled: true
+  python:
+    enabled: true
+  shell:
+    enabled: true
+  xml:
+    enabled: true
+  yaml:
+    enabled: true
