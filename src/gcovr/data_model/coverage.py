@@ -117,18 +117,39 @@ def _presentable_filename(filename: str, root_filter: re.Pattern[str]) -> str:
     return force_unix_separator(normalized)
 
 
+class CoverageDiff(Enum):
+    """Enumeration for coverage differences."""
+
+    UNDEFINED = None
+    REMOVED = "Removed"
+    ADDED = "Added"
+    CHANGED = "Changed"
+    APPROXIMATELY_EQUAL = "Approximately equal"
+    STRICTLY_EQUAL = "Strictly equal"
+
+
+def summarize_coverage_diff(
+    diffs: set[CoverageDiff],
+) -> CoverageDiff:
+    """Get the summarized coverage diff value."""
+    # Everything is the same
+    if len(diffs) == 1:
+        return CoverageDiff(diffs.pop())
+    if any(
+        value in diffs
+        for value in [
+            CoverageDiff.ADDED,
+            CoverageDiff.REMOVED,
+            CoverageDiff.CHANGED,
+        ]
+    ):
+        return CoverageDiff.CHANGED
+
+    return CoverageDiff.APPROXIMATELY_EQUAL
+
+
 class CoverageBase:
     """Base class for coverage information."""
-
-    class CoverageDiff(Enum):
-        """Enumeration for coverage differences."""
-
-        UNDEFINED = None
-        REMOVED = "Removed"
-        ADDED = "Added"
-        CHANGED = "Changed"
-        APPROXIMATELY_EQUAL = "Approximately equal"
-        STRICTLY_EQUAL = "Strictly equal"
 
     __slots__ = "data_sources", "diff_details", "diff"
 
@@ -137,8 +158,8 @@ class CoverageBase:
             self.data_sources = set[tuple[str, ...]]([(data_sources,)])
         else:
             self.data_sources = data_sources.copy()
-        self.diff_details: dict[str, CoverageBase.CoverageDiff] | None = None
-        self.diff: CoverageBase.CoverageDiff = CoverageBase.CoverageDiff.UNDEFINED
+        self.diff_details: dict[str, CoverageDiff] | None = None
+        self.diff: CoverageDiff = CoverageDiff.UNDEFINED
 
     def serialize_base(
         self,
@@ -147,10 +168,10 @@ class CoverageBase:
         """Serialize the object."""
         data_dict = dict[str, Any]()
         data_dict.update(get_data_sources(self))
-        if self.diff != CoverageBase.CoverageDiff.UNDEFINED:
+        if self.is_compare_info_available():
             data_dict["gcovr/diff"] = self.diff.value
             if (
-                self.diff != CoverageBase.CoverageDiff.STRICTLY_EQUAL
+                self.diff != CoverageDiff.STRICTLY_EQUAL
                 and self.diff_details is not None
             ):
                 data_dict["gcovr/diff_details"] = {
@@ -164,75 +185,56 @@ class CoverageBase:
         data_dict: dict[str, Any],
     ) -> None:
         """Serialize the object."""
-        self.diff = CoverageBase.CoverageDiff(data_dict.get("gcovr/diff"))
+        self.diff = CoverageDiff(data_dict.get("gcovr/diff"))
         if self.diff and "gcovr/diff_details" in data_dict:
             self.diff_details = {
-                key: CoverageBase.CoverageDiff(value)
+                key: CoverageDiff(value)
                 for key, value in data_dict["gcovr/diff_details"].items()
             }
 
-    def __summarize_diff(
-        self, diffs: set[CoverageBase.CoverageDiff]
-    ) -> CoverageBase.CoverageDiff:
-        """Get the summarized coverage diff value."""
-        # Everything is the same
-        if len(diffs) == 1:
-            return CoverageBase.CoverageDiff(diffs.pop())
-        if any(
-            value in diffs
-            for value in [
-                CoverageBase.CoverageDiff.ADDED,
-                CoverageBase.CoverageDiff.REMOVED,
-                CoverageBase.CoverageDiff.CHANGED,
-            ]
-        ):
-            return CoverageBase.CoverageDiff.CHANGED
-
-        return CoverageBase.CoverageDiff.APPROXIMATELY_EQUAL
-
-    def set_diff(self, diff_details: dict[str, CoverageBase.CoverageDiff]) -> None:
+    def set_diff(self, diff_details: dict[str, CoverageDiff]) -> None:
         """Set the coverage difference value."""
         self.diff_details = diff_details
-        self.diff = self.__summarize_diff(set(diff_details.values()))
+        self.diff = summarize_coverage_diff(set(diff_details.values()))
 
     def aggregate_diff_from_children(self, other: CoverageBase) -> None:
         """Aggregate the coverage difference value from child elements."""
 
         # This is the case if the data is removed
-        if self.diff != CoverageBase.CoverageDiff.UNDEFINED:
+        if self.is_compare_info_available():
             return
 
-        def _compare_data(left: Any, right: Any) -> CoverageBase.CoverageDiff:
+        def _compare_data(left: Any, right: Any) -> CoverageDiff:
             if left == right:
-                return CoverageBase.CoverageDiff.STRICTLY_EQUAL
+                return CoverageDiff.STRICTLY_EQUAL
             if (
                 isinstance(left, int)
                 and isinstance(right, int)
                 and left > 0
                 and right > 0
             ):
-                return CoverageBase.CoverageDiff.APPROXIMATELY_EQUAL
-            return CoverageBase.CoverageDiff.CHANGED
+                return CoverageDiff.APPROXIMATELY_EQUAL
+            return CoverageDiff.CHANGED
 
-        def _compare(left: Any, right: Any) -> CoverageBase.CoverageDiff:  # pylint: disable=too-many-return-statements
+        def _compare(left: Any, right: Any) -> CoverageDiff:  # pylint: disable=too-many-return-statements
             if issubclass(type(left), CoverageBase):
                 return cast(CoverageBase, left).diff
             if isinstance(left, dict):
                 if left.keys() != right.keys():
-                    return CoverageBase.CoverageDiff.CHANGED
+                    return CoverageDiff.CHANGED
                 if not left:
-                    return CoverageBase.CoverageDiff.STRICTLY_EQUAL
+                    return CoverageDiff.STRICTLY_EQUAL
 
-                return self.__summarize_diff(
+                return summarize_coverage_diff(
                     set(_compare(left[k], right[k]) for k in left.keys())
                 )
             if isinstance(left, list):
                 if len(left) != len(right):
-                    return CoverageBase.CoverageDiff.CHANGED
+                    return CoverageDiff.CHANGED
                 if not left:
-                    return CoverageBase.CoverageDiff.STRICTLY_EQUAL
+                    return CoverageDiff.STRICTLY_EQUAL
 
-                return self.__summarize_diff(
+                return summarize_coverage_diff(
                     set(_compare(left[k], right[k]) for k in range(len(left)))
                 )
             return _compare_data(left, right)
@@ -249,19 +251,19 @@ class CoverageBase:
 
     def is_compare_info_available(self) -> bool:
         """Check weather the data has compare information or not."""
-        return self.diff != CoverageBase.CoverageDiff.UNDEFINED
+        return self.diff != CoverageDiff.UNDEFINED
 
     def is_equal(self) -> bool:
         """Return True if the coverage difference value is STRICTLY_EQUAL."""
-        return self.diff == CoverageBase.CoverageDiff.STRICTLY_EQUAL
+        return self.diff == CoverageDiff.STRICTLY_EQUAL
 
     def set_added(self) -> None:
         """Set the coverage difference value to ADDED."""
-        self.diff = CoverageBase.CoverageDiff.ADDED
+        self.diff = CoverageDiff.ADDED
 
     def set_removed(self) -> None:
         """Set the coverage difference value to REMOVED."""
-        self.diff = CoverageBase.CoverageDiff.REMOVED
+        self.diff = CoverageDiff.REMOVED
 
     def merge_base_data(
         self,

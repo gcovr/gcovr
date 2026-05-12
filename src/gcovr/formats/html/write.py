@@ -45,6 +45,7 @@ from pygments.styles.default import DefaultStyle
 
 from ...data_model.container import CoverageContainer
 from ...data_model.coverage import (
+    CoverageDiff,
     DecisionCoverageConditional,
     DecisionCoverageSwitch,
     DecisionCoverageUncheckable,
@@ -845,7 +846,7 @@ def get_coverage_data(
 
     return {
         "filename": display_filename,
-        "diff": cdata.diff.name if isinstance(cdata, FileCoverage) else None,
+        "diff": cdata.diff.name if cdata.is_compare_info_available() else None,
         "link": link_report,
         "lines": lines,
         "branches": branches,
@@ -877,6 +878,9 @@ def get_directory_data(
             "relative_path": relative_path,
         }
     )
+
+    if covdata.is_compare_info_available():
+        directory_data["diff"] = covdata.diff.name
 
     covdata_list = covdata.sorted_coverage(
         sort_key=options.sort_key,
@@ -917,7 +921,7 @@ def get_file_data(
             filecov,
         )
     )
-    if filecov.diff != filecov.CoverageDiff.UNDEFINED:
+    if filecov.diff != CoverageDiff.UNDEFINED:
         file_data["diff"] = filecov.diff.name
     functions = dict[tuple[FunctioncovKeyType, str, int], dict[str, Any]]()
     # Only use demangled names (containing a brace)
@@ -1015,7 +1019,7 @@ def get_file_data(
     )
     if filecov.is_compare_info_available():
         file_data["lines"]["diff"] = dict[str, int]()
-        for kind in filecov.CoverageDiff:
+        for kind in CoverageDiff:
             file_data["lines"]["diff"][kind.name] = len(
                 [row for row in file_data["source_lines"] if kind.name in row["diff"]]
             )
@@ -1101,7 +1105,7 @@ def source_row(
         else [
             linecov.diff.name
             for linecov in linecov_list
-            if linecov.diff != linecov.CoverageDiff.UNDEFINED
+            if linecov.is_compare_info_available()
         ],
         "block_ids": []
         if linecov_list is None
@@ -1140,7 +1144,7 @@ def source_row_branch(
         else:
             items[-1]["source_block_id"] = branchcov.source_block_id
             items[-1]["destination_block_id"] = branchcov.destination_block_id
-        if branchcov.diff != branchcov.CoverageDiff.UNDEFINED:
+        if branchcov.is_compare_info_available():
             items[-1]["diff"] = branchcov.diff.name
 
     stats = linecov.branch_coverage()
@@ -1182,7 +1186,7 @@ def source_row_condition(
                     "excluded": conditioncov.is_excluded,
                 }
             )
-            if conditioncov.diff != conditioncov.CoverageDiff.UNDEFINED:
+            if conditioncov.is_compare_info_available():
                 items[-1]["diff"] = conditioncov.diff.name
     stats = linecov.condition_coverage()
     return {
@@ -1258,7 +1262,7 @@ def source_row_call(linecov: LineCoverage) -> dict[str, Any]:
                 "excluded": callcov.is_excluded,
             }
         )
-        if callcov.diff != callcov.CoverageDiff.UNDEFINED:
+        if callcov.is_compare_info_available():
             items[-1]["diff"] = callcov.diff.name
 
     stats = linecov.call_coverage()

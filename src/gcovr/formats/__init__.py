@@ -102,19 +102,26 @@ def read_reports(options: Options) -> CoverageContainer:
     else:
         covdata = GcovHandler(options).read_report()
 
-    if any(
-        filecov.diff is not filecov.CoverageDiff.UNDEFINED
-        for filecov in covdata.filecov(recurse=True)
-    ) and any(
-        filecov.diff is filecov.CoverageDiff.UNDEFINED
-        for filecov in covdata.filecov(recurse=True)
-    ):
-        raise SanityCheckError("Some files have diff information, while others do not.")
-
     if not covdata:
         LOGGER.warning(
             "All coverage data is filtered out. Please check your paths and filters."
         )
+
+    # Check if the diff information is available for all files, or for none of the files.
+    # Otherwise, the report generation is not possible.
+    if (
+        len(
+            set(
+                filecov.is_compare_info_available()
+                for filecov in covdata.filecov(recurse=True)
+            )
+        )
+        != 1
+    ):
+        raise SanityCheckError("Some files have diff information, while others do not.")
+
+    if covdata.is_compare_info_available():
+        covdata.update_diff()
 
     if options.include_search_filter:
         for search_path in options.search_paths or [options.root]:
