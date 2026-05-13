@@ -116,7 +116,7 @@ def read_reports(options: Options) -> CoverageContainer:
                 for filecov in covdata.filecov(recurse=True)
             )
         )
-        != 1
+        == 2
     ):
         raise SanityCheckError("Some files have diff information, while others do not.")
 
