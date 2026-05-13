@@ -19,7 +19,7 @@ New features and notable changes:
   - Add jinja2 rendering for CSS files. (:issue:`1252`)
   - Add new HTML themes ``boost.green`` and ``boost.blue``. (:issue:`1248`)
 
-- Add compare mode for JSON, text and HTML reports. (:issue:`1240`)
+- Add compare mode for JSON, text and HTML reports. (:issue:`1240`, :issue:`1266`)
 - Stub missing line coverage for branches in LLVM source based code coverage format. (:issue:`1245`)
 - Add support for TOML files with :option:`--config` (:issue:`1258`)
 

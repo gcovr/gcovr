@@ -1,0 +1,15 @@
+------------------------------------------------------------------------------
+                     GCC Code Coverage Report (Diff mode)
+Directory: .
+------------------------------------------------------------------------------
+File                                                   State   Lines
+subdir/A/C/D/File6.cpp                               Changed   1,3,6
+subdir/A/C/file5.cpp                     Approximately equal   1,3,6
+subdir/A/file1.cpp                                     Added
+subdir/A/File2.cpp                       Approximately equal   1,3-5
+subdir/A/file3.cpp                                   Removed
+subdir/A/File4.cpp                       Approximately equal   1,3-4
+subdir/A/file7.cpp                            Strictly equal
+subdir/B/main.cpp                                    Changed   19
+                                         Approximately equal   13-18,21
+------------------------------------------------------------------------------

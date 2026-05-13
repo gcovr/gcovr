@@ -113,7 +113,7 @@ def test(
     for theme in ["default", "github", "boost"]:
         gcovr_test_exec.gcovr(
             "--json-add-tracefile=coverage_compare.json",
-            "--html-details",
+            "--html-nested",
             f"--html-theme={'' if theme == 'default' else (theme + '.')}green",
             f"--html=coverage.{theme}.html",
         )

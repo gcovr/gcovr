@@ -45,6 +45,7 @@ from pygments.styles.default import DefaultStyle
 
 from ...data_model.container import CoverageContainer
 from ...data_model.coverage import (
+    CoverageDiff,
     DecisionCoverageConditional,
     DecisionCoverageSwitch,
     DecisionCoverageUncheckable,
@@ -884,7 +885,7 @@ def get_coverage_data(
 
     return {
         "filename": display_filename,
-        "diff": cdata.diff.name if isinstance(cdata, FileCoverage) else None,
+        "diff": cdata.diff.name if cdata.is_compare_info_available() else None,
         "link": link_report,
         "lines": lines,
         "branches": branches,
@@ -916,6 +917,9 @@ def get_directory_data(
             "relative_path": relative_path,
         }
     )
+
+    if covdata.is_compare_info_available():
+        directory_data["diff"] = covdata.diff.name
 
     covdata_list = covdata.sorted_coverage(
         sort_key=options.sort_key,
@@ -1054,7 +1058,7 @@ def get_file_data(
     if filecov.is_compare_info_available():
         file_data["diff"] = filecov.diff.name
         file_data["lines"]["diff"] = dict[str, int]()
-        for kind in filecov.CoverageDiff:
+        for kind in CoverageDiff:
             file_data["lines"]["diff"][kind.name] = len(
                 [row for row in file_data["source_lines"] if kind.name in row["diff"]]
             )

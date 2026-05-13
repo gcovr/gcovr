@@ -398,37 +398,10 @@
     var treeContainer = document.getElementById('file-tree');
     if (!treeContainer) return;
 
-    // Check for embedded tree data first (works for local file:// access)
-    if (window.GCOVR_TREE_DATA) {
-      window.GCOVR_TREE_DATA = normalizeTree(window.GCOVR_TREE_DATA);
-      deduplicateTree(window.GCOVR_TREE_DATA);
-      collapseSingleChildDirs(window.GCOVR_TREE_DATA);
-      deduplicateTree(window.GCOVR_TREE_DATA);
-      renderTree(treeContainer, window.GCOVR_TREE_DATA);
-      return;
-    }
-
-    // Fallback: try to load tree.json for full hierarchy
-    fetch('tree.json')
-      .then(function(response) {
-        if (!response.ok) throw new Error('No tree.json');
-        return response.json();
-      })
-      .then(function(tree) {
-        window.GCOVR_TREE_DATA = normalizeTree(tree);
-        deduplicateTree(window.GCOVR_TREE_DATA);
-        collapseSingleChildDirs(window.GCOVR_TREE_DATA);
-        deduplicateTree(window.GCOVR_TREE_DATA);
-        renderTree(treeContainer, window.GCOVR_TREE_DATA);
-        // Re-run dependent init now that the tree exists
-        initNavOverride();
-        initBreadcrumbs();
-        initSearch();
-      })
-      .catch(function(err) {
-        console.log('tree.json not found, using static sidebar');
-        // Keep existing static content from Jinja template
-      });
+    deduplicateTree(window.GCOVR_TREE_DATA);
+    collapseSingleChildDirs(window.GCOVR_TREE_DATA);
+    deduplicateTree(window.GCOVR_TREE_DATA);
+    renderTree(treeContainer, window.GCOVR_TREE_DATA);
   }
 
   // cspell:ignore capy
@@ -473,74 +446,6 @@
       }
       deduplicateTree(node.children);
     }
-  }
-
-  // Normalize tree: expand multi-segment node names (e.g. "capy/buffers")
-  // into proper nested directory structures so the tree and breadcrumbs
-  // display correctly.
-  function normalizeTree(nodes) {
-    if (!nodes || nodes.length === 0) return nodes;
-
-    var groups = {};
-    var order = [];
-
-    for (var i = 0; i < nodes.length; i++) {
-      var node = nodes[i];
-      var slashIdx = node.name.indexOf('/');
-
-      if (slashIdx === -1) {
-        // Simple name — add directly or merge with existing group
-        if (groups[node.name]) {
-          var existing = groups[node.name];
-          if (node.link) existing.link = node.link;
-          if (node.coverage) existing.coverage = node.coverage;
-          if (node.coverageClass) existing.coverageClass = node.coverageClass;
-          if (node.children && node.children.length > 0) {
-            existing.children = (existing.children || []).concat(node.children);
-          }
-        } else {
-          var copy = {};
-          for (var key in node) {
-            if (node.hasOwnProperty(key)) copy[key] = node[key];
-          }
-          groups[node.name] = copy;
-          order.push(node.name);
-        }
-      } else {
-        // Multi-segment name — split on first '/' and group
-        var prefix = node.name.substring(0, slashIdx);
-        var rest = node.name.substring(slashIdx + 1);
-
-        if (!groups[prefix]) {
-          groups[prefix] = {
-            name: prefix,
-            isDirectory: true,
-            children: []
-          };
-          order.push(prefix);
-        }
-        if (!groups[prefix].children) groups[prefix].children = [];
-
-        // Create child node with remaining path as name
-        var childNode = {};
-        for (var key in node) {
-          if (node.hasOwnProperty(key)) childNode[key] = node[key];
-        }
-        childNode.name = rest;
-        groups[prefix].children.push(childNode);
-      }
-    }
-
-    // Build result with recursive normalization
-    var result = [];
-    for (var i = 0; i < order.length; i++) {
-      var node = groups[order[i]];
-      if (node.children && node.children.length > 0) {
-        node.children = normalizeTree(node.children);
-      }
-      result.push(node);
-    }
-    return result;
   }
 
   // Save expanded folder paths to localStorage
@@ -2189,3 +2094,219 @@
   }
 
 })();
+
+window.GCOVR_TREE_DATA = [
+  {
+    "branchesClass": "coverage-low",
+    "branchesCoverage": "28.6",
+    "children": [
+      {
+        "branchesClass": "coverage-low",
+        "branchesCoverage": "30.0",
+        "children": [
+          {
+            "branchesClass": "coverage-low",
+            "branchesCoverage": "25.0",
+            "children": [
+              {
+                "branchesClass": "coverage-none",
+                "branchesCoverage": "0.0",
+                "children": [
+                  {
+                    "branchesClass": "coverage-none",
+                    "branchesCoverage": "0.0",
+                    "children": [],
+                    "coverage": "0.0",
+                    "coverageClass": "coverage-none",
+                    "functionsClass": "coverage-none",
+                    "functionsCoverage": "0.0",
+                    "isDirectory": false,
+                    "linesClass": "coverage-none",
+                    "linesCoverage": "0.0",
+                    "linesExec": "0",
+                    "linesTotal": "5",
+                    "link": "coverage.boost.File6.cpp.d50a8531ab312aa3faac8eaedb567137.html",
+                    "name": "File6.cpp"
+                  }
+                ],
+                "coverage": "0.0",
+                "coverageClass": "coverage-none",
+                "functionsClass": "coverage-none",
+                "functionsCoverage": "0.0",
+                "isDirectory": true,
+                "linesClass": "coverage-none",
+                "linesCoverage": "0.0",
+                "linesExec": "0",
+                "linesTotal": "5",
+                "link": "coverage.boost.D.f26830d87b54e9f418a67752d418ba31.html",
+                "name": "D"
+              },
+              {
+                "branchesClass": "coverage-low",
+                "branchesCoverage": "50.0",
+                "children": [],
+                "coverage": "80.0",
+                "coverageClass": "coverage-medium",
+                "functionsClass": "coverage-high",
+                "functionsCoverage": "100.0",
+                "isDirectory": false,
+                "linesClass": "coverage-medium",
+                "linesCoverage": "80.0",
+                "linesExec": "4",
+                "linesTotal": "5",
+                "link": "coverage.boost.file5.cpp.cde4c7e07f79b4a315bd6b72e5bfe2dd.html",
+                "name": "file5.cpp"
+              }
+            ],
+            "coverage": "40.0",
+            "coverageClass": "coverage-low",
+            "functionsClass": "coverage-low",
+            "functionsCoverage": "50.0",
+            "isDirectory": true,
+            "linesClass": "coverage-low",
+            "linesCoverage": "40.0",
+            "linesExec": "4",
+            "linesTotal": "10",
+            "link": "coverage.boost.C.fb14f49b815b3421ec3912f68f79c28c.html",
+            "name": "C"
+          },
+          {
+            "branchesClass": "coverage-unknown",
+            "branchesCoverage": "-",
+            "children": [],
+            "coverage": "57.1",
+            "coverageClass": "coverage-low",
+            "functionsClass": "coverage-low",
+            "functionsCoverage": "50.0",
+            "isDirectory": false,
+            "linesClass": "coverage-low",
+            "linesCoverage": "57.1",
+            "linesExec": "4",
+            "linesTotal": "7",
+            "link": "coverage.boost.File2.cpp.0b63fd09c7d89df6cfd850bed4aef633.html",
+            "name": "File2.cpp"
+          },
+          {
+            "branchesClass": "coverage-low",
+            "branchesCoverage": "50.0",
+            "children": [],
+            "coverage": "80.0",
+            "coverageClass": "coverage-medium",
+            "functionsClass": "coverage-high",
+            "functionsCoverage": "100.0",
+            "isDirectory": false,
+            "linesClass": "coverage-medium",
+            "linesCoverage": "80.0",
+            "linesExec": "4",
+            "linesTotal": "5",
+            "link": "coverage.boost.File4.cpp.65a4d8d1a16f0b88f258c253517669ec.html",
+            "name": "File4.cpp"
+          },
+          {
+            "branchesClass": "coverage-low",
+            "branchesCoverage": "50.0",
+            "children": [],
+            "coverage": "80.0",
+            "coverageClass": "coverage-medium",
+            "functionsClass": "coverage-high",
+            "functionsCoverage": "100.0",
+            "isDirectory": false,
+            "linesClass": "coverage-medium",
+            "linesCoverage": "80.0",
+            "linesExec": "4",
+            "linesTotal": "5",
+            "link": "coverage.boost.file1.cpp.46c73eeafdf12f5341eb32413a90169e.html",
+            "name": "file1.cpp"
+          },
+          {
+            "branchesClass": "coverage-none",
+            "branchesCoverage": "0.0",
+            "children": [],
+            "coverage": "40.0",
+            "coverageClass": "coverage-low",
+            "functionsClass": "coverage-low",
+            "functionsCoverage": "50.0",
+            "isDirectory": false,
+            "linesClass": "coverage-low",
+            "linesCoverage": "40.0",
+            "linesExec": "4",
+            "linesTotal": "10",
+            "link": "coverage.boost.file3.cpp.05c5eb887e5d0a7183edce836a6718cd.html",
+            "name": "file3.cpp"
+          },
+          {
+            "branchesClass": "coverage-unknown",
+            "branchesCoverage": "-",
+            "children": [],
+            "coverage": "0.0",
+            "coverageClass": "coverage-none",
+            "functionsClass": "coverage-none",
+            "functionsCoverage": "0.0",
+            "isDirectory": false,
+            "linesClass": "coverage-none",
+            "linesCoverage": "0.0",
+            "linesExec": "0",
+            "linesTotal": "2",
+            "link": "coverage.boost.file7.cpp.f551d0ebeb9c429aba16ade7468659dd.html",
+            "name": "file7.cpp"
+          }
+        ],
+        "coverage": "51.3",
+        "coverageClass": "coverage-low",
+        "functionsClass": "coverage-low",
+        "functionsCoverage": "55.6",
+        "isDirectory": true,
+        "linesClass": "coverage-low",
+        "linesCoverage": "51.3",
+        "linesExec": "20",
+        "linesTotal": "39",
+        "link": "coverage.boost.A.01fd5d65b3a8149e812c7c9d89b472a7.html",
+        "name": "A"
+      },
+      {
+        "branchesClass": "coverage-low",
+        "branchesCoverage": "25.0",
+        "children": [
+          {
+            "branchesClass": "coverage-low",
+            "branchesCoverage": "25.0",
+            "children": [],
+            "coverage": "100.0",
+            "coverageClass": "coverage-high",
+            "functionsClass": "coverage-high",
+            "functionsCoverage": "100.0",
+            "isDirectory": false,
+            "linesClass": "coverage-high",
+            "linesCoverage": "100.0",
+            "linesExec": "8",
+            "linesTotal": "8",
+            "link": "coverage.boost.main.cpp.13fb8fc771195717481a98e084ed0848.html",
+            "name": "main.cpp"
+          }
+        ],
+        "coverage": "100.0",
+        "coverageClass": "coverage-high",
+        "functionsClass": "coverage-high",
+        "functionsCoverage": "100.0",
+        "isDirectory": true,
+        "linesClass": "coverage-high",
+        "linesCoverage": "100.0",
+        "linesExec": "8",
+        "linesTotal": "8",
+        "link": "coverage.boost.B.cec86a34c08f941fc92924df967d4300.html",
+        "name": "B"
+      }
+    ],
+    "coverage": "59.6",
+    "coverageClass": "coverage-low",
+    "functionsClass": "coverage-low",
+    "functionsCoverage": "60.0",
+    "isDirectory": true,
+    "linesClass": "coverage-low",
+    "linesCoverage": "59.6",
+    "linesExec": "28",
+    "linesTotal": "47",
+    "link": "coverage.boost.subdir.86ae37b338459868804e9697025ba4c2.html",
+    "name": "subdir"
+  }
+];

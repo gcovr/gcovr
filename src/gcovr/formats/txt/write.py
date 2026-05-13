@@ -20,7 +20,7 @@
 from typing import Iterable
 
 from ...data_model.container import CoverageContainer
-from ...data_model.coverage import FileCoverage
+from ...data_model.coverage import CoverageDiff, FileCoverage
 from ...data_model.stats import CoverageStat
 from ...options import Options
 from ...utils import force_unix_separator, open_text_for_writing
@@ -123,7 +123,7 @@ def write_summary_report(
 
     with open_text_for_writing(output_file, "coverage.txt") as fh:
         if covdata.is_compare_info_available():
-            for current_diff in FileCoverage.CoverageDiff:
+            for current_diff in CoverageDiff:
                 filecov_list = [
                     filecov
                     for filecov in covdata.filecov(recurse=True)
@@ -166,9 +166,9 @@ def _diff_report_file(filecov: FileCoverage, options: Options) -> str:
         filename = filename + "\n" + " " * COL_FILE_WIDTH
 
     lines_with_diff = list[str]()
-    for current_diff in filecov.CoverageDiff:
+    for current_diff in CoverageDiff:
         # If there which are strict equal we only list them if no other diffs exist
-        if current_diff == filecov.CoverageDiff.STRICTLY_EQUAL and lines_with_diff:
+        if current_diff == CoverageDiff.STRICTLY_EQUAL and lines_with_diff:
             continue
         linecov_list = [
             linecov
@@ -176,19 +176,19 @@ def _diff_report_file(filecov: FileCoverage, options: Options) -> str:
             if linecov.diff == current_diff
         ]
         if linecov_list:
-            # Only show line ranges if there for lines with differences
+            # Only show line ranges for lines with differences
             # and if the file itself is not added or removed
             line_ranges = (
                 ""
                 if current_diff
                 in (
-                    filecov.CoverageDiff.UNDEFINED,  # This is the case for added and removed files
-                    filecov.CoverageDiff.STRICTLY_EQUAL,
+                    CoverageDiff.UNDEFINED,  # This is the case for added and removed files
+                    CoverageDiff.STRICTLY_EQUAL,
                 )
                 or filecov.diff
                 in (
-                    filecov.CoverageDiff.ADDED,
-                    filecov.CoverageDiff.REMOVED,
+                    CoverageDiff.ADDED,
+                    CoverageDiff.REMOVED,
                 )
                 else ",".join(
                     _format_range(first, last)
