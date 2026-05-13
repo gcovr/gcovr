@@ -112,7 +112,7 @@ def test(
 
     process = gcovr_test_exec.gcovr(
         "--json-add-tracefile=coverage_compare.json",
-        "--html-details",
+        "--html-nested",
         "--html=coverage.html",
     )
     gcovr_test_exec.compare_html()

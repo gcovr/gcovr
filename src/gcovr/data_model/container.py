@@ -27,7 +27,7 @@ from ..logging import LOGGER
 from ..options import Options
 from ..utils import commonpath, force_unix_separator
 
-from .coverage import FileCoverage
+from .coverage import CoverageDiff, FileCoverage, summarize_coverage_diff
 from .coverage_dict import CoverageDict
 from .merging import MergeOptions
 from .stats import CoverageStat, DecisionCoverageStat, SummarizedStats
@@ -40,6 +40,7 @@ class CoverageContainer:
         self.data = CoverageDict[str, CoverageContainer | FileCoverage]()
         self.dirname = os.path.abspath(dirname) + os.path.sep
         self.parent = parent
+        self.diff: CoverageDiff = CoverageDiff.UNDEFINED
         self._properties = dict[str, Any]()
         self._stats: SummarizedStats | None = None
 
@@ -167,6 +168,16 @@ class CoverageContainer:
             filecov.is_compare_info_available()
             for filecov in self.filecov(recurse=True)
         )
+
+    def update_diff(self) -> None:
+        """Update the coverage difference."""
+        if self.is_compare_info_available():
+            for value in self.values():
+                if isinstance(value, CoverageContainer):
+                    value.update_diff()
+            self.diff = summarize_coverage_diff(
+                set(covdata.diff for covdata in self.values())
+            )
 
     @overload
     @classmethod
