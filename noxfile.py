@@ -641,7 +641,7 @@ def html2jpeg(session: nox.Session) -> None:
                 lambda match: f'<style type="text/css">{read_file(os.path.join(os.path.dirname(html), match[1]))}</style>',
                 read_file(html),
             )
-            payload = {
+            payload: requests._types.JsonType = {
                 "html": content,
                 "export": {
                     "type": "jpeg",
