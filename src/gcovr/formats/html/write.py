@@ -571,7 +571,7 @@ def write_report(
 
         if javascript_data is not None:
             javascript_output = os.path.splitext(output_file)[0] + ".js"
-            with open_text_for_writing(javascript_output) as fh_out:
+            with open_text_for_writing(javascript_output, encoding="utf-8") as fh_out:
                 fh_out.write(javascript_data)
                 fh_out.write("\n")
 

@@ -32,7 +32,7 @@
     {% endif %}
     {% if not info.static_report %}
     {% if javascript_link is defined %}
-    <script src="{{javascript_link}}"></script>
+    <script src="{{javascript_link}}" charset="UTF-8"></script>
     {% else %}
     <script>
 {{ javascript | safe }}
