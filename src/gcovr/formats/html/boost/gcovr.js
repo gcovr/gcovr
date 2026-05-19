@@ -416,37 +416,11 @@
 
     // Tree data is produced already-normalized and already-sorted by the
     // upstream tooling (Python's gcovr_build_tree.py or gcovr itself), so
-    // no normalize/sort pass is needed here. We still dedupe + join chains.
-      deduplicateTree(window.GCOVR_TREE_DATA);
+    // no normalize/sort pass is needed here. We just join single-child
+    // dir chains for sidebar compactness before rendering.
       joinSingleChildDirs(window.GCOVR_TREE_DATA);
       sortTree(window.GCOVR_TREE_DATA);
       renderTree(treeContainer, window.GCOVR_TREE_DATA);
-  }
-
-  // Deduplicate tree: when a node has a child with the same name
-  // (e.g. include > include), merge the child's children upward.
-  // This happens when gcovr directory pages list entries with paths
-  // that include the parent directory name.
-  function deduplicateTree(nodes) {
-    for (var i = 0; i < nodes.length; i++) {
-      var node = nodes[i];
-      if (!node.children || node.children.length === 0) continue;
-      for (var j = node.children.length - 1; j >= 0; j--) {
-        var child = node.children[j];
-        if (child.name === node.name && child.isDirectory) {
-          node.children.splice(j, 1);
-          if (!node.link && child.link) node.link = child.link;
-          if (!node.coverage && child.coverage) node.coverage = child.coverage;
-          if (!node.coverageClass && child.coverageClass) node.coverageClass = child.coverageClass;
-          if (child.children) {
-            for (var k = 0; k < child.children.length; k++) {
-              node.children.push(child.children[k]);
-            }
-          }
-        }
-      }
-      deduplicateTree(node.children);
-    }
   }
 
   // Re-sort the tree: directories first, then files, alphabetically within
@@ -2158,4 +2132,4 @@
 
 })();
 
-window.GCOVR_TREE_DATA = {{ GCOVR_TREE_DATA | default([]) | tojson(2) | safe }};
+window.GCOVR_TREE_DATA = {{ GCOVR_TREE_DATA | tojson(2) | safe }};
