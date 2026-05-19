@@ -1500,7 +1500,7 @@
       var hasFunctions = !container || !container.classList.contains('no-functions');
       var hasBranches = !container || !container.classList.contains('no-branches');
       var hasConditions = !container || !container.classList.contains('no-conditions');
-      var hasDecision = !container || !container.classList.contains('no-decision');
+      var hasDecision = !container || !container.classList.contains('no-decisions');
       var hasCalls = !container || !container.classList.contains('no-calls');
 
       if (hasFunctions) {
