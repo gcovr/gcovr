@@ -885,6 +885,12 @@ body.sidebar-resizing .main-content {
   font-size: var(--font-size-md);
   color: var(--text-secondary);
   white-space: nowrap;
+  /* Let the breadcrumb shrink past its intrinsic content width so it cannot
+     push the action buttons (Nested/Flat, theme toggle, etc.) off the right
+     edge of the header on narrow viewports. Overflow is then contained
+     locally and the long path inside .current is ellipsed (see below). */
+  min-width: 0;
+  overflow: hidden;
 }
 
 .breadcrumb a,
@@ -909,10 +915,25 @@ body.sidebar-resizing .main-content {
 .breadcrumb .current {
   color: var(--text-primary);
   visibility: hidden;
+  /* When space is tight, truncate the long path with an ellipsis instead of
+     overflowing into (and pushing out) the header action buttons. */
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .breadcrumb .current.ready {
   visibility: visible;
+}
+
+/* Keep the home link, label, and the top-level separator visible even when
+   the path is being ellipsed. (Nested separators inside .current can still
+   shrink as part of the truncation.) */
+.breadcrumb-home,
+.breadcrumb-title,
+.breadcrumb-label,
+.breadcrumb > .separator {
+  flex-shrink: 0;
 }
 
 .breadcrumb-home {
@@ -941,6 +962,8 @@ body.sidebar-resizing .main-content {
 
 .header-actions {
   margin-left: auto;
+  /* The header buttons take priority over the breadcrumb; never shrink. */
+  flex-shrink: 0;
 }
 
 .content-wrapper {
@@ -2166,6 +2189,8 @@ tr.source-line.nav-highlight > td {
   color: var(--text-secondary);
   font-size: var(--font-size-sm);
   transition: all var(--transition-fast);
+  flex-shrink: 0;
+  white-space: nowrap;
 }
 
 .nav-link:hover {

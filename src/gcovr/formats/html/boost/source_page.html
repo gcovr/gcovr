@@ -3,7 +3,7 @@
 
 {% block html_title %}{{filename}} - {{info.head}}{% endblock %}
 
-{% block breadcrumb %}<a href="{{ROOT_FNAME}}" class="breadcrumb-home">Index</a><span class="separator">/</span><span class="current">{{filename | replace("/", " / ")}}</span>{% endblock %}
+{% block breadcrumb %}<a href="{{ROOT_FNAME}}" class="breadcrumb-home">Index</a><span class="separator">/</span><span class="current" title="{{filename}}">{{filename | replace("/", " / ")}}</span>{% endblock %}
 
 {% block sidebar_tree %}
 {# Show current file in sidebar #}

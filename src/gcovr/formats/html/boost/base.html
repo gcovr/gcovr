@@ -91,7 +91,7 @@
             <svg viewBox="0 0 16 16" fill="currentColor"><path d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5z"/></svg>
           </button>
           <div class="breadcrumb">
-            {% block breadcrumb %}{% if relative_path %}<a href="{{ROOT_FNAME}}" class="breadcrumb-home">{{info.head}}</a><span class="separator">/</span><span class="current">{{relative_path | replace("/", " / ")}}</span>{% else %}<span class="breadcrumb-title">{{info.head}}</span><span class="breadcrumb-label">GCC Code Coverage</span>{% endif %}{% endblock %}
+            {% block breadcrumb %}{% if relative_path %}<a href="{{ROOT_FNAME}}" class="breadcrumb-home">{{info.head}}</a><span class="separator">/</span><span class="current" title="{{relative_path}}">{{relative_path | replace("/", " / ")}}</span>{% else %}<span class="breadcrumb-title">{{info.head}}</span><span class="breadcrumb-label">GCC Code Coverage</span>{% endif %}{% endblock %}
           </div>
           <div class="header-actions">
             {% block navigation %}{% endblock %}
