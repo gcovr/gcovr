@@ -868,9 +868,16 @@ body.sidebar-resizing .main-content {
   height: var(--header-height);
 }
 
-/* On source pages, the header scrolls away instead of staying sticky */
+/* On source pages, the header scrolls away instead of staying sticky.
+   We use `position: relative` (rather than `static`) so the header still
+   establishes a containing block for absolutely-positioned descendants —
+   in particular `.settings-dropdown`, which is anchored to the header
+   with `top: 100%; right: 12px;`. With `position: static` here, the
+   dropdown would fall back to the initial containing block (viewport)
+   and open in the wrong place — invisible to the user, but big enough
+   to make the surrounding scroll container show/hide a scrollbar. */
 .main-content:has(.source-container) .main-header {
-  position: static;
+  position: relative;
 }
 
 .main-content:has(.source-container) .main-footer {
