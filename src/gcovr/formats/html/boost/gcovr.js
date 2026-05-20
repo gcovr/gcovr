@@ -2132,4 +2132,4 @@
 
 })();
 
-window.GCOVR_TREE_DATA = {{ GCOVR_TREE_DATA | tojson(2) | safe }};
+window.GCOVR_TREE_DATA = {{ GCOVR_TREE_DATA | default([]) | tojson(2) | safe }};
