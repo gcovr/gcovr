@@ -382,7 +382,6 @@ def write_report(
     data["LINE_COVERAGE_HIGH"] = high_threshold_line
     data["BRANCH_COVERAGE_MED"] = medium_threshold_branch
     data["BRANCH_COVERAGE_HIGH"] = high_threshold_branch
-    data["GCOVR_TREE_DATA"] = []
 
     boost_theme = options.html_theme.startswith("boost")
 
@@ -511,32 +510,31 @@ def write_report(
 
     root_info.set_directory(force_unix_separator(root_directory))
 
-    if boost_theme:
-        for cdata in covdata.traverse():
-            cdata_data = get_coverage_data(root_info, cdata)
-            cdata.properties["tree_data"] = {
-                "coverage": str(cdata_data["lines"]["coverage"]),
-                "coverageClass": str(cdata_data["lines"]["class"]),
-                "linesTotal": str(cdata_data["lines"]["total"]),
-                "linesExec": str(cdata_data["lines"]["exec"]),
-                "linesCoverage": str(cdata_data["lines"]["coverage"]),
-                "linesClass": str(cdata_data["lines"]["class"]),
-                "functionsCoverage": str(cdata_data["functions"]["coverage"]),
-                "functionsClass": str(cdata_data["functions"]["class"]),
-                "branchesCoverage": str(cdata_data["branches"]["coverage"]),
-                "branchesClass": str(cdata_data["branches"]["class"]),
-                "isDirectory": isinstance(cdata, CoverageContainer),
-                "link": cdata_data["link"],
-                "children": [],
-            }
-            if isinstance(cdata, CoverageContainer):
-                children = cdata.properties["tree_data"]["children"]
-                for c in cdata.values():
-                    c.properties["tree_data"]["name"] = c.filename.removeprefix(
-                        cdata.filename
-                    ).removesuffix(os.sep)
-                    children.append(c.properties["tree_data"])
-        data["GCOVR_TREE_DATA"].extend(covdata.properties["tree_data"]["children"])
+    for cdata in covdata.traverse():
+        cdata_data = get_coverage_data(root_info, cdata)
+        cdata.properties["tree_data"] = {
+            "coverage": str(cdata_data["lines"]["coverage"]),
+            "coverageClass": str(cdata_data["lines"]["class"]),
+            "linesTotal": str(cdata_data["lines"]["total"]),
+            "linesExec": str(cdata_data["lines"]["exec"]),
+            "linesCoverage": str(cdata_data["lines"]["coverage"]),
+            "linesClass": str(cdata_data["lines"]["class"]),
+            "functionsCoverage": str(cdata_data["functions"]["coverage"]),
+            "functionsClass": str(cdata_data["functions"]["class"]),
+            "branchesCoverage": str(cdata_data["branches"]["coverage"]),
+            "branchesClass": str(cdata_data["branches"]["class"]),
+            "isDirectory": isinstance(cdata, CoverageContainer),
+            "link": cdata_data["link"],
+            "children": [],
+        }
+        if isinstance(cdata, CoverageContainer):
+            children = cdata.properties["tree_data"]["children"]
+            for c in cdata.values():
+                c.properties["tree_data"]["name"] = c.filename.removeprefix(
+                    cdata.filename
+                ).removesuffix(os.sep)
+                children.append(c.properties["tree_data"])
+    data["GCOVR_TREE_DATA"].extend(covdata.properties["tree_data"]["children"])
 
     css_data = CssRenderer.render(options, root_info).strip()
     if PYGMENTS_CSS_MARKER in css_data:
