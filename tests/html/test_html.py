@@ -81,10 +81,6 @@ def test_windows_make_short_source_filename(outfile: str, source_filename: str) 
 
 PARAMETERS = [
     (
-        "details",
-        ("--html-details",),
-    ),
-    (
         "high-75",
         ("--html-details", "--high-threshold=75.0"),
     ),
@@ -356,6 +352,151 @@ PARAMETERS_NESTED = [
     (
         "sort-none",
         [
+            "--html-details=./",
+        ],
+    ),
+    (
+        "filter",
+        [
+            "--filter",
+            "subdir/A",
+            "--html-details=./",
+        ],
+    ),
+    (
+        "sort-uncovered-percentage",
+        [
+            "--sort",
+            "uncovered-percent",
+            "--html-details=coverage.html",
+        ],
+    ),
+    (
+        "sort-uncovered-number",
+        [
+            "--sort",
+            "uncovered-number",
+            "--html-details=coverage.html",
+        ],
+    ),
+    (
+        "theme-default-static",
+        (
+            "--filter",
+            "subdir/A",
+            "--html-details=./",
+            "--html-single-page",
+            "--html-static-report",
+            "--no-html-self-contained",
+        ),
+    ),
+    (
+        "theme-default-js",
+        (
+            "--filter",
+            "subdir/A",
+            "--html-details=./",
+            "--html-single-page",
+        ),
+    ),
+    (
+        "theme-github-static",
+        (
+            "--filter",
+            "subdir/A",
+            "--html-details=./",
+            "--html-single-page",
+            "--html-static-report",
+            "--html-theme=github.blue",
+            "--no-html-self-contained",
+        ),
+    ),
+    (
+        "theme-github-js",
+        (
+            "--filter",
+            "subdir/A",
+            "--html-details=./",
+            "--html-single-page",
+            "--html-theme=github.blue",
+        ),
+    ),
+    (
+        "theme-boost-green",
+        (
+            "--filter",
+            "subdir/A",
+            "--html-details=./",
+            "--html-theme=boost.green",
+        ),
+    ),
+    (
+        "theme-boost-blue",
+        (
+            "--filter",
+            "subdir/A",
+            "--html-details=./",
+            "--html-theme=boost.blue",
+        ),
+    ),
+]
+
+
+@pytest.mark.skipif(
+    not IS_LINUX,
+    reason="The nested report generation is independent of OS and we do not want to have separate data for Windows and Darwin.",
+)
+@pytest.mark.parametrize(
+    "test_id,options",
+    PARAMETERS_NESTED,
+    ids=[p[0] for p in PARAMETERS_NESTED],
+)
+@pytest.mark.html
+def test_details(
+    gcovr_test_exec: "GcovrTestExec", test_id: str, options: typing.List[str]
+) -> None:
+    """This test case tests the output of cascaded html coverage
+    reports.
+
+    It will test that a directory with items in it properly
+    aggregates the statistics within it, all the sorting works for
+    each directory, any flattening of directories that have a single
+    entry, and the writing of source files within each directory.
+
+    In this case, the directory listings should be unsorted.
+    """
+
+    file2_cpp = gcovr_test_exec.output_dir / "subdir" / "A" / "File2.cpp"
+    if test_id.startswith("theme-"):
+        deep_dir = file2_cpp.parent.joinpath(*[f"subdir_{i}" for i in range(0, 10)])
+        deep_dir.mkdir(parents=True, exist_ok=True)
+        file2_cpp = file2_cpp.rename(deep_dir / file2_cpp.name)
+    gcovr_test_exec.cxx_link(
+        "subdir/testcase",
+        gcovr_test_exec.cxx_compile("subdir/A/file1.cpp"),
+        gcovr_test_exec.cxx_compile(
+            file2_cpp.relative_to(gcovr_test_exec.output_dir).as_posix()
+        ),
+        gcovr_test_exec.cxx_compile("subdir/A/file3.cpp"),
+        gcovr_test_exec.cxx_compile("subdir/A/File4.cpp"),
+        gcovr_test_exec.cxx_compile("subdir/A/file7.cpp"),
+        gcovr_test_exec.cxx_compile("subdir/A/C/file5.cpp"),
+        gcovr_test_exec.cxx_compile("subdir/A/C/D/File6.cpp"),
+        gcovr_test_exec.cxx_compile("subdir/B/main.cpp"),
+    )
+
+    gcovr_test_exec.run("./subdir/testcase")
+    gcovr_test_exec.gcovr(
+        "--root=subdir",
+        *options,
+    )
+    gcovr_test_exec.compare_html()
+
+
+PARAMETERS_NESTED = [
+    (
+        "sort-none",
+        [
             "--html-nested=./",
         ],
     ),
@@ -384,31 +525,31 @@ PARAMETERS_NESTED = [
         ],
     ),
     (
-        "default-theme-static",
+        "theme-default-static",
         (
             "--filter",
             "subdir/A",
-            "--html-details=./",
+            "--html-nested=./",
             "--html-single-page",
             "--html-static-report",
             "--no-html-self-contained",
         ),
     ),
     (
-        "default-theme-js",
+        "theme-default-js",
         (
             "--filter",
             "subdir/A",
-            "--html-details=./",
+            "--html-nested=./",
             "--html-single-page",
         ),
     ),
     (
-        "github-theme-static",
+        "theme-github-static",
         (
             "--filter",
             "subdir/A",
-            "--html-details=./",
+            "--html-nested=./",
             "--html-single-page",
             "--html-static-report",
             "--html-theme=github.blue",
@@ -416,17 +557,17 @@ PARAMETERS_NESTED = [
         ),
     ),
     (
-        "github-theme-js",
+        "theme-github-js",
         (
             "--filter",
             "subdir/A",
-            "--html-details=./",
+            "--html-nested=./",
             "--html-single-page",
             "--html-theme=github.blue",
         ),
     ),
     (
-        "boost-theme-green",
+        "theme-boost-green",
         (
             "--filter",
             "subdir/A",
@@ -435,7 +576,7 @@ PARAMETERS_NESTED = [
         ),
     ),
     (
-        "boost-theme-blue",
+        "theme-boost-blue",
         (
             "--filter",
             "subdir/A",
@@ -471,7 +612,7 @@ def test_nested(
     """
 
     file2_cpp = gcovr_test_exec.output_dir / "subdir" / "A" / "File2.cpp"
-    if "-theme-" in test_id:
+    if test_id.startswith("theme-"):
         deep_dir = file2_cpp.parent.joinpath(*[f"subdir_{i}" for i in range(0, 10)])
         deep_dir.mkdir(parents=True, exist_ok=True)
         file2_cpp = file2_cpp.rename(deep_dir / file2_cpp.name)

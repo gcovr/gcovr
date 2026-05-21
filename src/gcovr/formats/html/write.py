@@ -383,8 +383,6 @@ def write_report(
     data["BRANCH_COVERAGE_MED"] = medium_threshold_branch
     data["BRANCH_COVERAGE_HIGH"] = high_threshold_branch
 
-    boost_theme = options.html_theme.startswith("boost")
-
     self_contained = options.html_self_contained
     if self_contained is None:
         self_contained = (
@@ -402,7 +400,7 @@ def write_report(
         else:
             output_file += "coverage.html"
 
-    if options.html_details or options.html_nested or boost_theme:
+    if options.html_details or options.html_nested:
         data["ROOT_FNAME"] = os.path.basename(output_file)
         (output_prefix, output_suffix) = _get_prefix_and_suffix(output_file)
         functions_output_file = f"{output_prefix}.functions{output_suffix}"
@@ -429,12 +427,7 @@ def write_report(
         recurse=True,
     )
 
-    if options.html_nested and not boost_theme:
-        LOGGER.debug("Removing directories with only one child...")
-        covdata.remove_container_with_single_item()
-
-    dircov_list = list(covdata.dircov(recurse=True))
-
+    LOGGER.debug("Store additional properties...")
     files = []
     sourcefiles = dict[str, str | None]()
 
@@ -444,12 +437,7 @@ def write_report(
         if filtered_name != "":
             files.append(filtered_name)
         cdata.properties["filtered_name"] = force_unix_separator(filtered_name)
-        if (
-            options.html_details
-            or options.html_nested
-            or options.html_single_page
-            or boost_theme
-        ):
+        if options.html_details or options.html_nested or options.html_single_page:
             if os.path.normpath(cdata.filename) == os.path.normpath(options.root_dir):
                 cdata.properties["sourcefile"] = (
                     output_file[: -len(GZIP_SUFFIX)]
@@ -474,8 +462,8 @@ def write_report(
 
     for filecov in filecov_list:
         _store_filenames(filecov)
-    if options.html_nested or boost_theme:
-        for dircov in dircov_list:
+    if options.html_nested:
+        for dircov in covdata.dircov(recurse=True):
             _store_filenames(dircov)
 
     # Define the common root directory, which may differ from options.root_dir
@@ -510,32 +498,35 @@ def write_report(
 
     root_info.set_directory(force_unix_separator(root_directory))
 
-    for cdata in covdata.traverse():
-        cdata_data = get_coverage_data(root_info, cdata)
-        cdata.properties["tree_data"] = {
-            "coverage": str(cdata_data["lines"]["coverage"]),
-            "coverageClass": str(cdata_data["lines"]["class"]),
-            "linesTotal": str(cdata_data["lines"]["total"]),
-            "linesExec": str(cdata_data["lines"]["exec"]),
-            "linesCoverage": str(cdata_data["lines"]["coverage"]),
-            "linesClass": str(cdata_data["lines"]["class"]),
-            "functionsCoverage": str(cdata_data["functions"]["coverage"]),
-            "functionsClass": str(cdata_data["functions"]["class"]),
-            "branchesCoverage": str(cdata_data["branches"]["coverage"]),
-            "branchesClass": str(cdata_data["branches"]["class"]),
-            "isDirectory": isinstance(cdata, CoverageContainer),
-            "link": cdata_data["link"],
-            "children": [],
-        }
-        if isinstance(cdata, CoverageContainer):
-            children = cdata.properties["tree_data"]["children"]
-            for c in cdata.values():
-                c.properties["tree_data"]["name"] = c.filename.removeprefix(
-                    cdata.filename
-                ).removesuffix(os.sep)
-                children.append(c.properties["tree_data"])
-    data["GCOVR_TREE_DATA"].extend(covdata.properties["tree_data"]["children"])
+    if options.html_nested:
+        LOGGER.debug("Processing tree data...")
+        for cdata in covdata.traverse():
+            cdata_data = get_coverage_data(root_info, cdata)
+            cdata.properties["tree_data"] = {
+                "coverage": str(cdata_data["lines"]["coverage"]),
+                "coverageClass": str(cdata_data["lines"]["class"]),
+                "linesTotal": str(cdata_data["lines"]["total"]),
+                "linesExec": str(cdata_data["lines"]["exec"]),
+                "linesCoverage": str(cdata_data["lines"]["coverage"]),
+                "linesClass": str(cdata_data["lines"]["class"]),
+                "functionsCoverage": str(cdata_data["functions"]["coverage"]),
+                "functionsClass": str(cdata_data["functions"]["class"]),
+                "branchesCoverage": str(cdata_data["branches"]["coverage"]),
+                "branchesClass": str(cdata_data["branches"]["class"]),
+                "isDirectory": isinstance(cdata, CoverageContainer),
+                "link": cdata_data["link"],
+                "children": [],
+            }
+            if isinstance(cdata, CoverageContainer):
+                children = cdata.properties["tree_data"]["children"]
+                for c in cdata.values():
+                    c.properties["tree_data"]["name"] = c.filename.removeprefix(
+                        cdata.filename
+                    ).removesuffix(os.sep)
+                    children.append(c.properties["tree_data"])
+        data["GCOVR_TREE_DATA"] = covdata.properties["tree_data"]["children"]
 
+    LOGGER.debug("Render CSS file...")
     css_data = CssRenderer.render(options, root_info).strip()
     if PYGMENTS_CSS_MARKER in css_data:
         LOGGER.info(
@@ -545,6 +536,7 @@ def write_report(
     else:
         css_data += get_formatter(options).get_css()
 
+    LOGGER.debug("Render JavaScript file...")
     javascript_data = (
         None
         if options.html_static_report
@@ -579,6 +571,7 @@ def write_report(
                 javascript_link = javascript_output
             data["javascript_link"] = javascript_link
 
+    LOGGER.debug("Render HTML file(s)...")
     if options.html_single_page:
         write_single_page(
             options,
@@ -589,7 +582,7 @@ def write_report(
             data,
         )
     else:
-        if options.html_nested or boost_theme:
+        if options.html_nested:
             write_directory_pages(
                 options,
                 root_info,
@@ -606,7 +599,7 @@ def write_report(
                 filecov_list,
             )
 
-        if options.html_details or options.html_nested or boost_theme:
+        if options.html_details or options.html_nested:
             write_source_pages(
                 options,
                 root_info,
@@ -702,6 +695,7 @@ def write_directory_pages(
 
     for dircov in covdata.dircov(recurse=True):
         directory_data = get_directory_data(options, root_info, dircov)
+
         html_string = (
             templates(options)
             .get_template("directory_page.html")

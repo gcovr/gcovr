@@ -414,98 +414,7 @@
     var treeContainer = document.getElementById('file-tree');
     if (!treeContainer) return;
 
-    // Tree data is produced already-normalized and already-sorted by the
-    // upstream tooling (Python's gcovr_build_tree.py or gcovr itself), so
-    // no normalize/sort pass is needed here. We still dedupe + join chains.
-      deduplicateTree(window.GCOVR_TREE_DATA);
-      joinSingleChildDirs(window.GCOVR_TREE_DATA);
-      sortTree(window.GCOVR_TREE_DATA);
-      renderTree(treeContainer, window.GCOVR_TREE_DATA);
-  }
-
-  // Deduplicate tree: when a node has a child with the same name
-  // (e.g. include > include), merge the child's children upward.
-  // This happens when gcovr directory pages list entries with paths
-  // that include the parent directory name.
-  function deduplicateTree(nodes) {
-    for (var i = 0; i < nodes.length; i++) {
-      var node = nodes[i];
-      if (!node.children || node.children.length === 0) continue;
-      for (var j = node.children.length - 1; j >= 0; j--) {
-        var child = node.children[j];
-        if (child.name === node.name && child.isDirectory) {
-          node.children.splice(j, 1);
-          if (!node.link && child.link) node.link = child.link;
-          if (!node.coverage && child.coverage) node.coverage = child.coverage;
-          if (!node.coverageClass && child.coverageClass) node.coverageClass = child.coverageClass;
-          if (child.children) {
-            for (var k = 0; k < child.children.length; k++) {
-              node.children.push(child.children[k]);
-            }
-          }
-        }
-      }
-      deduplicateTree(node.children);
-    }
-  }
-
-  // Re-sort the tree: directories first, then files, alphabetically within
-  // each group. Python already sorts each level, but normalizeTree creates
-  // synthetic directory nodes from multi-segment FILE entries (e.g. a deep
-  // chain like subdir1/subdir2/subdir3/file.hpp that gcovr itself collapsed).
-  // Those synthetic dirs end up wherever the originating file landed in the
-  // Python sort — i.e. in the file bucket — so without this pass they appear
-  // mixed in with the files instead of at the top with the other directories.
-  function sortTree(nodes) {
-    if (!nodes || nodes.length === 0) return;
-    nodes.sort(function(a, b) {
-      var aIsDir = a.isDirectory || (a.children && a.children.length > 0);
-      var bIsDir = b.isDirectory || (b.children && b.children.length > 0);
-      if (aIsDir && !bIsDir) return -1;
-      if (!aIsDir && bIsDir) return 1;
-      var aName = (a.name || '').toLowerCase();
-      var bName = (b.name || '').toLowerCase();
-      return aName.localeCompare(bName);
-    });
-    for (var i = 0; i < nodes.length; i++) {
-      if (nodes[i].children) sortTree(nodes[i].children);
-    }
-  }
-
-  // Join chains of single-child directories into one sidebar entry.
-  // If a directory contains nothing but one child directory, the two are
-  // merged: the name becomes "parent/child", and the link + stats are taken
-  // from the (deepest) child. The grandchildren become the new children.
-  // Repeats until the chain ends (multiple children, or a file appears).
-  // Result: e.g. include > boost > url > [files] becomes include/boost/url
-  // as a single entry whose click navigates straight to the url directory.
-  function joinSingleChildDirs(nodes) {
-    if (!nodes) return;
-    for (var i = 0; i < nodes.length; i++) {
-      var node = nodes[i];
-      if (!node.isDirectory || !node.children) continue;
-      while (node.children.length === 1 && node.children[0].isDirectory) {
-        var child = node.children[0];
-        node.name = node.name + '/' + child.name;
-        // The joined entry represents the deepest directory for clicks
-        // and for the coverage stats shown next to it. Statically-named
-        // assignments avoid the dynamic [key] indexing that static
-        // analyzers flag as a prototype-pollution risk.
-        if (child.link) node.link = child.link;
-        if (child.coverage) node.coverage = child.coverage;
-        if (child.coverageClass) node.coverageClass = child.coverageClass;
-        if (child.linesTotal) node.linesTotal = child.linesTotal;
-        if (child.linesExec) node.linesExec = child.linesExec;
-        if (child.linesCoverage) node.linesCoverage = child.linesCoverage;
-        if (child.linesClass) node.linesClass = child.linesClass;
-        if (child.functionsCoverage) node.functionsCoverage = child.functionsCoverage;
-        if (child.functionsClass) node.functionsClass = child.functionsClass;
-        if (child.branchesCoverage) node.branchesCoverage = child.branchesCoverage;
-        if (child.branchesClass) node.branchesClass = child.branchesClass;
-        node.children = child.children || [];
-      }
-      joinSingleChildDirs(node.children);
-    }
+    renderTree(treeContainer, window.GCOVR_TREE_DATA);
   }
 
   // Save expanded folder paths to localStorage
@@ -1189,6 +1098,10 @@
 
       var aVal = a.dataset[key] || a.querySelector('[data-sort]')?.dataset.sort || '';
       var bVal = b.dataset[key] || b.querySelector('[data-sort]')?.dataset.sort || '';
+      if (key == 'filename' && localStorage.getItem('gcovr-view-mode') === 'nested') {
+        aVal = aVal.split('/').pop();
+        bVal = bVal.split('/').pop();
+      }
 
       // Try to parse as numbers
       var aNum = parseFloat(aVal);
@@ -2159,215 +2072,198 @@
 window.GCOVR_TREE_DATA = [
   {
     "branchesClass": "coverage-low",
-    "branchesCoverage": "28.6",
+    "branchesCoverage": "30.0",
     "children": [
-      {
-        "branchesClass": "coverage-low",
-        "branchesCoverage": "30.0",
-        "children": [
-          {
-            "branchesClass": "coverage-low",
-            "branchesCoverage": "25.0",
-            "children": [
-              {
-                "branchesClass": "coverage-none",
-                "branchesCoverage": "0.0",
-                "children": [
-                  {
-                    "branchesClass": "coverage-none",
-                    "branchesCoverage": "0.0",
-                    "children": [],
-                    "coverage": "0.0",
-                    "coverageClass": "coverage-none",
-                    "functionsClass": "coverage-none",
-                    "functionsCoverage": "0.0",
-                    "isDirectory": false,
-                    "linesClass": "coverage-none",
-                    "linesCoverage": "0.0",
-                    "linesExec": "0",
-                    "linesTotal": "5",
-                    "link": "coverage.boost.File6.cpp.d50a8531ab312aa3faac8eaedb567137.html",
-                    "name": "File6.cpp"
-                  }
-                ],
-                "coverage": "0.0",
-                "coverageClass": "coverage-none",
-                "functionsClass": "coverage-none",
-                "functionsCoverage": "0.0",
-                "isDirectory": true,
-                "linesClass": "coverage-none",
-                "linesCoverage": "0.0",
-                "linesExec": "0",
-                "linesTotal": "5",
-                "link": "coverage.boost.D.f26830d87b54e9f418a67752d418ba31.html",
-                "name": "D"
-              },
-              {
-                "branchesClass": "coverage-low",
-                "branchesCoverage": "50.0",
-                "children": [],
-                "coverage": "80.0",
-                "coverageClass": "coverage-medium",
-                "functionsClass": "coverage-high",
-                "functionsCoverage": "100.0",
-                "isDirectory": false,
-                "linesClass": "coverage-medium",
-                "linesCoverage": "80.0",
-                "linesExec": "4",
-                "linesTotal": "5",
-                "link": "coverage.boost.file5.cpp.cde4c7e07f79b4a315bd6b72e5bfe2dd.html",
-                "name": "file5.cpp"
-              }
-            ],
-            "coverage": "40.0",
-            "coverageClass": "coverage-low",
-            "functionsClass": "coverage-low",
-            "functionsCoverage": "50.0",
-            "isDirectory": true,
-            "linesClass": "coverage-low",
-            "linesCoverage": "40.0",
-            "linesExec": "4",
-            "linesTotal": "10",
-            "link": "coverage.boost.C.fb14f49b815b3421ec3912f68f79c28c.html",
-            "name": "C"
-          },
-          {
-            "branchesClass": "coverage-unknown",
-            "branchesCoverage": "-",
-            "children": [],
-            "coverage": "57.1",
-            "coverageClass": "coverage-low",
-            "functionsClass": "coverage-low",
-            "functionsCoverage": "50.0",
-            "isDirectory": false,
-            "linesClass": "coverage-low",
-            "linesCoverage": "57.1",
-            "linesExec": "4",
-            "linesTotal": "7",
-            "link": "coverage.boost.File2.cpp.0b63fd09c7d89df6cfd850bed4aef633.html",
-            "name": "File2.cpp"
-          },
-          {
-            "branchesClass": "coverage-low",
-            "branchesCoverage": "50.0",
-            "children": [],
-            "coverage": "80.0",
-            "coverageClass": "coverage-medium",
-            "functionsClass": "coverage-high",
-            "functionsCoverage": "100.0",
-            "isDirectory": false,
-            "linesClass": "coverage-medium",
-            "linesCoverage": "80.0",
-            "linesExec": "4",
-            "linesTotal": "5",
-            "link": "coverage.boost.File4.cpp.65a4d8d1a16f0b88f258c253517669ec.html",
-            "name": "File4.cpp"
-          },
-          {
-            "branchesClass": "coverage-low",
-            "branchesCoverage": "50.0",
-            "children": [],
-            "coverage": "80.0",
-            "coverageClass": "coverage-medium",
-            "functionsClass": "coverage-high",
-            "functionsCoverage": "100.0",
-            "isDirectory": false,
-            "linesClass": "coverage-medium",
-            "linesCoverage": "80.0",
-            "linesExec": "4",
-            "linesTotal": "5",
-            "link": "coverage.boost.file1.cpp.46c73eeafdf12f5341eb32413a90169e.html",
-            "name": "file1.cpp"
-          },
-          {
-            "branchesClass": "coverage-none",
-            "branchesCoverage": "0.0",
-            "children": [],
-            "coverage": "40.0",
-            "coverageClass": "coverage-low",
-            "functionsClass": "coverage-low",
-            "functionsCoverage": "50.0",
-            "isDirectory": false,
-            "linesClass": "coverage-low",
-            "linesCoverage": "40.0",
-            "linesExec": "4",
-            "linesTotal": "10",
-            "link": "coverage.boost.file3.cpp.05c5eb887e5d0a7183edce836a6718cd.html",
-            "name": "file3.cpp"
-          },
-          {
-            "branchesClass": "coverage-unknown",
-            "branchesCoverage": "-",
-            "children": [],
-            "coverage": "0.0",
-            "coverageClass": "coverage-none",
-            "functionsClass": "coverage-none",
-            "functionsCoverage": "0.0",
-            "isDirectory": false,
-            "linesClass": "coverage-none",
-            "linesCoverage": "0.0",
-            "linesExec": "0",
-            "linesTotal": "2",
-            "link": "coverage.boost.file7.cpp.f551d0ebeb9c429aba16ade7468659dd.html",
-            "name": "file7.cpp"
-          }
-        ],
-        "coverage": "51.3",
-        "coverageClass": "coverage-low",
-        "functionsClass": "coverage-low",
-        "functionsCoverage": "55.6",
-        "isDirectory": true,
-        "linesClass": "coverage-low",
-        "linesCoverage": "51.3",
-        "linesExec": "20",
-        "linesTotal": "39",
-        "link": "coverage.boost.A.01fd5d65b3a8149e812c7c9d89b472a7.html",
-        "name": "A"
-      },
       {
         "branchesClass": "coverage-low",
         "branchesCoverage": "25.0",
         "children": [
           {
+            "branchesClass": "coverage-none",
+            "branchesCoverage": "0.0",
+            "children": [
+              {
+                "branchesClass": "coverage-none",
+                "branchesCoverage": "0.0",
+                "children": [],
+                "coverage": "0.0",
+                "coverageClass": "coverage-none",
+                "functionsClass": "coverage-none",
+                "functionsCoverage": "0.0",
+                "isDirectory": false,
+                "linesClass": "coverage-none",
+                "linesCoverage": "0.0",
+                "linesExec": "0",
+                "linesTotal": "5",
+                "link": "coverage.boost.File6.cpp.d50a8531ab312aa3faac8eaedb567137.html",
+                "name": "File6.cpp"
+              }
+            ],
+            "coverage": "0.0",
+            "coverageClass": "coverage-none",
+            "functionsClass": "coverage-none",
+            "functionsCoverage": "0.0",
+            "isDirectory": true,
+            "linesClass": "coverage-none",
+            "linesCoverage": "0.0",
+            "linesExec": "0",
+            "linesTotal": "5",
+            "link": "coverage.boost.D.f26830d87b54e9f418a67752d418ba31.html",
+            "name": "D"
+          },
+          {
             "branchesClass": "coverage-low",
-            "branchesCoverage": "25.0",
+            "branchesCoverage": "50.0",
             "children": [],
-            "coverage": "100.0",
-            "coverageClass": "coverage-high",
+            "coverage": "80.0",
+            "coverageClass": "coverage-medium",
             "functionsClass": "coverage-high",
             "functionsCoverage": "100.0",
             "isDirectory": false,
-            "linesClass": "coverage-high",
-            "linesCoverage": "100.0",
-            "linesExec": "8",
-            "linesTotal": "8",
-            "link": "coverage.boost.main.cpp.13fb8fc771195717481a98e084ed0848.html",
-            "name": "main.cpp"
+            "linesClass": "coverage-medium",
+            "linesCoverage": "80.0",
+            "linesExec": "4",
+            "linesTotal": "5",
+            "link": "coverage.boost.file5.cpp.cde4c7e07f79b4a315bd6b72e5bfe2dd.html",
+            "name": "file5.cpp"
           }
         ],
+        "coverage": "40.0",
+        "coverageClass": "coverage-low",
+        "functionsClass": "coverage-low",
+        "functionsCoverage": "50.0",
+        "isDirectory": true,
+        "linesClass": "coverage-low",
+        "linesCoverage": "40.0",
+        "linesExec": "4",
+        "linesTotal": "10",
+        "link": "coverage.boost.C.fb14f49b815b3421ec3912f68f79c28c.html",
+        "name": "C"
+      },
+      {
+        "branchesClass": "coverage-unknown",
+        "branchesCoverage": "-",
+        "children": [],
+        "coverage": "57.1",
+        "coverageClass": "coverage-low",
+        "functionsClass": "coverage-low",
+        "functionsCoverage": "50.0",
+        "isDirectory": false,
+        "linesClass": "coverage-low",
+        "linesCoverage": "57.1",
+        "linesExec": "4",
+        "linesTotal": "7",
+        "link": "coverage.boost.File2.cpp.0b63fd09c7d89df6cfd850bed4aef633.html",
+        "name": "File2.cpp"
+      },
+      {
+        "branchesClass": "coverage-low",
+        "branchesCoverage": "50.0",
+        "children": [],
+        "coverage": "80.0",
+        "coverageClass": "coverage-medium",
+        "functionsClass": "coverage-high",
+        "functionsCoverage": "100.0",
+        "isDirectory": false,
+        "linesClass": "coverage-medium",
+        "linesCoverage": "80.0",
+        "linesExec": "4",
+        "linesTotal": "5",
+        "link": "coverage.boost.File4.cpp.65a4d8d1a16f0b88f258c253517669ec.html",
+        "name": "File4.cpp"
+      },
+      {
+        "branchesClass": "coverage-low",
+        "branchesCoverage": "50.0",
+        "children": [],
+        "coverage": "80.0",
+        "coverageClass": "coverage-medium",
+        "functionsClass": "coverage-high",
+        "functionsCoverage": "100.0",
+        "isDirectory": false,
+        "linesClass": "coverage-medium",
+        "linesCoverage": "80.0",
+        "linesExec": "4",
+        "linesTotal": "5",
+        "link": "coverage.boost.file1.cpp.46c73eeafdf12f5341eb32413a90169e.html",
+        "name": "file1.cpp"
+      },
+      {
+        "branchesClass": "coverage-none",
+        "branchesCoverage": "0.0",
+        "children": [],
+        "coverage": "40.0",
+        "coverageClass": "coverage-low",
+        "functionsClass": "coverage-low",
+        "functionsCoverage": "50.0",
+        "isDirectory": false,
+        "linesClass": "coverage-low",
+        "linesCoverage": "40.0",
+        "linesExec": "4",
+        "linesTotal": "10",
+        "link": "coverage.boost.file3.cpp.05c5eb887e5d0a7183edce836a6718cd.html",
+        "name": "file3.cpp"
+      },
+      {
+        "branchesClass": "coverage-unknown",
+        "branchesCoverage": "-",
+        "children": [],
+        "coverage": "0.0",
+        "coverageClass": "coverage-none",
+        "functionsClass": "coverage-none",
+        "functionsCoverage": "0.0",
+        "isDirectory": false,
+        "linesClass": "coverage-none",
+        "linesCoverage": "0.0",
+        "linesExec": "0",
+        "linesTotal": "2",
+        "link": "coverage.boost.file7.cpp.f551d0ebeb9c429aba16ade7468659dd.html",
+        "name": "file7.cpp"
+      }
+    ],
+    "coverage": "51.3",
+    "coverageClass": "coverage-low",
+    "functionsClass": "coverage-low",
+    "functionsCoverage": "55.6",
+    "isDirectory": true,
+    "linesClass": "coverage-low",
+    "linesCoverage": "51.3",
+    "linesExec": "20",
+    "linesTotal": "39",
+    "link": "coverage.boost.A.01fd5d65b3a8149e812c7c9d89b472a7.html",
+    "name": "subdir/A"
+  },
+  {
+    "branchesClass": "coverage-low",
+    "branchesCoverage": "25.0",
+    "children": [
+      {
+        "branchesClass": "coverage-low",
+        "branchesCoverage": "25.0",
+        "children": [],
         "coverage": "100.0",
         "coverageClass": "coverage-high",
         "functionsClass": "coverage-high",
         "functionsCoverage": "100.0",
-        "isDirectory": true,
+        "isDirectory": false,
         "linesClass": "coverage-high",
         "linesCoverage": "100.0",
         "linesExec": "8",
         "linesTotal": "8",
-        "link": "coverage.boost.B.cec86a34c08f941fc92924df967d4300.html",
-        "name": "B"
+        "link": "coverage.boost.main.cpp.13fb8fc771195717481a98e084ed0848.html",
+        "name": "main.cpp"
       }
     ],
-    "coverage": "59.6",
-    "coverageClass": "coverage-low",
-    "functionsClass": "coverage-low",
-    "functionsCoverage": "60.0",
+    "coverage": "100.0",
+    "coverageClass": "coverage-high",
+    "functionsClass": "coverage-high",
+    "functionsCoverage": "100.0",
     "isDirectory": true,
-    "linesClass": "coverage-low",
-    "linesCoverage": "59.6",
-    "linesExec": "28",
-    "linesTotal": "47",
-    "link": "coverage.boost.subdir.86ae37b338459868804e9697025ba4c2.html",
-    "name": "subdir"
+    "linesClass": "coverage-high",
+    "linesCoverage": "100.0",
+    "linesExec": "8",
+    "linesTotal": "8",
+    "link": "coverage.boost.B.cec86a34c08f941fc92924df967d4300.html",
+    "name": "subdir/B"
   }
 ];

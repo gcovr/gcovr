@@ -414,72 +414,7 @@
     var treeContainer = document.getElementById('file-tree');
     if (!treeContainer) return;
 
-    // Tree data is produced already-normalized and already-sorted by the
-    // upstream tooling (Python's gcovr_build_tree.py or gcovr itself), so
-    // no normalize/sort pass is needed here. We just join single-child
-    // dir chains for sidebar compactness before rendering.
-      joinSingleChildDirs(window.GCOVR_TREE_DATA);
-      sortTree(window.GCOVR_TREE_DATA);
-      renderTree(treeContainer, window.GCOVR_TREE_DATA);
-  }
-
-  // Re-sort the tree: directories first, then files, alphabetically within
-  // each group. Python already sorts each level, but normalizeTree creates
-  // synthetic directory nodes from multi-segment FILE entries (e.g. a deep
-  // chain like subdir1/subdir2/subdir3/file.hpp that gcovr itself collapsed).
-  // Those synthetic dirs end up wherever the originating file landed in the
-  // Python sort — i.e. in the file bucket — so without this pass they appear
-  // mixed in with the files instead of at the top with the other directories.
-  function sortTree(nodes) {
-    if (!nodes || nodes.length === 0) return;
-    nodes.sort(function(a, b) {
-      var aIsDir = a.isDirectory || (a.children && a.children.length > 0);
-      var bIsDir = b.isDirectory || (b.children && b.children.length > 0);
-      if (aIsDir && !bIsDir) return -1;
-      if (!aIsDir && bIsDir) return 1;
-      var aName = (a.name || '').toLowerCase();
-      var bName = (b.name || '').toLowerCase();
-      return aName.localeCompare(bName);
-    });
-    for (var i = 0; i < nodes.length; i++) {
-      if (nodes[i].children) sortTree(nodes[i].children);
-    }
-  }
-
-  // Join chains of single-child directories into one sidebar entry.
-  // If a directory contains nothing but one child directory, the two are
-  // merged: the name becomes "parent/child", and the link + stats are taken
-  // from the (deepest) child. The grandchildren become the new children.
-  // Repeats until the chain ends (multiple children, or a file appears).
-  // Result: e.g. include > boost > url > [files] becomes include/boost/url
-  // as a single entry whose click navigates straight to the url directory.
-  function joinSingleChildDirs(nodes) {
-    if (!nodes) return;
-    for (var i = 0; i < nodes.length; i++) {
-      var node = nodes[i];
-      if (!node.isDirectory || !node.children) continue;
-      while (node.children.length === 1 && node.children[0].isDirectory) {
-        var child = node.children[0];
-        node.name = node.name + '/' + child.name;
-        // The joined entry represents the deepest directory for clicks
-        // and for the coverage stats shown next to it. Statically-named
-        // assignments avoid the dynamic [key] indexing that static
-        // analyzers flag as a prototype-pollution risk.
-        if (child.link) node.link = child.link;
-        if (child.coverage) node.coverage = child.coverage;
-        if (child.coverageClass) node.coverageClass = child.coverageClass;
-        if (child.linesTotal) node.linesTotal = child.linesTotal;
-        if (child.linesExec) node.linesExec = child.linesExec;
-        if (child.linesCoverage) node.linesCoverage = child.linesCoverage;
-        if (child.linesClass) node.linesClass = child.linesClass;
-        if (child.functionsCoverage) node.functionsCoverage = child.functionsCoverage;
-        if (child.functionsClass) node.functionsClass = child.functionsClass;
-        if (child.branchesCoverage) node.branchesCoverage = child.branchesCoverage;
-        if (child.branchesClass) node.branchesClass = child.branchesClass;
-        node.children = child.children || [];
-      }
-      joinSingleChildDirs(node.children);
-    }
+    renderTree(treeContainer, window.GCOVR_TREE_DATA);
   }
 
   // Save expanded folder paths to localStorage
@@ -1163,6 +1098,10 @@
 
       var aVal = a.dataset[key] || a.querySelector('[data-sort]')?.dataset.sort || '';
       var bVal = b.dataset[key] || b.querySelector('[data-sort]')?.dataset.sort || '';
+      if (key == 'filename' && localStorage.getItem('gcovr-view-mode') === 'nested') {
+        aVal = aVal.split('/').pop();
+        bVal = bVal.split('/').pop();
+      }
 
       // Try to parse as numbers
       var aNum = parseFloat(aVal);

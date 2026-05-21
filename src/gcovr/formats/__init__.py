@@ -102,11 +102,6 @@ def read_reports(options: Options) -> CoverageContainer:
     else:
         covdata = GcovHandler(options).read_report()
 
-    if not covdata:
-        LOGGER.warning(
-            "All coverage data is filtered out. Please check your paths and filters."
-        )
-
     # Check if the diff information is available for all files, or for none of the files.
     # Otherwise, the report generation is not possible.
     if (
@@ -119,9 +114,6 @@ def read_reports(options: Options) -> CoverageContainer:
         == 2
     ):
         raise SanityCheckError("Some files have diff information, while others do not.")
-
-    if covdata.is_compare_info_available():
-        covdata.update_diff()
 
     if options.include_search_filter:
         for search_path in options.search_paths or [options.root]:
@@ -145,6 +137,16 @@ def read_reports(options: Options) -> CoverageContainer:
                 covdata.insert_file_coverage(
                     filecov, get_merge_mode_from_options(options)
                 )
+
+    if not covdata:
+        LOGGER.warning(
+            "All coverage data is filtered out. Please check your paths and filters."
+        )
+
+    covdata.update_diff()
+
+    LOGGER.debug("Removing directories with only one child...")
+    covdata.collapse_directories_with_single_child()
 
     if options.merge_lines:
         covdata.merge_lines(options)
