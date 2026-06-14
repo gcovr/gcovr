@@ -9,6 +9,25 @@ Known bugs
 This list contains bugs for version 6.0 and newer, always check the latest
 version of this file available `here <https://gcovr.com/en/latest/known_bugs.html>`_.
 
+.. _fix_1270:
+
+Significant performance regression with many functions in a single file
+-----------------------------------------------------------------------
+
+.. list-table::
+
+   * - Introduced
+     - :ref:`release_8_4`
+
+   * - Fixed
+     - :ref:`next_release`, :issue:`1270`
+
+The runtime of ``gcovr`` increased significant if a file has many lines and functions.
+
+In :issue:`1268` the file had ~180.000 functions and ~600.000 lines from template
+expansion out of less than 100 code lines. The runtime increased from less than 1 minute to 4-5 hours.
+
+
 .. _fix_1231:
 
 Merge assertion error for functions defined in multiple lines

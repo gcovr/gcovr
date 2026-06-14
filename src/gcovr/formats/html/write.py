@@ -956,6 +956,7 @@ def get_file_data(
     functions = dict[tuple[FunctioncovKeyType, str, int], dict[str, Any]]()
     # Only use demangled names (containing a brace)
     for functioncov in filecov.functioncov(key=lambda functioncov: functioncov.key):
+        function_stats = filecov.filter_for_function(functioncov).stats
         for lineno in functioncov.linenos:
             f_data = dict[str, Any]()
             f_data["name"] = functioncov.name
@@ -965,7 +966,6 @@ def get_file_data(
             f_data["execution_count"] = functioncov.execution_count[lineno]
             f_data["blocks_percent"] = functioncov.blocks_percent[lineno]
             f_data["excluded"] = functioncov.excluded[lineno]
-            function_stats = filecov.filter_for_function(functioncov).stats
             f_data["line_coverage"] = function_stats.line.percent_or(100.0)
             f_data["branch_coverage"] = function_stats.branch.percent_or("-")
             f_data["condition_coverage"] = function_stats.condition.percent_or("-")
