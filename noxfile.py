@@ -713,6 +713,11 @@ def html2jpeg(session: nox.Session) -> None:
             "doc/images/screenshot-html-github-dark-blue-src.jpeg",
             (1150, 480),
         )
+        screenshot(
+            "tests/html/reference/theme-boost-green/gcc-5/coverage.main.cpp.118fcbaaba162ba17933c7893247df3a.html",
+            "doc/images/screenshot-html-boost-green-src.jpeg",
+            (1150, 480),
+        )
 
 
 def docker_container_os_version(cc: str) -> str:

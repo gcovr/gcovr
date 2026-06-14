@@ -1,0 +1,29 @@
+{# -*- engine: jinja -*- #}
+{% set partial_count = lines.partial if lines.partial is defined else 0 %}
+{% set uncovered_total = (lines.total - lines.exec) + partial_count %}
+<div class="source-summary">
+  <div class="source-info">
+    <h2 class="source-filename">{{filename}}</h2>
+    <div class="source-stats">
+      <span class="stat {{lines.class}}">
+        <strong>{{lines.coverage}}%</strong> Lines ({{lines.exec}}/{{lines.total}})
+      </span>
+      <span class="stat {{functions.class}}">
+        <strong>{{functions.coverage}}%</strong> List of functions ({{functions.exec}}/{{functions.total}})
+      </span>
+      {% if info.branches.total > info.branches.excluded %}
+      <span class="stat {{branches.class}}">
+        <strong>{{branches.coverage}}%</strong> Branches ({{branches.exec}}/{{branches.total - branches.excluded}})
+      </span>
+      {% endif %}
+    </div>
+  </div>
+  <div class="nav-hint">
+    {% if info.navigation is defined and fname in info.navigation %}
+    <span><kbd>[</kbd> <kbd>]</kbd> prev/next file</span>
+    {% endif %}
+    {% if uncovered_total > 0 %}
+    <span><kbd>n</kbd> <kbd>p</kbd> prev/next uncovered line</span>
+    {% endif %}
+  </div>
+</div>

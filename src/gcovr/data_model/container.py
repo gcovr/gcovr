@@ -97,41 +97,30 @@ class CoverageContainer:
                 yield from value.traverse()
         yield self
 
-    def remove_container_with_single_item(self) -> None:
+    def collapse_directories_with_single_child(self) -> None:
         """Remove directory containers with only one file coverage item."""
-        # Iterate over a copy of the values to avoid modifying the dictionary while iterating
-        for value in list(self.values()):
-            if isinstance(value, CoverageContainer):
-                value.remove_container_with_single_item()
-
-        children = list(self.values())
-        if len(children) == 1:
-            child = children[0]
-            if isinstance(child, FileCoverage):
-                if self.parent is not None:
-                    LOGGER.debug(
-                        "   Move file %s to directory %s. %s",
-                        child.filename,
-                        self.parent.dirname,
-                        list(self.parent.data.keys()),
-                    )
-                    del self.parent[self.dirname]
-                    self.parent[child.filename] = child
-            else:
+        while True:
+            children = list(self.values())
+            if len(children) == 1 and isinstance(children[0], CoverageContainer):
                 self.clear()
-                LOGGER.debug(
-                    "   Move content of %s to directory %s.",
-                    child.dirname,
-                    self.dirname,
-                )
-                for child_covdata in child.values():
-                    if isinstance(child_covdata, FileCoverage):
-                        LOGGER.debug("      Move file %s.", child_covdata.filename)
-                        self[child_covdata.filename] = child_covdata
+                for grandchild_covdata in children[0].values():
+                    if isinstance(grandchild_covdata, FileCoverage):
+                        LOGGER.debug("      Move file %s.", grandchild_covdata.filename)
+                        self[grandchild_covdata.filename] = grandchild_covdata
                     else:
-                        LOGGER.debug("      Move directory %s.", child_covdata.dirname)
-                        self[child_covdata.dirname] = child_covdata
-                        child_covdata.parent = self
+                        LOGGER.debug(
+                            "      Move directory %s.", grandchild_covdata.dirname
+                        )
+                        self[grandchild_covdata.dirname] = grandchild_covdata
+                        grandchild_covdata.parent = self
+                continue
+
+            # Nothing changed, so we can stop collapsing directories
+            break
+
+        for value in self.values():
+            if isinstance(value, CoverageContainer):
+                value.collapse_directories_with_single_child()
 
     def serialize(self, options: Options) -> list[dict[str, Any]]:
         """Serialize the object."""

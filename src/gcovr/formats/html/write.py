@@ -400,15 +400,6 @@ def write_report(
         else:
             output_file += "coverage.html"
 
-    css_data = CssRenderer.render(options, root_info).strip()
-    if PYGMENTS_CSS_MARKER in css_data:
-        LOGGER.info(
-            "Skip adding of pygments styles since %r found in user stylesheet",
-            PYGMENTS_CSS_MARKER,
-        )
-    else:
-        css_data += get_formatter(options).get_css()
-
     if options.html_details or options.html_nested:
         data["ROOT_FNAME"] = os.path.basename(output_file)
         (output_prefix, output_suffix) = _get_prefix_and_suffix(output_file)
@@ -419,40 +410,6 @@ def write_report(
             data["FUNCTIONS_FNAME"] = data["FUNCTIONS_FNAME"].split(".", maxsplit=1)[1]
     else:
         functions_output_file = "NOT USED"
-
-    javascript_data = (
-        None
-        if options.html_static_report
-        else templates(options).get_template("gcovr.js").render(**data).strip()
-    )
-
-    if self_contained:
-        data["css"] = css_data
-        if javascript_data is not None:
-            data["javascript"] = javascript_data
-    else:
-        css_output = os.path.splitext(output_file)[0] + ".css"
-        with open_text_for_writing(css_output, encoding="utf-8") as fh_out:
-            fh_out.write(css_data)
-            fh_out.write("\n")
-
-        if options.html_relative_anchors:
-            css_link = os.path.basename(css_output)
-        else:  # pragma: no cover  Can't be checked because of the reference compare
-            css_link = css_output
-        data["css_link"] = css_link
-
-        if javascript_data is not None:
-            javascript_output = os.path.splitext(output_file)[0] + ".js"
-            with open_text_for_writing(javascript_output) as fh_out:
-                fh_out.write(javascript_data)
-                fh_out.write("\n")
-
-            if options.html_relative_anchors:
-                javascript_link = os.path.basename(javascript_output)
-            else:  # pragma: no cover  Can't be checked because of the reference compare
-                javascript_link = javascript_output
-            data["javascript_link"] = javascript_link
 
     data["theme"] = get_theme_color(options.html_theme)
 
@@ -470,8 +427,7 @@ def write_report(
         recurse=True,
     )
 
-    dircov_list = list(covdata.dircov(recurse=True)) if options.html_nested else []
-
+    LOGGER.debug("Store additional properties...")
     files = []
     sourcefiles = dict[str, str | None]()
 
@@ -506,8 +462,9 @@ def write_report(
 
     for filecov in filecov_list:
         _store_filenames(filecov)
-    for dircov in dircov_list:
-        _store_filenames(dircov)
+    if options.html_nested:
+        for dircov in covdata.dircov(recurse=True):
+            _store_filenames(dircov)
 
     # Define the common root directory, which may differ from options.root_dir
     # when source files share a common prefix.
@@ -541,6 +498,80 @@ def write_report(
 
     root_info.set_directory(force_unix_separator(root_directory))
 
+    if options.html_nested:
+        LOGGER.debug("Processing tree data...")
+        for cdata in covdata.traverse():
+            cdata_data = get_coverage_data(root_info, cdata)
+            cdata.properties["tree_data"] = {
+                "coverage": str(cdata_data["lines"]["coverage"]),
+                "coverageClass": str(cdata_data["lines"]["class"]),
+                "linesTotal": str(cdata_data["lines"]["total"]),
+                "linesExec": str(cdata_data["lines"]["exec"]),
+                "linesCoverage": str(cdata_data["lines"]["coverage"]),
+                "linesClass": str(cdata_data["lines"]["class"]),
+                "functionsCoverage": str(cdata_data["functions"]["coverage"]),
+                "functionsClass": str(cdata_data["functions"]["class"]),
+                "branchesCoverage": str(cdata_data["branches"]["coverage"]),
+                "branchesClass": str(cdata_data["branches"]["class"]),
+                "isDirectory": isinstance(cdata, CoverageContainer),
+                "link": cdata_data["link"],
+                "children": [],
+            }
+            if isinstance(cdata, CoverageContainer):
+                children = cdata.properties["tree_data"]["children"]
+                for c in cdata.values():
+                    c.properties["tree_data"]["name"] = c.filename.removeprefix(
+                        cdata.filename
+                    ).removesuffix(os.sep)
+                    children.append(c.properties["tree_data"])
+        data["GCOVR_TREE_DATA"] = covdata.properties["tree_data"]["children"]
+
+    LOGGER.debug("Render CSS file...")
+    css_data = CssRenderer.render(options, root_info).strip()
+    if PYGMENTS_CSS_MARKER in css_data:
+        LOGGER.info(
+            "Skip adding of pygments styles since %r found in user stylesheet",
+            PYGMENTS_CSS_MARKER,
+        )
+    else:
+        css_data += get_formatter(options).get_css()
+
+    LOGGER.debug("Render JavaScript file...")
+    javascript_data = (
+        None
+        if options.html_static_report
+        else templates(options).get_template("gcovr.js").render(**data).strip()
+    )
+
+    if self_contained:
+        data["css"] = css_data
+        if javascript_data is not None:
+            data["javascript"] = javascript_data
+    else:
+        css_output = os.path.splitext(output_file)[0] + ".css"
+        with open_text_for_writing(css_output, encoding="utf-8") as fh_out:
+            fh_out.write(css_data)
+            fh_out.write("\n")
+
+        if options.html_relative_anchors:
+            css_link = os.path.basename(css_output)
+        else:  # pragma: no cover  Can't be checked because of the reference compare
+            css_link = css_output
+        data["css_link"] = css_link
+
+        if javascript_data is not None:
+            javascript_output = os.path.splitext(output_file)[0] + ".js"
+            with open_text_for_writing(javascript_output, encoding="utf-8") as fh_out:
+                fh_out.write(javascript_data)
+                fh_out.write("\n")
+
+            if options.html_relative_anchors:
+                javascript_link = os.path.basename(javascript_output)
+            else:  # pragma: no cover  Can't be checked because of the reference compare
+                javascript_link = javascript_output
+            data["javascript_link"] = javascript_link
+
+    LOGGER.debug("Render HTML file(s)...")
     if options.html_single_page:
         write_single_page(
             options,
@@ -551,7 +582,7 @@ def write_report(
             data,
         )
     else:
-        if dircov_list:
+        if options.html_nested:
             write_directory_pages(
                 options,
                 root_info,
@@ -567,16 +598,15 @@ def write_report(
                 data,
                 filecov_list,
             )
-            if not options.html_details:
-                return
 
-        write_source_pages(
-            options,
-            root_info,
-            functions_output_file,
-            covdata,
-            data,
-        )
+        if options.html_details or options.html_nested:
+            write_source_pages(
+                options,
+                root_info,
+                functions_output_file,
+                covdata,
+                data,
+            )
 
 
 def write_root_page(
@@ -665,6 +695,7 @@ def write_directory_pages(
 
     for dircov in covdata.dircov(recurse=True):
         directory_data = get_directory_data(options, root_info, dircov)
+
         html_string = (
             templates(options)
             .get_template("directory_page.html")
@@ -921,8 +952,7 @@ def get_file_data(
             filecov,
         )
     )
-    if filecov.diff != CoverageDiff.UNDEFINED:
-        file_data["diff"] = filecov.diff.name
+
     functions = dict[tuple[FunctioncovKeyType, str, int], dict[str, Any]]()
     # Only use demangled names (containing a brace)
     for functioncov in filecov.functioncov(key=lambda functioncov: functioncov.key):
@@ -1018,6 +1048,7 @@ def get_file_data(
         ]
     )
     if filecov.is_compare_info_available():
+        file_data["diff"] = filecov.diff.name
         file_data["lines"]["diff"] = dict[str, int]()
         for kind in CoverageDiff:
             file_data["lines"]["diff"][kind.name] = len(
