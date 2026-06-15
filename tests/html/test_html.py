@@ -538,8 +538,6 @@ PARAMETERS_NESTED = [
     (
         "theme-default-js",
         (
-            "--filter",
-            "subdir/A",
             "--html-nested=./",
             "--html-single-page",
         ),
@@ -559,8 +557,6 @@ PARAMETERS_NESTED = [
     (
         "theme-github-js",
         (
-            "--filter",
-            "subdir/A",
             "--html-nested=./",
             "--html-single-page",
             "--html-theme=github.blue",
@@ -578,8 +574,6 @@ PARAMETERS_NESTED = [
     (
         "theme-boost-blue",
         (
-            "--filter",
-            "subdir/A",
             "--html-nested=./",
             "--html-theme=boost.blue",
         ),
