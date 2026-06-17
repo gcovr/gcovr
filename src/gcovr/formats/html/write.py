@@ -533,10 +533,11 @@ def write_report(
                         cdata.filename
                     ).removesuffix(os.sep)
                     children.append(c.properties["tree_data"])
-        if root_directory in ("", "./"):
+        root_filtered_name = covdata.properties["filtered_name"]
+        if not root_filtered_name:
             data["GCOVR_TREE_DATA"] = covdata.properties["tree_data"]["children"]
         else:
-            covdata.properties["tree_data"]["name"] = root_directory[:-1]
+            covdata.properties["tree_data"]["name"] = root_filtered_name.rstrip("/")
             data["GCOVR_TREE_DATA"] = [covdata.properties["tree_data"]]
 
     LOGGER.debug("Render CSS file...")
