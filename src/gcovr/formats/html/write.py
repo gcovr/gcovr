@@ -534,11 +534,11 @@ def write_report(
                     ).removesuffix(os.sep)
                     children.append(c.properties["tree_data"])
         root_filtered_name = covdata.properties["filtered_name"]
-        if not root_filtered_name:
-            data["GCOVR_TREE_DATA"] = covdata.properties["tree_data"]["children"]
-        else:
+        if root_filtered_name:
             covdata.properties["tree_data"]["name"] = root_filtered_name.rstrip("/")
             data["GCOVR_TREE_DATA"] = [covdata.properties["tree_data"]]
+        else:
+            data["GCOVR_TREE_DATA"] = covdata.properties["tree_data"]["children"]
 
     LOGGER.debug("Render CSS file...")
     css_data = CssRenderer.render(options, root_info).strip()
