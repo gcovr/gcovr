@@ -2608,12 +2608,11 @@ class FileCoverage(CoverageBase):
                         min(functioncov.execution_count.keys()),
                         functioncov.name,
                     )
+
+                yield from sorted(self._functions.values(), key=key_func)
             else:
+                yield from sorted(self._functions.values(), key=key)
 
-                def key_func(functioncov: FunctionCoverage) -> Any:
-                    return key(functioncov)
-
-            yield from sorted(self._functions.values(), key=key_func)
         else:
             yield from self._functions.values()
 
@@ -2776,14 +2775,30 @@ class FileCoverage(CoverageBase):
 
         return functioncov
 
+    def __linecov_of_function(
+        self, functioncov: FunctionCoverage
+    ) -> Iterable[LineCoverage]:
+        """Iterate over the lines of a function."""
+        if (
+            functioncov.demangled_name is not None
+            and functioncov.demangled_name in self.__linecov_by_function
+        ):
+            yield from self.__linecov_by_function[functioncov.demangled_name]
+        if (
+            functioncov.mangled_name is not None
+            and functioncov.mangled_name in self.__linecov_by_function
+        ):
+            yield from self.__linecov_by_function[functioncov.mangled_name]
+
+        return
+
     def remove_function_coverage(self, functioncov: FunctionCoverage) -> None:
         """Remove line coverage objects."""
         # Remove function and exclude the related lines
         del self._functions[functioncov.key]
         # Iterate over a shallow copy
-        for linecov in list(self.linecov()):
-            if functioncov.is_function(linecov.function_name):
-                self.remove_line_coverage(linecov)
+        for linecov in list(self.__linecov_of_function(functioncov)):
+            self.remove_line_coverage(linecov)
 
     def filter_for_function(self, functioncov: FunctionCoverage) -> FileCoverage:
         """Get a file coverage object reduced to a single function"""
@@ -2795,17 +2810,12 @@ class FileCoverage(CoverageBase):
         # pylint: disable=protected-access
         filecov._functions[functioncov.key] = functioncov
 
-        def add_linecov_to_collection(linecov: LineCoverage) -> None:
-            """Add a new linecov item."""
+        for linecov in self.__linecov_of_function(functioncov):
             lineno = linecov.lineno
             filecov._lines[lineno] = LineCoverageCollection(
                 filecov, linecov.data_sources, lineno=lineno
             )
             filecov._lines[lineno][linecov.key] = linecov
-
-        for linecov in self.raw_linecov():
-            if functioncov.is_function(linecov.function_name):
-                add_linecov_to_collection(linecov)
 
         return filecov
 

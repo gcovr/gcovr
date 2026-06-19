@@ -25,6 +25,8 @@ New features and notable changes:
 
 Bug fixes and small improvements:
 
+- Fix runtime problem introduced with 8.4. (:issue:`1270`)
+
 Documentation:
 
 - Add section about ``gcov`` options which should not be used to FAQ. (:issue:`1237`)
@@ -40,6 +42,10 @@ Internal changes:
 
 8.6 (13 January 2026)
 ---------------------
+
+Known bugs:
+
+- :ref:`fix_1270`
 
 Breaking changes:
 
@@ -65,6 +71,7 @@ Known bugs:
 
 - :ref:`fix_1229`
 - :ref:`fix_1231`
+- :ref:`fix_1270`
 
 Breaking changes:
 
@@ -169,6 +176,7 @@ Known bugs:
 - :ref:`fix_1197`
 - :ref:`fix_1206_1`
 - :ref:`fix_1206_2`
+- :ref:`fix_1270`
 
 Breaking changes:
 
