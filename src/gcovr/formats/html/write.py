@@ -438,7 +438,7 @@ def write_report(
             files.append(filtered_name)
         cdata.properties["filtered_name"] = force_unix_separator(filtered_name)
         if options.html_details or options.html_nested or options.html_single_page:
-            if os.path.normpath(cdata.filename) == os.path.normpath(options.root_dir):
+            if cdata == covdata:
                 cdata.properties["sourcefile"] = (
                     output_file[: -len(GZIP_SUFFIX)]
                     if output_file.endswith(GZIP_SUFFIX)
@@ -479,6 +479,8 @@ def write_report(
         )
         if directory != "":
             root_directory = str(directory) + os.sep
+    root_directory = force_unix_separator(root_directory)
+    root_info.set_directory(root_directory)
 
     previous_fname: str | None = None
     previous_link_report: str | None = None
@@ -495,8 +497,6 @@ def write_report(
             )
         previous_fname = fname
         previous_link_report = link_report
-
-    root_info.set_directory(force_unix_separator(root_directory))
 
     if options.html_nested:
         LOGGER.debug("Processing tree data...")
@@ -515,16 +515,30 @@ def write_report(
                 "branchesClass": str(cdata_data["branches"]["class"]),
                 "isDirectory": isinstance(cdata, CoverageContainer),
                 "link": cdata_data["link"],
-                "children": [],
             }
+
+            # Add the sorted children to the tree data for directories
             if isinstance(cdata, CoverageContainer):
-                children = cdata.properties["tree_data"]["children"]
-                for c in cdata.values():
+                children = list[dict[str, Any]]()
+                cdata.properties["tree_data"].update({"children": children})
+                for c in sorted(
+                    cdata.values(),
+                    # Sort directories first, then files alphabetically by filename.
+                    key=lambda cdata: (
+                        0 if cdata.properties["tree_data"]["isDirectory"] else 1,
+                        cdata.filename.lower(),
+                    ),
+                ):
                     c.properties["tree_data"]["name"] = c.filename.removeprefix(
                         cdata.filename
                     ).removesuffix(os.sep)
                     children.append(c.properties["tree_data"])
-        data["GCOVR_TREE_DATA"] = covdata.properties["tree_data"]["children"]
+        root_filtered_name = covdata.properties["filtered_name"]
+        if root_filtered_name:
+            covdata.properties["tree_data"]["name"] = root_filtered_name.rstrip("/")
+            data["GCOVR_TREE_DATA"] = [covdata.properties["tree_data"]]
+        else:
+            data["GCOVR_TREE_DATA"] = covdata.properties["tree_data"]["children"]
 
     LOGGER.debug("Render CSS file...")
     css_data = CssRenderer.render(options, root_info).strip()

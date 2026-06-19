@@ -102,6 +102,7 @@ class CoverageContainer:
         while True:
             children = list(self.values())
             if len(children) == 1 and isinstance(children[0], CoverageContainer):
+                self.dirname = children[0].dirname
                 self.clear()
                 for grandchild_covdata in children[0].values():
                     if isinstance(grandchild_covdata, FileCoverage):
