@@ -18,6 +18,10 @@
           <span class="stat-value">{{info.lines.exec}}</span>
         </div>
         <div class="stat-row">
+          <span class="stat-label">Excl</span>
+          <span class="stat-value">{{info.lines.excluded}}</span>
+        </div>
+        <div class="stat-row">
           <span class="stat-label">Total</span>
           <span class="stat-value">{{info.lines.total}}</span>
         </div>
@@ -41,6 +45,10 @@
         <div class="stat-row">
           <span class="stat-label">Hit</span>
           <span class="stat-value">{{info.functions.exec}}</span>
+        </div>
+        <div class="stat-row">
+          <span class="stat-label">Excl</span>
+          <span class="stat-value">{{info.functions.excluded}}</span>
         </div>
         <div class="stat-row">
           <span class="stat-label">Total</span>
@@ -69,8 +77,12 @@
           <span class="stat-value">{{info.branches.exec}}</span>
         </div>
         <div class="stat-row">
+          <span class="stat-label">Excl</span>
+          <span class="stat-value">{{info.branches.excluded}}</span>
+        </div>
+        <div class="stat-row">
           <span class="stat-label">Total</span>
-          <span class="stat-value">{{info.branches.total - info.branches.excluded if info.branches.excluded != '-' else 0}}</span>
+          <span class="stat-value">{{info.branches.total}}</span>
         </div>
       </div>
     </div>
@@ -96,8 +108,12 @@
           <span class="stat-value">{{info.conditions.exec}}</span>
         </div>
         <div class="stat-row">
+          <span class="stat-label">Excl</span>
+          <span class="stat-value">{{info.conditions.excluded}}</span>
+        </div>
+        <div class="stat-row">
           <span class="stat-label">Total</span>
-          <span class="stat-value">{{info.conditions.total - info.conditions.excluded if info.conditions.excluded != '-' else 0}}</span>
+          <span class="stat-value">{{info.conditions.total}}</span>
         </div>
       </div>
     </div>
@@ -121,6 +137,10 @@
         <div class="stat-row">
           <span class="stat-label">Hit</span>
           <span class="stat-value">{{info.decisions.exec}}</span>
+        </div>
+        <div class="stat-row">
+          <span class="stat-label">Excl</span>
+          <span class="stat-value">-</span>
         </div>
         <div class="stat-row">
           <span class="stat-label">Total</span>
@@ -150,8 +170,12 @@
           <span class="stat-value">{{info.calls.exec}}</span>
         </div>
         <div class="stat-row">
+          <span class="stat-label">Excl</span>
+          <span class="stat-value">{{info.calls.excluded}}</span>
+        </div>
+        <div class="stat-row">
           <span class="stat-label">Total</span>
-          <span class="stat-value">{{info.calls.total - info.calls.excluded if info.calls.excluded != '-' else 0}}</span>
+          <span class="stat-value">{{info.calls.total}}</span>
         </div>
       </div>
     </div>
