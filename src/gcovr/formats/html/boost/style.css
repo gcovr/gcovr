@@ -102,7 +102,8 @@
   /* ===========================================
      Layout
      =========================================== */
-  --sidebar-width: 320px;
+  --sidebar-width: {% if info.html_details or info.html_standalone %}0{% else %}320{% endif %}px;
+  --sidebar-width-spacing: {% if info.html_details or info.html_standalone %}12{% else %}41{% endif %}px;
   --sidebar-collapsed-width: 64px;
   --header-height: 56px;
 
@@ -841,7 +842,7 @@ body.sidebar-resizing .main-content {
 .main-content {
   flex: 1;
   min-width: 0;
-  margin-left: calc(var(--sidebar-width) + 41px);
+  margin-left: calc(var(--sidebar-width) + var(--sidebar-width-spacing));
   display: flex;
   flex-direction: column;
   height: 100vh;
@@ -850,7 +851,7 @@ body.sidebar-resizing .main-content {
 }
 
 .sidebar.collapsed ~ .main-content {
-  margin-left: calc(var(--sidebar-collapsed-width) + 41px);
+  margin-left: calc(var(--sidebar-collapsed-width) + var(--sidebar-width-spacing));
 }
 
 .main-header {
