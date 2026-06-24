@@ -68,7 +68,7 @@
     <div role="gridcell" class="color-fg-muted d-flex col-2" data-sort="{{row.decisions.sort}}">
       <div class="d-flex flex-justify-between flex-wrap gcovr-m-l-5 {{row.decisions.class}}" style="width: 100%;">
         <div class="percent">{{row.decisions.coverage}}%</div>
-        <div class="counter" title="Exec / Excl / Total">{{row.decisions.exec}} / {{row.decisions.excluded}} / {{row.decisions.total}}</div>
+        <div class="counter" title="Exec / Excl / Total">{{row.decisions.exec}} / - / {{row.decisions.total}}</div>
       </div>
     </div>
     {% endif %}
@@ -90,4 +90,3 @@
   </div>
 {% endfor %}
 </div>
-

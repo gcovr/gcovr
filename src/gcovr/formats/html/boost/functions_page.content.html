@@ -12,6 +12,12 @@
       {% if SHOW_CONDITION_COVERAGE %}
       <div class="col-conditions{{class_sortable}}" data-sort="conditions">Conditions</div>
       {% endif %}
+      {% if SHOW_DECISION %}
+      <div class="col-decisions{{class_sortable}}" data-sort="decisions">Decisions</div>
+      {% endif %}
+      {% if SHOW_CALLS %}
+      <div class="col-calls{{class_sortable}}" data-sort="calls">Calls</div>
+      {% endif %}
     </div>
     <div class="functions-loading" id="functions-loading">
       <div class="functions-loading-spinner"></div>
@@ -33,7 +39,9 @@
     "excluded": {{ "true" if entry.excluded else "false" }},
     "line_coverage": "{{ entry.line_coverage }}",
     "branch_coverage": "{{ entry.branch_coverage }}",
-    "condition_coverage": "{{ entry.condition_coverage }}"
+    "condition_coverage": "{{ entry.condition_coverage }}",
+    "decision_coverage": "{{ entry.decision_coverage }}",
+    "call_coverage": "{{ entry.call_coverage }}"
   }
   {% endfor %}
 ]
@@ -43,6 +51,8 @@
     singlePage: {{ "true" if info.single_page else "false" }},
     htmlFilename: "{{ html_filename }}",
     showBranches: {{ "true" if info.branches.total > info.branches.excluded else "false" }},
-    showConditions: {{ "true" if SHOW_CONDITION_COVERAGE else "false" }}
+    showConditions: {{ "true" if SHOW_CONDITION_COVERAGE else "false" }},
+    showDecisions: {{ "true" if SHOW_DECISION else "false" }},
+    showCalls: {{ "true" if SHOW_CALLS else "false" }}
   };
 </script>

@@ -34,6 +34,15 @@
       {% if has_branches %}
       <button type="button" class="btn btn-sm col-toggle show-col" data-col="branch" title="Toggle Branch column">Branch</button>
       {% endif %}
+      {% if SHOW_CONDITION_COVERAGE %}
+      <button type="button" class="btn btn-sm col-toggle show-col" data-col="condition" title="Toggle Condition column">Condition</button>
+      {% endif %}
+      {% if SHOW_DECISION %}
+      <button type="button" class="btn btn-sm col-toggle show-col" data-col="decision" title="Toggle Decision column">Decision</button>
+      {% endif %}
+      {% if SHOW_CALLS %}
+      <button type="button" class="btn btn-sm col-toggle show-col" data-col="call" title="Toggle Call column">Call</button>
+      {% endif %}
       <button type="button" class="btn btn-sm col-toggle show-col" data-col="tla" title="Toggle TLA column">TLA</button>
       <button type="button" class="btn btn-sm col-toggle show-col" data-col="count" title="Toggle Hits column">Hits</button>
     </div>

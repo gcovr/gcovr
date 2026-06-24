@@ -985,6 +985,8 @@ def get_file_data(
             f_data["line_coverage"] = function_stats.line.percent_or(100.0)
             f_data["branch_coverage"] = function_stats.branch.percent_or("-")
             f_data["condition_coverage"] = function_stats.condition.percent_or("-")
+            f_data["decision_coverage"] = function_stats.decision.percent_or("-")
+            f_data["call_coverage"] = function_stats.call.percent_or("-")
 
             file_data["function_list"].append(f_data)
             functions[

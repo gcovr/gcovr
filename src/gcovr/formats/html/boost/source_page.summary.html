@@ -16,6 +16,21 @@
         <strong>{{branches.coverage}}%</strong> Branches ({{branches.exec}}/{{branches.total - branches.excluded}})
       </span>
       {% endif %}
+      {% if SHOW_CONDITION_COVERAGE %}
+      <span class="stat {{conditions.class}}">
+        <strong>{{conditions.coverage}}%</strong> Conditions ({{conditions.exec}}/{{conditions.total - conditions.excluded}})
+      </span>
+      {% endif %}
+      {% if SHOW_DECISION %}
+      <span class="stat {{decisions.class}}">
+        <strong>{{decisions.coverage}}%</strong> Decisions ({{decisions.exec}}/{{decisions.total}})
+      </span>
+      {% endif %}
+      {% if SHOW_CALLS %}
+      <span class="stat {{calls.class}}">
+        <strong>{{calls.coverage}}%</strong> Calls ({{calls.exec}}/{{calls.total - calls.excluded}})
+      </span>
+      {% endif %}
     </div>
   </div>
   <div class="nav-hint">
