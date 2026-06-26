@@ -43,7 +43,7 @@
 
   <body>
     <div class="app-container">
-      {% if not (info.html_details or info.html_standalone) %}
+      {% if info.html_nested %}
       <!-- Sidebar -->
       <aside class="sidebar" id="sidebar"><script>if(localStorage.getItem('sidebar-collapsed')==='true'){document.currentScript.parentElement.classList.add('collapsed');}else{var sw=localStorage.getItem('gcovr-sidebar-width');if(sw)document.documentElement.style.setProperty('--sidebar-width',sw+'px');}</script>
         <div class="sidebar-header">
@@ -98,7 +98,7 @@
           <div class="header-actions">
             {% block navigation %}{% endblock %}
           </div>
-          {% if not (info.html_details or info.html_standalone) %}
+          {% if info.html_nested %}
           <div class="view-toggle" id="view-toggle" style="display:none">
             <button class="view-btn active" data-view="nested">Nested</button>
             <button class="view-btn" data-view="flat">Flat</button>

@@ -53,7 +53,7 @@
       {# Extract clean display name: just filename or last path segment #}
       {% set clean_path = row.filename.rstrip('/') %}
       {% set display_name = clean_path.split('/')[0] if '/' in clean_path else clean_path %}
-      {% set display_name = row.filename if (info.html_details or info.html_standalone or not display_name) else display_name  %}
+      {% set display_name = display_name if (display_name and info.html_nested) else row.filename %}
       {% set is_file = '.' in display_name and not display_name.endswith('...') %}
     <div class="file-row {% if is_file %}file{% else %}directory{% endif %}"
          data-filename="{{row.filename}}"

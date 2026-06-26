@@ -294,7 +294,6 @@ class RootInfo:
         ) and not (options.html_single_page and options.html_static_report)
         self.relative_anchors = options.html_relative_anchors
         self.single_page = options.html_single_page
-        self.html_standalone = options.html is not None
         self.html_details = options.html_details is not None
         self.html_nested = options.html_nested is not None
         self.static_report = options.html_static_report
