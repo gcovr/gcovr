@@ -369,5 +369,5 @@ def write_reports(covdata: CoverageContainer, options: Options) -> None:
     if writer_errors:
         errors_as_string = "\n".join(writer_errors)
         raise RuntimeError(
-            f"Not all output files where written successful:\n{errors_as_string}"
+            f"Not all output files were written successfully:\n{errors_as_string}"
         )
