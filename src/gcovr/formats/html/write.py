@@ -148,7 +148,7 @@ class CssRenderer:
         return templates(options).get_template("style.css")
 
     @staticmethod
-    def render(options: Options, **data) -> str:
+    def render(options: Options, **data: dict[Any, Any]) -> str:
         """Get the rendered CSS content."""
         template = CssRenderer.__load_css_template(options)
         return template.render(tab_size=options.html_tab_size, **data)
