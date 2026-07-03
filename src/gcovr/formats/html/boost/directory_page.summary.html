@@ -83,10 +83,10 @@
       <h3>Conditions</h3>
     </div>
     <div class="summary-card-body">
-      <div class="coverage-ring {{info.branches.class}}">
+      <div class="coverage-ring {{info.conditions.class}}">
         <svg viewBox="0 0 36 36">
           <path class="ring-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
-          <path class="ring-fill" stroke-dasharray="{% if info.branches.coverage != '-' %}{{info.branches.coverage}}{% else %}0{% endif %}, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
+          <path class="ring-fill" stroke-dasharray="{% if info.conditions.coverage != '-' %}{{info.conditions.coverage}}{% else %}0{% endif %}, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
         </svg>
         <span class="ring-text">{{info.conditions.coverage}}%</span>
       </div>
@@ -110,10 +110,10 @@
       <h3>Decisions</h3>
     </div>
     <div class="summary-card-body">
-      <div class="coverage-ring {{info.branches.class}}">
+      <div class="coverage-ring {{info.decisions.class}}">
         <svg viewBox="0 0 36 36">
           <path class="ring-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
-          <path class="ring-fill" stroke-dasharray="{% if info.branches.coverage != '-' %}{{info.branches.coverage}}{% else %}0{% endif %}, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
+          <path class="ring-fill" stroke-dasharray="{% if info.decisions.coverage != '-' %}{{info.decisions.coverage}}{% else %}0{% endif %}, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
         </svg>
         <span class="ring-text">{{info.decisions.coverage}}%</span>
       </div>
@@ -137,10 +137,10 @@
       <h3>Calls</h3>
     </div>
     <div class="summary-card-body">
-      <div class="coverage-ring {{info.branches.class}}">
+      <div class="coverage-ring {{info.calls.class}}">
         <svg viewBox="0 0 36 36">
           <path class="ring-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
-          <path class="ring-fill" stroke-dasharray="{% if info.branches.coverage != '-' %}{{info.branches.coverage}}{% else %}0{% endif %}, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
+          <path class="ring-fill" stroke-dasharray="{% if info.calls.coverage != '-' %}{{info.calls.coverage}}{% else %}0{% endif %}, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
         </svg>
         <span class="ring-text">{{info.calls.coverage}}%</span>
       </div>
