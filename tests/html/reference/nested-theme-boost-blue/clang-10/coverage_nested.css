@@ -1708,6 +1708,18 @@ tr.source-line.nav-highlight > td {
   display: none;
 }
 
+.source-functions-list.hide-col-condition .col-conditions {
+  display: none;
+}
+
+.source-functions-list.hide-col-decision .col-decisions {
+  display: none;
+}
+
+.source-functions-list.hide-col-call .col-calls {
+  display: none;
+}
+
 .source-function-header {
   display: flex;
   align-items: center;
@@ -2069,6 +2081,9 @@ tr.source-line.nav-highlight > td {
 
 /* Column visibility toggle hide rules */
 .source-table.hide-col-branch .col-branch { display: none; }
+.source-table.hide-col-condition .col-condition { display: none; }
+.source-table.hide-col-decision .col-decision { display: none; }
+.source-table.hide-col-call .col-call { display: none; }
 .source-table.hide-col-tla .col-tla { display: none; }
 .source-table.hide-col-count .col-count { display: none; }
 

@@ -2,10 +2,7 @@
 {# Check if we have any function or branch data #}
 {% set has_functions = entries | selectattr('functions.coverage', 'ne', '-') | list | length > 0 %}
 {% set has_branches = entries | selectattr('branches.coverage', 'ne', '-') | list | length > 0 %}
-{% set has_conditions = SHOW_CONDITION_COVERAGE and (entries | selectattr('conditions.coverage', 'ne', '-') | list | length > 0) %}
-{% set has_decisions = SHOW_DECISION and (entries | selectattr('decisions.coverage', 'ne', '-') | list | length > 0) %}
-{% set has_calls = SHOW_CALLS and (entries | selectattr('calls.coverage', 'ne', '-') | list | length > 0) %}
-<div class="file-list-container{% if not has_functions %} no-functions{% endif %}{% if not has_branches %} no-branches{% endif %}{% if not has_conditions %} no-conditions{% endif %}{% if not has_decisions %} no-decisions{% endif %}{% if not has_calls %} no-calls{% endif %}">
+<div class="file-list-container{% if not has_functions %} no-functions{% endif %}{% if not has_branches %} no-branches{% endif %}{% if not SHOW_CONDITION_COVERAGE %} no-conditions{% endif %}{% if not SHOW_DECISION %} no-decisions{% endif %}{% if not SHOW_CALLS %} no-calls{% endif %}">
   <div class="file-list-header">
     <div class="col-name sortable{% if info.sort_by == 'filename' %} {{info.sorted}}{% endif %}" data-sort="filename">
       Name
@@ -26,17 +23,17 @@
       Branches
     </div>
     {% endif %}
-    {% if has_conditions %}
+    {% if SHOW_CONDITION_COVERAGE %}
     <div class="col-conditions sortable" data-sort="conditions">
       Conditions
     </div>
     {% endif %}
-    {% if has_decisions %}
+    {% if SHOW_DECISION %}
     <div class="col-decisions sortable" data-sort="decisions">
       Decisions
     </div>
     {% endif %}
-    {% if has_calls %}
+    {% if SHOW_CALLS %}
     <div class="col-calls sortable" data-sort="calls">
       Calls
     </div>
@@ -117,17 +114,17 @@
         <span class="stat-value {{row.branches.class}}">{% if row.branches.coverage != '-' %}{{row.branches.coverage}}%{% else %}-{% endif %}</span>
       </div>
       {% endif %}
-      {% if has_conditions %}
+      {% if SHOW_CONDITION_COVERAGE %}
       <div class="col-conditions">
         <span class="stat-value {{row.conditions.class}}">{% if row.conditions.coverage != '-' %}{{row.conditions.coverage}}%{% else %}-{% endif %}</span>
       </div>
       {% endif %}
-      {% if has_decisions %}
+      {% if SHOW_DECISION %}
       <div class="col-decisions">
         <span class="stat-value {{row.decisions.class}}">{% if row.decisions.coverage != '-' %}{{row.decisions.coverage}}%{% else %}-{% endif %}</span>
       </div>
       {% endif %}
-      {% if has_calls %}
+      {% if SHOW_CALLS %}
       <div class="col-calls">
         <span class="stat-value {{row.calls.class}}">{% if row.calls.coverage != '-' %}{{row.calls.coverage}}%{% else %}-{% endif %}</span>
       </div>

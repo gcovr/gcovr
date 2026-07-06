@@ -820,6 +820,8 @@
     var loadingEl = document.getElementById('functions-loading');
     var showBranches = config.showBranches;
     var showConditions = config.showConditions;
+    var showDecisions = config.showDecisions;
+    var showCalls = config.showCalls;
     var singlePage = config.singlePage;
     var currentFile = config.htmlFilename || '';
 
@@ -897,6 +899,16 @@
       // col-conditions (optional)
       if (showConditions) {
         row.appendChild(el('div', 'col-conditions', entry.condition_coverage + '%'));
+      }
+
+      // col-decisions (optional)
+      if (showDecisions) {
+        row.appendChild(el('div', 'col-decisions', entry.decision_coverage + '%'));
+      }
+
+      // col-calls (optional)
+      if (showCalls) {
+        row.appendChild(el('div', 'col-calls', entry.call_coverage + '%'));
       }
 
       return row;
