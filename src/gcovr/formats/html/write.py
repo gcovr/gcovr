@@ -31,6 +31,7 @@ from jinja2 import (
     FileSystemLoader,
     FunctionLoader,
     PackageLoader,
+    StrictUndefined,
     Template,
 )
 from markupsafe import Markup
@@ -132,6 +133,7 @@ def user_templates() -> Environment:
         autoescape=True,
         trim_blocks=True,
         lstrip_blocks=True,
+        undefined=StrictUndefined,
     )
 
 

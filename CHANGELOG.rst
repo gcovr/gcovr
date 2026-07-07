@@ -10,6 +10,9 @@ Next Release
 
 Breaking changes:
 
+- Jinja2 environment for HTML reports is now created with ``undefined=StrictUndefined`` to raise an
+  error if a variable is not defined in the template. (:issue:`1282`)
+
 New features and notable changes:
 
 - Improve HTML report:
