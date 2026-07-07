@@ -49,7 +49,7 @@
 <script>
   window.__functionsPageConfig = {
     singlePage: {{ "true" if info.single_page else "false" }},
-    htmlFilename: "{{ html_filename }}",
+    htmlFilename: "{{ html_filename | default("") }}",
     showBranches: {{ "true" if info.branches.total > info.branches.excluded else "false" }},
     showConditions: {{ "true" if SHOW_CONDITION_COVERAGE else "false" }},
     showDecisions: {{ "true" if SHOW_DECISION else "false" }},

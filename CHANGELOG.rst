@@ -11,7 +11,7 @@ Next Release
 Breaking changes:
 
 - Jinja2 environment for HTML reports is now created with ``undefined=StrictUndefined`` to raise an
-  error if a variable is not defined in the template. (:issue:`1282`)
+  error if a variable is not defined in the template. (:issue:`1282`, :issue:`1283`)
 - Links to lines in HTML reports now use ``L<line>`` instead of a ``l<line>``. (:issue:`1285`)
 
 New features and notable changes:

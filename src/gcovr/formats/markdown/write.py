@@ -22,6 +22,7 @@ from typing import Any
 from jinja2 import (
     Environment,
     PackageLoader,
+    StrictUndefined,
 )
 
 from ...data_model.container import CoverageContainer
@@ -42,6 +43,7 @@ def templates() -> Environment:
         autoescape=True,
         trim_blocks=True,
         lstrip_blocks=True,
+        undefined=StrictUndefined,
     )
 
 

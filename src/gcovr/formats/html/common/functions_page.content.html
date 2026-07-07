@@ -15,7 +15,7 @@
   <div class="Box-row Box-row--focus-gray py-2 d-flex">
     <div role="gridcell" class="color-fg-muted flex-auto min-width-0 col-md-2">
       {#- #}<a href="{%- if info.single_page %}#{{ entry['html_filename'] }}|
-                     {%- elif (html_filename != entry['html_filename']) %}{{ entry['html_filename'] }}#
+                     {%- elif (html_filename | default('') != entry['html_filename']) %}{{ entry['html_filename'] }}#
                      {%- else %}#
                      {%- endif %}L{{ entry['line'] }}">{{ entry["name"] }} ({{ entry["filename"] }}:{{ entry["line"] }})</a>
       {#- #}
