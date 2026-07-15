@@ -9,6 +9,23 @@ Known bugs
 This list contains bugs for version 6.0 and newer, always check the latest
 version of this file available `here <https://gcovr.com/en/latest/known_bugs.html>`_.
 
+.. _fix_1284:
+
+Alignment of summary table in HTML single page report is wrong
+--------------------------------------------------------------
+
+.. list-table::
+
+   * - Introduced
+     - :ref:`release_8_2`
+
+   * - Fixed
+     - :ref:`next_release`, :issue:`1284`
+
+In the HTML single page report with active JavaScript the summary table is not
+properly aligned except in the root page.
+
+
 .. _fix_1270:
 
 Significant performance regression with many functions in a single file

@@ -31,6 +31,7 @@ Bug fixes and small improvements:
 - Fix runtime problem introduced with 8.4. (:issue:`1270`)
 - Fix boost HTML details and simple output. (:issue:`1274`)
 - Fix boost HTML support for Conditions, Decisions and Calls optional stats. (:issue:`1277`)
+- Fix alignment in summary header of HTML report for :option:`--html-single-page`. (:issue:`1284`)
 
 Documentation:
 
@@ -51,6 +52,7 @@ Internal changes:
 Known bugs:
 
 - :ref:`fix_1270`
+- :ref:`fix_1284`
 
 Breaking changes:
 
@@ -77,6 +79,7 @@ Known bugs:
 - :ref:`fix_1229`
 - :ref:`fix_1231`
 - :ref:`fix_1270`
+- :ref:`fix_1284`
 
 Breaking changes:
 
