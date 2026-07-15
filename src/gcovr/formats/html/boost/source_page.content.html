@@ -108,7 +108,7 @@
       {% for entry in function_list | sort(attribute='line') %}
       {% set calls = entry.count if entry.count is defined else entry.execution_count if entry.execution_count is defined else none %}
       {% set blks = entry.blocks if entry.blocks is defined else entry.blocks_percent if entry.blocks_percent is defined else none %}
-      <a href="#{{ anchor_prefix }}l{{ entry.line }}" class="source-function-item{% if entry.excluded %} fn-excluded{% elif calls is not none and calls > 0 %}{% else %} fn-uncovered{% endif %}"
+      <a href="#{{ anchor_prefix }}L{{ entry.line }}" class="source-function-item{% if entry.excluded %} fn-excluded{% elif calls is not none and calls > 0 %}{% else %} fn-uncovered{% endif %}"
          data-name="{{ entry.name }}" data-calls="{{ calls if calls is not none else -1 }}" data-lines="{{ entry.line_coverage if entry.line_coverage is defined else -1 }}" data-branches="{{ entry.branch_coverage if entry.branch_coverage is defined and entry.branch_coverage != '-' else -1 }}" data-blocks="{{ blks if blks is not none else -1 }}">
         <span class="source-function-col-name">
           <span class="source-function-name">{{ entry.name }}</span>
@@ -161,9 +161,10 @@
       </thead>
       <tbody>
         {% for row in source_lines %}
+        {%  set line_anchor = "{}L{}".format(line_anchor_prefix, row.lineno) %}
         <tr class="source-line{% if row.covclass %} {{row.covclass}} show_{{row.covclass}}{% endif %}">
           <td class="col-lineno">
-            <a id="{{ anchor_prefix }}l{{row.lineno}}">{{row.lineno}}</a>
+            <a id="{{ line_anchor }}" href="#{{ line_anchor }}">{{row.lineno}}</a>
           </td>
           {% if has_branches %}
           <td class="col-branch">

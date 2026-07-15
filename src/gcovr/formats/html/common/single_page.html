@@ -9,7 +9,7 @@
 {% block content %}
 {% if not info.static_report %}
 <script>
-  gcovr.root_dirname = "{{ directories[-1].dirname }}";
+  gcovr.default_content_id = "{{ directories[-1].dirname }}";
 </script>
 {% endif %}
 <hr class="js-disabled-hidden"/>

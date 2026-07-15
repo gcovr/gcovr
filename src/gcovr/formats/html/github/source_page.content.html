@@ -46,13 +46,14 @@
         {% endif %}
       </tr>
       {% if info.single_page %}
-      {%  set anchor_prefix = html_filename + "|" %}
+      {%  set line_anchor_prefix = html_filename + "|" %}
       {% else %}
-      {%  set anchor_prefix = '' %}
+      {%  set line_anchor_prefix = "" %}
       {% endif %}
       {% for row in source_lines %}
+      {%  set line_anchor = "{}L{}".format(line_anchor_prefix, row.lineno)  %}
       <tr>
-        <td class="text-right src linenos"><a class="normal" id="{{ anchor_prefix }}l{{row.lineno}}" href="#l{{row.lineno}}">{{row.lineno}}</a></td>
+        <td class="text-right src linenos"><a class="normal" id="{{ line_anchor }}" href="#{{ line_anchor }}">{{row.lineno}}</a></td>
         <td class="text-right src linenos ws-unset">
           {% if row.line_branches %}
           <details class="normal details-overlay">

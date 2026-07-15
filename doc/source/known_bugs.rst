@@ -9,6 +9,22 @@ Known bugs
 This list contains bugs for version 6.0 and newer, always check the latest
 version of this file available `here <https://gcovr.com/en/latest/known_bugs.html>`_.
 
+.. _fix_1285:
+
+Link to lines in HTML single page report doesn't work
+-----------------------------------------------------
+
+.. list-table::
+
+   * - Introduced
+     - :ref:`release_8_2`
+
+   * - Fixed
+     - :ref:`next_release`, :issue:`1285`
+
+In the HTML single page report the link to a line opens the root page or an empty page.
+
+
 .. _fix_1284:
 
 Alignment of summary table in HTML single page report is wrong
