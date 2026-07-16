@@ -17,7 +17,7 @@
       {#- #}<a href="{%- if info.single_page %}#{{ entry['html_filename'] }}|
                      {%- elif (html_filename != entry['html_filename']) %}{{ entry['html_filename'] }}#
                      {%- else %}#
-                     {%- endif %}l{{ entry['line'] }}">{{ entry["name"] }} ({{ entry["filename"] }}:{{ entry["line"] }})</a>
+                     {%- endif %}L{{ entry['line'] }}">{{ entry["name"] }} ({{ entry["filename"] }}:{{ entry["line"] }})</a>
       {#- #}
     </div>
     <div role="gridcell" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline" data-sort="{{'-' if entry['excluded'] else entry['execution_count']}}">

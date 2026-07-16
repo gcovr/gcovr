@@ -503,7 +503,7 @@ gcovr.singlePageSetup = function () {
   document.body.classList.remove("js-disabled")
 
   gcovr.single_page_global_summary = document.getElementById("summary")
-  gcovr.single_page_global_content = document.getElementById(gcovr.root_dirname)
+  gcovr.single_page_global_content = document.getElementById(gcovr.default_content_id)
   gcovr.single_page_function_list = document.getElementById("functions.html")
 
   // Move the summaries in the tree
@@ -531,7 +531,7 @@ gcovr.singlePageActivateElement = function () {
     gcovr.single_page_old_hash = location.hash
     hash_parts =
       (location.hash == "")
-        ? [gcovr.root_dirname]
+        ? [gcovr.default_content_id]
         : decodeURIComponent(location.hash.substring(1)).split("|")
 
     for (var i = 0; i < gcovr.single_page_enabled_elements.length; i++) {
@@ -571,7 +571,7 @@ gcovr.singlePageActivateElement = function () {
 
     // We need to scroll to the element
     if (hash_parts.length > 1) {
-      document.getElementById(hash_parts[0]).scrollIntoView()
+      document.getElementById(hash_parts.join("|")).scrollIntoView()
     }
 
     gcovr.initScrollMarkers();
@@ -760,7 +760,7 @@ document.addEventListener("DOMContentLoaded", () => {
         </nav>
         <main>
 <script>
-  gcovr.root_dirname = "/";
+  gcovr.default_content_id = "/";
 </script>
 <hr class="js-disabled-hidden"/>
 <div id="functions.html" class="js-enabled-hidden js-disabled-hidden" data-title="Functions">
@@ -775,70 +775,70 @@ document.addEventListener("DOMContentLoaded", () => {
     <div role="rowheader" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2 sortable">Blocks</div>
   </div>
   <div class="Box-row Box-row--focus-gray py-2 d-flex">
-    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 col-md-2"><a href="#File2.cpp.1aed42bd33fceec1188f2f95c6e8946c.html|l1">bar() (A/subdir_0/subdir_1/subdir_2/subdir_3/subdir_4/subdir_5/subdir_6/subdir_7/subdir_8/subdir_9/File2.cpp:1)</a>    </div>
+    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 col-md-2"><a href="#File2.cpp.1aed42bd33fceec1188f2f95c6e8946c.html|L1">bar() (A/subdir_0/subdir_1/subdir_2/subdir_3/subdir_4/subdir_5/subdir_6/subdir_7/subdir_8/subdir_9/File2.cpp:1)</a>    </div>
     <div role="gridcell" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline" data-sort="1">called 1 time</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">100.0%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">-%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">100.0%</div>
   </div>
   <div class="Box-row Box-row--focus-gray py-2 d-flex">
-    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 col-md-2"><a href="#File2.cpp.1aed42bd33fceec1188f2f95c6e8946c.html|l8">bar_() (A/subdir_0/subdir_1/subdir_2/subdir_3/subdir_4/subdir_5/subdir_6/subdir_7/subdir_8/subdir_9/File2.cpp:8)</a>    </div>
+    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 col-md-2"><a href="#File2.cpp.1aed42bd33fceec1188f2f95c6e8946c.html|L8">bar_() (A/subdir_0/subdir_1/subdir_2/subdir_3/subdir_4/subdir_5/subdir_6/subdir_7/subdir_8/subdir_9/File2.cpp:8)</a>    </div>
     <div role="gridcell" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline" data-sort="0">not called</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">0.0%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">-%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">0.0%</div>
   </div>
   <div class="Box-row Box-row--focus-gray py-2 d-flex">
-    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 col-md-2"><a href="#file1.cpp.11975e1ce5d9c157e76130f444523bea.html|l1">foo(int) (A/file1.cpp:1)</a>    </div>
+    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 col-md-2"><a href="#file1.cpp.11975e1ce5d9c157e76130f444523bea.html|L1">foo(int) (A/file1.cpp:1)</a>    </div>
     <div role="gridcell" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline" data-sort="1">called 1 time</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">80.0%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">50.0%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">75.0%</div>
   </div>
   <div class="Box-row Box-row--focus-gray py-2 d-flex">
-    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 col-md-2"><a href="#file5.cpp.4f0be33a4dcfe398ba897b87f58ca7ce.html|l1">foo5(int) (A/C/file5.cpp:1)</a>    </div>
+    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 col-md-2"><a href="#file5.cpp.4f0be33a4dcfe398ba897b87f58ca7ce.html|L1">foo5(int) (A/C/file5.cpp:1)</a>    </div>
     <div role="gridcell" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline" data-sort="1">called 1 time</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">80.0%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">50.0%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">75.0%</div>
   </div>
   <div class="Box-row Box-row--focus-gray py-2 d-flex">
-    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 col-md-2"><a href="#File6.cpp.73326d74f2aeb2719dd6d8a9bcc3e582.html|l1">foo6(int) (A/C/D/File6.cpp:1)</a>    </div>
+    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 col-md-2"><a href="#File6.cpp.73326d74f2aeb2719dd6d8a9bcc3e582.html|L1">foo6(int) (A/C/D/File6.cpp:1)</a>    </div>
     <div role="gridcell" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline" data-sort="0">not called</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">0.0%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">0.0%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">0.0%</div>
   </div>
   <div class="Box-row Box-row--focus-gray py-2 d-flex">
-    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 col-md-2"><a href="#File4.cpp.1d7a80554861eb8b5c21bc2e26ff8f70.html|l1">foobar(int) (A/File4.cpp:1)</a>    </div>
+    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 col-md-2"><a href="#File4.cpp.1d7a80554861eb8b5c21bc2e26ff8f70.html|L1">foobar(int) (A/File4.cpp:1)</a>    </div>
     <div role="gridcell" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline" data-sort="1">called 1 time</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">80.0%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">50.0%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">75.0%</div>
   </div>
   <div class="Box-row Box-row--focus-gray py-2 d-flex">
-    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 col-md-2"><a href="#file3.cpp.bcfa344b5512d8cd5857f2fe86511d71.html|l1">four_bar() (A/file3.cpp:1)</a>    </div>
+    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 col-md-2"><a href="#file3.cpp.bcfa344b5512d8cd5857f2fe86511d71.html|L1">four_bar() (A/file3.cpp:1)</a>    </div>
     <div role="gridcell" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline" data-sort="1">called 1 time</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">100.0%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">-%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">100.0%</div>
   </div>
   <div class="Box-row Box-row--focus-gray py-2 d-flex">
-    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 col-md-2"><a href="#file3.cpp.bcfa344b5512d8cd5857f2fe86511d71.html|l8">four_bar_() (A/file3.cpp:8)</a>    </div>
+    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 col-md-2"><a href="#file3.cpp.bcfa344b5512d8cd5857f2fe86511d71.html|L8">four_bar_() (A/file3.cpp:8)</a>    </div>
     <div role="gridcell" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline" data-sort="0">not called</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">0.0%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">0.0%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">0.0%</div>
   </div>
   <div class="Box-row Box-row--focus-gray py-2 d-flex">
-    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 col-md-2"><a href="#main.cpp.9ddfb860fa969e91a7bb17e903455bce.html|l13">main (B/main.cpp:13)</a>    </div>
+    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 col-md-2"><a href="#main.cpp.9ddfb860fa969e91a7bb17e903455bce.html|L13">main (B/main.cpp:13)</a>    </div>
     <div role="gridcell" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline" data-sort="1">called 1 time</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">100.0%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">25.0%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">28.0%</div>
   </div>
   <div class="Box-row Box-row--focus-gray py-2 d-flex">
-    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 col-md-2"><a href="#file7.cpp.fa9d180b71a3402bed7d24bb1966eaf5.html|l1">uncovered() (A/file7.cpp:1)</a>    </div>
+    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 col-md-2"><a href="#file7.cpp.fa9d180b71a3402bed7d24bb1966eaf5.html|L1">uncovered() (A/file7.cpp:1)</a>    </div>
     <div role="gridcell" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline" data-sort="0">not called</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">0.0%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">-%</div>
@@ -1705,7 +1705,7 @@ document.addEventListener("DOMContentLoaded", () => {
     <div role="rowheader" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">Blocks</div>
   </div>
   <div class="Box-row Box-row--focus-gray py-2 d-flex">
-    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 col-md-2"><a href="#File6.cpp.73326d74f2aeb2719dd6d8a9bcc3e582.html|l1">foo6(int) (A/C/D/File6.cpp:1)</a>    </div>
+    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 col-md-2"><a href="#File6.cpp.73326d74f2aeb2719dd6d8a9bcc3e582.html|L1">foo6(int) (A/C/D/File6.cpp:1)</a>    </div>
     <div role="gridcell" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline" data-sort="0">not called</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">0.0%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">0.0%</div>
@@ -1738,63 +1738,63 @@ document.addEventListener("DOMContentLoaded", () => {
         <th class="p-2 text-left" style="width: 100%;">Source</th>
       </tr>
       <tr>
-        <td class="text-right src linenos"><a class="normal" id="File6.cpp.73326d74f2aeb2719dd6d8a9bcc3e582.html|l1" href="#l1">1</a></td>
+        <td class="text-right src linenos"><a class="normal" id="File6.cpp.73326d74f2aeb2719dd6d8a9bcc3e582.html|L1" href="#File6.cpp.73326d74f2aeb2719dd6d8a9bcc3e582.html|L1">1</a></td>
         <td class="text-right src linenos ws-unset">
         </td>
         <td class="linecount uncoveredLine show_uncoveredLine pr-2 pl-2 color-fg-muted text-right">&cross;</td>
         <td class="src uncoveredLine show_uncoveredLine"><span class="kt">int</span><span class="w"> </span><span class="nf">foo6</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">param</span><span class="p">)</span></td>
       </tr>
       <tr>
-        <td class="text-right src linenos"><a class="normal" id="File6.cpp.73326d74f2aeb2719dd6d8a9bcc3e582.html|l2" href="#l2">2</a></td>
+        <td class="text-right src linenos"><a class="normal" id="File6.cpp.73326d74f2aeb2719dd6d8a9bcc3e582.html|L2" href="#File6.cpp.73326d74f2aeb2719dd6d8a9bcc3e582.html|L2">2</a></td>
         <td class="text-right src linenos ws-unset">
         </td>
         <td class="linecount pr-2 pl-2 color-fg-muted text-right"></td>
         <td class="src"><span class="p">{</span></td>
       </tr>
       <tr>
-        <td class="text-right src linenos"><a class="normal" id="File6.cpp.73326d74f2aeb2719dd6d8a9bcc3e582.html|l3" href="#l3">3</a></td>
+        <td class="text-right src linenos"><a class="normal" id="File6.cpp.73326d74f2aeb2719dd6d8a9bcc3e582.html|L3" href="#File6.cpp.73326d74f2aeb2719dd6d8a9bcc3e582.html|L3">3</a></td>
         <td class="text-right src linenos ws-unset">
         </td>
         <td class="linecount uncoveredLine show_uncoveredLine pr-2 pl-2 color-fg-muted text-right">&cross;</td>
         <td class="src uncoveredLine show_uncoveredLine"><span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">param</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
       </tr>
       <tr>
-        <td class="text-right src linenos"><a class="normal" id="File6.cpp.73326d74f2aeb2719dd6d8a9bcc3e582.html|l4" href="#l4">4</a></td>
+        <td class="text-right src linenos"><a class="normal" id="File6.cpp.73326d74f2aeb2719dd6d8a9bcc3e582.html|L4" href="#File6.cpp.73326d74f2aeb2719dd6d8a9bcc3e582.html|L4">4</a></td>
         <td class="text-right src linenos ws-unset">
         </td>
         <td class="linecount uncoveredLine show_uncoveredLine pr-2 pl-2 color-fg-muted text-right">&cross;</td>
         <td class="src uncoveredLine show_uncoveredLine"><span class="w">     </span><span class="k">return</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span></td>
       </tr>
       <tr>
-        <td class="text-right src linenos"><a class="normal" id="File6.cpp.73326d74f2aeb2719dd6d8a9bcc3e582.html|l5" href="#l5">5</a></td>
+        <td class="text-right src linenos"><a class="normal" id="File6.cpp.73326d74f2aeb2719dd6d8a9bcc3e582.html|L5" href="#File6.cpp.73326d74f2aeb2719dd6d8a9bcc3e582.html|L5">5</a></td>
         <td class="text-right src linenos ws-unset">
         </td>
         <td class="linecount pr-2 pl-2 color-fg-muted text-right"></td>
         <td class="src"><span class="w">  </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span></td>
       </tr>
       <tr>
-        <td class="text-right src linenos"><a class="normal" id="File6.cpp.73326d74f2aeb2719dd6d8a9bcc3e582.html|l6" href="#l6">6</a></td>
+        <td class="text-right src linenos"><a class="normal" id="File6.cpp.73326d74f2aeb2719dd6d8a9bcc3e582.html|L6" href="#File6.cpp.73326d74f2aeb2719dd6d8a9bcc3e582.html|L6">6</a></td>
         <td class="text-right src linenos ws-unset">
         </td>
         <td class="linecount uncoveredLine show_uncoveredLine pr-2 pl-2 color-fg-muted text-right">&cross;</td>
         <td class="src uncoveredLine show_uncoveredLine"><span class="w">     </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span></td>
       </tr>
       <tr>
-        <td class="text-right src linenos"><a class="normal" id="File6.cpp.73326d74f2aeb2719dd6d8a9bcc3e582.html|l7" href="#l7">7</a></td>
+        <td class="text-right src linenos"><a class="normal" id="File6.cpp.73326d74f2aeb2719dd6d8a9bcc3e582.html|L7" href="#File6.cpp.73326d74f2aeb2719dd6d8a9bcc3e582.html|L7">7</a></td>
         <td class="text-right src linenos ws-unset">
         </td>
         <td class="linecount pr-2 pl-2 color-fg-muted text-right"></td>
         <td class="src"><span class="w">  </span><span class="p">}</span></td>
       </tr>
       <tr>
-        <td class="text-right src linenos"><a class="normal" id="File6.cpp.73326d74f2aeb2719dd6d8a9bcc3e582.html|l8" href="#l8">8</a></td>
+        <td class="text-right src linenos"><a class="normal" id="File6.cpp.73326d74f2aeb2719dd6d8a9bcc3e582.html|L8" href="#File6.cpp.73326d74f2aeb2719dd6d8a9bcc3e582.html|L8">8</a></td>
         <td class="text-right src linenos ws-unset">
         </td>
         <td class="linecount uncoveredLine show_uncoveredLine pr-2 pl-2 color-fg-muted text-right">&cross;</td>
         <td class="src uncoveredLine show_uncoveredLine"><span class="p">}</span></td>
       </tr>
       <tr>
-        <td class="text-right src linenos"><a class="normal" id="File6.cpp.73326d74f2aeb2719dd6d8a9bcc3e582.html|l9" href="#l9">9</a></td>
+        <td class="text-right src linenos"><a class="normal" id="File6.cpp.73326d74f2aeb2719dd6d8a9bcc3e582.html|L9" href="#File6.cpp.73326d74f2aeb2719dd6d8a9bcc3e582.html|L9">9</a></td>
         <td class="text-right src linenos ws-unset">
         </td>
         <td class="linecount pr-2 pl-2 color-fg-muted text-right"></td>
@@ -1855,7 +1855,7 @@ document.addEventListener("DOMContentLoaded", () => {
     <div role="rowheader" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">Blocks</div>
   </div>
   <div class="Box-row Box-row--focus-gray py-2 d-flex">
-    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 col-md-2"><a href="#file5.cpp.4f0be33a4dcfe398ba897b87f58ca7ce.html|l1">foo5(int) (A/C/file5.cpp:1)</a>    </div>
+    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 col-md-2"><a href="#file5.cpp.4f0be33a4dcfe398ba897b87f58ca7ce.html|L1">foo5(int) (A/C/file5.cpp:1)</a>    </div>
     <div role="gridcell" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline" data-sort="1">called 1 time</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">80.0%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">50.0%</div>
@@ -1888,21 +1888,21 @@ document.addEventListener("DOMContentLoaded", () => {
         <th class="p-2 text-left" style="width: 100%;">Source</th>
       </tr>
       <tr>
-        <td class="text-right src linenos"><a class="normal" id="file5.cpp.4f0be33a4dcfe398ba897b87f58ca7ce.html|l1" href="#l1">1</a></td>
+        <td class="text-right src linenos"><a class="normal" id="file5.cpp.4f0be33a4dcfe398ba897b87f58ca7ce.html|L1" href="#file5.cpp.4f0be33a4dcfe398ba897b87f58ca7ce.html|L1">1</a></td>
         <td class="text-right src linenos ws-unset">
         </td>
         <td class="linecount coveredLine show_coveredLine pr-2 pl-2 color-fg-muted text-right">1</td>
         <td class="src coveredLine show_coveredLine"><span class="kt">int</span><span class="w"> </span><span class="nf">foo5</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">param</span><span class="p">)</span></td>
       </tr>
       <tr>
-        <td class="text-right src linenos"><a class="normal" id="file5.cpp.4f0be33a4dcfe398ba897b87f58ca7ce.html|l2" href="#l2">2</a></td>
+        <td class="text-right src linenos"><a class="normal" id="file5.cpp.4f0be33a4dcfe398ba897b87f58ca7ce.html|L2" href="#file5.cpp.4f0be33a4dcfe398ba897b87f58ca7ce.html|L2">2</a></td>
         <td class="text-right src linenos ws-unset">
         </td>
         <td class="linecount pr-2 pl-2 color-fg-muted text-right"></td>
         <td class="src"><span class="p">{</span></td>
       </tr>
       <tr>
-        <td class="text-right src linenos"><a class="normal" id="file5.cpp.4f0be33a4dcfe398ba897b87f58ca7ce.html|l3" href="#l3">3</a></td>
+        <td class="text-right src linenos"><a class="normal" id="file5.cpp.4f0be33a4dcfe398ba897b87f58ca7ce.html|L3" href="#file5.cpp.4f0be33a4dcfe398ba897b87f58ca7ce.html|L3">3</a></td>
         <td class="text-right src linenos ws-unset">
           <details class="normal details-overlay">
             <summary>1/2</summary>
@@ -1916,42 +1916,42 @@ document.addEventListener("DOMContentLoaded", () => {
         <td class="src partialCoveredLine show_partialCoveredLine"><span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">param</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
       </tr>
       <tr>
-        <td class="text-right src linenos"><a class="normal" id="file5.cpp.4f0be33a4dcfe398ba897b87f58ca7ce.html|l4" href="#l4">4</a></td>
+        <td class="text-right src linenos"><a class="normal" id="file5.cpp.4f0be33a4dcfe398ba897b87f58ca7ce.html|L4" href="#file5.cpp.4f0be33a4dcfe398ba897b87f58ca7ce.html|L4">4</a></td>
         <td class="text-right src linenos ws-unset">
         </td>
         <td class="linecount uncoveredLine show_uncoveredLine pr-2 pl-2 color-fg-muted text-right">&cross;</td>
         <td class="src uncoveredLine show_uncoveredLine"><span class="w">     </span><span class="k">return</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span></td>
       </tr>
       <tr>
-        <td class="text-right src linenos"><a class="normal" id="file5.cpp.4f0be33a4dcfe398ba897b87f58ca7ce.html|l5" href="#l5">5</a></td>
+        <td class="text-right src linenos"><a class="normal" id="file5.cpp.4f0be33a4dcfe398ba897b87f58ca7ce.html|L5" href="#file5.cpp.4f0be33a4dcfe398ba897b87f58ca7ce.html|L5">5</a></td>
         <td class="text-right src linenos ws-unset">
         </td>
         <td class="linecount pr-2 pl-2 color-fg-muted text-right"></td>
         <td class="src"><span class="w">  </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span></td>
       </tr>
       <tr>
-        <td class="text-right src linenos"><a class="normal" id="file5.cpp.4f0be33a4dcfe398ba897b87f58ca7ce.html|l6" href="#l6">6</a></td>
+        <td class="text-right src linenos"><a class="normal" id="file5.cpp.4f0be33a4dcfe398ba897b87f58ca7ce.html|L6" href="#file5.cpp.4f0be33a4dcfe398ba897b87f58ca7ce.html|L6">6</a></td>
         <td class="text-right src linenos ws-unset">
         </td>
         <td class="linecount coveredLine show_coveredLine pr-2 pl-2 color-fg-muted text-right">1</td>
         <td class="src coveredLine show_coveredLine"><span class="w">     </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span></td>
       </tr>
       <tr>
-        <td class="text-right src linenos"><a class="normal" id="file5.cpp.4f0be33a4dcfe398ba897b87f58ca7ce.html|l7" href="#l7">7</a></td>
+        <td class="text-right src linenos"><a class="normal" id="file5.cpp.4f0be33a4dcfe398ba897b87f58ca7ce.html|L7" href="#file5.cpp.4f0be33a4dcfe398ba897b87f58ca7ce.html|L7">7</a></td>
         <td class="text-right src linenos ws-unset">
         </td>
         <td class="linecount pr-2 pl-2 color-fg-muted text-right"></td>
         <td class="src"><span class="w">  </span><span class="p">}</span></td>
       </tr>
       <tr>
-        <td class="text-right src linenos"><a class="normal" id="file5.cpp.4f0be33a4dcfe398ba897b87f58ca7ce.html|l8" href="#l8">8</a></td>
+        <td class="text-right src linenos"><a class="normal" id="file5.cpp.4f0be33a4dcfe398ba897b87f58ca7ce.html|L8" href="#file5.cpp.4f0be33a4dcfe398ba897b87f58ca7ce.html|L8">8</a></td>
         <td class="text-right src linenos ws-unset">
         </td>
         <td class="linecount coveredLine show_coveredLine pr-2 pl-2 color-fg-muted text-right">1</td>
         <td class="src coveredLine show_coveredLine"><span class="p">}</span></td>
       </tr>
       <tr>
-        <td class="text-right src linenos"><a class="normal" id="file5.cpp.4f0be33a4dcfe398ba897b87f58ca7ce.html|l9" href="#l9">9</a></td>
+        <td class="text-right src linenos"><a class="normal" id="file5.cpp.4f0be33a4dcfe398ba897b87f58ca7ce.html|L9" href="#file5.cpp.4f0be33a4dcfe398ba897b87f58ca7ce.html|L9">9</a></td>
         <td class="text-right src linenos ws-unset">
         </td>
         <td class="linecount pr-2 pl-2 color-fg-muted text-right"></td>
@@ -2012,7 +2012,7 @@ document.addEventListener("DOMContentLoaded", () => {
     <div role="rowheader" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">Blocks</div>
   </div>
   <div class="Box-row Box-row--focus-gray py-2 d-flex">
-    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 col-md-2"><a href="#File4.cpp.1d7a80554861eb8b5c21bc2e26ff8f70.html|l1">foobar(int) (A/File4.cpp:1)</a>    </div>
+    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 col-md-2"><a href="#File4.cpp.1d7a80554861eb8b5c21bc2e26ff8f70.html|L1">foobar(int) (A/File4.cpp:1)</a>    </div>
     <div role="gridcell" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline" data-sort="1">called 1 time</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">80.0%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">50.0%</div>
@@ -2045,21 +2045,21 @@ document.addEventListener("DOMContentLoaded", () => {
         <th class="p-2 text-left" style="width: 100%;">Source</th>
       </tr>
       <tr>
-        <td class="text-right src linenos"><a class="normal" id="File4.cpp.1d7a80554861eb8b5c21bc2e26ff8f70.html|l1" href="#l1">1</a></td>
+        <td class="text-right src linenos"><a class="normal" id="File4.cpp.1d7a80554861eb8b5c21bc2e26ff8f70.html|L1" href="#File4.cpp.1d7a80554861eb8b5c21bc2e26ff8f70.html|L1">1</a></td>
         <td class="text-right src linenos ws-unset">
         </td>
         <td class="linecount coveredLine show_coveredLine pr-2 pl-2 color-fg-muted text-right">1</td>
         <td class="src coveredLine show_coveredLine"><span class="kt">int</span><span class="w"> </span><span class="nf">foobar</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">param</span><span class="p">)</span></td>
       </tr>
       <tr>
-        <td class="text-right src linenos"><a class="normal" id="File4.cpp.1d7a80554861eb8b5c21bc2e26ff8f70.html|l2" href="#l2">2</a></td>
+        <td class="text-right src linenos"><a class="normal" id="File4.cpp.1d7a80554861eb8b5c21bc2e26ff8f70.html|L2" href="#File4.cpp.1d7a80554861eb8b5c21bc2e26ff8f70.html|L2">2</a></td>
         <td class="text-right src linenos ws-unset">
         </td>
         <td class="linecount pr-2 pl-2 color-fg-muted text-right"></td>
         <td class="src"><span class="p">{</span></td>
       </tr>
       <tr>
-        <td class="text-right src linenos"><a class="normal" id="File4.cpp.1d7a80554861eb8b5c21bc2e26ff8f70.html|l3" href="#l3">3</a></td>
+        <td class="text-right src linenos"><a class="normal" id="File4.cpp.1d7a80554861eb8b5c21bc2e26ff8f70.html|L3" href="#File4.cpp.1d7a80554861eb8b5c21bc2e26ff8f70.html|L3">3</a></td>
         <td class="text-right src linenos ws-unset">
           <details class="normal details-overlay">
             <summary>1/2</summary>
@@ -2073,42 +2073,42 @@ document.addEventListener("DOMContentLoaded", () => {
         <td class="src partialCoveredLine show_partialCoveredLine"><span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">param</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
       </tr>
       <tr>
-        <td class="text-right src linenos"><a class="normal" id="File4.cpp.1d7a80554861eb8b5c21bc2e26ff8f70.html|l4" href="#l4">4</a></td>
+        <td class="text-right src linenos"><a class="normal" id="File4.cpp.1d7a80554861eb8b5c21bc2e26ff8f70.html|L4" href="#File4.cpp.1d7a80554861eb8b5c21bc2e26ff8f70.html|L4">4</a></td>
         <td class="text-right src linenos ws-unset">
         </td>
         <td class="linecount coveredLine show_coveredLine pr-2 pl-2 color-fg-muted text-right">1</td>
         <td class="src coveredLine show_coveredLine"><span class="w">     </span><span class="k">return</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span></td>
       </tr>
       <tr>
-        <td class="text-right src linenos"><a class="normal" id="File4.cpp.1d7a80554861eb8b5c21bc2e26ff8f70.html|l5" href="#l5">5</a></td>
+        <td class="text-right src linenos"><a class="normal" id="File4.cpp.1d7a80554861eb8b5c21bc2e26ff8f70.html|L5" href="#File4.cpp.1d7a80554861eb8b5c21bc2e26ff8f70.html|L5">5</a></td>
         <td class="text-right src linenos ws-unset">
         </td>
         <td class="linecount pr-2 pl-2 color-fg-muted text-right"></td>
         <td class="src"><span class="w">  </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span></td>
       </tr>
       <tr>
-        <td class="text-right src linenos"><a class="normal" id="File4.cpp.1d7a80554861eb8b5c21bc2e26ff8f70.html|l6" href="#l6">6</a></td>
+        <td class="text-right src linenos"><a class="normal" id="File4.cpp.1d7a80554861eb8b5c21bc2e26ff8f70.html|L6" href="#File4.cpp.1d7a80554861eb8b5c21bc2e26ff8f70.html|L6">6</a></td>
         <td class="text-right src linenos ws-unset">
         </td>
         <td class="linecount uncoveredLine show_uncoveredLine pr-2 pl-2 color-fg-muted text-right">&cross;</td>
         <td class="src uncoveredLine show_uncoveredLine"><span class="w">     </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span></td>
       </tr>
       <tr>
-        <td class="text-right src linenos"><a class="normal" id="File4.cpp.1d7a80554861eb8b5c21bc2e26ff8f70.html|l7" href="#l7">7</a></td>
+        <td class="text-right src linenos"><a class="normal" id="File4.cpp.1d7a80554861eb8b5c21bc2e26ff8f70.html|L7" href="#File4.cpp.1d7a80554861eb8b5c21bc2e26ff8f70.html|L7">7</a></td>
         <td class="text-right src linenos ws-unset">
         </td>
         <td class="linecount pr-2 pl-2 color-fg-muted text-right"></td>
         <td class="src"><span class="w">  </span><span class="p">}</span></td>
       </tr>
       <tr>
-        <td class="text-right src linenos"><a class="normal" id="File4.cpp.1d7a80554861eb8b5c21bc2e26ff8f70.html|l8" href="#l8">8</a></td>
+        <td class="text-right src linenos"><a class="normal" id="File4.cpp.1d7a80554861eb8b5c21bc2e26ff8f70.html|L8" href="#File4.cpp.1d7a80554861eb8b5c21bc2e26ff8f70.html|L8">8</a></td>
         <td class="text-right src linenos ws-unset">
         </td>
         <td class="linecount coveredLine show_coveredLine pr-2 pl-2 color-fg-muted text-right">1</td>
         <td class="src coveredLine show_coveredLine"><span class="p">}</span></td>
       </tr>
       <tr>
-        <td class="text-right src linenos"><a class="normal" id="File4.cpp.1d7a80554861eb8b5c21bc2e26ff8f70.html|l9" href="#l9">9</a></td>
+        <td class="text-right src linenos"><a class="normal" id="File4.cpp.1d7a80554861eb8b5c21bc2e26ff8f70.html|L9" href="#File4.cpp.1d7a80554861eb8b5c21bc2e26ff8f70.html|L9">9</a></td>
         <td class="text-right src linenos ws-unset">
         </td>
         <td class="linecount pr-2 pl-2 color-fg-muted text-right"></td>
@@ -2169,7 +2169,7 @@ document.addEventListener("DOMContentLoaded", () => {
     <div role="rowheader" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">Blocks</div>
   </div>
   <div class="Box-row Box-row--focus-gray py-2 d-flex">
-    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 col-md-2"><a href="#file1.cpp.11975e1ce5d9c157e76130f444523bea.html|l1">foo(int) (A/file1.cpp:1)</a>    </div>
+    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 col-md-2"><a href="#file1.cpp.11975e1ce5d9c157e76130f444523bea.html|L1">foo(int) (A/file1.cpp:1)</a>    </div>
     <div role="gridcell" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline" data-sort="1">called 1 time</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">80.0%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">50.0%</div>
@@ -2202,21 +2202,21 @@ document.addEventListener("DOMContentLoaded", () => {
         <th class="p-2 text-left" style="width: 100%;">Source</th>
       </tr>
       <tr>
-        <td class="text-right src linenos"><a class="normal" id="file1.cpp.11975e1ce5d9c157e76130f444523bea.html|l1" href="#l1">1</a></td>
+        <td class="text-right src linenos"><a class="normal" id="file1.cpp.11975e1ce5d9c157e76130f444523bea.html|L1" href="#file1.cpp.11975e1ce5d9c157e76130f444523bea.html|L1">1</a></td>
         <td class="text-right src linenos ws-unset">
         </td>
         <td class="linecount coveredLine show_coveredLine pr-2 pl-2 color-fg-muted text-right">1</td>
         <td class="src coveredLine show_coveredLine"><span class="kt">int</span><span class="w"> </span><span class="nf">foo</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">param</span><span class="p">)</span></td>
       </tr>
       <tr>
-        <td class="text-right src linenos"><a class="normal" id="file1.cpp.11975e1ce5d9c157e76130f444523bea.html|l2" href="#l2">2</a></td>
+        <td class="text-right src linenos"><a class="normal" id="file1.cpp.11975e1ce5d9c157e76130f444523bea.html|L2" href="#file1.cpp.11975e1ce5d9c157e76130f444523bea.html|L2">2</a></td>
         <td class="text-right src linenos ws-unset">
         </td>
         <td class="linecount pr-2 pl-2 color-fg-muted text-right"></td>
         <td class="src"><span class="p">{</span></td>
       </tr>
       <tr>
-        <td class="text-right src linenos"><a class="normal" id="file1.cpp.11975e1ce5d9c157e76130f444523bea.html|l3" href="#l3">3</a></td>
+        <td class="text-right src linenos"><a class="normal" id="file1.cpp.11975e1ce5d9c157e76130f444523bea.html|L3" href="#file1.cpp.11975e1ce5d9c157e76130f444523bea.html|L3">3</a></td>
         <td class="text-right src linenos ws-unset">
           <details class="normal details-overlay">
             <summary>1/2</summary>
@@ -2230,42 +2230,42 @@ document.addEventListener("DOMContentLoaded", () => {
         <td class="src partialCoveredLine show_partialCoveredLine"><span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">param</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
       </tr>
       <tr>
-        <td class="text-right src linenos"><a class="normal" id="file1.cpp.11975e1ce5d9c157e76130f444523bea.html|l4" href="#l4">4</a></td>
+        <td class="text-right src linenos"><a class="normal" id="file1.cpp.11975e1ce5d9c157e76130f444523bea.html|L4" href="#file1.cpp.11975e1ce5d9c157e76130f444523bea.html|L4">4</a></td>
         <td class="text-right src linenos ws-unset">
         </td>
         <td class="linecount uncoveredLine show_uncoveredLine pr-2 pl-2 color-fg-muted text-right">&cross;</td>
         <td class="src uncoveredLine show_uncoveredLine"><span class="w">     </span><span class="k">return</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span></td>
       </tr>
       <tr>
-        <td class="text-right src linenos"><a class="normal" id="file1.cpp.11975e1ce5d9c157e76130f444523bea.html|l5" href="#l5">5</a></td>
+        <td class="text-right src linenos"><a class="normal" id="file1.cpp.11975e1ce5d9c157e76130f444523bea.html|L5" href="#file1.cpp.11975e1ce5d9c157e76130f444523bea.html|L5">5</a></td>
         <td class="text-right src linenos ws-unset">
         </td>
         <td class="linecount pr-2 pl-2 color-fg-muted text-right"></td>
         <td class="src"><span class="w">  </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span></td>
       </tr>
       <tr>
-        <td class="text-right src linenos"><a class="normal" id="file1.cpp.11975e1ce5d9c157e76130f444523bea.html|l6" href="#l6">6</a></td>
+        <td class="text-right src linenos"><a class="normal" id="file1.cpp.11975e1ce5d9c157e76130f444523bea.html|L6" href="#file1.cpp.11975e1ce5d9c157e76130f444523bea.html|L6">6</a></td>
         <td class="text-right src linenos ws-unset">
         </td>
         <td class="linecount coveredLine show_coveredLine pr-2 pl-2 color-fg-muted text-right">1</td>
         <td class="src coveredLine show_coveredLine"><span class="w">     </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span></td>
       </tr>
       <tr>
-        <td class="text-right src linenos"><a class="normal" id="file1.cpp.11975e1ce5d9c157e76130f444523bea.html|l7" href="#l7">7</a></td>
+        <td class="text-right src linenos"><a class="normal" id="file1.cpp.11975e1ce5d9c157e76130f444523bea.html|L7" href="#file1.cpp.11975e1ce5d9c157e76130f444523bea.html|L7">7</a></td>
         <td class="text-right src linenos ws-unset">
         </td>
         <td class="linecount pr-2 pl-2 color-fg-muted text-right"></td>
         <td class="src"><span class="w">  </span><span class="p">}</span></td>
       </tr>
       <tr>
-        <td class="text-right src linenos"><a class="normal" id="file1.cpp.11975e1ce5d9c157e76130f444523bea.html|l8" href="#l8">8</a></td>
+        <td class="text-right src linenos"><a class="normal" id="file1.cpp.11975e1ce5d9c157e76130f444523bea.html|L8" href="#file1.cpp.11975e1ce5d9c157e76130f444523bea.html|L8">8</a></td>
         <td class="text-right src linenos ws-unset">
         </td>
         <td class="linecount coveredLine show_coveredLine pr-2 pl-2 color-fg-muted text-right">1</td>
         <td class="src coveredLine show_coveredLine"><span class="p">}</span></td>
       </tr>
       <tr>
-        <td class="text-right src linenos"><a class="normal" id="file1.cpp.11975e1ce5d9c157e76130f444523bea.html|l9" href="#l9">9</a></td>
+        <td class="text-right src linenos"><a class="normal" id="file1.cpp.11975e1ce5d9c157e76130f444523bea.html|L9" href="#file1.cpp.11975e1ce5d9c157e76130f444523bea.html|L9">9</a></td>
         <td class="text-right src linenos ws-unset">
         </td>
         <td class="linecount pr-2 pl-2 color-fg-muted text-right"></td>
@@ -2326,14 +2326,14 @@ document.addEventListener("DOMContentLoaded", () => {
     <div role="rowheader" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2 sortable">Blocks</div>
   </div>
   <div class="Box-row Box-row--focus-gray py-2 d-flex">
-    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 col-md-2"><a href="#file3.cpp.bcfa344b5512d8cd5857f2fe86511d71.html|l1">four_bar() (A/file3.cpp:1)</a>    </div>
+    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 col-md-2"><a href="#file3.cpp.bcfa344b5512d8cd5857f2fe86511d71.html|L1">four_bar() (A/file3.cpp:1)</a>    </div>
     <div role="gridcell" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline" data-sort="1">called 1 time</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">100.0%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">-%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">100.0%</div>
   </div>
   <div class="Box-row Box-row--focus-gray py-2 d-flex">
-    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 col-md-2"><a href="#file3.cpp.bcfa344b5512d8cd5857f2fe86511d71.html|l8">four_bar_() (A/file3.cpp:8)</a>    </div>
+    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 col-md-2"><a href="#file3.cpp.bcfa344b5512d8cd5857f2fe86511d71.html|L8">four_bar_() (A/file3.cpp:8)</a>    </div>
     <div role="gridcell" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline" data-sort="0">not called</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">0.0%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">0.0%</div>
@@ -2366,112 +2366,112 @@ document.addEventListener("DOMContentLoaded", () => {
         <th class="p-2 text-left" style="width: 100%;">Source</th>
       </tr>
       <tr>
-        <td class="text-right src linenos"><a class="normal" id="file3.cpp.bcfa344b5512d8cd5857f2fe86511d71.html|l1" href="#l1">1</a></td>
+        <td class="text-right src linenos"><a class="normal" id="file3.cpp.bcfa344b5512d8cd5857f2fe86511d71.html|L1" href="#file3.cpp.bcfa344b5512d8cd5857f2fe86511d71.html|L1">1</a></td>
         <td class="text-right src linenos ws-unset">
         </td>
         <td class="linecount coveredLine show_coveredLine pr-2 pl-2 color-fg-muted text-right">1</td>
         <td class="src coveredLine show_coveredLine"><span class="kt">int</span><span class="w"> </span><span class="nf">four_bar</span><span class="p">()</span></td>
       </tr>
       <tr>
-        <td class="text-right src linenos"><a class="normal" id="file3.cpp.bcfa344b5512d8cd5857f2fe86511d71.html|l2" href="#l2">2</a></td>
+        <td class="text-right src linenos"><a class="normal" id="file3.cpp.bcfa344b5512d8cd5857f2fe86511d71.html|L2" href="#file3.cpp.bcfa344b5512d8cd5857f2fe86511d71.html|L2">2</a></td>
         <td class="text-right src linenos ws-unset">
         </td>
         <td class="linecount pr-2 pl-2 color-fg-muted text-right"></td>
         <td class="src"><span class="p">{</span></td>
       </tr>
       <tr>
-        <td class="text-right src linenos"><a class="normal" id="file3.cpp.bcfa344b5512d8cd5857f2fe86511d71.html|l3" href="#l3">3</a></td>
+        <td class="text-right src linenos"><a class="normal" id="file3.cpp.bcfa344b5512d8cd5857f2fe86511d71.html|L3" href="#file3.cpp.bcfa344b5512d8cd5857f2fe86511d71.html|L3">3</a></td>
         <td class="text-right src linenos ws-unset">
         </td>
         <td class="linecount coveredLine show_coveredLine pr-2 pl-2 color-fg-muted text-right">1</td>
         <td class="src coveredLine show_coveredLine"><span class="kt">int</span><span class="w"> </span><span class="n">x</span><span class="o">=</span><span class="mi">1</span><span class="p">;</span></td>
       </tr>
       <tr>
-        <td class="text-right src linenos"><a class="normal" id="file3.cpp.bcfa344b5512d8cd5857f2fe86511d71.html|l4" href="#l4">4</a></td>
+        <td class="text-right src linenos"><a class="normal" id="file3.cpp.bcfa344b5512d8cd5857f2fe86511d71.html|L4" href="#file3.cpp.bcfa344b5512d8cd5857f2fe86511d71.html|L4">4</a></td>
         <td class="text-right src linenos ws-unset">
         </td>
         <td class="linecount coveredLine show_coveredLine pr-2 pl-2 color-fg-muted text-right">1</td>
         <td class="src coveredLine show_coveredLine"><span class="kt">int</span><span class="w"> </span><span class="n">y</span><span class="o">=</span><span class="mi">2</span><span class="p">;</span></td>
       </tr>
       <tr>
-        <td class="text-right src linenos"><a class="normal" id="file3.cpp.bcfa344b5512d8cd5857f2fe86511d71.html|l5" href="#l5">5</a></td>
+        <td class="text-right src linenos"><a class="normal" id="file3.cpp.bcfa344b5512d8cd5857f2fe86511d71.html|L5" href="#file3.cpp.bcfa344b5512d8cd5857f2fe86511d71.html|L5">5</a></td>
         <td class="text-right src linenos ws-unset">
         </td>
         <td class="linecount coveredLine show_coveredLine pr-2 pl-2 color-fg-muted text-right">1</td>
         <td class="src coveredLine show_coveredLine"><span class="k">return</span><span class="w"> </span><span class="n">x</span><span class="o">+</span><span class="n">y</span><span class="p">;</span></td>
       </tr>
       <tr>
-        <td class="text-right src linenos"><a class="normal" id="file3.cpp.bcfa344b5512d8cd5857f2fe86511d71.html|l6" href="#l6">6</a></td>
+        <td class="text-right src linenos"><a class="normal" id="file3.cpp.bcfa344b5512d8cd5857f2fe86511d71.html|L6" href="#file3.cpp.bcfa344b5512d8cd5857f2fe86511d71.html|L6">6</a></td>
         <td class="text-right src linenos ws-unset">
         </td>
         <td class="linecount pr-2 pl-2 color-fg-muted text-right"></td>
         <td class="src"><span class="p">}</span></td>
       </tr>
       <tr>
-        <td class="text-right src linenos"><a class="normal" id="file3.cpp.bcfa344b5512d8cd5857f2fe86511d71.html|l7" href="#l7">7</a></td>
+        <td class="text-right src linenos"><a class="normal" id="file3.cpp.bcfa344b5512d8cd5857f2fe86511d71.html|L7" href="#file3.cpp.bcfa344b5512d8cd5857f2fe86511d71.html|L7">7</a></td>
         <td class="text-right src linenos ws-unset">
         </td>
         <td class="linecount pr-2 pl-2 color-fg-muted text-right"></td>
         <td class="src"></td>
       </tr>
       <tr>
-        <td class="text-right src linenos"><a class="normal" id="file3.cpp.bcfa344b5512d8cd5857f2fe86511d71.html|l8" href="#l8">8</a></td>
+        <td class="text-right src linenos"><a class="normal" id="file3.cpp.bcfa344b5512d8cd5857f2fe86511d71.html|L8" href="#file3.cpp.bcfa344b5512d8cd5857f2fe86511d71.html|L8">8</a></td>
         <td class="text-right src linenos ws-unset">
         </td>
         <td class="linecount uncoveredLine show_uncoveredLine pr-2 pl-2 color-fg-muted text-right">&cross;</td>
         <td class="src uncoveredLine show_uncoveredLine"><span class="kt">int</span><span class="w"> </span><span class="nf">four_bar_</span><span class="p">()</span></td>
       </tr>
       <tr>
-        <td class="text-right src linenos"><a class="normal" id="file3.cpp.bcfa344b5512d8cd5857f2fe86511d71.html|l9" href="#l9">9</a></td>
+        <td class="text-right src linenos"><a class="normal" id="file3.cpp.bcfa344b5512d8cd5857f2fe86511d71.html|L9" href="#file3.cpp.bcfa344b5512d8cd5857f2fe86511d71.html|L9">9</a></td>
         <td class="text-right src linenos ws-unset">
         </td>
         <td class="linecount pr-2 pl-2 color-fg-muted text-right"></td>
         <td class="src"><span class="p">{</span></td>
       </tr>
       <tr>
-        <td class="text-right src linenos"><a class="normal" id="file3.cpp.bcfa344b5512d8cd5857f2fe86511d71.html|l10" href="#l10">10</a></td>
+        <td class="text-right src linenos"><a class="normal" id="file3.cpp.bcfa344b5512d8cd5857f2fe86511d71.html|L10" href="#file3.cpp.bcfa344b5512d8cd5857f2fe86511d71.html|L10">10</a></td>
         <td class="text-right src linenos ws-unset">
         </td>
         <td class="linecount uncoveredLine show_uncoveredLine pr-2 pl-2 color-fg-muted text-right">&cross;</td>
         <td class="src uncoveredLine show_uncoveredLine"><span class="kt">int</span><span class="w"> </span><span class="n">x</span><span class="o">=</span><span class="mi">1</span><span class="p">;</span></td>
       </tr>
       <tr>
-        <td class="text-right src linenos"><a class="normal" id="file3.cpp.bcfa344b5512d8cd5857f2fe86511d71.html|l11" href="#l11">11</a></td>
+        <td class="text-right src linenos"><a class="normal" id="file3.cpp.bcfa344b5512d8cd5857f2fe86511d71.html|L11" href="#file3.cpp.bcfa344b5512d8cd5857f2fe86511d71.html|L11">11</a></td>
         <td class="text-right src linenos ws-unset">
         </td>
         <td class="linecount uncoveredLine show_uncoveredLine pr-2 pl-2 color-fg-muted text-right">&cross;</td>
         <td class="src uncoveredLine show_uncoveredLine"><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">x</span><span class="p">)</span></td>
       </tr>
       <tr>
-        <td class="text-right src linenos"><a class="normal" id="file3.cpp.bcfa344b5512d8cd5857f2fe86511d71.html|l12" href="#l12">12</a></td>
+        <td class="text-right src linenos"><a class="normal" id="file3.cpp.bcfa344b5512d8cd5857f2fe86511d71.html|L12" href="#file3.cpp.bcfa344b5512d8cd5857f2fe86511d71.html|L12">12</a></td>
         <td class="text-right src linenos ws-unset">
         </td>
         <td class="linecount uncoveredLine show_uncoveredLine pr-2 pl-2 color-fg-muted text-right">&cross;</td>
         <td class="src uncoveredLine show_uncoveredLine"><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="mi">2</span><span class="o">*</span><span class="n">x</span><span class="p">;</span><span class="w">     </span><span class="cm">/* This is a really long comment that confirms whether gcovr colors lines that exceed normal expectations. */</span></td>
       </tr>
       <tr>
-        <td class="text-right src linenos"><a class="normal" id="file3.cpp.bcfa344b5512d8cd5857f2fe86511d71.html|l13" href="#l13">13</a></td>
+        <td class="text-right src linenos"><a class="normal" id="file3.cpp.bcfa344b5512d8cd5857f2fe86511d71.html|L13" href="#file3.cpp.bcfa344b5512d8cd5857f2fe86511d71.html|L13">13</a></td>
         <td class="text-right src linenos ws-unset">
         </td>
         <td class="linecount pr-2 pl-2 color-fg-muted text-right"></td>
         <td class="src"><span class="k">else</span></td>
       </tr>
       <tr>
-        <td class="text-right src linenos"><a class="normal" id="file3.cpp.bcfa344b5512d8cd5857f2fe86511d71.html|l14" href="#l14">14</a></td>
+        <td class="text-right src linenos"><a class="normal" id="file3.cpp.bcfa344b5512d8cd5857f2fe86511d71.html|L14" href="#file3.cpp.bcfa344b5512d8cd5857f2fe86511d71.html|L14">14</a></td>
         <td class="text-right src linenos ws-unset">
         </td>
         <td class="linecount uncoveredLine show_uncoveredLine pr-2 pl-2 color-fg-muted text-right">&cross;</td>
         <td class="src uncoveredLine show_uncoveredLine"><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">x</span><span class="p">;</span></td>
       </tr>
       <tr>
-        <td class="text-right src linenos"><a class="normal" id="file3.cpp.bcfa344b5512d8cd5857f2fe86511d71.html|l15" href="#l15">15</a></td>
+        <td class="text-right src linenos"><a class="normal" id="file3.cpp.bcfa344b5512d8cd5857f2fe86511d71.html|L15" href="#file3.cpp.bcfa344b5512d8cd5857f2fe86511d71.html|L15">15</a></td>
         <td class="text-right src linenos ws-unset">
         </td>
         <td class="linecount uncoveredLine show_uncoveredLine pr-2 pl-2 color-fg-muted text-right">&cross;</td>
         <td class="src uncoveredLine show_uncoveredLine"><span class="p">}</span></td>
       </tr>
       <tr>
-        <td class="text-right src linenos"><a class="normal" id="file3.cpp.bcfa344b5512d8cd5857f2fe86511d71.html|l16" href="#l16">16</a></td>
+        <td class="text-right src linenos"><a class="normal" id="file3.cpp.bcfa344b5512d8cd5857f2fe86511d71.html|L16" href="#file3.cpp.bcfa344b5512d8cd5857f2fe86511d71.html|L16">16</a></td>
         <td class="text-right src linenos ws-unset">
         </td>
         <td class="linecount pr-2 pl-2 color-fg-muted text-right"></td>
@@ -2532,7 +2532,7 @@ document.addEventListener("DOMContentLoaded", () => {
     <div role="rowheader" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">Blocks</div>
   </div>
   <div class="Box-row Box-row--focus-gray py-2 d-flex">
-    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 col-md-2"><a href="#file7.cpp.fa9d180b71a3402bed7d24bb1966eaf5.html|l1">uncovered() (A/file7.cpp:1)</a>    </div>
+    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 col-md-2"><a href="#file7.cpp.fa9d180b71a3402bed7d24bb1966eaf5.html|L1">uncovered() (A/file7.cpp:1)</a>    </div>
     <div role="gridcell" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline" data-sort="0">not called</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">0.0%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">-%</div>
@@ -2565,35 +2565,35 @@ document.addEventListener("DOMContentLoaded", () => {
         <th class="p-2 text-left" style="width: 100%;">Source</th>
       </tr>
       <tr>
-        <td class="text-right src linenos"><a class="normal" id="file7.cpp.fa9d180b71a3402bed7d24bb1966eaf5.html|l1" href="#l1">1</a></td>
+        <td class="text-right src linenos"><a class="normal" id="file7.cpp.fa9d180b71a3402bed7d24bb1966eaf5.html|L1" href="#file7.cpp.fa9d180b71a3402bed7d24bb1966eaf5.html|L1">1</a></td>
         <td class="text-right src linenos ws-unset">
         </td>
         <td class="linecount uncoveredLine show_uncoveredLine pr-2 pl-2 color-fg-muted text-right">&cross;</td>
         <td class="src uncoveredLine show_uncoveredLine"><span class="kt">int</span><span class="w"> </span><span class="nf">uncovered</span><span class="p">()</span></td>
       </tr>
       <tr>
-        <td class="text-right src linenos"><a class="normal" id="file7.cpp.fa9d180b71a3402bed7d24bb1966eaf5.html|l2" href="#l2">2</a></td>
+        <td class="text-right src linenos"><a class="normal" id="file7.cpp.fa9d180b71a3402bed7d24bb1966eaf5.html|L2" href="#file7.cpp.fa9d180b71a3402bed7d24bb1966eaf5.html|L2">2</a></td>
         <td class="text-right src linenos ws-unset">
         </td>
         <td class="linecount pr-2 pl-2 color-fg-muted text-right"></td>
         <td class="src"><span class="p">{</span></td>
       </tr>
       <tr>
-        <td class="text-right src linenos"><a class="normal" id="file7.cpp.fa9d180b71a3402bed7d24bb1966eaf5.html|l3" href="#l3">3</a></td>
+        <td class="text-right src linenos"><a class="normal" id="file7.cpp.fa9d180b71a3402bed7d24bb1966eaf5.html|L3" href="#file7.cpp.fa9d180b71a3402bed7d24bb1966eaf5.html|L3">3</a></td>
         <td class="text-right src linenos ws-unset">
         </td>
         <td class="linecount uncoveredLine show_uncoveredLine pr-2 pl-2 color-fg-muted text-right">&cross;</td>
         <td class="src uncoveredLine show_uncoveredLine"><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span></td>
       </tr>
       <tr>
-        <td class="text-right src linenos"><a class="normal" id="file7.cpp.fa9d180b71a3402bed7d24bb1966eaf5.html|l4" href="#l4">4</a></td>
+        <td class="text-right src linenos"><a class="normal" id="file7.cpp.fa9d180b71a3402bed7d24bb1966eaf5.html|L4" href="#file7.cpp.fa9d180b71a3402bed7d24bb1966eaf5.html|L4">4</a></td>
         <td class="text-right src linenos ws-unset">
         </td>
         <td class="linecount pr-2 pl-2 color-fg-muted text-right"></td>
         <td class="src"><span class="p">}</span></td>
       </tr>
       <tr>
-        <td class="text-right src linenos"><a class="normal" id="file7.cpp.fa9d180b71a3402bed7d24bb1966eaf5.html|l5" href="#l5">5</a></td>
+        <td class="text-right src linenos"><a class="normal" id="file7.cpp.fa9d180b71a3402bed7d24bb1966eaf5.html|L5" href="#file7.cpp.fa9d180b71a3402bed7d24bb1966eaf5.html|L5">5</a></td>
         <td class="text-right src linenos ws-unset">
         </td>
         <td class="linecount pr-2 pl-2 color-fg-muted text-right"></td>
@@ -2654,14 +2654,14 @@ document.addEventListener("DOMContentLoaded", () => {
     <div role="rowheader" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2 sortable">Blocks</div>
   </div>
   <div class="Box-row Box-row--focus-gray py-2 d-flex">
-    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 col-md-2"><a href="#File2.cpp.1aed42bd33fceec1188f2f95c6e8946c.html|l1">bar() (A/subdir_0/subdir_1/subdir_2/subdir_3/subdir_4/subdir_5/subdir_6/subdir_7/subdir_8/subdir_9/File2.cpp:1)</a>    </div>
+    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 col-md-2"><a href="#File2.cpp.1aed42bd33fceec1188f2f95c6e8946c.html|L1">bar() (A/subdir_0/subdir_1/subdir_2/subdir_3/subdir_4/subdir_5/subdir_6/subdir_7/subdir_8/subdir_9/File2.cpp:1)</a>    </div>
     <div role="gridcell" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline" data-sort="1">called 1 time</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">100.0%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">-%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">100.0%</div>
   </div>
   <div class="Box-row Box-row--focus-gray py-2 d-flex">
-    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 col-md-2"><a href="#File2.cpp.1aed42bd33fceec1188f2f95c6e8946c.html|l8">bar_() (A/subdir_0/subdir_1/subdir_2/subdir_3/subdir_4/subdir_5/subdir_6/subdir_7/subdir_8/subdir_9/File2.cpp:8)</a>    </div>
+    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 col-md-2"><a href="#File2.cpp.1aed42bd33fceec1188f2f95c6e8946c.html|L8">bar_() (A/subdir_0/subdir_1/subdir_2/subdir_3/subdir_4/subdir_5/subdir_6/subdir_7/subdir_8/subdir_9/File2.cpp:8)</a>    </div>
     <div role="gridcell" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline" data-sort="0">not called</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">0.0%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">-%</div>
@@ -2694,91 +2694,91 @@ document.addEventListener("DOMContentLoaded", () => {
         <th class="p-2 text-left" style="width: 100%;">Source</th>
       </tr>
       <tr>
-        <td class="text-right src linenos"><a class="normal" id="File2.cpp.1aed42bd33fceec1188f2f95c6e8946c.html|l1" href="#l1">1</a></td>
+        <td class="text-right src linenos"><a class="normal" id="File2.cpp.1aed42bd33fceec1188f2f95c6e8946c.html|L1" href="#File2.cpp.1aed42bd33fceec1188f2f95c6e8946c.html|L1">1</a></td>
         <td class="text-right src linenos ws-unset">
         </td>
         <td class="linecount coveredLine show_coveredLine pr-2 pl-2 color-fg-muted text-right">1</td>
         <td class="src coveredLine show_coveredLine"><span class="kt">int</span><span class="w"> </span><span class="nf">bar</span><span class="p">()</span></td>
       </tr>
       <tr>
-        <td class="text-right src linenos"><a class="normal" id="File2.cpp.1aed42bd33fceec1188f2f95c6e8946c.html|l2" href="#l2">2</a></td>
+        <td class="text-right src linenos"><a class="normal" id="File2.cpp.1aed42bd33fceec1188f2f95c6e8946c.html|L2" href="#File2.cpp.1aed42bd33fceec1188f2f95c6e8946c.html|L2">2</a></td>
         <td class="text-right src linenos ws-unset">
         </td>
         <td class="linecount pr-2 pl-2 color-fg-muted text-right"></td>
         <td class="src"><span class="p">{</span></td>
       </tr>
       <tr>
-        <td class="text-right src linenos"><a class="normal" id="File2.cpp.1aed42bd33fceec1188f2f95c6e8946c.html|l3" href="#l3">3</a></td>
+        <td class="text-right src linenos"><a class="normal" id="File2.cpp.1aed42bd33fceec1188f2f95c6e8946c.html|L3" href="#File2.cpp.1aed42bd33fceec1188f2f95c6e8946c.html|L3">3</a></td>
         <td class="text-right src linenos ws-unset">
         </td>
         <td class="linecount coveredLine show_coveredLine pr-2 pl-2 color-fg-muted text-right">1</td>
         <td class="src coveredLine show_coveredLine"><span class="kt">int</span><span class="w"> </span><span class="n">x</span><span class="o">=</span><span class="mi">1</span><span class="p">;</span></td>
       </tr>
       <tr>
-        <td class="text-right src linenos"><a class="normal" id="File2.cpp.1aed42bd33fceec1188f2f95c6e8946c.html|l4" href="#l4">4</a></td>
+        <td class="text-right src linenos"><a class="normal" id="File2.cpp.1aed42bd33fceec1188f2f95c6e8946c.html|L4" href="#File2.cpp.1aed42bd33fceec1188f2f95c6e8946c.html|L4">4</a></td>
         <td class="text-right src linenos ws-unset">
         </td>
         <td class="linecount coveredLine show_coveredLine pr-2 pl-2 color-fg-muted text-right">1</td>
         <td class="src coveredLine show_coveredLine"><span class="kt">int</span><span class="w"> </span><span class="n">y</span><span class="o">=</span><span class="mi">2</span><span class="p">;</span></td>
       </tr>
       <tr>
-        <td class="text-right src linenos"><a class="normal" id="File2.cpp.1aed42bd33fceec1188f2f95c6e8946c.html|l5" href="#l5">5</a></td>
+        <td class="text-right src linenos"><a class="normal" id="File2.cpp.1aed42bd33fceec1188f2f95c6e8946c.html|L5" href="#File2.cpp.1aed42bd33fceec1188f2f95c6e8946c.html|L5">5</a></td>
         <td class="text-right src linenos ws-unset">
         </td>
         <td class="linecount coveredLine show_coveredLine pr-2 pl-2 color-fg-muted text-right">1</td>
         <td class="src coveredLine show_coveredLine"><span class="k">return</span><span class="w"> </span><span class="n">x</span><span class="o">+</span><span class="n">y</span><span class="p">;</span></td>
       </tr>
       <tr>
-        <td class="text-right src linenos"><a class="normal" id="File2.cpp.1aed42bd33fceec1188f2f95c6e8946c.html|l6" href="#l6">6</a></td>
+        <td class="text-right src linenos"><a class="normal" id="File2.cpp.1aed42bd33fceec1188f2f95c6e8946c.html|L6" href="#File2.cpp.1aed42bd33fceec1188f2f95c6e8946c.html|L6">6</a></td>
         <td class="text-right src linenos ws-unset">
         </td>
         <td class="linecount pr-2 pl-2 color-fg-muted text-right"></td>
         <td class="src"><span class="p">}</span></td>
       </tr>
       <tr>
-        <td class="text-right src linenos"><a class="normal" id="File2.cpp.1aed42bd33fceec1188f2f95c6e8946c.html|l7" href="#l7">7</a></td>
+        <td class="text-right src linenos"><a class="normal" id="File2.cpp.1aed42bd33fceec1188f2f95c6e8946c.html|L7" href="#File2.cpp.1aed42bd33fceec1188f2f95c6e8946c.html|L7">7</a></td>
         <td class="text-right src linenos ws-unset">
         </td>
         <td class="linecount pr-2 pl-2 color-fg-muted text-right"></td>
         <td class="src"></td>
       </tr>
       <tr>
-        <td class="text-right src linenos"><a class="normal" id="File2.cpp.1aed42bd33fceec1188f2f95c6e8946c.html|l8" href="#l8">8</a></td>
+        <td class="text-right src linenos"><a class="normal" id="File2.cpp.1aed42bd33fceec1188f2f95c6e8946c.html|L8" href="#File2.cpp.1aed42bd33fceec1188f2f95c6e8946c.html|L8">8</a></td>
         <td class="text-right src linenos ws-unset">
         </td>
         <td class="linecount uncoveredLine show_uncoveredLine pr-2 pl-2 color-fg-muted text-right">&cross;</td>
         <td class="src uncoveredLine show_uncoveredLine"><span class="kt">int</span><span class="w"> </span><span class="nf">bar_</span><span class="p">()</span></td>
       </tr>
       <tr>
-        <td class="text-right src linenos"><a class="normal" id="File2.cpp.1aed42bd33fceec1188f2f95c6e8946c.html|l9" href="#l9">9</a></td>
+        <td class="text-right src linenos"><a class="normal" id="File2.cpp.1aed42bd33fceec1188f2f95c6e8946c.html|L9" href="#File2.cpp.1aed42bd33fceec1188f2f95c6e8946c.html|L9">9</a></td>
         <td class="text-right src linenos ws-unset">
         </td>
         <td class="linecount pr-2 pl-2 color-fg-muted text-right"></td>
         <td class="src"><span class="p">{</span></td>
       </tr>
       <tr>
-        <td class="text-right src linenos"><a class="normal" id="File2.cpp.1aed42bd33fceec1188f2f95c6e8946c.html|l10" href="#l10">10</a></td>
+        <td class="text-right src linenos"><a class="normal" id="File2.cpp.1aed42bd33fceec1188f2f95c6e8946c.html|L10" href="#File2.cpp.1aed42bd33fceec1188f2f95c6e8946c.html|L10">10</a></td>
         <td class="text-right src linenos ws-unset">
         </td>
         <td class="linecount uncoveredLine show_uncoveredLine pr-2 pl-2 color-fg-muted text-right">&cross;</td>
         <td class="src uncoveredLine show_uncoveredLine"><span class="kt">int</span><span class="w"> </span><span class="n">x</span><span class="o">=</span><span class="mi">1</span><span class="p">;</span></td>
       </tr>
       <tr>
-        <td class="text-right src linenos"><a class="normal" id="File2.cpp.1aed42bd33fceec1188f2f95c6e8946c.html|l11" href="#l11">11</a></td>
+        <td class="text-right src linenos"><a class="normal" id="File2.cpp.1aed42bd33fceec1188f2f95c6e8946c.html|L11" href="#File2.cpp.1aed42bd33fceec1188f2f95c6e8946c.html|L11">11</a></td>
         <td class="text-right src linenos ws-unset">
         </td>
         <td class="linecount uncoveredLine show_uncoveredLine pr-2 pl-2 color-fg-muted text-right">&cross;</td>
         <td class="src uncoveredLine show_uncoveredLine"><span class="k">return</span><span class="w"> </span><span class="mi">2</span><span class="o">*</span><span class="n">x</span><span class="p">;</span></td>
       </tr>
       <tr>
-        <td class="text-right src linenos"><a class="normal" id="File2.cpp.1aed42bd33fceec1188f2f95c6e8946c.html|l12" href="#l12">12</a></td>
+        <td class="text-right src linenos"><a class="normal" id="File2.cpp.1aed42bd33fceec1188f2f95c6e8946c.html|L12" href="#File2.cpp.1aed42bd33fceec1188f2f95c6e8946c.html|L12">12</a></td>
         <td class="text-right src linenos ws-unset">
         </td>
         <td class="linecount pr-2 pl-2 color-fg-muted text-right"></td>
         <td class="src"><span class="p">}</span></td>
       </tr>
       <tr>
-        <td class="text-right src linenos"><a class="normal" id="File2.cpp.1aed42bd33fceec1188f2f95c6e8946c.html|l13" href="#l13">13</a></td>
+        <td class="text-right src linenos"><a class="normal" id="File2.cpp.1aed42bd33fceec1188f2f95c6e8946c.html|L13" href="#File2.cpp.1aed42bd33fceec1188f2f95c6e8946c.html|L13">13</a></td>
         <td class="text-right src linenos ws-unset">
         </td>
         <td class="linecount pr-2 pl-2 color-fg-muted text-right"></td>
@@ -2839,7 +2839,7 @@ document.addEventListener("DOMContentLoaded", () => {
     <div role="rowheader" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">Blocks</div>
   </div>
   <div class="Box-row Box-row--focus-gray py-2 d-flex">
-    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 col-md-2"><a href="#main.cpp.9ddfb860fa969e91a7bb17e903455bce.html|l13">main (B/main.cpp:13)</a>    </div>
+    <div role="gridcell" class="color-fg-muted flex-auto min-width-0 col-md-2"><a href="#main.cpp.9ddfb860fa969e91a7bb17e903455bce.html|L13">main (B/main.cpp:13)</a>    </div>
     <div role="gridcell" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline" data-sort="1">called 1 time</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">100.0%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">25.0%</div>
@@ -2872,133 +2872,133 @@ document.addEventListener("DOMContentLoaded", () => {
         <th class="p-2 text-left" style="width: 100%;">Source</th>
       </tr>
       <tr>
-        <td class="text-right src linenos"><a class="normal" id="main.cpp.9ddfb860fa969e91a7bb17e903455bce.html|l1" href="#l1">1</a></td>
+        <td class="text-right src linenos"><a class="normal" id="main.cpp.9ddfb860fa969e91a7bb17e903455bce.html|L1" href="#main.cpp.9ddfb860fa969e91a7bb17e903455bce.html|L1">1</a></td>
         <td class="text-right src linenos ws-unset">
         </td>
         <td class="linecount pr-2 pl-2 color-fg-muted text-right"></td>
         <td class="src"><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;iostream&gt;</span></td>
       </tr>
       <tr>
-        <td class="text-right src linenos"><a class="normal" id="main.cpp.9ddfb860fa969e91a7bb17e903455bce.html|l2" href="#l2">2</a></td>
+        <td class="text-right src linenos"><a class="normal" id="main.cpp.9ddfb860fa969e91a7bb17e903455bce.html|L2" href="#main.cpp.9ddfb860fa969e91a7bb17e903455bce.html|L2">2</a></td>
         <td class="text-right src linenos ws-unset">
         </td>
         <td class="linecount pr-2 pl-2 color-fg-muted text-right"></td>
         <td class="src"><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;string.h&gt;</span></td>
       </tr>
       <tr>
-        <td class="text-right src linenos"><a class="normal" id="main.cpp.9ddfb860fa969e91a7bb17e903455bce.html|l3" href="#l3">3</a></td>
+        <td class="text-right src linenos"><a class="normal" id="main.cpp.9ddfb860fa969e91a7bb17e903455bce.html|L3" href="#main.cpp.9ddfb860fa969e91a7bb17e903455bce.html|L3">3</a></td>
         <td class="text-right src linenos ws-unset">
         </td>
         <td class="linecount pr-2 pl-2 color-fg-muted text-right"></td>
         <td class="src"></td>
       </tr>
       <tr>
-        <td class="text-right src linenos"><a class="normal" id="main.cpp.9ddfb860fa969e91a7bb17e903455bce.html|l4" href="#l4">4</a></td>
+        <td class="text-right src linenos"><a class="normal" id="main.cpp.9ddfb860fa969e91a7bb17e903455bce.html|L4" href="#main.cpp.9ddfb860fa969e91a7bb17e903455bce.html|L4">4</a></td>
         <td class="text-right src linenos ws-unset">
         </td>
         <td class="linecount pr-2 pl-2 color-fg-muted text-right"></td>
         <td class="src"><span class="k">extern</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="nf">foo</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">param</span><span class="p">);</span></td>
       </tr>
       <tr>
-        <td class="text-right src linenos"><a class="normal" id="main.cpp.9ddfb860fa969e91a7bb17e903455bce.html|l5" href="#l5">5</a></td>
+        <td class="text-right src linenos"><a class="normal" id="main.cpp.9ddfb860fa969e91a7bb17e903455bce.html|L5" href="#main.cpp.9ddfb860fa969e91a7bb17e903455bce.html|L5">5</a></td>
         <td class="text-right src linenos ws-unset">
         </td>
         <td class="linecount pr-2 pl-2 color-fg-muted text-right"></td>
         <td class="src"><span class="k">extern</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="nf">foobar</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">param</span><span class="p">);</span></td>
       </tr>
       <tr>
-        <td class="text-right src linenos"><a class="normal" id="main.cpp.9ddfb860fa969e91a7bb17e903455bce.html|l6" href="#l6">6</a></td>
+        <td class="text-right src linenos"><a class="normal" id="main.cpp.9ddfb860fa969e91a7bb17e903455bce.html|L6" href="#main.cpp.9ddfb860fa969e91a7bb17e903455bce.html|L6">6</a></td>
         <td class="text-right src linenos ws-unset">
         </td>
         <td class="linecount pr-2 pl-2 color-fg-muted text-right"></td>
         <td class="src"><span class="k">extern</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="nf">bar</span><span class="p">();</span></td>
       </tr>
       <tr>
-        <td class="text-right src linenos"><a class="normal" id="main.cpp.9ddfb860fa969e91a7bb17e903455bce.html|l7" href="#l7">7</a></td>
+        <td class="text-right src linenos"><a class="normal" id="main.cpp.9ddfb860fa969e91a7bb17e903455bce.html|L7" href="#main.cpp.9ddfb860fa969e91a7bb17e903455bce.html|L7">7</a></td>
         <td class="text-right src linenos ws-unset">
         </td>
         <td class="linecount pr-2 pl-2 color-fg-muted text-right"></td>
         <td class="src"><span class="k">extern</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="nf">four_bar</span><span class="p">();</span></td>
       </tr>
       <tr>
-        <td class="text-right src linenos"><a class="normal" id="main.cpp.9ddfb860fa969e91a7bb17e903455bce.html|l8" href="#l8">8</a></td>
+        <td class="text-right src linenos"><a class="normal" id="main.cpp.9ddfb860fa969e91a7bb17e903455bce.html|L8" href="#main.cpp.9ddfb860fa969e91a7bb17e903455bce.html|L8">8</a></td>
         <td class="text-right src linenos ws-unset">
         </td>
         <td class="linecount pr-2 pl-2 color-fg-muted text-right"></td>
         <td class="src"><span class="k">extern</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="nf">foo5</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">param</span><span class="p">);</span></td>
       </tr>
       <tr>
-        <td class="text-right src linenos"><a class="normal" id="main.cpp.9ddfb860fa969e91a7bb17e903455bce.html|l9" href="#l9">9</a></td>
+        <td class="text-right src linenos"><a class="normal" id="main.cpp.9ddfb860fa969e91a7bb17e903455bce.html|L9" href="#main.cpp.9ddfb860fa969e91a7bb17e903455bce.html|L9">9</a></td>
         <td class="text-right src linenos ws-unset">
         </td>
         <td class="linecount pr-2 pl-2 color-fg-muted text-right"></td>
         <td class="src"><span class="k">extern</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="nf">foo6</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">param</span><span class="p">);</span></td>
       </tr>
       <tr>
-        <td class="text-right src linenos"><a class="normal" id="main.cpp.9ddfb860fa969e91a7bb17e903455bce.html|l10" href="#l10">10</a></td>
+        <td class="text-right src linenos"><a class="normal" id="main.cpp.9ddfb860fa969e91a7bb17e903455bce.html|L10" href="#main.cpp.9ddfb860fa969e91a7bb17e903455bce.html|L10">10</a></td>
         <td class="text-right src linenos ws-unset">
         </td>
         <td class="linecount pr-2 pl-2 color-fg-muted text-right"></td>
         <td class="src"><span class="k">extern</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="nf">uncovered</span><span class="p">();</span></td>
       </tr>
       <tr>
-        <td class="text-right src linenos"><a class="normal" id="main.cpp.9ddfb860fa969e91a7bb17e903455bce.html|l11" href="#l11">11</a></td>
+        <td class="text-right src linenos"><a class="normal" id="main.cpp.9ddfb860fa969e91a7bb17e903455bce.html|L11" href="#main.cpp.9ddfb860fa969e91a7bb17e903455bce.html|L11">11</a></td>
         <td class="text-right src linenos ws-unset">
         </td>
         <td class="linecount pr-2 pl-2 color-fg-muted text-right"></td>
         <td class="src"></td>
       </tr>
       <tr>
-        <td class="text-right src linenos"><a class="normal" id="main.cpp.9ddfb860fa969e91a7bb17e903455bce.html|l12" href="#l12">12</a></td>
+        <td class="text-right src linenos"><a class="normal" id="main.cpp.9ddfb860fa969e91a7bb17e903455bce.html|L12" href="#main.cpp.9ddfb860fa969e91a7bb17e903455bce.html|L12">12</a></td>
         <td class="text-right src linenos ws-unset">
         </td>
         <td class="linecount pr-2 pl-2 color-fg-muted text-right"></td>
         <td class="src"></td>
       </tr>
       <tr>
-        <td class="text-right src linenos"><a class="normal" id="main.cpp.9ddfb860fa969e91a7bb17e903455bce.html|l13" href="#l13">13</a></td>
+        <td class="text-right src linenos"><a class="normal" id="main.cpp.9ddfb860fa969e91a7bb17e903455bce.html|L13" href="#main.cpp.9ddfb860fa969e91a7bb17e903455bce.html|L13">13</a></td>
         <td class="text-right src linenos ws-unset">
         </td>
         <td class="linecount coveredLine show_coveredLine pr-2 pl-2 color-fg-muted text-right">1</td>
         <td class="src coveredLine show_coveredLine"><span class="kt">int</span><span class="w"> </span><span class="nf">main</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">argc</span><span class="p">,</span><span class="w"> </span><span class="kt">char</span><span class="o">*</span><span class="w"> </span><span class="n">argv</span><span class="p">[])</span><span class="w"> </span><span class="p">{</span></td>
       </tr>
       <tr>
-        <td class="text-right src linenos"><a class="normal" id="main.cpp.9ddfb860fa969e91a7bb17e903455bce.html|l14" href="#l14">14</a></td>
+        <td class="text-right src linenos"><a class="normal" id="main.cpp.9ddfb860fa969e91a7bb17e903455bce.html|L14" href="#main.cpp.9ddfb860fa969e91a7bb17e903455bce.html|L14">14</a></td>
         <td class="text-right src linenos ws-unset">
         </td>
         <td class="linecount coveredLine show_coveredLine pr-2 pl-2 color-fg-muted text-right">1</td>
         <td class="src coveredLine show_coveredLine"><span class="w">  </span><span class="n">foo</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span></td>
       </tr>
       <tr>
-        <td class="text-right src linenos"><a class="normal" id="main.cpp.9ddfb860fa969e91a7bb17e903455bce.html|l15" href="#l15">15</a></td>
+        <td class="text-right src linenos"><a class="normal" id="main.cpp.9ddfb860fa969e91a7bb17e903455bce.html|L15" href="#main.cpp.9ddfb860fa969e91a7bb17e903455bce.html|L15">15</a></td>
         <td class="text-right src linenos ws-unset">
         </td>
         <td class="linecount coveredLine show_coveredLine pr-2 pl-2 color-fg-muted text-right">1</td>
         <td class="src coveredLine show_coveredLine"><span class="w">  </span><span class="n">foobar</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span></td>
       </tr>
       <tr>
-        <td class="text-right src linenos"><a class="normal" id="main.cpp.9ddfb860fa969e91a7bb17e903455bce.html|l16" href="#l16">16</a></td>
+        <td class="text-right src linenos"><a class="normal" id="main.cpp.9ddfb860fa969e91a7bb17e903455bce.html|L16" href="#main.cpp.9ddfb860fa969e91a7bb17e903455bce.html|L16">16</a></td>
         <td class="text-right src linenos ws-unset">
         </td>
         <td class="linecount coveredLine show_coveredLine pr-2 pl-2 color-fg-muted text-right">1</td>
         <td class="src coveredLine show_coveredLine"><span class="w">  </span><span class="n">bar</span><span class="p">();</span></td>
       </tr>
       <tr>
-        <td class="text-right src linenos"><a class="normal" id="main.cpp.9ddfb860fa969e91a7bb17e903455bce.html|l17" href="#l17">17</a></td>
+        <td class="text-right src linenos"><a class="normal" id="main.cpp.9ddfb860fa969e91a7bb17e903455bce.html|L17" href="#main.cpp.9ddfb860fa969e91a7bb17e903455bce.html|L17">17</a></td>
         <td class="text-right src linenos ws-unset">
         </td>
         <td class="linecount coveredLine show_coveredLine pr-2 pl-2 color-fg-muted text-right">1</td>
         <td class="src coveredLine show_coveredLine"><span class="w">  </span><span class="n">four_bar</span><span class="p">();</span></td>
       </tr>
       <tr>
-        <td class="text-right src linenos"><a class="normal" id="main.cpp.9ddfb860fa969e91a7bb17e903455bce.html|l18" href="#l18">18</a></td>
+        <td class="text-right src linenos"><a class="normal" id="main.cpp.9ddfb860fa969e91a7bb17e903455bce.html|L18" href="#main.cpp.9ddfb860fa969e91a7bb17e903455bce.html|L18">18</a></td>
         <td class="text-right src linenos ws-unset">
         </td>
         <td class="linecount coveredLine show_coveredLine pr-2 pl-2 color-fg-muted text-right">1</td>
         <td class="src coveredLine show_coveredLine"><span class="w">  </span><span class="n">foo5</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span></td>
       </tr>
       <tr>
-        <td class="text-right src linenos"><a class="normal" id="main.cpp.9ddfb860fa969e91a7bb17e903455bce.html|l19" href="#l19">19</a></td>
+        <td class="text-right src linenos"><a class="normal" id="main.cpp.9ddfb860fa969e91a7bb17e903455bce.html|L19" href="#main.cpp.9ddfb860fa969e91a7bb17e903455bce.html|L19">19</a></td>
         <td class="text-right src linenos ws-unset">
           <details class="normal details-overlay">
             <summary>1/4</summary>
@@ -3014,28 +3014,28 @@ document.addEventListener("DOMContentLoaded", () => {
         <td class="src partialCoveredLine show_partialCoveredLine"><span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">argc</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">strlen</span><span class="p">(</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">]);</span><span class="w"> </span><span class="o">++</span><span class="n">i</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">foo6</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="p">}</span></td>
       </tr>
       <tr>
-        <td class="text-right src linenos"><a class="normal" id="main.cpp.9ddfb860fa969e91a7bb17e903455bce.html|l20" href="#l20">20</a></td>
+        <td class="text-right src linenos"><a class="normal" id="main.cpp.9ddfb860fa969e91a7bb17e903455bce.html|L20" href="#main.cpp.9ddfb860fa969e91a7bb17e903455bce.html|L20">20</a></td>
         <td class="text-right src linenos ws-unset">
         </td>
         <td class="linecount pr-2 pl-2 color-fg-muted text-right"></td>
         <td class="src"></td>
       </tr>
       <tr>
-        <td class="text-right src linenos"><a class="normal" id="main.cpp.9ddfb860fa969e91a7bb17e903455bce.html|l21" href="#l21">21</a></td>
+        <td class="text-right src linenos"><a class="normal" id="main.cpp.9ddfb860fa969e91a7bb17e903455bce.html|L21" href="#main.cpp.9ddfb860fa969e91a7bb17e903455bce.html|L21">21</a></td>
         <td class="text-right src linenos ws-unset">
         </td>
         <td class="linecount coveredLine show_coveredLine pr-2 pl-2 color-fg-muted text-right">1</td>
         <td class="src coveredLine show_coveredLine"><span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span></td>
       </tr>
       <tr>
-        <td class="text-right src linenos"><a class="normal" id="main.cpp.9ddfb860fa969e91a7bb17e903455bce.html|l22" href="#l22">22</a></td>
+        <td class="text-right src linenos"><a class="normal" id="main.cpp.9ddfb860fa969e91a7bb17e903455bce.html|L22" href="#main.cpp.9ddfb860fa969e91a7bb17e903455bce.html|L22">22</a></td>
         <td class="text-right src linenos ws-unset">
         </td>
         <td class="linecount pr-2 pl-2 color-fg-muted text-right"></td>
         <td class="src"><span class="p">}</span></td>
       </tr>
       <tr>
-        <td class="text-right src linenos"><a class="normal" id="main.cpp.9ddfb860fa969e91a7bb17e903455bce.html|l23" href="#l23">23</a></td>
+        <td class="text-right src linenos"><a class="normal" id="main.cpp.9ddfb860fa969e91a7bb17e903455bce.html|L23" href="#main.cpp.9ddfb860fa969e91a7bb17e903455bce.html|L23">23</a></td>
         <td class="text-right src linenos ws-unset">
         </td>
         <td class="linecount pr-2 pl-2 color-fg-muted text-right"></td>

@@ -12,6 +12,7 @@ Breaking changes:
 
 - Jinja2 environment for HTML reports is now created with ``undefined=StrictUndefined`` to raise an
   error if a variable is not defined in the template. (:issue:`1282`)
+- Links to lines in HTML reports now use ``L<line>`` instead of a ``l<line>``. (:issue:`1285`)
 
 New features and notable changes:
 
@@ -31,7 +32,8 @@ Bug fixes and small improvements:
 - Fix runtime problem introduced with 8.4. (:issue:`1270`)
 - Fix boost HTML details and simple output. (:issue:`1274`)
 - Fix boost HTML support for Conditions, Decisions and Calls optional stats. (:issue:`1277`)
-- Fix alignment in summary header of HTML report for :option:`--html-single-page`. (:issue:`1284`)
+- Fix alignment in summary header of HTML single page report. (:issue:`1284`)
+- Fix link to lines in HTML single page report. (:issue:`1285`)
 
 Documentation:
 
@@ -53,6 +55,7 @@ Known bugs:
 
 - :ref:`fix_1270`
 - :ref:`fix_1284`
+- :ref:`fix_1285`
 
 Breaking changes:
 
@@ -80,6 +83,7 @@ Known bugs:
 - :ref:`fix_1231`
 - :ref:`fix_1270`
 - :ref:`fix_1284`
+- :ref:`fix_1285`
 
 Breaking changes:
 
