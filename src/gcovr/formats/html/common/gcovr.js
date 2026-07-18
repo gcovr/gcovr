@@ -41,7 +41,7 @@ gcovr.singlePageSetup = function () {
   document.body.classList.remove("js-disabled")
 
   gcovr.single_page_global_summary = document.getElementById("summary")
-  gcovr.single_page_global_content = document.getElementById(gcovr.root_dirname)
+  gcovr.single_page_global_content = document.getElementById(gcovr.default_content_id)
   gcovr.single_page_function_list = document.getElementById("{{ FUNCTIONS_FNAME }}")
 
   // Move the summaries in the tree
@@ -69,7 +69,7 @@ gcovr.singlePageActivateElement = function () {
     gcovr.single_page_old_hash = location.hash
     hash_parts =
       (location.hash == "")
-        ? [gcovr.root_dirname]
+        ? [gcovr.default_content_id]
         : decodeURIComponent(location.hash.substring(1)).split("|")
 
     for (var i = 0; i < gcovr.single_page_enabled_elements.length; i++) {
@@ -109,7 +109,7 @@ gcovr.singlePageActivateElement = function () {
 
     // We need to scroll to the element
     if (hash_parts.length > 1) {
-      document.getElementById(hash_parts[0]).scrollIntoView()
+      document.getElementById(hash_parts.join("|")).scrollIntoView()
     }
 
     gcovr.initScrollMarkers();

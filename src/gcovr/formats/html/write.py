@@ -31,6 +31,7 @@ from jinja2 import (
     FileSystemLoader,
     FunctionLoader,
     PackageLoader,
+    StrictUndefined,
     Template,
 )
 from markupsafe import Markup
@@ -109,6 +110,7 @@ def templates(options: Options) -> Environment:
         autoescape=True,
         trim_blocks=True,
         lstrip_blocks=True,
+        undefined=StrictUndefined,
     )
 
 
@@ -132,6 +134,7 @@ def user_templates() -> Environment:
         autoescape=True,
         trim_blocks=True,
         lstrip_blocks=True,
+        undefined=StrictUndefined,
     )
 
 
@@ -419,29 +422,15 @@ def write_report(
     if root_info.link_function_list and root_info.functions["total"] == 0:
         root_info.link_function_list = False
 
-    # Generate the coverage output (on a per-package basis)
-    # source_dirs = set()
-    filecov_list = covdata.sorted_filecov(
-        sort_key=options.sort_key,
-        sort_reverse=options.sort_reverse,
-        by_metric="branch" if options.sort_branches else "line",
-        filename_uses_relative_pathname=True,
-        recurse=True,
-    )
-
     LOGGER.debug("Store additional properties...")
-    files = []
-    sourcefiles = dict[str, str | None]()
 
-    def _store_filenames(cdata: CoverageContainer | FileCoverage) -> None:
+    def _update_properties(cdata: CoverageContainer | FileCoverage) -> None:
         """Store the filenames and the source file links for the report."""
         filtered_name = options.root_filter.sub("", cdata.filename)
-        if filtered_name != "":
-            files.append(filtered_name)
         cdata.properties["filtered_name"] = force_unix_separator(filtered_name)
         if options.html_details or options.html_nested or options.html_single_page:
             if cdata == covdata:
-                cdata.properties["sourcefile"] = (
+                _, cdata.properties["sourcefile"] = os.path.split(
                     output_file[: -len(GZIP_SUFFIX)]
                     if output_file.endswith(GZIP_SUFFIX)
                     else output_file
@@ -460,24 +449,30 @@ def write_report(
                     ).split(".", maxsplit=1)[1]
         else:
             cdata.properties["sourcefile"] = None
-        sourcefiles[cdata.properties["filtered_name"]] = cdata.properties["sourcefile"]
 
+    # Generate the coverage output (on a per-package basis)
+    # source_dirs = set()
+    filecov_list = sorted(
+        covdata.filecov(recurse=True), key=lambda x: x.filename.lower()
+    )
     for filecov in filecov_list:
-        _store_filenames(filecov)
-    if options.html_nested:
-        for dircov in covdata.dircov(recurse=True):
-            _store_filenames(dircov)
+        _update_properties(filecov)
+    for dircov in covdata.dircov(recurse=True):
+        _update_properties(dircov)
 
     # Define the common root directory, which may differ from options.root_dir
     # when source files share a common prefix.
+    filtered_name = [cdata.properties["filtered_name"] for cdata in filecov_list]
     root_directory = ""
-    if len(files) > 1:
-        common_dir = commonpath(files)
+    if len(filtered_name) > 1:
+        common_dir = commonpath(filtered_name)
         if common_dir != "":
             root_directory = common_dir
     else:
         directory, _ = os.path.split(
-            files[0] if files else options.root_filter.sub("", covdata.dirname)
+            filtered_name[0]
+            if filtered_name
+            else options.root_filter.sub("", covdata.dirname)
         )
         if directory != "":
             root_directory = str(directory) + os.sep
@@ -486,9 +481,10 @@ def write_report(
 
     previous_fname: str | None = None
     previous_link_report: str | None = None
-    for fname in sorted(sourcefiles):
+    for filecov in filecov_list:
+        fname = filecov.properties["filtered_name"]
         root_info.navigation[fname] = (previous_link_report, None)
-        link_report = sourcefiles[fname]
+        link_report = filecov.properties["sourcefile"]
         if link_report is not None:
             if root_info.relative_anchors or root_info.single_page:
                 link_report = os.path.basename(link_report)
@@ -594,26 +590,16 @@ def write_report(
             root_info,
             output_file,
             covdata,
-            filecov_list,
             data,
         )
     else:
-        if options.html_nested:
-            write_directory_pages(
-                options,
-                root_info,
-                output_file,
-                covdata,
-                data,
-            )
-        else:
-            write_root_page(
-                options,
-                root_info,
-                output_file,
-                data,
-                filecov_list,
-            )
+        write_directory_pages(
+            options,
+            root_info,
+            output_file,
+            covdata,
+            data,
+        )
 
         if options.html_details or options.html_nested:
             write_source_pages(
@@ -629,23 +615,56 @@ def write_root_page(
     options: Options,
     root_info: RootInfo,
     output_file: str,
+    covdata: CoverageContainer,
     data: dict[str, Any],
-    filecov_list: list[FileCoverage],
 ) -> None:
     """Generate the root HTML file that contains the high level report."""
-    files = []
-    for filecov in filecov_list:
-        files.append(get_coverage_data(root_info, filecov))
-
     html_string = (
         templates(options)
         .get_template("directory_page.html")
-        .render(**data, entries=files)
+        .render(
+            **data,
+            **get_directory_data(options, root_info, covdata, recurse_files=True),
+        )
     )
     with open_text_for_writing(
         output_file, encoding=options.html_encoding, errors="xmlcharrefreplace"
     ) as fh:
         fh.write(html_string + "\n")
+
+
+def write_directory_pages(
+    options: Options,
+    root_info: RootInfo,
+    output_file: str,
+    covdata: CoverageContainer,
+    data: dict[str, Any],
+) -> None:
+    """Write a page for each directory."""
+    root_key = covdata.dirname
+
+    for dircov in covdata.dircov(recurse=True) if options.html_nested else [covdata]:
+        html_string = (
+            templates(options)
+            .get_template("directory_page.html")
+            .render(
+                **data,
+                **get_directory_data(
+                    options, root_info, dircov, recurse_files=not options.html_nested
+                ),
+            )
+        )
+        filename = None
+        if dircov.dirname in [root_key, ""]:
+            filename = output_file
+        else:
+            filename = dircov.properties["sourcefile"]
+
+        if filename:
+            with open_text_for_writing(
+                filename, encoding=options.html_encoding, errors="xmlcharrefreplace"
+            ) as fh:
+                fh.write(html_string + "\n")
 
 
 def write_source_pages(
@@ -699,43 +718,11 @@ def write_source_pages(
         raise RuntimeError(f"{error_no_files_not_found} source file(s) not found.")
 
 
-def write_directory_pages(
-    options: Options,
-    root_info: RootInfo,
-    output_file: str,
-    covdata: CoverageContainer,
-    data: dict[str, Any],
-) -> None:
-    """Write a page for each directory."""
-    root_key = covdata.dirname
-
-    for dircov in covdata.dircov(recurse=True):
-        directory_data = get_directory_data(options, root_info, dircov)
-
-        html_string = (
-            templates(options)
-            .get_template("directory_page.html")
-            .render(**data, **directory_data)
-        )
-        filename = None
-        if dircov.dirname in [root_key, ""]:
-            filename = output_file
-        else:
-            filename = dircov.properties["sourcefile"]
-
-        if filename:
-            with open_text_for_writing(
-                filename, encoding=options.html_encoding, errors="xmlcharrefreplace"
-            ) as fh:
-                fh.write(html_string + "\n")
-
-
 def write_single_page(
     options: Options,
     root_info: RootInfo,
     output_file: str,
     covdata: CoverageContainer,
-    filecov_list: list[FileCoverage],
     data: dict[str, Any],
 ) -> None:
     """Write a single page HTML report."""
@@ -754,15 +741,16 @@ def write_single_page(
 
         files.append(file_data)
 
-    all_files = []
-    for filecov in filecov_list:
-        all_files.append(get_coverage_data(root_info, filecov))
-    directories = list[dict[str, Any]]([{"entries": all_files}])
-    if not root_info.static_report and options.html_nested:
+    directories = list[dict[str, Any]]()
+    # This is used if javascript is deactivated in browser.
+    directories.append(
+        get_directory_data(options, root_info, covdata, recurse_files=True)
+    )
+    directories[0].update({"id": "gcovr-directory-root"})
+    # For a static report we do not need to generate the directory tree data for each directory.
+    if options.html_nested and not root_info.static_report:
         for dircov in covdata.dircov(recurse=True):
             directories.append(get_directory_data(options, root_info, dircov))
-    if len(directories) == 1:
-        directories[0]["dirname"] = "/"  # We need this to have a correct id in HTML.
 
     html_string = (
         templates(options)
@@ -908,20 +896,20 @@ def get_directory_data(
     options: Options,
     root_info: RootInfo,
     covdata: CoverageContainer,
+    recurse_files: bool = False,
 ) -> dict[str, Any]:
     """Get the data for a directory to generate the HTML"""
-    relative_path = covdata.properties["filtered_name"]
-    if relative_path == ".":
+    if covdata.parent is None:
         relative_path = ""
-    elif relative_path.startswith(root_info.directory):
-        relative_path = relative_path[len(root_info.directory) :]
+    else:
+        relative_path = covdata.properties["filtered_name"]
+        if relative_path == ".":
+            relative_path = ""
+        elif relative_path.startswith(root_info.directory):
+            relative_path = relative_path[len(root_info.directory) :]
     directory_data = dict[str, Any](
         {
-            "dirname": (
-                covdata.properties["sourcefile"]
-                if covdata.properties["filtered_name"]
-                else "/"
-            ),
+            "id": covdata.properties["sourcefile"],
             "relative_path": relative_path,
         }
     )
@@ -929,18 +917,29 @@ def get_directory_data(
     if covdata.is_compare_info_available():
         directory_data["diff"] = covdata.diff.name
 
-    covdata_list = covdata.sorted_coverage(
-        sort_key=options.sort_key,
-        sort_reverse=options.sort_reverse,
-        by_metric="branch" if options.sort_branches else "line",
-        filename_uses_relative_pathname=True,
-    )
+    if options.html_nested or covdata.parent is None:
+        covdata_list = (
+            covdata.sorted_filecov(
+                sort_key=options.sort_key,
+                sort_reverse=options.sort_reverse,
+                by_metric="branch" if options.sort_branches else "line",
+                filename_uses_relative_pathname=True,
+                recurse=True,
+            )
+            if recurse_files
+            else covdata.sorted_coverage(
+                sort_key=options.sort_key,
+                sort_reverse=options.sort_reverse,
+                by_metric="branch" if options.sort_branches else "line",
+                filename_uses_relative_pathname=True,
+            )
+        )
 
-    files = []
-    for cdata in covdata_list:
-        files.append(get_coverage_data(root_info, cdata, relative_path))
+        files = []
+        for cdata in covdata_list:
+            files.append(get_coverage_data(root_info, cdata, relative_path))
 
-    directory_data["entries"] = files
+        directory_data["entries"] = files
 
     return directory_data
 
