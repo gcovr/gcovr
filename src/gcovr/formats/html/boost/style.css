@@ -1105,7 +1105,7 @@ body.sidebar-resizing .main-content {
 .stat-row {
   display: flex;
   justify-content: space-between;
-  padding: 4px 0;
+  padding: 2px 0;
   font-size: var(--font-size-sm);
 }
 

@@ -32,6 +32,7 @@ Bug fixes and small improvements:
 - Fix runtime problem introduced with 8.4. (:issue:`1270`)
 - Fix boost HTML details and simple output. (:issue:`1274`)
 - Fix boost HTML support for Conditions, Decisions and Calls optional stats. (:issue:`1277`)
+- Add excluded metrics to boost HTML template (:issue:`1280`)
 - Fix alignment in summary header of HTML single page report. (:issue:`1284`)
 - Fix link to lines in HTML single page report. (:issue:`1285`)
 
