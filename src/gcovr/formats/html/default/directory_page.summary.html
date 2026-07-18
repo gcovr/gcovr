@@ -58,44 +58,51 @@
   <div>
     <table class="coverage">
       <tr>
-        <th></th>
-        <th scope="col">Coverage</th>
-        <th scope="col">Exec / Excl / Total</th>
-      </tr>
-      <tr>
         <th scope="row">Lines:</th>
-        <td class="{{info.lines.class}}">{{info.lines.coverage}}%</td>
-        <td class="{{info.lines.class}}">{{info.lines.exec}} / {{info.lines.excluded}} / {{info.lines.total}}</td>
-      </tr>
-      <tr>
-        <th scope="row">Functions:</th>
-        <td class="{{info.functions.class}}">{{info.functions.coverage}}%</td>
-        <td class="{{info.functions.class}}">{{info.functions.exec}} / {{info.functions.excluded}} / {{info.functions.total}}</td>
+        <td class="{{info.lines.class}}">
+          <div>{{info.lines.exec}} of {{info.lines.total}}{% if info.lines.excluded %} - {{info.lines.excluded}} excluded{% endif %}</div>
+          <div>{{info.lines.coverage}}%</div>
+        </td>
       </tr>
       <tr>
         <th scope="row">Branches:</th>
-        <td class="{{info.branches.class}}">{{info.branches.coverage}}%</td>
-        <td class="{{info.branches.class}}">{{info.branches.exec}} / {{info.branches.excluded}} / {{info.branches.total}}</td>
+        <td class="{{info.branches.class}}">
+          <div>{{info.branches.exec}} of {{info.branches.total}}{% if info.branches.excluded %} - {{info.branches.excluded}} excluded{% endif %}</div>
+          <div>{{info.branches.coverage}}%</div>
+        </td>
       </tr>
       {% if SHOW_CONDITION_COVERAGE %}
       <tr>
         <th scope="row">Conditions:</th>
-        <td class="{{info.conditions.class}}">{{info.conditions.coverage}}%</td>
-        <td class="{{info.conditions.class}}">{{info.conditions.exec}} / {{info.conditions.excluded}} / {{info.conditions.total}}</td>
+        <td class="{{info.conditions.class}}">
+          <div>{{info.conditions.exec}} of {{info.conditions.total}}{% if info.conditions.excluded %} - {{info.conditions.excluded}} excluded{% endif %}</div>
+          <div>{{info.conditions.coverage}}%</div>
+        </td>
       </tr>
       {% endif %}
       {% if SHOW_DECISION %}
       <tr>
         <th scope="row">Decisions:</th>
-        <td class="{{info.decisions.class}}">{{info.decisions.coverage}}%</td>
-        <td class="{{info.decisions.class}}">{{info.decisions.exec}} / - / {{info.decisions.total}}</td>
+        <td class="{{info.decisions.class}}">
+          <div>{{info.decisions.exec}} of {{info.decisions.total}}</div>
+          <div>{{info.decisions.coverage}}%</div>
+        </td>
       </tr>
       {% endif %}
+      <tr>
+        <th scope="row">Functions:</th>
+        <td class="{{info.functions.class}}">
+          <div>{{info.functions.exec}} of {{info.functions.total}}{% if info.functions.excluded %} - {{info.functions.excluded}} excluded{% endif %}</div>
+          <div>{{info.functions.coverage}}%</div>
+        </td>
+      </tr>
       {% if SHOW_CALLS %}
       <tr>
         <th scope="row">Calls:</th>
-        <td class="{{info.calls.class}}">{{info.calls.coverage}}%</td>
-        <td class="{{info.calls.class}}">{{info.calls.exec}} / {{info.calls.excluded}} / {{info.calls.total}}</td>
+        <td class="{{info.calls.class}}">
+          <div>{{info.calls.exec}} of {{info.calls.total}}{% if info.calls.excluded %} - {{info.calls.excluded}} excluded{% endif %}</div>
+          <div>{{info.calls.coverage}}%</div>
+        </td>
       </tr>
       {% endif %}
     </table>

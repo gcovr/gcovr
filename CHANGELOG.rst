@@ -22,6 +22,7 @@ New features and notable changes:
   - Replace meter with ``div`` elements in the default theme (like in GitHub themes). (:issue:`1236`)
   - Add jinja2 rendering for CSS files. (:issue:`1252`)
   - Add new HTML themes ``boost.green`` and ``boost.blue``. (:issue:`1248`, :issue:`1271`)
+  - Show excluded lines, branches, ... in the summary only if there are any. (:issue:`1287`)
 
 - Add compare mode for JSON, text and HTML reports. (:issue:`1240`, :issue:`1266`)
 - Stub missing line coverage for branches in LLVM source based code coverage format. (:issue:`1245`)

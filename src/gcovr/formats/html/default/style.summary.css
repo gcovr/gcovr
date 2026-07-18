@@ -68,27 +68,17 @@ table.coverage th
   white-space: nowrap;
   padding-top: 3px;
   padding-bottom: 3px;
-  padding-left: 5px;
-  padding-right: 4px;
+  padding-left: 10px;
+  padding-right: 10px;
 }
 
-table.coverage td
-{
-  background-color: LightSteelBlue;
+table.coverage td {
+  display: flex;
+  justify-content: flex-end;
 }
 
-table.coverage th[scope=row]
-{
-  color: black;
-  font-weight: normal;
-  white-space: nowrap;
-}
-
-table.coverage th[scope=col]
-{
-  color: blue;
-  font-weight: normal;
-  white-space: nowrap;
+table.coverage td div {
+  min-width: 4em;
 }
 
 table.legend span

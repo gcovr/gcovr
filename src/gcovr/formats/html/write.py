@@ -86,7 +86,7 @@ def get_theme_color(html_theme: str) -> str:
 
 
 @functools.lru_cache(maxsize=1)
-def templates(options: Options) -> Environment:
+def theme_environment(options: Options) -> Environment:
     """Get the Jinja2 environment for the templates."""
     # As default use the package loader
     loaders: list[BaseLoader] = []
@@ -115,10 +115,10 @@ def templates(options: Options) -> Environment:
 
 
 @functools.lru_cache(maxsize=1)
-def user_templates() -> Environment:
+def file_environment() -> Environment:
     """Get the Jinja2 environment for the user templates."""
 
-    def load_user_template(template: str) -> str | None:
+    def load_file(template: str) -> str | None:
         contents = None
         try:
             with open(template, "rb") as f:
@@ -130,7 +130,7 @@ def user_templates() -> Environment:
         return contents
 
     return Environment(
-        loader=FunctionLoader(load_user_template),
+        loader=FunctionLoader(load_file),
         autoescape=True,
         trim_blocks=True,
         lstrip_blocks=True,
@@ -146,9 +146,9 @@ class CssRenderer:
         """Load the CSS template."""
         if options.html_css is not None:
             template_path = os.path.relpath(options.html_css)
-            return user_templates().get_template(template_path)
+            return file_environment().get_template(template_path)
 
-        return templates(options).get_template("style.css")
+        return theme_environment(options).get_template("style.css")
 
     @staticmethod
     def render(options: Options, **data: dict[Any, Any]) -> str:
@@ -247,7 +247,7 @@ def get_formatter(options: Options) -> PygmentsHighlighting | NullHighlighting:
     """Get the formatter for the selected theme."""
     if options.html_syntax_highlighting:
         highlight_style = (
-            templates(options)
+            theme_environment(options)
             .get_template(f"pygments.{get_theme_color(options.html_theme)}")
             .render()
         )
@@ -380,6 +380,7 @@ def write_report(
             covdata.filecov(recurse=True),
         )
     )
+
     data["USE_BLOCK_IDS"] = options.html_block_ids
     data["COVERAGE_MED"] = medium_threshold
     data["COVERAGE_HIGH"] = high_threshold
@@ -552,7 +553,7 @@ def write_report(
     javascript_data = (
         None
         if options.html_static_report
-        else templates(options).get_template("gcovr.js").render(**data).strip()
+        else theme_environment(options).get_template("gcovr.js").render(**data).strip()
     )
 
     if self_contained:
@@ -620,7 +621,7 @@ def write_root_page(
 ) -> None:
     """Generate the root HTML file that contains the high level report."""
     html_string = (
-        templates(options)
+        theme_environment(options)
         .get_template("directory_page.html")
         .render(
             **data,
@@ -645,7 +646,7 @@ def write_directory_pages(
 
     for dircov in covdata.dircov(recurse=True) if options.html_nested else [covdata]:
         html_string = (
-            templates(options)
+            theme_environment(options)
             .get_template("directory_page.html")
             .render(
                 **data,
@@ -688,7 +689,7 @@ def write_source_pages(
             error_no_files_not_found += 1
 
         html_string = (
-            templates(options)
+            theme_environment(options)
             .get_template("source_page.html")
             .render(**data, **file_data)
         )
@@ -700,7 +701,7 @@ def write_source_pages(
             fh.write(html_string + "\n")
 
     html_string = (
-        templates(options)
+        theme_environment(options)
         .get_template("functions_page.html")
         .render(
             **data,
@@ -753,7 +754,7 @@ def write_single_page(
             directories.append(get_directory_data(options, root_info, dircov))
 
     html_string = (
-        templates(options)
+        theme_environment(options)
         .get_template("single_page.html")
         .render(
             **data,
