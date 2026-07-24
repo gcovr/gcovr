@@ -225,13 +225,16 @@ def test_exclude_line_branch(gcovr_test_exec: "GcovrTestExec") -> None:
     )
     gcovr_test_exec.compare_json()
 
-    gcovr_test_exec.gcovr(
-        "--json-add-tracefile",
-        gcovr_test_exec.output_dir / "coverage.json",
-        "--html-details",
-        gcovr_test_exec.output_dir / "coverage.html",
-        cwd=cwd,
-    )
+    for theme in ["default", "github", "boost"]:
+        gcovr_test_exec.gcovr(
+            "--json-add-tracefile",
+            gcovr_test_exec.output_dir / "coverage.json",
+            "--html-theme",
+            f"{'' if theme == 'default' else theme + '.'}green",
+            "--html-nested",
+            gcovr_test_exec.output_dir / f"coverage.{theme}.html",
+            cwd=cwd,
+        )
     gcovr_test_exec.compare_html()
 
     gcovr_test_exec.gcovr(

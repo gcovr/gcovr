@@ -360,27 +360,17 @@ table.coverage th
   white-space: nowrap;
   padding-top: 3px;
   padding-bottom: 3px;
-  padding-left: 5px;
-  padding-right: 4px;
+  padding-left: 10px;
+  padding-right: 10px;
 }
 
-table.coverage td
-{
-  background-color: LightSteelBlue;
+table.coverage td {
+  display: flex;
+  justify-content: flex-end;
 }
 
-table.coverage th[scope=row]
-{
-  color: black;
-  font-weight: normal;
-  white-space: nowrap;
-}
-
-table.coverage th[scope=col]
-{
-  color: blue;
-  font-weight: normal;
-  white-space: nowrap;
+table.coverage td div {
+  min-width: 4em;
 }
 
 table.legend span
@@ -474,14 +464,13 @@ div.percent
 {
   min-width: 4em;
   text-align: right;
-  padding-right: 0.5em !important;
+  padding-right: 0.25em !important;
 }
 
 div.counter
 {
-  min-width: 4em;
-  text-align: left;
-  padding-left: 0.5em !important;
+  text-align: right;
+  padding-left: 0.25em !important;
 }
 td.CoverValue
 {
