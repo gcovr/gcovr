@@ -27,6 +27,7 @@ via ``apply_all_exclusions()``, which is configured via the usual options object
 """
 
 from dataclasses import dataclass, field
+import os
 import re
 
 from ..data_model.coverage import FileCoverage
@@ -41,6 +42,14 @@ from .utils import (
     function_exclude_not_supported,
     get_function_exclude_ranges,
     get_functions_by_line,
+)
+
+
+_FORTRAN_SOURCE_SUFFIXES = frozenset(
+    {".f", ".for", ".ftn", ".fpp", ".f90", ".f95", ".f03", ".f08", ".f18"}
+)
+_FORTRAN_MODULE_FUNCTION = re.compile(
+    r"__[A-Za-z][A-Za-z0-9_]*_MOD_[A-Za-z][A-Za-z0-9_]*"
 )
 
 
@@ -224,7 +233,7 @@ def remove_internal_functions(
     # Get all the functions first because we want to remove some of them which will else result in an error.
     for functioncov in list(filecov.functioncov()):
         if _function_can_be_excluded(
-            functioncov.mangled_name, functioncov.demangled_name
+            filecov.filename, functioncov.mangled_name, functioncov.demangled_name
         ):
             if activate_trace_logging:
                 LOGGER.trace(
@@ -235,11 +244,20 @@ def remove_internal_functions(
             filecov.remove_function_coverage(functioncov)
 
 
-def _function_can_be_excluded(*names: str | None) -> bool:
+def _function_can_be_excluded(filename: str, *names: str | None) -> bool:
     """Special names for construction/destruction of static objects will be ignored"""
+    is_fortran_source = (
+        os.path.splitext(filename)[1].casefold() in _FORTRAN_SOURCE_SUFFIXES
+    )
     return any(
         name is not None
-        and (name.startswith("__") or name.startswith("_GLOBAL__sub_I_"))
+        and (
+            name.startswith("_GLOBAL__sub_I_")
+            or (
+                name.startswith("__")
+                and not (is_fortran_source and _FORTRAN_MODULE_FUNCTION.fullmatch(name))
+            )
+        )
         for name in names
     )
 
