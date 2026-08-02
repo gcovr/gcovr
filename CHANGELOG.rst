@@ -29,6 +29,7 @@ New features and notable changes:
 
 Bug fixes and small improvements:
 
+- Preserve coverage for procedures declared in Fortran modules. (:issue:`1253`)
 - Fix runtime problem introduced with 8.4. (:issue:`1270`)
 - Fix boost HTML details and simple output. (:issue:`1274`)
 - Fix boost HTML support for Conditions, Decisions and Calls optional stats. (:issue:`1277`)
