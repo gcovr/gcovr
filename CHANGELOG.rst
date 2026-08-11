@@ -35,6 +35,7 @@ Bug fixes and small improvements:
 - Add excluded metrics to boost HTML template (:issue:`1280`)
 - Fix alignment in summary header of HTML single page report. (:issue:`1284`)
 - Fix link to lines in HTML single page report. (:issue:`1285`)
+- Fix missing branches and conditions for uncovered lines in HTML report. (:issue:`1290`)
 
 Documentation:
 
@@ -57,6 +58,7 @@ Known bugs:
 - :ref:`fix_1270`
 - :ref:`fix_1284`
 - :ref:`fix_1285`
+- :ref:`fix_1290`
 
 Breaking changes:
 
@@ -85,6 +87,7 @@ Known bugs:
 - :ref:`fix_1270`
 - :ref:`fix_1284`
 - :ref:`fix_1285`
+- :ref:`fix_1290`
 
 Breaking changes:
 

@@ -1105,23 +1105,37 @@ def source_row(
     html_block_ids: bool,
 ) -> dict[str, Any]:
     """Get information for a row"""
-    line_branches = None
-    line_conditions = None
-    line_decisions = None
-    line_calls = None
+    line_branches = []
+    line_conditions = []
+    line_decisions = []
+    line_calls = []
     linecount: int | str = ""
     covclass = ""
     if linecov_list:
+        line_branches = [
+            source_row_branch(linecov)
+            for linecov in linecov_list
+            if linecov.has_reportable_branches
+        ]
+        line_conditions = [
+            source_row_condition(linecov)
+            for linecov in linecov_list
+            if linecov.has_reportable_conditions
+        ]
+        line_decisions = [
+            source_row_decision(linecov) for linecov in linecov_list if linecov.decision
+        ]
+        line_calls = [
+            source_row_call(linecov)
+            for linecov in linecov_list
+            if linecov.has_reportable_calls
+        ]
+        linecount = sum(linecov.count for linecov in linecov_list)
         if all(linecov.is_excluded for linecov in linecov_list):
             covclass = "excludedLine"
         elif all(linecov.is_uncovered for linecov in linecov_list):
             covclass = "uncoveredLine"
         else:
-            line_branches = [
-                source_row_branch(linecov)
-                for linecov in linecov_list
-                if linecov.has_reportable_branches
-            ]
             covclass = (
                 "coveredLine"
                 if all(
@@ -1130,22 +1144,6 @@ def source_row(
                 )
                 else "partialCoveredLine"
             )
-            line_conditions = [
-                source_row_condition(linecov)
-                for linecov in linecov_list
-                if linecov.has_reportable_conditions
-            ]
-            line_decisions = [
-                source_row_decision(linecov)
-                for linecov in linecov_list
-                if linecov.decision
-            ]
-            linecount = sum(linecov.count for linecov in linecov_list)
-        line_calls = [
-            source_row_call(linecov)
-            for linecov in linecov_list
-            if linecov.has_reportable_calls
-        ]
     return {
         "lineno": lineno,
         "diff": []
