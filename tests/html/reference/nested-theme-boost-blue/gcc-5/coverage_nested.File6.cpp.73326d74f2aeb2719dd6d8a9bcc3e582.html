@@ -134,7 +134,7 @@
 </div>          </section>
 
           <section class="main-section">
-<div class="source-container no-branches">
+<div class="source-container">
   <div class="source-header">
     <span class="source-header-filename">File6.cpp</span>
     <div class="source-line-filters">
@@ -146,6 +146,7 @@
       </button>
     </div>
     <div class="source-column-filters">
+      <button type="button" class="btn btn-sm col-toggle show-col" data-col="branch" title="Toggle Branch column">Branch</button>
       <button type="button" class="btn btn-sm col-toggle show-col" data-col="tla" title="Toggle TLA column">TLA</button>
       <button type="button" class="btn btn-sm col-toggle show-col" data-col="count" title="Toggle Hits column">Hits</button>
     </div>
@@ -168,7 +169,6 @@
     </div>
   </div>
 
-
   <details class="source-functions">
     <summary class="source-functions-toggle">
       <span class="fx-icon"><i>f</i>(x)</span>
@@ -179,6 +179,7 @@
         <span class="source-function-col-name" data-sort="name">Function</span>
         <span class="source-function-col-stat" data-sort="calls">Calls</span>
         <span class="source-function-col-stat" data-sort="lines">Lines</span>
+        <span class="source-function-col-stat col-branches" data-sort="branches">Branches</span>
         <span class="source-function-col-stat" data-sort="blocks">Blocks</span>
       </div>
       <a href="#L1" class="source-function-item fn-uncovered"
@@ -189,6 +190,7 @@
         </span>
         <span class="source-function-col-stat not-called">0</span>
         <span class="source-function-col-stat cov-low">0.0%</span>
+        <span class="source-function-col-stat col-branches cov-low">0.0%</span>
         <span class="source-function-col-stat cov-low">0.0%</span>
       </a>
     </div>
@@ -199,6 +201,7 @@
       <thead>
         <tr>
           <th class="col-lineno">Line</th>
+          <th class="col-branch">Branch</th>
           <th class="col-tla">TLA</th>
           <th class="col-count">Hits</th>
           <th class="col-source">Source Code</th>
@@ -209,6 +212,8 @@
           <td class="col-lineno">
             <a id="L1" href="#L1">1</a>
           </td>
+          <td class="col-branch">
+          </td>
           <td class="col-tla"></td>
           <td class="col-count uncoveredLine">
 <span class="hit-miss">&cross;</span>          </td>
@@ -217,6 +222,8 @@
         <tr class="source-line">
           <td class="col-lineno">
             <a id="L2" href="#L2">2</a>
+          </td>
+          <td class="col-branch">
           </td>
           <td class="col-tla"></td>
           <td class="col-count">
@@ -227,6 +234,15 @@
           <td class="col-lineno">
             <a id="L3" href="#L3">3</a>
           </td>
+          <td class="col-branch">
+            <details class="branch-details">
+              <summary class="branch-summary">0/2</summary>
+              <div class="branch-popup">
+                <div class="branch-not-taken">&cross; Branch 0 not taken.</div>
+                <div class="branch-not-taken">&cross; Branch 1 not taken.</div>
+              </div>
+            </details>
+          </td>
           <td class="col-tla"></td>
           <td class="col-count uncoveredLine">
 <span class="hit-miss">&cross;</span>          </td>
@@ -235,6 +251,8 @@
         <tr class="source-line uncoveredLine show_uncoveredLine">
           <td class="col-lineno">
             <a id="L4" href="#L4">4</a>
+          </td>
+          <td class="col-branch">
           </td>
           <td class="col-tla"></td>
           <td class="col-count uncoveredLine">
@@ -245,6 +263,8 @@
           <td class="col-lineno">
             <a id="L5" href="#L5">5</a>
           </td>
+          <td class="col-branch">
+          </td>
           <td class="col-tla"></td>
           <td class="col-count">
           </td>
@@ -253,6 +273,8 @@
         <tr class="source-line uncoveredLine show_uncoveredLine">
           <td class="col-lineno">
             <a id="L6" href="#L6">6</a>
+          </td>
+          <td class="col-branch">
           </td>
           <td class="col-tla"></td>
           <td class="col-count uncoveredLine">
@@ -263,6 +285,8 @@
           <td class="col-lineno">
             <a id="L7" href="#L7">7</a>
           </td>
+          <td class="col-branch">
+          </td>
           <td class="col-tla"></td>
           <td class="col-count">
           </td>
@@ -272,6 +296,8 @@
           <td class="col-lineno">
             <a id="L8" href="#L8">8</a>
           </td>
+          <td class="col-branch">
+          </td>
           <td class="col-tla"></td>
           <td class="col-count">
           </td>
@@ -280,6 +306,8 @@
         <tr class="source-line">
           <td class="col-lineno">
             <a id="L9" href="#L9">9</a>
+          </td>
+          <td class="col-branch">
           </td>
           <td class="col-tla"></td>
           <td class="col-count">
