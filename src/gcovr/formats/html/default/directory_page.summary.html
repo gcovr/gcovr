@@ -8,30 +8,30 @@
       </tr>
       <tr>
         <th scope="row">Coverage:</th>
-        <td class="legend">
-          <span class="coverage-low">low: &ge; 0%</span>
+        <td>
+          <span class="summary-coverage coverage-low">low: &ge; 0%</span>
           {% if COVERAGE_MED != COVERAGE_HIGH %}
-          <span class="coverage-medium">medium: &ge; {{COVERAGE_MED}}%</span>
+          <span class="summary-coverage coverage-medium">medium: &ge; {{COVERAGE_MED}}%</span>
           {% endif %}
           {% if COVERAGE_HIGH < 100 %}
-          <span class="coverage-high">high: &ge; {{COVERAGE_HIGH}}%</span>
+          <span class="summary-coverage coverage-high">high: &ge; {{COVERAGE_HIGH}}%</span>
           {% else %}
-          <span class="coverage-high">high: = 100%</span>
+          <span class="summary-coverage coverage-high">high: = 100%</span>
           {% endif %}
         </td>
       </tr>
       {% if (COVERAGE_MED != LINE_COVERAGE_MED) or (COVERAGE_HIGH != LINE_COVERAGE_HIGH) %}
       <tr>
         <th scope="row">Lines:</th>
-        <td class="legend">
-          <span class="coverage-low">low: &ge; 0%</span>
+        <td>
+          <span class="summary-coverage coverage-low">low: &ge; 0%</span>
           {% if LINE_COVERAGE_MED != LINE_COVERAGE_HIGH %}
-          <span class="coverage-medium">medium: &ge; {{LINE_COVERAGE_MED}}%</span>
+          <span class="summary-coverage coverage-medium">medium: &ge; {{LINE_COVERAGE_MED}}%</span>
           {% endif %}
           {% if LINE_COVERAGE_HIGH < 100 %}
-          <span class="coverage-high">high: &ge; {{LINE_COVERAGE_HIGH}}%</span>
+          <span class="summary-coverage coverage-high">high: &ge; {{LINE_COVERAGE_HIGH}}%</span>
           {% else %}
-          <span class="coverage-high">high: = 100%</span>
+          <span class="summary-coverage coverage-high">high: = 100%</span>
           {% endif %}
         </td>
       </tr>
@@ -39,15 +39,15 @@
       {% if (COVERAGE_MED != BRANCH_COVERAGE_MED) or (COVERAGE_HIGH != BRANCH_COVERAGE_HIGH) %}
       <tr>
         <th scope="row">Branches:</th>
-        <td class="legend">
-          <span class="coverage-low">low: &ge; 0%</span>
+        <td>
+          <span class="summary-coverage coverage-low">low: &ge; 0%</span>
           {% if BRANCH_COVERAGE_MED != BRANCH_COVERAGE_HIGH %}
-          <span class="coverage-medium">medium: &ge; {{BRANCH_COVERAGE_MED}}%</span>
+          <span class="summary-coverage coverage-medium">medium: &ge; {{BRANCH_COVERAGE_MED}}%</span>
           {% endif %}
           {% if BRANCH_COVERAGE_HIGH < 100 %}
-          <span class="coverage-high">high: &ge; {{BRANCH_COVERAGE_HIGH}}%</span>
+          <span class="summary-coverage coverage-high">high: &ge; {{BRANCH_COVERAGE_HIGH}}%</span>
           {% else %}
-          <span class="coverage-high">high: = 100%</span>
+          <span class="summary-coverage coverage-high">high: = 100%</span>
           {% endif %}
         </td>
       </tr>
@@ -59,49 +59,121 @@
     <table class="coverage">
       <tr>
         <th scope="row">Lines:</th>
-        <td class="{{info.lines.class}}">
-          <div>{{info.lines.exec}} of {{info.lines.total}}{% if info.lines.excluded %} - {{info.lines.excluded}} excluded{% endif %}</div>
-          <div>{{info.lines.coverage}}%</div>
+        <td>
+          {% if info.lines.coverage == '-' %}
+          <span class="coverage-percent {{info.lines.class}}">-</span>
+          {% else %}
+          <span class="stat-value">{{info.lines.exec}}</span>
+          <span class="stat-separator">of</span>
+          <span class="stat-value">{{info.lines.total}}</span>
+          {%  if info.lines.excluded %}
+          <span class="stat-separator">,</span>
+          <span class="stat-value">{{info.lines.excluded}}</span>
+          <span class="stat-separator">excluded</span>
+          {%  else %}
+          <span class="stat-separator"></span>
+          {%  endif %}
+          <span class="summary-coverage {{info.lines.class}}">{{info.lines.coverage}}%</span>
+          {% endif %}
         </td>
       </tr>
       <tr>
         <th scope="row">Branches:</th>
-        <td class="{{info.branches.class}}">
-          <div>{{info.branches.exec}} of {{info.branches.total}}{% if info.branches.excluded %} - {{info.branches.excluded}} excluded{% endif %}</div>
-          <div>{{info.branches.coverage}}%</div>
+        <td>
+          {% if info.branches.coverage == '-' %}
+          <span class="coverage-percent {{info.branches.class}}">-</span>
+          {% else %}
+          <span class="stat-value">{{info.branches.exec}}</span>
+          <span class="stat-separator">of</span>
+          <span class="stat-value">{{info.branches.total}}</span>
+          {%  if info.branches.excluded %}
+          <span class="stat-separator">,</span>
+          <span class="stat-value">{{info.branches.excluded}}</span>
+          <span class="stat-separator">excluded</span>
+          {%  else %}
+          <span class="stat-separator"></span>
+          {%  endif %}
+          <span class="summary-coverage {{info.branches.class}}">{{info.branches.coverage}}%</span>
+          {% endif %}
         </td>
       </tr>
       {% if SHOW_CONDITION_COVERAGE %}
       <tr>
         <th scope="row">Conditions:</th>
-        <td class="{{info.conditions.class}}">
-          <div>{{info.conditions.exec}} of {{info.conditions.total}}{% if info.conditions.excluded %} - {{info.conditions.excluded}} excluded{% endif %}</div>
-          <div>{{info.conditions.coverage}}%</div>
+        <td>
+          {% if info.conditions.coverage == '-' %}
+          <span class="coverage-percent {{info.conditions.class}}">-</span>
+          {% else %}
+          <span class="stat-value">{{info.conditions.exec}}</span>
+          <span class="stat-separator">of</span>
+          <span class="stat-value">{{info.conditions.total}}</span>
+          {%  if info.conditions.excluded %}
+          <span class="stat-separator">,</span>
+          <span class="stat-value">{{info.conditions.excluded}}</span>
+          <span class="stat-separator">excluded</span>
+          {% else %}
+          <span class="stat-separator"></span>
+          {%  endif %}
+          <span class="summary-coverage {{info.conditions.class}}">{{info.conditions.coverage}}%</span>
+          {% endif %}
         </td>
       </tr>
       {% endif %}
       {% if SHOW_DECISION %}
       <tr>
         <th scope="row">Decisions:</th>
-        <td class="{{info.decisions.class}}">
-          <div>{{info.decisions.exec}} of {{info.decisions.total}}</div>
-          <div>{{info.decisions.coverage}}%</div>
+        <td>
+          {% if info.decisions.coverage == '-' %}
+          <span class="coverage-percent {{info.decisions.class}}">-</span>
+          {% else %}
+          <span class="stat-value">{{info.decisions.exec}}</span>
+          <span class="stat-separator">of</span>
+          <span class="stat-value">{{info.decisions.total}}</span>
+          <span class="stat-separator"></span>
+          <span class="summary-coverage {{info.decisions.class}}">{{info.decisions.coverage}}%</span>
+          {% endif %}
         </td>
       </tr>
       {% endif %}
       <tr>
         <th scope="row">Functions:</th>
-        <td class="{{info.functions.class}}">
-          <div>{{info.functions.exec}} of {{info.functions.total}}{% if info.functions.excluded %} - {{info.functions.excluded}} excluded{% endif %}</div>
-          <div>{{info.functions.coverage}}%</div>
+        <td>
+          {% if info.functions.coverage == '-' %}
+          <span class="coverage-percent {{info.functions.class}}">-</span>
+          {% else %}
+          <span class="stat-value">{{info.functions.exec}}</span>
+          <span class="stat-separator">of</span>
+          <span class="stat-value">{{info.functions.total}}</span>
+          {%  if info.functions.excluded %}
+          <span class="stat-separator">,</span>
+          <span class="stat-value">{{info.functions.excluded}}</span>
+          <span class="stat-separator">excluded</span>
+          {%  else %}
+          <span class="stat-separator"></span>
+          {%  endif %}
+          <span class="summary-coverage {{info.functions.class}}">{{info.functions.coverage}}%</span>
+          {% endif %}
         </td>
       </tr>
       {% if SHOW_CALLS %}
       <tr>
         <th scope="row">Calls:</th>
-        <td class="{{info.calls.class}}">
-          <div>{{info.calls.exec}} of {{info.calls.total}}{% if info.calls.excluded %} - {{info.calls.excluded}} excluded{% endif %}</div>
-          <div>{{info.calls.coverage}}%</div>
+        <td>
+          {% if info.calls.coverage == '-' %}
+          <span class="coverage-percent {{info.calls.class}}">-</span>
+          {% else %}
+          <span class="stat-value">{{info.calls.exec}}</span>
+          <span class="stat-separator">of</span>
+          <span class="stat-value">{{info.calls.total}}</span>
+          {%  if info.calls.excluded %}
+          <span class="stat-separator">,</span>
+          <span class="stat-value">{{info.calls.excluded}}</span>
+          <span class="stat-separator">excluded</span>
+          {%  else %}
+          <span class="stat-separator"></span>
+          {%  endif %}
+          <span class="summary-coverage {{info.calls.class}}">{{info.calls.coverage}}%</span>
+          {% endif %}
         </td>
       </tr>
       {% endif %}

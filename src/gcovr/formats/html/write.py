@@ -515,6 +515,7 @@ def write_report(
                 "isDirectory": isinstance(cdata, CoverageContainer),
                 "link": cdata_data["link"],
             }
+            cdata.properties["tree_data"]["diff"] = cdata.diff.name
 
             # Add the sorted children to the tree data for directories
             if isinstance(cdata, CoverageContainer):
@@ -810,7 +811,7 @@ def get_coverage_data(
 
     is_file_with_lines = isinstance(cdata, FileCoverage) and cdata.has_lines()
     lines = {
-        "total": stats.line.total_with_excluded,
+        "total": stats.line.total,
         "exec": stats.line.covered,
         "excluded": stats.line.excluded,
         "coverage": stats.line.percent_or(100.0 if is_file_with_lines else "-"),
@@ -821,7 +822,7 @@ def get_coverage_data(
     }
 
     branches = {
-        "total": stats.branch.total_with_excluded,
+        "total": stats.branch.total,
         "exec": stats.branch.covered,
         "excluded": stats.branch.excluded,
         "coverage": stats.branch.percent_or("-"),
@@ -830,7 +831,7 @@ def get_coverage_data(
     }
 
     conditions = {
-        "total": stats.condition.total_with_excluded,
+        "total": stats.condition.total,
         "exec": stats.condition.covered,
         "excluded": stats.condition.excluded,
         "coverage": stats.condition.percent_or("-"),
@@ -848,7 +849,7 @@ def get_coverage_data(
     }
 
     functions = {
-        "total": stats.function.total_with_excluded,
+        "total": stats.function.total,
         "exec": stats.function.covered,
         "excluded": stats.function.excluded,
         "coverage": stats.function.percent_or("-"),
@@ -857,7 +858,7 @@ def get_coverage_data(
     }
 
     calls = {
-        "total": stats.call.total_with_excluded,
+        "total": stats.call.total,
         "exec": stats.call.covered,
         "excluded": stats.call.excluded,
         "coverage": stats.call.percent_or("-"),
@@ -1084,9 +1085,7 @@ def dict_from_stat(
     """Get a dictionary from the stats."""
     coverage_default = "-" if default is None else default
     data = {
-        "total": stat.total_with_excluded
-        if isinstance(stat, CoverageStat)
-        else stat.total,
+        "total": stat.total if isinstance(stat, CoverageStat) else stat.total,
         "exec": stat.covered,
         "excluded": stat.excluded if isinstance(stat, CoverageStat) else "-",
         "coverage": stat.percent_or(coverage_default),
@@ -1198,7 +1197,7 @@ def source_row_branch(
     return {
         "function_name": linecov.report_function_name,
         "taken": stats.covered,
-        "total": stats.total_with_excluded,
+        "total": stats.total,
         "branches": items,
     }
 
@@ -1238,7 +1237,7 @@ def source_row_condition(
     stats = linecov.condition_coverage()
     return {
         "function_name": linecov.report_function_name,
-        "count": stats.total_with_excluded,
+        "count": stats.total,
         "covered": stats.covered,
         "condition": items,
     }
@@ -1316,7 +1315,7 @@ def source_row_call(linecov: LineCoverage) -> dict[str, Any]:
     return {
         "function_name": linecov.report_function_name,
         "invoked": stats.covered,
-        "total": stats.total_with_excluded,
+        "total": stats.total,
         "calls": items,
     }
 

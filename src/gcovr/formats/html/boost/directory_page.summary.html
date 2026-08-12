@@ -17,10 +17,12 @@
           <span class="stat-label">Hit</span>
           <span class="stat-value">{{info.lines.exec}}</span>
         </div>
+        {% if info.lines.excluded > 0 %}
         <div class="stat-row">
           <span class="stat-label">Excl</span>
           <span class="stat-value">{{info.lines.excluded}}</span>
         </div>
+        {% endif %}
         <div class="stat-row">
           <span class="stat-label">Total</span>
           <span class="stat-value">{{info.lines.total}}</span>
@@ -28,36 +30,6 @@
       </div>
     </div>
   </div>
-
-  <div class="summary-card">
-    <div class="summary-card-header">
-      <h3>Functions</h3>
-    </div>
-    <div class="summary-card-body">
-      <div class="coverage-ring {{info.functions.class}}">
-        <svg viewBox="0 0 36 36">
-          <path class="ring-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
-          <path class="ring-fill" stroke-dasharray="{% if info.functions.coverage != '-' %}{{info.functions.coverage}}{% else %}0{% endif %}, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
-        </svg>
-        <span class="ring-text">{{info.functions.coverage}}%</span>
-      </div>
-      <div class="summary-stats">
-        <div class="stat-row">
-          <span class="stat-label">Hit</span>
-          <span class="stat-value">{{info.functions.exec}}</span>
-        </div>
-        <div class="stat-row">
-          <span class="stat-label">Excl</span>
-          <span class="stat-value">{{info.functions.excluded}}</span>
-        </div>
-        <div class="stat-row">
-          <span class="stat-label">Total</span>
-          <span class="stat-value">{{info.functions.total}}</span>
-        </div>
-      </div>
-    </div>
-  </div>
-
   {% if info.branches.total > info.branches.excluded %}
   <div class="summary-card">
     <div class="summary-card-header">
@@ -76,10 +48,12 @@
           <span class="stat-label">Hit</span>
           <span class="stat-value">{{info.branches.exec}}</span>
         </div>
+        {% if info.branches.excluded > 0 %}
         <div class="stat-row">
           <span class="stat-label">Excl</span>
           <span class="stat-value">{{info.branches.excluded}}</span>
         </div>
+        {% endif %}
         <div class="stat-row">
           <span class="stat-label">Total</span>
           <span class="stat-value">{{info.branches.total}}</span>
@@ -89,7 +63,6 @@
   </div>
   {% endif %}
   {% if SHOW_CONDITION_COVERAGE %}
-
   <div class="summary-card">
     <div class="summary-card-header">
       <h3>Conditions</h3>
@@ -107,10 +80,12 @@
           <span class="stat-label">Hit</span>
           <span class="stat-value">{{info.conditions.exec}}</span>
         </div>
+        {% if info.conditions.excluded > 0 %}
         <div class="stat-row">
           <span class="stat-label">Excl</span>
           <span class="stat-value">{{info.conditions.excluded}}</span>
         </div>
+        {% endif %}
         <div class="stat-row">
           <span class="stat-label">Total</span>
           <span class="stat-value">{{info.conditions.total}}</span>
@@ -120,7 +95,6 @@
   </div>
   {% endif %}
   {% if SHOW_DECISION %}
-
   <div class="summary-card">
     <div class="summary-card-header">
       <h3>Decisions</h3>
@@ -139,10 +113,6 @@
           <span class="stat-value">{{info.decisions.exec}}</span>
         </div>
         <div class="stat-row">
-          <span class="stat-label">Excl</span>
-          <span class="stat-value">-</span>
-        </div>
-        <div class="stat-row">
           <span class="stat-label">Total</span>
           <span class="stat-value">{{info.decisions.total}}</span>
         </div>
@@ -150,8 +120,37 @@
     </div>
   </div>
   {% endif %}
+  <div class="summary-card">
+    <div class="summary-card-header">
+      <h3>Functions</h3>
+    </div>
+    <div class="summary-card-body">
+      <div class="coverage-ring {{info.functions.class}}">
+        <svg viewBox="0 0 36 36">
+          <path class="ring-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
+          <path class="ring-fill" stroke-dasharray="{% if info.functions.coverage != '-' %}{{info.functions.coverage}}{% else %}0{% endif %}, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
+        </svg>
+        <span class="ring-text">{{info.functions.coverage}}%</span>
+      </div>
+      <div class="summary-stats">
+        <div class="stat-row">
+          <span class="stat-label">Hit</span>
+          <span class="stat-value">{{info.functions.exec}}</span>
+        </div>
+        {% if info.functions.excluded > 0 %}
+        <div class="stat-row">
+          <span class="stat-label">Excl</span>
+          <span class="stat-value">{{info.functions.excluded}}</span>
+        </div>
+        {% endif %}
+        <div class="stat-row">
+          <span class="stat-label">Total</span>
+          <span class="stat-value">{{info.functions.total}}</span>
+        </div>
+      </div>
+    </div>
+  </div>
   {% if SHOW_CALLS %}
-
   <div class="summary-card">
     <div class="summary-card-header">
       <h3>Calls</h3>
@@ -169,10 +168,12 @@
           <span class="stat-label">Hit</span>
           <span class="stat-value">{{info.calls.exec}}</span>
         </div>
+        {% if info.calls.excluded %}
         <div class="stat-row">
           <span class="stat-label">Excl</span>
           <span class="stat-value">{{info.calls.excluded}}</span>
         </div>
+        {% endif %}
         <div class="stat-row">
           <span class="stat-label">Total</span>
           <span class="stat-value">{{info.calls.total}}</span>

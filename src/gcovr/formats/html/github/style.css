@@ -6,6 +6,10 @@
 
 {% include "style.colors.css" %}
 
+.col-1-5 {
+  width: 12%
+}
+
 .transy-2 {
   transform: translateY(-2px);
 }

@@ -132,13 +132,16 @@
           <span class="stat-value">15</span>
         </div>
         <div class="stat-row">
+          <span class="stat-label">Excl</span>
+          <span class="stat-value">11</span>
+        </div>
+        <div class="stat-row">
           <span class="stat-label">Total</span>
-          <span class="stat-value">28</span>
+          <span class="stat-value">17</span>
         </div>
       </div>
     </div>
   </div>
-
   <div class="summary-card">
     <div class="summary-card-header">
       <h3>Functions</h3>
@@ -157,33 +160,12 @@
           <span class="stat-value">4</span>
         </div>
         <div class="stat-row">
-          <span class="stat-label">Total</span>
-          <span class="stat-value">5</span>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="summary-card">
-    <div class="summary-card-header">
-      <h3>Branches</h3>
-    </div>
-    <div class="summary-card-body">
-      <div class="coverage-ring coverage-medium">
-        <svg viewBox="0 0 36 36">
-          <path class="ring-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
-          <path class="ring-fill" stroke-dasharray="80.0, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
-        </svg>
-        <span class="ring-text">80.0%</span>
-      </div>
-      <div class="summary-stats">
-        <div class="stat-row">
-          <span class="stat-label">Hit</span>
-          <span class="stat-value">8</span>
+          <span class="stat-label">Excl</span>
+          <span class="stat-value">1</span>
         </div>
         <div class="stat-row">
           <span class="stat-label">Total</span>
-          <span class="stat-value">10</span>
+          <span class="stat-value">4</span>
         </div>
       </div>
     </div>
@@ -207,25 +189,21 @@
     <div class="col-name sortable sorted-ascending" data-sort="filename">
       Name
     </div>
-    <div class="col-coverage sortable" data-sort="coverage">
-      Coverage
-    </div>
     <div class="col-lines sortable" data-sort="lines">
       Lines
     </div>
-    <div class="col-functions sortable" data-sort="functions">
-      Functions
-    </div>
     <div class="col-branches sortable" data-sort="branches">
       Branches
+    </div>
+    <div class="col-functions sortable" data-sort="functions">
+      Functions
     </div>
   </div>
 
   <div class="file-list-body" id="file-list">
     <div class="file-row file"
          data-filename="bar.cpp"
-         data-coverage="-"
-         data-lines="4"
+         data-lines="-"
          data-lines-exec="0"
          data-lines-coverage="100.0"
          data-lines-class="coverage-high"
@@ -251,30 +229,29 @@
         </span>
         <a href="coverage.boost.bar.cpp.33243d08388e3ada4163475daccef2bb.html" title="bar.cpp">bar.cpp</a>
       </div>
-
-      <div class="col-coverage">
+      <div class="col-lines">
+        <span class="stat-value">0</span>
+        <span class="stat-separator">of</span>
+        <span class="stat-total">0</span>
+        <span class="stat-separator">,</span>
+        <span class="stat-value">4</span>
+        <span class="stat-separator">excluded</span>
+        <span class="stat-separator"></span>
         <div class="coverage-bar-container">
           <div class="coverage-bar coverage-high" style="width: 100.0%"></div>
         </div>
         <span class="coverage-percent coverage-high">100.0%</span>
       </div>
-
-      <div class="col-lines">
-        <span class="stat-value">0</span>
-        <span class="stat-separator">/</span>
-        <span class="stat-total">4</span>
+      <div class="col-branches">
+        <span class="coverage-percent coverage-unknown">-</span>
       </div>
       <div class="col-functions">
-        <span class="stat-value coverage-unknown">-</span>
-      </div>
-      <div class="col-branches">
-        <span class="stat-value coverage-unknown">-</span>
+        <span class="coverage-percent coverage-unknown">-</span>
       </div>
     </div>
     <div class="file-row file"
          data-filename="foo.cpp"
-         data-coverage="77.8"
-         data-lines="14"
+         data-lines="77.8"
          data-lines-exec="7"
          data-lines-coverage="77.8"
          data-lines-class="coverage-medium"
@@ -300,30 +277,39 @@
         </span>
         <a href="coverage.boost.foo.cpp.faebb52d874bf75fe914824f9610c557.html" title="foo.cpp">foo.cpp</a>
       </div>
-
-      <div class="col-coverage">
+      <div class="col-lines">
+        <span class="stat-value">7</span>
+        <span class="stat-separator">of</span>
+        <span class="stat-total">9</span>
+        <span class="stat-separator">,</span>
+        <span class="stat-value">5</span>
+        <span class="stat-separator">excluded</span>
+        <span class="stat-separator"></span>
         <div class="coverage-bar-container">
           <div class="coverage-bar coverage-medium" style="width: 77.8%"></div>
         </div>
         <span class="coverage-percent coverage-medium">77.8%</span>
       </div>
-
-      <div class="col-lines">
-        <span class="stat-value">7</span>
-        <span class="stat-separator">/</span>
-        <span class="stat-total">14</span>
+      <div class="col-branches">
+        <span class="stat-value">6</span>
+        <span class="stat-separator">of</span>
+        <span class="stat-total">8</span>
+        <span class="stat-separator">,</span>
+        <span class="stat-value">8</span>
+        <span class="stat-separator">excluded</span>
+        <span class="coverage-percent coverage-medium">75.0%</span>
       </div>
       <div class="col-functions">
-        <span class="stat-value coverage-high">100.0%</span>
-      </div>
-      <div class="col-branches">
-        <span class="stat-value coverage-medium">75.0%</span>
+        <span class="stat-value">1</span>
+        <span class="stat-separator">of</span>
+        <span class="stat-total">1</span>
+        <span class="stat-separator"></span>
+        <span class="coverage-percent coverage-high">100.0%</span>
       </div>
     </div>
     <div class="file-row file"
          data-filename="main.cpp"
-         data-coverage="100.0"
-         data-lines="10"
+         data-lines="100.0"
          data-lines-exec="8"
          data-lines-coverage="100.0"
          data-lines-class="coverage-high"
@@ -349,24 +335,32 @@
         </span>
         <a href="coverage.boost.main.cpp.b5073e8514f91f78eb0683c46411f0e4.html" title="main.cpp">main.cpp</a>
       </div>
-
-      <div class="col-coverage">
+      <div class="col-lines">
+        <span class="stat-value">8</span>
+        <span class="stat-separator">of</span>
+        <span class="stat-total">8</span>
+        <span class="stat-separator">,</span>
+        <span class="stat-value">2</span>
+        <span class="stat-separator">excluded</span>
+        <span class="stat-separator"></span>
         <div class="coverage-bar-container">
           <div class="coverage-bar coverage-high" style="width: 100.0%"></div>
         </div>
         <span class="coverage-percent coverage-high">100.0%</span>
       </div>
-
-      <div class="col-lines">
-        <span class="stat-value">8</span>
-        <span class="stat-separator">/</span>
-        <span class="stat-total">10</span>
+      <div class="col-branches">
+        <span class="stat-value">2</span>
+        <span class="stat-separator">of</span>
+        <span class="stat-total">2</span>
+        <span class="stat-separator"></span>
+        <span class="coverage-percent coverage-high">100.0%</span>
       </div>
       <div class="col-functions">
-        <span class="stat-value coverage-high">100.0%</span>
-      </div>
-      <div class="col-branches">
-        <span class="stat-value coverage-high">100.0%</span>
+        <span class="stat-value">3</span>
+        <span class="stat-separator">of</span>
+        <span class="stat-total">3</span>
+        <span class="stat-separator"></span>
+        <span class="coverage-percent coverage-high">100.0%</span>
       </div>
     </div>
   </div>

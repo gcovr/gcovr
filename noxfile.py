@@ -666,7 +666,7 @@ def html2jpeg(session: nox.Session) -> None:
                     break
                 except requests.exceptions.ConnectionError:
                     retries += 1
-                    if retries == 10:
+                    if retries == 20:
                         session.error("Giving up!")
                     session.log(f"Retry {retries} in 1 second")
                     time.sleep(  # nosemgrep # We need to wait here until server is started.

@@ -25,6 +25,7 @@ table.legend
   flex-flow: row wrap;
   justify-content: flex-start;
   margin-left: 16px;
+  font-size: var(--body-font-size, 14px);
 }
 
 table.legend th[scope=row]
@@ -45,7 +46,6 @@ table.legend td
 table.legend td.legend
 {
   color: black;
-  font-size: 80%;
 }
 
 table.legend td.warning_text
@@ -57,13 +57,12 @@ table.coverage
 {
   border-collapse: collapse;
   margin-right: 16px;
+  font-size: var(--body-font-size, 14px);
 }
 
 table.coverage td,
 table.coverage th
 {
-  text-align: right;
-  color: black;
   font-weight: normal;
   white-space: nowrap;
   padding-top: 3px;
@@ -72,53 +71,51 @@ table.coverage th
   padding-right: 10px;
 }
 
-table.coverage td {
-  display: flex;
-  justify-content: flex-end;
-}
-
-table.coverage td div {
-  min-width: 4em;
-}
-
-table.legend span
+table.coverage th
 {
-  margin-right: 4px;
+  text-align: left;
+}
+
+table.coverage td
+{
+  text-align: right;
+}
+
+span.summary-coverage.coverage-unknown,
+span.summary-coverage.coverage-none,
+span.summary-coverage.coverage-low,
+span.summary-coverage.coverage-medium,
+span.summary-coverage.coverage-high
+{
   padding: 2px;
-}
-
-table.legend span.coverage-unknown,
-table.legend span.coverage-none,
-table.legend span.coverage-low,
-table.legend span.coverage-medium,
-table.legend span.coverage-high
-{
   padding-left: 0.5em;
   padding-right: 0.5em;
+  border-radius: 1em;
+  border: 1px solid;
+  margin-right: 4px;
+  color: white;
+  width: 3.5em;
+  display: inline-block;
+  text-align: center;
 }
 
-table.legend span.coverage-unknown,
-table.coverage td.coverage-unknown
+span.summary-coverage.coverage-unknown
 {
   background-color: var(--unknown_color) !important;
 }
 
-table.legend span.coverage-none,
-table.legend span.coverage-low,
-table.coverage td.coverage-none,
-table.coverage td.coverage-low
+span.summary-coverage.coverage-none,
+span.summary-coverage.coverage-low
 {
   background-color: var(--low_color) !important;
 }
 
-table.legend span.coverage-medium,
-table.coverage td.coverage-medium
+span.summary-coverage.coverage-medium
 {
   background-color: var(--medium_color) !important;
 }
 
-table.legend span.coverage-high,
-table.coverage td.coverage-high
+span.summary-coverage.coverage-high
 {
   background-color: var(--high_color) !important;
 }

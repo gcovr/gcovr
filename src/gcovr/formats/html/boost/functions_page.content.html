@@ -1,14 +1,11 @@
 {# -*- engine: jinja -*- #}
-<div class="functions-container{% if not (info.branches.total > info.branches.excluded) %} no-branches{% endif %}">
+<div class="functions-container">
   <div class="functions-body">
     <div class="functions-header">
       {% set class_sortable = " sortable" if not info.static_report and function_list | length > 1 else "" %}
       <div class="col-function{{class_sortable}}{% if class_sortable %} sorted-ascending{% endif %}" data-sort="name">Function</div>
       <div class="col-calls{{class_sortable}}" data-sort="calls">Calls</div>
       <div class="col-lines{{class_sortable}}" data-sort="lines">Lines</div>
-      {% if info.branches.total > info.branches.excluded %}
-      <div class="col-branches{{class_sortable}}" data-sort="branches">Branches</div>
-      {% endif %}
       {% if SHOW_CONDITION_COVERAGE %}
       <div class="col-conditions{{class_sortable}}" data-sort="conditions">Conditions</div>
       {% endif %}

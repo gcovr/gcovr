@@ -975,7 +975,7 @@
       data.sort(function(a, b) {
         var aVal, bVal;
         switch (key) {
-          case 'name': aVal = a.name; bVal = b.name; break;
+          case 'filename': aVal = a.filename; bVal = b.filename; break;
           case 'calls': aVal = a.excluded ? -1 : a.execution_count; bVal = b.excluded ? -1 : b.execution_count; break;
           case 'lines': aVal = parseFloat(a.line_coverage) || 0; bVal = parseFloat(b.line_coverage) || 0; break;
           case 'branches': aVal = parseFloat(a.branch_coverage) || 0; bVal = parseFloat(b.branch_coverage) || 0; break;
@@ -1110,10 +1110,6 @@
 
       var aVal = a.dataset[key] || a.querySelector('[data-sort]')?.dataset.sort || '';
       var bVal = b.dataset[key] || b.querySelector('[data-sort]')?.dataset.sort || '';
-      if (key == 'filename' && localStorage.getItem('gcovr-view-mode') === 'nested') {
-        aVal = aVal.split('/').pop();
-        bVal = bVal.split('/').pop();
-      }
 
       // Try to parse as numbers
       var aNum = parseFloat(aVal);
@@ -1354,8 +1350,7 @@
       var row = document.createElement('div');
       row.className = 'file-row file';
       row.setAttribute('data-filename', file.fullPath);
-      row.setAttribute('data-coverage', file.coverage || '0');
-      row.setAttribute('data-lines', file.linesTotal || '');
+      row.setAttribute('data-lines', file.linesCoverage || '0');
       row.setAttribute('data-functions', file.functionsCoverage || '');
       row.setAttribute('data-branches', file.branchesCoverage || '');
 
@@ -1383,9 +1378,9 @@
       }
       row.appendChild(colName);
 
-      // Col coverage
-      var colCov = document.createElement('div');
-      colCov.className = 'col-coverage';
+      // Col lines
+      var colLines = document.createElement('div');
+      colLines.className = 'col-lines';
 
       var barContainer = document.createElement('div');
       barContainer.className = 'coverage-bar-container';
@@ -1395,62 +1390,29 @@
       bar.className = 'coverage-bar ' + linesClass;
       bar.style.width = (linesCov && linesCov !== '-') ? linesCov + '%' : '0%';
       barContainer.appendChild(bar);
-      colCov.appendChild(barContainer);
+      colLines.appendChild(barContainer);
 
       var pct = document.createElement('span');
       pct.className = 'coverage-percent ' + linesClass;
       pct.textContent = (linesCov && linesCov !== '-') ? linesCov + '%' : '-';
-      colCov.appendChild(pct);
-      row.appendChild(colCov);
-
-      // Col lines
-      var colLines = document.createElement('div');
-      colLines.className = 'col-lines';
-      var execSpan = document.createElement('span');
-      execSpan.className = 'stat-value';
-      execSpan.textContent = file.linesExec || '';
-      colLines.appendChild(execSpan);
-      var sep = document.createElement('span');
-      sep.className = 'stat-separator';
-      sep.textContent = '/';
-      colLines.appendChild(sep);
-      var totalSpan = document.createElement('span');
-      totalSpan.className = 'stat-total';
-      totalSpan.textContent = file.linesTotal || '';
-      colLines.appendChild(totalSpan);
+      colLines.appendChild(pct);
       row.appendChild(colLines);
 
-      // Col functions (check if container has the column)
+      // Check if container has the column
       var container = fileList.closest('.file-list-container');
-      var hasFunctions = !container || !container.classList.contains('no-functions');
-      var hasBranches = !container || !container.classList.contains('no-branches');
       var hasConditions = !container || !container.classList.contains('no-conditions');
       var hasDecision = !container || !container.classList.contains('no-decisions');
       var hasCalls = !container || !container.classList.contains('no-calls');
 
-      if (hasFunctions) {
-        var colFunc = document.createElement('div');
-        colFunc.className = 'col-functions';
-        var funcVal = document.createElement('span');
-        var funcCov = file.functionsCoverage || '';
-        var funcClass = file.functionsClass || '';
-        funcVal.className = 'stat-value ' + funcClass;
-        funcVal.textContent = (funcCov && funcCov !== '-') ? funcCov + '%' : '-';
-        colFunc.appendChild(funcVal);
-        row.appendChild(colFunc);
-      }
-
-      if (hasBranches) {
-        var colBr = document.createElement('div');
-        colBr.className = 'col-branches';
-        var brVal = document.createElement('span');
-        var brCov = file.branchesCoverage || '';
-        var brClass = file.branchesClass || '';
-        brVal.className = 'stat-value ' + brClass;
-        brVal.textContent = (brCov && brCov !== '-') ? brCov + '%' : '-';
-        colBr.appendChild(brVal);
-        row.appendChild(colBr);
-      }
+      var colBr = document.createElement('div');
+      colBr.className = 'col-branches';
+      var brVal = document.createElement('span');
+      var brCov = file.branchesCoverage || '';
+      var brClass = file.branchesClass || '';
+      brVal.className = 'stat-value ' + brClass;
+      brVal.textContent = (brCov && brCov !== '-') ? brCov + '%' : '-';
+      colBr.appendChild(brVal);
+      row.appendChild(colBr);
 
       if (hasConditions) {
         var colCond = document.createElement('div');
@@ -1476,6 +1438,16 @@
         row.appendChild(colDec);
       }
 
+      var colFunc = document.createElement('div');
+      colFunc.className = 'col-functions';
+      var funcVal = document.createElement('span');
+      var funcCov = file.functionsCoverage || '';
+      var funcClass = file.functionsClass || '';
+      funcVal.className = 'stat-value ' + funcClass;
+      funcVal.textContent = (funcCov && funcCov !== '-') ? funcCov + '%' : '-';
+      colFunc.appendChild(funcVal);
+      row.appendChild(colFunc);
+
       if (hasCalls) {
         var colCalls = document.createElement('div');
         colCalls.className = 'col-calls';
@@ -1488,16 +1460,14 @@
         row.appendChild(colCalls);
       }
 
-      {
-        var colDiff = document.createElement('div');
-        colDiff.className = 'col-diff';
-        var diffVal = document.createElement('span');
-        var diffText = file.diff || '';
-        diffVal.className = 'stat-value';
-        diffVal.textContent = diffText;
-        colDiff.appendChild(diffVal);
-        row.appendChild(colDiff);
-      }
+      var colDiff = document.createElement('div');
+      colDiff.className = 'col-diff';
+      var diffVal = document.createElement('span');
+      var diffText = file.diff ? (file.diff.charAt(0).toUpperCase() + file.diff.replace(/_/, ' ').slice(1).toLowerCase()) : '';
+      diffVal.className = 'stat-value';
+      diffVal.textContent = diffText;
+      colDiff.appendChild(diffVal);
+      row.appendChild(colDiff);
 
       return row;
     }
@@ -2103,6 +2073,7 @@ window.GCOVR_TREE_DATA = [
                     "branchesCoverage": "0.0",
                     "coverage": "0.0",
                     "coverageClass": "coverage-none",
+                    "diff": "STRICTLY_EQUAL",
                     "functionsClass": "coverage-none",
                     "functionsCoverage": "0.0",
                     "isDirectory": false,
@@ -2116,6 +2087,7 @@ window.GCOVR_TREE_DATA = [
                 ],
                 "coverage": "0.0",
                 "coverageClass": "coverage-none",
+                "diff": "STRICTLY_EQUAL",
                 "functionsClass": "coverage-none",
                 "functionsCoverage": "0.0",
                 "isDirectory": true,
@@ -2131,6 +2103,7 @@ window.GCOVR_TREE_DATA = [
                 "branchesCoverage": "50.0",
                 "coverage": "75.0",
                 "coverageClass": "coverage-medium",
+                "diff": "STRICTLY_EQUAL",
                 "functionsClass": "coverage-high",
                 "functionsCoverage": "100.0",
                 "isDirectory": false,
@@ -2144,6 +2117,7 @@ window.GCOVR_TREE_DATA = [
             ],
             "coverage": "37.5",
             "coverageClass": "coverage-low",
+            "diff": "STRICTLY_EQUAL",
             "functionsClass": "coverage-low",
             "functionsCoverage": "50.0",
             "isDirectory": true,
@@ -2159,6 +2133,7 @@ window.GCOVR_TREE_DATA = [
             "branchesCoverage": "50.0",
             "coverage": "75.0",
             "coverageClass": "coverage-medium",
+            "diff": "STRICTLY_EQUAL",
             "functionsClass": "coverage-high",
             "functionsCoverage": "100.0",
             "isDirectory": false,
@@ -2174,6 +2149,7 @@ window.GCOVR_TREE_DATA = [
             "branchesCoverage": "-",
             "coverage": "57.1",
             "coverageClass": "coverage-low",
+            "diff": "STRICTLY_EQUAL",
             "functionsClass": "coverage-low",
             "functionsCoverage": "50.0",
             "isDirectory": false,
@@ -2189,6 +2165,7 @@ window.GCOVR_TREE_DATA = [
             "branchesCoverage": "0.0",
             "coverage": "44.4",
             "coverageClass": "coverage-low",
+            "diff": "STRICTLY_EQUAL",
             "functionsClass": "coverage-low",
             "functionsCoverage": "50.0",
             "isDirectory": false,
@@ -2204,6 +2181,7 @@ window.GCOVR_TREE_DATA = [
             "branchesCoverage": "50.0",
             "coverage": "75.0",
             "coverageClass": "coverage-medium",
+            "diff": "STRICTLY_EQUAL",
             "functionsClass": "coverage-high",
             "functionsCoverage": "100.0",
             "isDirectory": false,
@@ -2219,6 +2197,7 @@ window.GCOVR_TREE_DATA = [
             "branchesCoverage": "-",
             "coverage": "0.0",
             "coverageClass": "coverage-none",
+            "diff": "STRICTLY_EQUAL",
             "functionsClass": "coverage-none",
             "functionsCoverage": "0.0",
             "isDirectory": false,
@@ -2232,6 +2211,7 @@ window.GCOVR_TREE_DATA = [
         ],
         "coverage": "50.0",
         "coverageClass": "coverage-low",
+        "diff": "STRICTLY_EQUAL",
         "functionsClass": "coverage-low",
         "functionsCoverage": "55.6",
         "isDirectory": true,
@@ -2251,6 +2231,7 @@ window.GCOVR_TREE_DATA = [
             "branchesCoverage": "25.0",
             "coverage": "100.0",
             "coverageClass": "coverage-high",
+            "diff": "STRICTLY_EQUAL",
             "functionsClass": "coverage-high",
             "functionsCoverage": "100.0",
             "isDirectory": false,
@@ -2264,6 +2245,7 @@ window.GCOVR_TREE_DATA = [
         ],
         "coverage": "100.0",
         "coverageClass": "coverage-high",
+        "diff": "STRICTLY_EQUAL",
         "functionsClass": "coverage-high",
         "functionsCoverage": "100.0",
         "isDirectory": true,
@@ -2277,6 +2259,7 @@ window.GCOVR_TREE_DATA = [
     ],
     "coverage": "59.5",
     "coverageClass": "coverage-low",
+    "diff": "STRICTLY_EQUAL",
     "functionsClass": "coverage-low",
     "functionsCoverage": "60.0",
     "isDirectory": true,

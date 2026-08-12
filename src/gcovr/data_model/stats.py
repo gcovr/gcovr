@@ -101,24 +101,19 @@ class SummarizedStats:
 class CoverageStat:
     """A single coverage metric, e.g. the line coverage percentage of a file."""
 
+    total: int
+    """How many elements there were in total."""
+
     covered: int
     """How many elements were covered."""
 
     excluded: int
     """How many elements there were excluded."""
 
-    total_with_excluded: int
-    """How many elements there were in total (including the excluded ones)."""
-
     @staticmethod
     def new_empty() -> CoverageStat:
         """Create a empty coverage statistic."""
-        return CoverageStat(0, 0, 0)
-
-    @property
-    def total(self) -> int:
-        """Get the total without the excluded elements."""
-        return self.total_with_excluded - self.excluded
+        return CoverageStat(total=0, covered=0, excluded=0)
 
     @property
     def percent(self) -> float | None:
@@ -129,17 +124,17 @@ class CoverageStat:
         """Percentage of covered elements.
 
         Coverage is truncated to one decimal:
-        >>> CoverageStat(1234, 0, 10000).percent_or("default")
+        >>> CoverageStat(total=10000, covered=1234, excluded=0).percent_or("default")
         12.3
 
         Coverage is capped at 99.9% unless everything is covered:
-        >>> CoverageStat(9999, 0, 10000).percent_or("default")
+        >>> CoverageStat(total=10000, covered=9999, excluded=^^^0).percent_or("default")
         99.9
-        >>> CoverageStat(10000, 0, 10000).percent_or("default")
+        >>> CoverageStat(total=10000, covered=0, excluded=0).percent_or("default")
         100.0
 
         If there are no elements, percentage is NaN and the default will be returned:
-        >>> CoverageStat(0, 0, 0).percent_or("default")
+        >>> CoverageStat(total=0, covered=0, excluded=0).percent_or("default")
         'default'
         """
         if not self.total:
@@ -155,8 +150,8 @@ class CoverageStat:
         return min(99.9, round(ratio * 100.0, 1))
 
     def __iadd__(self, other: CoverageStat) -> CoverageStat:
+        self.total += other.total
         self.covered += other.covered
-        self.total_with_excluded += other.total_with_excluded
         self.excluded += other.excluded
         return self
 
@@ -165,9 +160,14 @@ class CoverageStat:
 class DecisionCoverageStat:
     """A CoverageStat for decision coverage (accounts for Uncheckable cases)."""
 
-    covered: int
-    uncheckable: int
     total: int
+    """How many elements there were in total."""
+
+    covered: int
+    """How many elements were covered."""
+
+    uncheckable: int
+    """How many elements were uncheckable."""
 
     @classmethod
     def new_empty(cls) -> DecisionCoverageStat:
@@ -177,9 +177,7 @@ class DecisionCoverageStat:
     @property
     def to_coverage_stat(self) -> CoverageStat:
         """Convert a decision coverage statistic to a coverage statistic."""
-        return CoverageStat(
-            covered=self.covered, excluded=0, total_with_excluded=self.total
-        )
+        return CoverageStat(total=self.total, covered=self.covered, excluded=0)
 
     @property
     def percent(self) -> float | None:
@@ -192,6 +190,6 @@ class DecisionCoverageStat:
 
     def __iadd__(self, other: DecisionCoverageStat) -> DecisionCoverageStat:
         self.covered += other.covered
-        self.uncheckable += other.uncheckable
         self.total += other.total
+        self.uncheckable += other.uncheckable
         return self

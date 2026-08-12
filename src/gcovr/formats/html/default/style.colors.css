@@ -1,7 +1,7 @@
 .theme-green, .theme-blue {
   --unknown_color: lightgray;
-  --low_color: #FF6666;
-  --medium_color: #F9FD63;
+  --low_color: #cf222e;
+  --medium_color: #9a6700;
   --partial_covered_color: var(--medium_color);
   --uncovered_color: #FF8C8C;
   --warning_color: orangered;
@@ -26,10 +26,12 @@
   --changed_color: #dbab09;
   --approximately_equal_color: #0a84ff;
   --strictly_equal_color: #777777;
+  /* text colors */
+  --text-muted: #8c959f;
 }
 
 .theme-green {
-  --high_color: #85E485;
+  --high_color: #1a7f37;
   --covered_color: #85E485;
   --takenBranch_color: green;
   --takenCondition_color: green;
@@ -38,7 +40,7 @@
 }
 
 .theme-blue {
-  --high_color: #66B4FF;
+  --high_color: #58a6ff;
   --covered_color: #66B4Ff;
   --takenBranch_color: blue;
   --takenCondition_color: blue;

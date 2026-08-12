@@ -15,8 +15,8 @@
 
 .theme-green, .theme-blue {
   --unknown_color: lightgray;
-  --low_color: #FF6666;
-  --medium_color: #F9FD63;
+  --low_color: #cf222e;
+  --medium_color: #9a6700;
   --partial_covered_color: var(--medium_color);
   --uncovered_color: #FF8C8C;
   --warning_color: orangered;
@@ -41,10 +41,12 @@
   --changed_color: #dbab09;
   --approximately_equal_color: #0a84ff;
   --strictly_equal_color: #777777;
+  /* text colors */
+  --text-muted: #8c959f;
 }
 
 .theme-green {
-  --high_color: #85E485;
+  --high_color: #1a7f37;
   --covered_color: #85E485;
   --takenBranch_color: green;
   --takenCondition_color: green;
@@ -53,7 +55,7 @@
 }
 
 .theme-blue {
-  --high_color: #66B4FF;
+  --high_color: #58a6ff;
   --covered_color: #66B4Ff;
   --takenBranch_color: blue;
   --takenCondition_color: blue;
@@ -325,6 +327,7 @@ table.legend
   flex-flow: row wrap;
   justify-content: flex-start;
   margin-left: 16px;
+  font-size: var(--body-font-size, 14px);
 }
 
 table.legend th[scope=row]
@@ -345,7 +348,6 @@ table.legend td
 table.legend td.legend
 {
   color: black;
-  font-size: 80%;
 }
 
 table.legend td.warning_text
@@ -357,13 +359,12 @@ table.coverage
 {
   border-collapse: collapse;
   margin-right: 16px;
+  font-size: var(--body-font-size, 14px);
 }
 
 table.coverage td,
 table.coverage th
 {
-  text-align: right;
-  color: black;
   font-weight: normal;
   white-space: nowrap;
   padding-top: 3px;
@@ -372,53 +373,51 @@ table.coverage th
   padding-right: 10px;
 }
 
-table.coverage td {
-  display: flex;
-  justify-content: flex-end;
-}
-
-table.coverage td div {
-  min-width: 4em;
-}
-
-table.legend span
+table.coverage th
 {
-  margin-right: 4px;
+  text-align: left;
+}
+
+table.coverage td
+{
+  text-align: right;
+}
+
+span.summary-coverage.coverage-unknown,
+span.summary-coverage.coverage-none,
+span.summary-coverage.coverage-low,
+span.summary-coverage.coverage-medium,
+span.summary-coverage.coverage-high
+{
   padding: 2px;
-}
-
-table.legend span.coverage-unknown,
-table.legend span.coverage-none,
-table.legend span.coverage-low,
-table.legend span.coverage-medium,
-table.legend span.coverage-high
-{
   padding-left: 0.5em;
   padding-right: 0.5em;
+  border-radius: 1em;
+  border: 1px solid;
+  margin-right: 4px;
+  color: white;
+  width: 3.5em;
+  display: inline-block;
+  text-align: center;
 }
 
-table.legend span.coverage-unknown,
-table.coverage td.coverage-unknown
+span.summary-coverage.coverage-unknown
 {
   background-color: var(--unknown_color) !important;
 }
 
-table.legend span.coverage-none,
-table.legend span.coverage-low,
-table.coverage td.coverage-none,
-table.coverage td.coverage-low
+span.summary-coverage.coverage-none,
+span.summary-coverage.coverage-low
 {
   background-color: var(--low_color) !important;
 }
 
-table.legend span.coverage-medium,
-table.coverage td.coverage-medium
+span.summary-coverage.coverage-medium
 {
   background-color: var(--medium_color) !important;
 }
 
-table.legend span.coverage-high,
-table.coverage td.coverage-high
+span.summary-coverage.coverage-high
 {
   background-color: var(--high_color) !important;
 }
@@ -428,38 +427,53 @@ table.coverage td.coverage-high
 span.coverage-none,
 span.coverage-low
 {
-  background: var(--low_color);
+  color: var(--low_color);
 }
 
 span.coverage-medium
 {
-  background: var(--medium_color);
+  color: var(--medium_color);
 }
 
 span.coverage-high
 {
-  background: var(--high_color);
+  color: var(--high_color);
 }
 
-div.coverage-unknown
+span.coverage-none.Progress-item,
+span.coverage-low.Progress-item
 {
-  background-color: var(--unknown_color) !important;
+  background-color: var(--low_color);
 }
 
-div.coverage-none,
-div.coverage-low
+span.coverage-medium.Progress-item
 {
-  background-color: var(--low_color) !important;
+  background-color: var(--medium_color);
 }
 
-div.coverage-medium
+span.coverage-high.Progress-item
 {
-  background-color: var(--medium_color) !important;
+  background-color: var(--high_color);
 }
 
-div.coverage-high
-{
-  background-color: var(--high_color) !important;
+.coverage-percent {
+  font-weight: 600;
+  font-size: var(--font-size-sm);
+  min-width: 3.75em;
+  text-align: right;
+}
+
+.stat-value {
+  font-weight: 500;
+}
+
+.stat-separator {
+  color: var(--text-muted);
+  margin: 0 2px;
+}
+
+.stat-total {
+  color: var(--text-secondary);
 }
 
 div.percent,
@@ -1246,10 +1260,10 @@ document.addEventListener("DOMContentLoaded", () => {
       </tr>
       <tr>
         <th scope="row">Coverage:</th>
-        <td class="legend">
-          <span class="coverage-low">low: &ge; 0%</span>
-          <span class="coverage-medium">medium: &ge; 75.0%</span>
-          <span class="coverage-high">high: &ge; 90.0%</span>
+        <td>
+          <span class="summary-coverage coverage-low">low: &ge; 0%</span>
+          <span class="summary-coverage coverage-medium">medium: &ge; 75.0%</span>
+          <span class="summary-coverage coverage-high">high: &ge; 90.0%</span>
         </td>
       </tr>
     </table>
@@ -1259,23 +1273,32 @@ document.addEventListener("DOMContentLoaded", () => {
     <table class="coverage">
       <tr>
         <th scope="row">Lines:</th>
-        <td class="coverage-low">
-          <div>28 of 47</div>
-          <div>59.6%</div>
+        <td>
+          <span class="stat-value">28</span>
+          <span class="stat-separator">of</span>
+          <span class="stat-value">47</span>
+          <span class="stat-separator"></span>
+          <span class="summary-coverage coverage-low">59.6%</span>
         </td>
       </tr>
       <tr>
         <th scope="row">Branches:</th>
-        <td class="coverage-low">
-          <div>4 of 14</div>
-          <div>28.6%</div>
+        <td>
+          <span class="stat-value">4</span>
+          <span class="stat-separator">of</span>
+          <span class="stat-value">14</span>
+          <span class="stat-separator"></span>
+          <span class="summary-coverage coverage-low">28.6%</span>
         </td>
       </tr>
       <tr>
         <th scope="row">Functions:</th>
-        <td class="coverage-low">
-          <div>6 of 10</div>
-          <div>60.0%</div>
+        <td>
+          <span class="stat-value">6</span>
+          <span class="stat-separator">of</span>
+          <span class="stat-value">10</span>
+          <span class="stat-separator"></span>
+          <span class="summary-coverage coverage-low">60.0%</span>
         </td>
       </tr>
     </table>
@@ -1381,8 +1404,7 @@ document.addEventListener("DOMContentLoaded", () => {
 <div class="Box m-3 filelist">
   <div class="Box-header py-2 d-flex sticky">
     <div role="rowheader" class="color-fg-muted flex-auto min-width-0 col-md-2 sortable sorted-ascending">File</div>
-    <div role="rowheader" class="color-fg-muted d-flex flex-justify-end flex-auto min-width-0 flex-items-baseline"></div>
-    <div role="rowheader" class="color-fg-muted d-flex flex-justify-end col-2 sortable">Lines</div>
+    <div role="rowheader" class="color-fg-muted d-flex flex-justify-end flex-auto min-width-0 flex-items-baseline sortable">Lines</div>
     <div role="rowheader" class="color-fg-muted d-flex flex-justify-end col-2 sortable">Branches</div>
     <div role="rowheader" class="color-fg-muted d-flex flex-justify-end col-2 sortable">Functions</div>
   </div>
@@ -1392,27 +1414,32 @@ document.addEventListener("DOMContentLoaded", () => {
         <a class="" title="A/C/D/File6.cpp" href="#File6.cpp.73326d74f2aeb2719dd6d8a9bcc3e582.html">A/C/D/File6.cpp</a>
       </span>
     </div>
-    <div role="gridcell" class="color-fg-muted d-flex v-center">
+    <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap flex-items-baseline v-center" data-sort="0.0">
+      <span class="stat-value">0</span>
+      <span class="stat-separator">of</span>
+      <span class="stat-total">5</span>
+      <span class="stat-separator"></span>
       <span class="meter Progress Progress--large d-inline-flex " style="width: 200px;">
         <span class="Progress-item coverage-none" style="width: 0.0%" title="0.0%"></span>
       </span>
+      <span class="coverage-percent coverage-none">0.0%</span>
     </div>
     <div role="gridcell" class="color-fg-muted d-flex col-2" data-sort="0.0">
       <div class="d-flex flex-justify-end flex-wrap gcovr-m-l-5 coverage-none" style="width: 100%;">
-        <div class="counter">0 of 5</div>
-        <div class="percent">0.0%</div>
+        <span class="stat-value">0</span>
+        <span class="stat-separator">of</span>
+        <span class="stat-value">2</span>
+        <span class="stat-separator"></span>
+        <span class="coverage-percent coverage-none">0.0%</span>
       </div>
     </div>
     <div role="gridcell" class="color-fg-muted d-flex col-2" data-sort="0.0">
       <div class="d-flex flex-justify-end flex-wrap gcovr-m-l-5 coverage-none" style="width: 100%;">
-        <div class="counter">0 of 2</div>
-        <div class="percent">0.0%</div>
-      </div>
-    </div>
-    <div role="gridcell" class="color-fg-muted d-flex col-2" data-sort="0.0">
-      <div class="d-flex flex-justify-end flex-wrap gcovr-m-l-5 coverage-none" style="width: 100%;">
-        <div class="counter">0 of 1</div>
-        <div class="percent">0.0%</div>
+        <span class="stat-value">0</span>
+        <span class="stat-separator">of</span>
+        <span class="stat-value">1</span>
+        <span class="stat-separator"></span>
+        <span class="coverage-percent coverage-none">0.0%</span>
       </div>
     </div>
   </div>
@@ -1422,27 +1449,32 @@ document.addEventListener("DOMContentLoaded", () => {
         <a class="" title="A/C/file5.cpp" href="#file5.cpp.4f0be33a4dcfe398ba897b87f58ca7ce.html">A/C/file5.cpp</a>
       </span>
     </div>
-    <div role="gridcell" class="color-fg-muted d-flex v-center">
+    <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap flex-items-baseline v-center" data-sort="80.0">
+      <span class="stat-value">4</span>
+      <span class="stat-separator">of</span>
+      <span class="stat-total">5</span>
+      <span class="stat-separator"></span>
       <span class="meter Progress Progress--large d-inline-flex " style="width: 200px;">
         <span class="Progress-item coverage-medium" style="width: 80.0%" title="80.0%"></span>
       </span>
-    </div>
-    <div role="gridcell" class="color-fg-muted d-flex col-2" data-sort="80.0">
-      <div class="d-flex flex-justify-end flex-wrap gcovr-m-l-5 coverage-medium" style="width: 100%;">
-        <div class="counter">4 of 5</div>
-        <div class="percent">80.0%</div>
-      </div>
+      <span class="coverage-percent coverage-medium">80.0%</span>
     </div>
     <div role="gridcell" class="color-fg-muted d-flex col-2" data-sort="50.0">
       <div class="d-flex flex-justify-end flex-wrap gcovr-m-l-5 coverage-low" style="width: 100%;">
-        <div class="counter">1 of 2</div>
-        <div class="percent">50.0%</div>
+        <span class="stat-value">1</span>
+        <span class="stat-separator">of</span>
+        <span class="stat-value">2</span>
+        <span class="stat-separator"></span>
+        <span class="coverage-percent coverage-low">50.0%</span>
       </div>
     </div>
     <div role="gridcell" class="color-fg-muted d-flex col-2" data-sort="100.0">
       <div class="d-flex flex-justify-end flex-wrap gcovr-m-l-5 coverage-high" style="width: 100%;">
-        <div class="counter">1 of 1</div>
-        <div class="percent">100.0%</div>
+        <span class="stat-value">1</span>
+        <span class="stat-separator">of</span>
+        <span class="stat-value">1</span>
+        <span class="stat-separator"></span>
+        <span class="coverage-percent coverage-high">100.0%</span>
       </div>
     </div>
   </div>
@@ -1452,27 +1484,32 @@ document.addEventListener("DOMContentLoaded", () => {
         <a class="" title="A/file1.cpp" href="#file1.cpp.11975e1ce5d9c157e76130f444523bea.html">A/file1.cpp</a>
       </span>
     </div>
-    <div role="gridcell" class="color-fg-muted d-flex v-center">
+    <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap flex-items-baseline v-center" data-sort="80.0">
+      <span class="stat-value">4</span>
+      <span class="stat-separator">of</span>
+      <span class="stat-total">5</span>
+      <span class="stat-separator"></span>
       <span class="meter Progress Progress--large d-inline-flex " style="width: 200px;">
         <span class="Progress-item coverage-medium" style="width: 80.0%" title="80.0%"></span>
       </span>
-    </div>
-    <div role="gridcell" class="color-fg-muted d-flex col-2" data-sort="80.0">
-      <div class="d-flex flex-justify-end flex-wrap gcovr-m-l-5 coverage-medium" style="width: 100%;">
-        <div class="counter">4 of 5</div>
-        <div class="percent">80.0%</div>
-      </div>
+      <span class="coverage-percent coverage-medium">80.0%</span>
     </div>
     <div role="gridcell" class="color-fg-muted d-flex col-2" data-sort="50.0">
       <div class="d-flex flex-justify-end flex-wrap gcovr-m-l-5 coverage-low" style="width: 100%;">
-        <div class="counter">1 of 2</div>
-        <div class="percent">50.0%</div>
+        <span class="stat-value">1</span>
+        <span class="stat-separator">of</span>
+        <span class="stat-value">2</span>
+        <span class="stat-separator"></span>
+        <span class="coverage-percent coverage-low">50.0%</span>
       </div>
     </div>
     <div role="gridcell" class="color-fg-muted d-flex col-2" data-sort="100.0">
       <div class="d-flex flex-justify-end flex-wrap gcovr-m-l-5 coverage-high" style="width: 100%;">
-        <div class="counter">1 of 1</div>
-        <div class="percent">100.0%</div>
+        <span class="stat-value">1</span>
+        <span class="stat-separator">of</span>
+        <span class="stat-value">1</span>
+        <span class="stat-separator"></span>
+        <span class="coverage-percent coverage-high">100.0%</span>
       </div>
     </div>
   </div>
@@ -1482,27 +1519,32 @@ document.addEventListener("DOMContentLoaded", () => {
         <a class="" title="A/file3.cpp" href="#file3.cpp.bcfa344b5512d8cd5857f2fe86511d71.html">A/file3.cpp</a>
       </span>
     </div>
-    <div role="gridcell" class="color-fg-muted d-flex v-center">
+    <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap flex-items-baseline v-center" data-sort="40.0">
+      <span class="stat-value">4</span>
+      <span class="stat-separator">of</span>
+      <span class="stat-total">10</span>
+      <span class="stat-separator"></span>
       <span class="meter Progress Progress--large d-inline-flex " style="width: 200px;">
         <span class="Progress-item coverage-low" style="width: 40.0%" title="40.0%"></span>
       </span>
-    </div>
-    <div role="gridcell" class="color-fg-muted d-flex col-2" data-sort="40.0">
-      <div class="d-flex flex-justify-end flex-wrap gcovr-m-l-5 coverage-low" style="width: 100%;">
-        <div class="counter">4 of 10</div>
-        <div class="percent">40.0%</div>
-      </div>
+      <span class="coverage-percent coverage-low">40.0%</span>
     </div>
     <div role="gridcell" class="color-fg-muted d-flex col-2" data-sort="0.0">
       <div class="d-flex flex-justify-end flex-wrap gcovr-m-l-5 coverage-none" style="width: 100%;">
-        <div class="counter">0 of 2</div>
-        <div class="percent">0.0%</div>
+        <span class="stat-value">0</span>
+        <span class="stat-separator">of</span>
+        <span class="stat-value">2</span>
+        <span class="stat-separator"></span>
+        <span class="coverage-percent coverage-none">0.0%</span>
       </div>
     </div>
     <div role="gridcell" class="color-fg-muted d-flex col-2" data-sort="50.0">
       <div class="d-flex flex-justify-end flex-wrap gcovr-m-l-5 coverage-low" style="width: 100%;">
-        <div class="counter">1 of 2</div>
-        <div class="percent">50.0%</div>
+        <span class="stat-value">1</span>
+        <span class="stat-separator">of</span>
+        <span class="stat-value">2</span>
+        <span class="stat-separator"></span>
+        <span class="coverage-percent coverage-low">50.0%</span>
       </div>
     </div>
   </div>
@@ -1512,27 +1554,32 @@ document.addEventListener("DOMContentLoaded", () => {
         <a class="" title="A/File4.cpp" href="#File4.cpp.1d7a80554861eb8b5c21bc2e26ff8f70.html">A/File4.cpp</a>
       </span>
     </div>
-    <div role="gridcell" class="color-fg-muted d-flex v-center">
+    <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap flex-items-baseline v-center" data-sort="80.0">
+      <span class="stat-value">4</span>
+      <span class="stat-separator">of</span>
+      <span class="stat-total">5</span>
+      <span class="stat-separator"></span>
       <span class="meter Progress Progress--large d-inline-flex " style="width: 200px;">
         <span class="Progress-item coverage-medium" style="width: 80.0%" title="80.0%"></span>
       </span>
-    </div>
-    <div role="gridcell" class="color-fg-muted d-flex col-2" data-sort="80.0">
-      <div class="d-flex flex-justify-end flex-wrap gcovr-m-l-5 coverage-medium" style="width: 100%;">
-        <div class="counter">4 of 5</div>
-        <div class="percent">80.0%</div>
-      </div>
+      <span class="coverage-percent coverage-medium">80.0%</span>
     </div>
     <div role="gridcell" class="color-fg-muted d-flex col-2" data-sort="50.0">
       <div class="d-flex flex-justify-end flex-wrap gcovr-m-l-5 coverage-low" style="width: 100%;">
-        <div class="counter">1 of 2</div>
-        <div class="percent">50.0%</div>
+        <span class="stat-value">1</span>
+        <span class="stat-separator">of</span>
+        <span class="stat-value">2</span>
+        <span class="stat-separator"></span>
+        <span class="coverage-percent coverage-low">50.0%</span>
       </div>
     </div>
     <div role="gridcell" class="color-fg-muted d-flex col-2" data-sort="100.0">
       <div class="d-flex flex-justify-end flex-wrap gcovr-m-l-5 coverage-high" style="width: 100%;">
-        <div class="counter">1 of 1</div>
-        <div class="percent">100.0%</div>
+        <span class="stat-value">1</span>
+        <span class="stat-separator">of</span>
+        <span class="stat-value">1</span>
+        <span class="stat-separator"></span>
+        <span class="coverage-percent coverage-high">100.0%</span>
       </div>
     </div>
   </div>
@@ -1542,27 +1589,28 @@ document.addEventListener("DOMContentLoaded", () => {
         <a class="" title="A/file7.cpp" href="#file7.cpp.fa9d180b71a3402bed7d24bb1966eaf5.html">A/file7.cpp</a>
       </span>
     </div>
-    <div role="gridcell" class="color-fg-muted d-flex v-center">
+    <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap flex-items-baseline v-center" data-sort="0.0">
+      <span class="stat-value">0</span>
+      <span class="stat-separator">of</span>
+      <span class="stat-total">2</span>
+      <span class="stat-separator"></span>
       <span class="meter Progress Progress--large d-inline-flex " style="width: 200px;">
         <span class="Progress-item coverage-none" style="width: 0.0%" title="0.0%"></span>
       </span>
-    </div>
-    <div role="gridcell" class="color-fg-muted d-flex col-2" data-sort="0.0">
-      <div class="d-flex flex-justify-end flex-wrap gcovr-m-l-5 coverage-none" style="width: 100%;">
-        <div class="counter">0 of 2</div>
-        <div class="percent">0.0%</div>
-      </div>
+      <span class="coverage-percent coverage-none">0.0%</span>
     </div>
     <div role="gridcell" class="color-fg-muted d-flex col-2" data-sort="-">
       <div class="d-flex flex-justify-end flex-wrap gcovr-m-l-5 coverage-unknown" style="width: 100%;">
-        <div class="counter">0 of 0</div>
-        <div class="percent">-%</div>
+        <span class="coverage-percent coverage-unknown">-</span>
       </div>
     </div>
     <div role="gridcell" class="color-fg-muted d-flex col-2" data-sort="0.0">
       <div class="d-flex flex-justify-end flex-wrap gcovr-m-l-5 coverage-none" style="width: 100%;">
-        <div class="counter">0 of 1</div>
-        <div class="percent">0.0%</div>
+        <span class="stat-value">0</span>
+        <span class="stat-separator">of</span>
+        <span class="stat-value">1</span>
+        <span class="stat-separator"></span>
+        <span class="coverage-percent coverage-none">0.0%</span>
       </div>
     </div>
   </div>
@@ -1572,27 +1620,28 @@ document.addEventListener("DOMContentLoaded", () => {
         <a class="" title="A/subdir_0/subdir_1/subdir_2/subdir_3/subdir_4/subdir_5/subdir_6/subdir_7/subdir_8/subdir_9/File2.cpp" href="#File2.cpp.1aed42bd33fceec1188f2f95c6e8946c.html">A/subdir_0/subdir_1/subdir_2/subdir_3/subdir_4/subdir_5/subdir_6/subdir_7/subdir_8/subdir_9/File2.cpp</a>
       </span>
     </div>
-    <div role="gridcell" class="color-fg-muted d-flex v-center">
+    <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap flex-items-baseline v-center" data-sort="57.1">
+      <span class="stat-value">4</span>
+      <span class="stat-separator">of</span>
+      <span class="stat-total">7</span>
+      <span class="stat-separator"></span>
       <span class="meter Progress Progress--large d-inline-flex " style="width: 200px;">
         <span class="Progress-item coverage-low" style="width: 57.1%" title="57.1%"></span>
       </span>
-    </div>
-    <div role="gridcell" class="color-fg-muted d-flex col-2" data-sort="57.1">
-      <div class="d-flex flex-justify-end flex-wrap gcovr-m-l-5 coverage-low" style="width: 100%;">
-        <div class="counter">4 of 7</div>
-        <div class="percent">57.1%</div>
-      </div>
+      <span class="coverage-percent coverage-low">57.1%</span>
     </div>
     <div role="gridcell" class="color-fg-muted d-flex col-2" data-sort="-">
       <div class="d-flex flex-justify-end flex-wrap gcovr-m-l-5 coverage-unknown" style="width: 100%;">
-        <div class="counter">0 of 0</div>
-        <div class="percent">-%</div>
+        <span class="coverage-percent coverage-unknown">-</span>
       </div>
     </div>
     <div role="gridcell" class="color-fg-muted d-flex col-2" data-sort="50.0">
       <div class="d-flex flex-justify-end flex-wrap gcovr-m-l-5 coverage-low" style="width: 100%;">
-        <div class="counter">1 of 2</div>
-        <div class="percent">50.0%</div>
+        <span class="stat-value">1</span>
+        <span class="stat-separator">of</span>
+        <span class="stat-value">2</span>
+        <span class="stat-separator"></span>
+        <span class="coverage-percent coverage-low">50.0%</span>
       </div>
     </div>
   </div>
@@ -1602,27 +1651,32 @@ document.addEventListener("DOMContentLoaded", () => {
         <a class="" title="B/main.cpp" href="#main.cpp.9ddfb860fa969e91a7bb17e903455bce.html">B/main.cpp</a>
       </span>
     </div>
-    <div role="gridcell" class="color-fg-muted d-flex v-center">
+    <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap flex-items-baseline v-center" data-sort="100.0">
+      <span class="stat-value">8</span>
+      <span class="stat-separator">of</span>
+      <span class="stat-total">8</span>
+      <span class="stat-separator"></span>
       <span class="meter Progress Progress--large d-inline-flex " style="width: 200px;">
         <span class="Progress-item coverage-high" style="width: 100.0%" title="100.0%"></span>
       </span>
-    </div>
-    <div role="gridcell" class="color-fg-muted d-flex col-2" data-sort="100.0">
-      <div class="d-flex flex-justify-end flex-wrap gcovr-m-l-5 coverage-high" style="width: 100%;">
-        <div class="counter">8 of 8</div>
-        <div class="percent">100.0%</div>
-      </div>
+      <span class="coverage-percent coverage-high">100.0%</span>
     </div>
     <div role="gridcell" class="color-fg-muted d-flex col-2" data-sort="25.0">
       <div class="d-flex flex-justify-end flex-wrap gcovr-m-l-5 coverage-low" style="width: 100%;">
-        <div class="counter">1 of 4</div>
-        <div class="percent">25.0%</div>
+        <span class="stat-value">1</span>
+        <span class="stat-separator">of</span>
+        <span class="stat-value">4</span>
+        <span class="stat-separator"></span>
+        <span class="coverage-percent coverage-low">25.0%</span>
       </div>
     </div>
     <div role="gridcell" class="color-fg-muted d-flex col-2" data-sort="100.0">
       <div class="d-flex flex-justify-end flex-wrap gcovr-m-l-5 coverage-high" style="width: 100%;">
-        <div class="counter">1 of 1</div>
-        <div class="percent">100.0%</div>
+        <span class="stat-value">1</span>
+        <span class="stat-separator">of</span>
+        <span class="stat-value">1</span>
+        <span class="stat-separator"></span>
+        <span class="coverage-percent coverage-high">100.0%</span>
       </div>
     </div>
   </div>
@@ -1636,8 +1690,7 @@ document.addEventListener("DOMContentLoaded", () => {
 <div class="Box m-3 filelist">
   <div class="Box-header py-2 d-flex sticky">
     <div role="rowheader" class="color-fg-muted flex-auto min-width-0 col-md-2">File</div>
-    <div role="rowheader" class="color-fg-muted d-flex flex-justify-end flex-auto min-width-0 flex-items-baseline"></div>
-    <div role="rowheader" class="color-fg-muted d-flex flex-justify-end col-2">Lines</div>
+    <div role="rowheader" class="color-fg-muted d-flex flex-justify-end flex-auto min-width-0 flex-items-baseline">Lines</div>
     <div role="rowheader" class="color-fg-muted d-flex flex-justify-end col-2">Branches</div>
     <div role="rowheader" class="color-fg-muted d-flex flex-justify-end col-2">Functions</div>
   </div>
@@ -1647,27 +1700,32 @@ document.addEventListener("DOMContentLoaded", () => {
         <a class="" title="File6.cpp" href="#File6.cpp.73326d74f2aeb2719dd6d8a9bcc3e582.html">File6.cpp</a>
       </span>
     </div>
-    <div role="gridcell" class="color-fg-muted d-flex v-center">
+    <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap flex-items-baseline v-center" data-sort="0.0">
+      <span class="stat-value">0</span>
+      <span class="stat-separator">of</span>
+      <span class="stat-total">5</span>
+      <span class="stat-separator"></span>
       <span class="meter Progress Progress--large d-inline-flex " style="width: 200px;">
         <span class="Progress-item coverage-none" style="width: 0.0%" title="0.0%"></span>
       </span>
+      <span class="coverage-percent coverage-none">0.0%</span>
     </div>
     <div role="gridcell" class="color-fg-muted d-flex col-2" data-sort="0.0">
       <div class="d-flex flex-justify-end flex-wrap gcovr-m-l-5 coverage-none" style="width: 100%;">
-        <div class="counter">0 of 5</div>
-        <div class="percent">0.0%</div>
+        <span class="stat-value">0</span>
+        <span class="stat-separator">of</span>
+        <span class="stat-value">2</span>
+        <span class="stat-separator"></span>
+        <span class="coverage-percent coverage-none">0.0%</span>
       </div>
     </div>
     <div role="gridcell" class="color-fg-muted d-flex col-2" data-sort="0.0">
       <div class="d-flex flex-justify-end flex-wrap gcovr-m-l-5 coverage-none" style="width: 100%;">
-        <div class="counter">0 of 2</div>
-        <div class="percent">0.0%</div>
-      </div>
-    </div>
-    <div role="gridcell" class="color-fg-muted d-flex col-2" data-sort="0.0">
-      <div class="d-flex flex-justify-end flex-wrap gcovr-m-l-5 coverage-none" style="width: 100%;">
-        <div class="counter">0 of 1</div>
-        <div class="percent">0.0%</div>
+        <span class="stat-value">0</span>
+        <span class="stat-separator">of</span>
+        <span class="stat-value">1</span>
+        <span class="stat-separator"></span>
+        <span class="coverage-percent coverage-none">0.0%</span>
       </div>
     </div>
   </div>
@@ -1681,8 +1739,7 @@ document.addEventListener("DOMContentLoaded", () => {
 <div class="Box m-3 filelist">
   <div class="Box-header py-2 d-flex sticky">
     <div role="rowheader" class="color-fg-muted flex-auto min-width-0 col-md-2 sortable sorted-ascending">File</div>
-    <div role="rowheader" class="color-fg-muted d-flex flex-justify-end flex-auto min-width-0 flex-items-baseline"></div>
-    <div role="rowheader" class="color-fg-muted d-flex flex-justify-end col-2 sortable">Lines</div>
+    <div role="rowheader" class="color-fg-muted d-flex flex-justify-end flex-auto min-width-0 flex-items-baseline sortable">Lines</div>
     <div role="rowheader" class="color-fg-muted d-flex flex-justify-end col-2 sortable">Branches</div>
     <div role="rowheader" class="color-fg-muted d-flex flex-justify-end col-2 sortable">Functions</div>
   </div>
@@ -1692,27 +1749,32 @@ document.addEventListener("DOMContentLoaded", () => {
         <a class="" title="D" href="#D.de4bee21461092ca61985814ef11fc54.html">D</a>
       </span>
     </div>
-    <div role="gridcell" class="color-fg-muted d-flex v-center">
+    <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap flex-items-baseline v-center" data-sort="0.0">
+      <span class="stat-value">0</span>
+      <span class="stat-separator">of</span>
+      <span class="stat-total">5</span>
+      <span class="stat-separator"></span>
       <span class="meter Progress Progress--large d-inline-flex " style="width: 200px;">
         <span class="Progress-item coverage-none" style="width: 0.0%" title="0.0%"></span>
       </span>
+      <span class="coverage-percent coverage-none">0.0%</span>
     </div>
     <div role="gridcell" class="color-fg-muted d-flex col-2" data-sort="0.0">
       <div class="d-flex flex-justify-end flex-wrap gcovr-m-l-5 coverage-none" style="width: 100%;">
-        <div class="counter">0 of 5</div>
-        <div class="percent">0.0%</div>
+        <span class="stat-value">0</span>
+        <span class="stat-separator">of</span>
+        <span class="stat-value">2</span>
+        <span class="stat-separator"></span>
+        <span class="coverage-percent coverage-none">0.0%</span>
       </div>
     </div>
     <div role="gridcell" class="color-fg-muted d-flex col-2" data-sort="0.0">
       <div class="d-flex flex-justify-end flex-wrap gcovr-m-l-5 coverage-none" style="width: 100%;">
-        <div class="counter">0 of 2</div>
-        <div class="percent">0.0%</div>
-      </div>
-    </div>
-    <div role="gridcell" class="color-fg-muted d-flex col-2" data-sort="0.0">
-      <div class="d-flex flex-justify-end flex-wrap gcovr-m-l-5 coverage-none" style="width: 100%;">
-        <div class="counter">0 of 1</div>
-        <div class="percent">0.0%</div>
+        <span class="stat-value">0</span>
+        <span class="stat-separator">of</span>
+        <span class="stat-value">1</span>
+        <span class="stat-separator"></span>
+        <span class="coverage-percent coverage-none">0.0%</span>
       </div>
     </div>
   </div>
@@ -1722,27 +1784,32 @@ document.addEventListener("DOMContentLoaded", () => {
         <a class="" title="file5.cpp" href="#file5.cpp.4f0be33a4dcfe398ba897b87f58ca7ce.html">file5.cpp</a>
       </span>
     </div>
-    <div role="gridcell" class="color-fg-muted d-flex v-center">
+    <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap flex-items-baseline v-center" data-sort="80.0">
+      <span class="stat-value">4</span>
+      <span class="stat-separator">of</span>
+      <span class="stat-total">5</span>
+      <span class="stat-separator"></span>
       <span class="meter Progress Progress--large d-inline-flex " style="width: 200px;">
         <span class="Progress-item coverage-medium" style="width: 80.0%" title="80.0%"></span>
       </span>
-    </div>
-    <div role="gridcell" class="color-fg-muted d-flex col-2" data-sort="80.0">
-      <div class="d-flex flex-justify-end flex-wrap gcovr-m-l-5 coverage-medium" style="width: 100%;">
-        <div class="counter">4 of 5</div>
-        <div class="percent">80.0%</div>
-      </div>
+      <span class="coverage-percent coverage-medium">80.0%</span>
     </div>
     <div role="gridcell" class="color-fg-muted d-flex col-2" data-sort="50.0">
       <div class="d-flex flex-justify-end flex-wrap gcovr-m-l-5 coverage-low" style="width: 100%;">
-        <div class="counter">1 of 2</div>
-        <div class="percent">50.0%</div>
+        <span class="stat-value">1</span>
+        <span class="stat-separator">of</span>
+        <span class="stat-value">2</span>
+        <span class="stat-separator"></span>
+        <span class="coverage-percent coverage-low">50.0%</span>
       </div>
     </div>
     <div role="gridcell" class="color-fg-muted d-flex col-2" data-sort="100.0">
       <div class="d-flex flex-justify-end flex-wrap gcovr-m-l-5 coverage-high" style="width: 100%;">
-        <div class="counter">1 of 1</div>
-        <div class="percent">100.0%</div>
+        <span class="stat-value">1</span>
+        <span class="stat-separator">of</span>
+        <span class="stat-value">1</span>
+        <span class="stat-separator"></span>
+        <span class="coverage-percent coverage-high">100.0%</span>
       </div>
     </div>
   </div>
@@ -1756,8 +1823,7 @@ document.addEventListener("DOMContentLoaded", () => {
 <div class="Box m-3 filelist">
   <div class="Box-header py-2 d-flex sticky">
     <div role="rowheader" class="color-fg-muted flex-auto min-width-0 col-md-2">File</div>
-    <div role="rowheader" class="color-fg-muted d-flex flex-justify-end flex-auto min-width-0 flex-items-baseline"></div>
-    <div role="rowheader" class="color-fg-muted d-flex flex-justify-end col-2">Lines</div>
+    <div role="rowheader" class="color-fg-muted d-flex flex-justify-end flex-auto min-width-0 flex-items-baseline">Lines</div>
     <div role="rowheader" class="color-fg-muted d-flex flex-justify-end col-2">Branches</div>
     <div role="rowheader" class="color-fg-muted d-flex flex-justify-end col-2">Functions</div>
   </div>
@@ -1767,27 +1833,28 @@ document.addEventListener("DOMContentLoaded", () => {
         <a class="" title="File2.cpp" href="#File2.cpp.1aed42bd33fceec1188f2f95c6e8946c.html">File2.cpp</a>
       </span>
     </div>
-    <div role="gridcell" class="color-fg-muted d-flex v-center">
+    <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap flex-items-baseline v-center" data-sort="57.1">
+      <span class="stat-value">4</span>
+      <span class="stat-separator">of</span>
+      <span class="stat-total">7</span>
+      <span class="stat-separator"></span>
       <span class="meter Progress Progress--large d-inline-flex " style="width: 200px;">
         <span class="Progress-item coverage-low" style="width: 57.1%" title="57.1%"></span>
       </span>
-    </div>
-    <div role="gridcell" class="color-fg-muted d-flex col-2" data-sort="57.1">
-      <div class="d-flex flex-justify-end flex-wrap gcovr-m-l-5 coverage-low" style="width: 100%;">
-        <div class="counter">4 of 7</div>
-        <div class="percent">57.1%</div>
-      </div>
+      <span class="coverage-percent coverage-low">57.1%</span>
     </div>
     <div role="gridcell" class="color-fg-muted d-flex col-2" data-sort="-">
       <div class="d-flex flex-justify-end flex-wrap gcovr-m-l-5 coverage-unknown" style="width: 100%;">
-        <div class="counter">0 of 0</div>
-        <div class="percent">-%</div>
+        <span class="coverage-percent coverage-unknown">-</span>
       </div>
     </div>
     <div role="gridcell" class="color-fg-muted d-flex col-2" data-sort="50.0">
       <div class="d-flex flex-justify-end flex-wrap gcovr-m-l-5 coverage-low" style="width: 100%;">
-        <div class="counter">1 of 2</div>
-        <div class="percent">50.0%</div>
+        <span class="stat-value">1</span>
+        <span class="stat-separator">of</span>
+        <span class="stat-value">2</span>
+        <span class="stat-separator"></span>
+        <span class="coverage-percent coverage-low">50.0%</span>
       </div>
     </div>
   </div>
@@ -1801,8 +1868,7 @@ document.addEventListener("DOMContentLoaded", () => {
 <div class="Box m-3 filelist">
   <div class="Box-header py-2 d-flex sticky">
     <div role="rowheader" class="color-fg-muted flex-auto min-width-0 col-md-2 sortable sorted-ascending">File</div>
-    <div role="rowheader" class="color-fg-muted d-flex flex-justify-end flex-auto min-width-0 flex-items-baseline"></div>
-    <div role="rowheader" class="color-fg-muted d-flex flex-justify-end col-2 sortable">Lines</div>
+    <div role="rowheader" class="color-fg-muted d-flex flex-justify-end flex-auto min-width-0 flex-items-baseline sortable">Lines</div>
     <div role="rowheader" class="color-fg-muted d-flex flex-justify-end col-2 sortable">Branches</div>
     <div role="rowheader" class="color-fg-muted d-flex flex-justify-end col-2 sortable">Functions</div>
   </div>
@@ -1812,27 +1878,32 @@ document.addEventListener("DOMContentLoaded", () => {
         <a class="" title="C" href="#C.65c6818f1beed0acac61ab4a271ddda2.html">C</a>
       </span>
     </div>
-    <div role="gridcell" class="color-fg-muted d-flex v-center">
+    <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap flex-items-baseline v-center" data-sort="40.0">
+      <span class="stat-value">4</span>
+      <span class="stat-separator">of</span>
+      <span class="stat-total">10</span>
+      <span class="stat-separator"></span>
       <span class="meter Progress Progress--large d-inline-flex " style="width: 200px;">
         <span class="Progress-item coverage-low" style="width: 40.0%" title="40.0%"></span>
       </span>
-    </div>
-    <div role="gridcell" class="color-fg-muted d-flex col-2" data-sort="40.0">
-      <div class="d-flex flex-justify-end flex-wrap gcovr-m-l-5 coverage-low" style="width: 100%;">
-        <div class="counter">4 of 10</div>
-        <div class="percent">40.0%</div>
-      </div>
+      <span class="coverage-percent coverage-low">40.0%</span>
     </div>
     <div role="gridcell" class="color-fg-muted d-flex col-2" data-sort="25.0">
       <div class="d-flex flex-justify-end flex-wrap gcovr-m-l-5 coverage-low" style="width: 100%;">
-        <div class="counter">1 of 4</div>
-        <div class="percent">25.0%</div>
+        <span class="stat-value">1</span>
+        <span class="stat-separator">of</span>
+        <span class="stat-value">4</span>
+        <span class="stat-separator"></span>
+        <span class="coverage-percent coverage-low">25.0%</span>
       </div>
     </div>
     <div role="gridcell" class="color-fg-muted d-flex col-2" data-sort="50.0">
       <div class="d-flex flex-justify-end flex-wrap gcovr-m-l-5 coverage-low" style="width: 100%;">
-        <div class="counter">1 of 2</div>
-        <div class="percent">50.0%</div>
+        <span class="stat-value">1</span>
+        <span class="stat-separator">of</span>
+        <span class="stat-value">2</span>
+        <span class="stat-separator"></span>
+        <span class="coverage-percent coverage-low">50.0%</span>
       </div>
     </div>
   </div>
@@ -1842,27 +1913,32 @@ document.addEventListener("DOMContentLoaded", () => {
         <a class="" title="file1.cpp" href="#file1.cpp.11975e1ce5d9c157e76130f444523bea.html">file1.cpp</a>
       </span>
     </div>
-    <div role="gridcell" class="color-fg-muted d-flex v-center">
+    <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap flex-items-baseline v-center" data-sort="80.0">
+      <span class="stat-value">4</span>
+      <span class="stat-separator">of</span>
+      <span class="stat-total">5</span>
+      <span class="stat-separator"></span>
       <span class="meter Progress Progress--large d-inline-flex " style="width: 200px;">
         <span class="Progress-item coverage-medium" style="width: 80.0%" title="80.0%"></span>
       </span>
-    </div>
-    <div role="gridcell" class="color-fg-muted d-flex col-2" data-sort="80.0">
-      <div class="d-flex flex-justify-end flex-wrap gcovr-m-l-5 coverage-medium" style="width: 100%;">
-        <div class="counter">4 of 5</div>
-        <div class="percent">80.0%</div>
-      </div>
+      <span class="coverage-percent coverage-medium">80.0%</span>
     </div>
     <div role="gridcell" class="color-fg-muted d-flex col-2" data-sort="50.0">
       <div class="d-flex flex-justify-end flex-wrap gcovr-m-l-5 coverage-low" style="width: 100%;">
-        <div class="counter">1 of 2</div>
-        <div class="percent">50.0%</div>
+        <span class="stat-value">1</span>
+        <span class="stat-separator">of</span>
+        <span class="stat-value">2</span>
+        <span class="stat-separator"></span>
+        <span class="coverage-percent coverage-low">50.0%</span>
       </div>
     </div>
     <div role="gridcell" class="color-fg-muted d-flex col-2" data-sort="100.0">
       <div class="d-flex flex-justify-end flex-wrap gcovr-m-l-5 coverage-high" style="width: 100%;">
-        <div class="counter">1 of 1</div>
-        <div class="percent">100.0%</div>
+        <span class="stat-value">1</span>
+        <span class="stat-separator">of</span>
+        <span class="stat-value">1</span>
+        <span class="stat-separator"></span>
+        <span class="coverage-percent coverage-high">100.0%</span>
       </div>
     </div>
   </div>
@@ -1872,27 +1948,32 @@ document.addEventListener("DOMContentLoaded", () => {
         <a class="" title="file3.cpp" href="#file3.cpp.bcfa344b5512d8cd5857f2fe86511d71.html">file3.cpp</a>
       </span>
     </div>
-    <div role="gridcell" class="color-fg-muted d-flex v-center">
+    <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap flex-items-baseline v-center" data-sort="40.0">
+      <span class="stat-value">4</span>
+      <span class="stat-separator">of</span>
+      <span class="stat-total">10</span>
+      <span class="stat-separator"></span>
       <span class="meter Progress Progress--large d-inline-flex " style="width: 200px;">
         <span class="Progress-item coverage-low" style="width: 40.0%" title="40.0%"></span>
       </span>
-    </div>
-    <div role="gridcell" class="color-fg-muted d-flex col-2" data-sort="40.0">
-      <div class="d-flex flex-justify-end flex-wrap gcovr-m-l-5 coverage-low" style="width: 100%;">
-        <div class="counter">4 of 10</div>
-        <div class="percent">40.0%</div>
-      </div>
+      <span class="coverage-percent coverage-low">40.0%</span>
     </div>
     <div role="gridcell" class="color-fg-muted d-flex col-2" data-sort="0.0">
       <div class="d-flex flex-justify-end flex-wrap gcovr-m-l-5 coverage-none" style="width: 100%;">
-        <div class="counter">0 of 2</div>
-        <div class="percent">0.0%</div>
+        <span class="stat-value">0</span>
+        <span class="stat-separator">of</span>
+        <span class="stat-value">2</span>
+        <span class="stat-separator"></span>
+        <span class="coverage-percent coverage-none">0.0%</span>
       </div>
     </div>
     <div role="gridcell" class="color-fg-muted d-flex col-2" data-sort="50.0">
       <div class="d-flex flex-justify-end flex-wrap gcovr-m-l-5 coverage-low" style="width: 100%;">
-        <div class="counter">1 of 2</div>
-        <div class="percent">50.0%</div>
+        <span class="stat-value">1</span>
+        <span class="stat-separator">of</span>
+        <span class="stat-value">2</span>
+        <span class="stat-separator"></span>
+        <span class="coverage-percent coverage-low">50.0%</span>
       </div>
     </div>
   </div>
@@ -1902,27 +1983,32 @@ document.addEventListener("DOMContentLoaded", () => {
         <a class="" title="File4.cpp" href="#File4.cpp.1d7a80554861eb8b5c21bc2e26ff8f70.html">File4.cpp</a>
       </span>
     </div>
-    <div role="gridcell" class="color-fg-muted d-flex v-center">
+    <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap flex-items-baseline v-center" data-sort="80.0">
+      <span class="stat-value">4</span>
+      <span class="stat-separator">of</span>
+      <span class="stat-total">5</span>
+      <span class="stat-separator"></span>
       <span class="meter Progress Progress--large d-inline-flex " style="width: 200px;">
         <span class="Progress-item coverage-medium" style="width: 80.0%" title="80.0%"></span>
       </span>
-    </div>
-    <div role="gridcell" class="color-fg-muted d-flex col-2" data-sort="80.0">
-      <div class="d-flex flex-justify-end flex-wrap gcovr-m-l-5 coverage-medium" style="width: 100%;">
-        <div class="counter">4 of 5</div>
-        <div class="percent">80.0%</div>
-      </div>
+      <span class="coverage-percent coverage-medium">80.0%</span>
     </div>
     <div role="gridcell" class="color-fg-muted d-flex col-2" data-sort="50.0">
       <div class="d-flex flex-justify-end flex-wrap gcovr-m-l-5 coverage-low" style="width: 100%;">
-        <div class="counter">1 of 2</div>
-        <div class="percent">50.0%</div>
+        <span class="stat-value">1</span>
+        <span class="stat-separator">of</span>
+        <span class="stat-value">2</span>
+        <span class="stat-separator"></span>
+        <span class="coverage-percent coverage-low">50.0%</span>
       </div>
     </div>
     <div role="gridcell" class="color-fg-muted d-flex col-2" data-sort="100.0">
       <div class="d-flex flex-justify-end flex-wrap gcovr-m-l-5 coverage-high" style="width: 100%;">
-        <div class="counter">1 of 1</div>
-        <div class="percent">100.0%</div>
+        <span class="stat-value">1</span>
+        <span class="stat-separator">of</span>
+        <span class="stat-value">1</span>
+        <span class="stat-separator"></span>
+        <span class="coverage-percent coverage-high">100.0%</span>
       </div>
     </div>
   </div>
@@ -1932,27 +2018,28 @@ document.addEventListener("DOMContentLoaded", () => {
         <a class="" title="file7.cpp" href="#file7.cpp.fa9d180b71a3402bed7d24bb1966eaf5.html">file7.cpp</a>
       </span>
     </div>
-    <div role="gridcell" class="color-fg-muted d-flex v-center">
+    <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap flex-items-baseline v-center" data-sort="0.0">
+      <span class="stat-value">0</span>
+      <span class="stat-separator">of</span>
+      <span class="stat-total">2</span>
+      <span class="stat-separator"></span>
       <span class="meter Progress Progress--large d-inline-flex " style="width: 200px;">
         <span class="Progress-item coverage-none" style="width: 0.0%" title="0.0%"></span>
       </span>
-    </div>
-    <div role="gridcell" class="color-fg-muted d-flex col-2" data-sort="0.0">
-      <div class="d-flex flex-justify-end flex-wrap gcovr-m-l-5 coverage-none" style="width: 100%;">
-        <div class="counter">0 of 2</div>
-        <div class="percent">0.0%</div>
-      </div>
+      <span class="coverage-percent coverage-none">0.0%</span>
     </div>
     <div role="gridcell" class="color-fg-muted d-flex col-2" data-sort="-">
       <div class="d-flex flex-justify-end flex-wrap gcovr-m-l-5 coverage-unknown" style="width: 100%;">
-        <div class="counter">0 of 0</div>
-        <div class="percent">-%</div>
+        <span class="coverage-percent coverage-unknown">-</span>
       </div>
     </div>
     <div role="gridcell" class="color-fg-muted d-flex col-2" data-sort="0.0">
       <div class="d-flex flex-justify-end flex-wrap gcovr-m-l-5 coverage-none" style="width: 100%;">
-        <div class="counter">0 of 1</div>
-        <div class="percent">0.0%</div>
+        <span class="stat-value">0</span>
+        <span class="stat-separator">of</span>
+        <span class="stat-value">1</span>
+        <span class="stat-separator"></span>
+        <span class="coverage-percent coverage-none">0.0%</span>
       </div>
     </div>
   </div>
@@ -1962,27 +2049,28 @@ document.addEventListener("DOMContentLoaded", () => {
         <a class="" title="subdir_0/subdir_1/subdir_2/subdir_3/subdir_4/subdir_5/subdir_6/subdir_7/subdir_8/subdir_9" href="#subdir_9.63bd3dc96170cd4173f6130222e788f0.html">subdir_0/subdir_1/subdir_2/subdir_3/subdir_4/subdir_5/subdir_6/subdir_7/subdir_8/subdir_9</a>
       </span>
     </div>
-    <div role="gridcell" class="color-fg-muted d-flex v-center">
+    <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap flex-items-baseline v-center" data-sort="57.1">
+      <span class="stat-value">4</span>
+      <span class="stat-separator">of</span>
+      <span class="stat-total">7</span>
+      <span class="stat-separator"></span>
       <span class="meter Progress Progress--large d-inline-flex " style="width: 200px;">
         <span class="Progress-item coverage-low" style="width: 57.1%" title="57.1%"></span>
       </span>
-    </div>
-    <div role="gridcell" class="color-fg-muted d-flex col-2" data-sort="57.1">
-      <div class="d-flex flex-justify-end flex-wrap gcovr-m-l-5 coverage-low" style="width: 100%;">
-        <div class="counter">4 of 7</div>
-        <div class="percent">57.1%</div>
-      </div>
+      <span class="coverage-percent coverage-low">57.1%</span>
     </div>
     <div role="gridcell" class="color-fg-muted d-flex col-2" data-sort="-">
       <div class="d-flex flex-justify-end flex-wrap gcovr-m-l-5 coverage-unknown" style="width: 100%;">
-        <div class="counter">0 of 0</div>
-        <div class="percent">-%</div>
+        <span class="coverage-percent coverage-unknown">-</span>
       </div>
     </div>
     <div role="gridcell" class="color-fg-muted d-flex col-2" data-sort="50.0">
       <div class="d-flex flex-justify-end flex-wrap gcovr-m-l-5 coverage-low" style="width: 100%;">
-        <div class="counter">1 of 2</div>
-        <div class="percent">50.0%</div>
+        <span class="stat-value">1</span>
+        <span class="stat-separator">of</span>
+        <span class="stat-value">2</span>
+        <span class="stat-separator"></span>
+        <span class="coverage-percent coverage-low">50.0%</span>
       </div>
     </div>
   </div>
@@ -1996,8 +2084,7 @@ document.addEventListener("DOMContentLoaded", () => {
 <div class="Box m-3 filelist">
   <div class="Box-header py-2 d-flex sticky">
     <div role="rowheader" class="color-fg-muted flex-auto min-width-0 col-md-2">File</div>
-    <div role="rowheader" class="color-fg-muted d-flex flex-justify-end flex-auto min-width-0 flex-items-baseline"></div>
-    <div role="rowheader" class="color-fg-muted d-flex flex-justify-end col-2">Lines</div>
+    <div role="rowheader" class="color-fg-muted d-flex flex-justify-end flex-auto min-width-0 flex-items-baseline">Lines</div>
     <div role="rowheader" class="color-fg-muted d-flex flex-justify-end col-2">Branches</div>
     <div role="rowheader" class="color-fg-muted d-flex flex-justify-end col-2">Functions</div>
   </div>
@@ -2007,27 +2094,32 @@ document.addEventListener("DOMContentLoaded", () => {
         <a class="" title="main.cpp" href="#main.cpp.9ddfb860fa969e91a7bb17e903455bce.html">main.cpp</a>
       </span>
     </div>
-    <div role="gridcell" class="color-fg-muted d-flex v-center">
+    <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap flex-items-baseline v-center" data-sort="100.0">
+      <span class="stat-value">8</span>
+      <span class="stat-separator">of</span>
+      <span class="stat-total">8</span>
+      <span class="stat-separator"></span>
       <span class="meter Progress Progress--large d-inline-flex " style="width: 200px;">
         <span class="Progress-item coverage-high" style="width: 100.0%" title="100.0%"></span>
       </span>
-    </div>
-    <div role="gridcell" class="color-fg-muted d-flex col-2" data-sort="100.0">
-      <div class="d-flex flex-justify-end flex-wrap gcovr-m-l-5 coverage-high" style="width: 100%;">
-        <div class="counter">8 of 8</div>
-        <div class="percent">100.0%</div>
-      </div>
+      <span class="coverage-percent coverage-high">100.0%</span>
     </div>
     <div role="gridcell" class="color-fg-muted d-flex col-2" data-sort="25.0">
       <div class="d-flex flex-justify-end flex-wrap gcovr-m-l-5 coverage-low" style="width: 100%;">
-        <div class="counter">1 of 4</div>
-        <div class="percent">25.0%</div>
+        <span class="stat-value">1</span>
+        <span class="stat-separator">of</span>
+        <span class="stat-value">4</span>
+        <span class="stat-separator"></span>
+        <span class="coverage-percent coverage-low">25.0%</span>
       </div>
     </div>
     <div role="gridcell" class="color-fg-muted d-flex col-2" data-sort="100.0">
       <div class="d-flex flex-justify-end flex-wrap gcovr-m-l-5 coverage-high" style="width: 100%;">
-        <div class="counter">1 of 1</div>
-        <div class="percent">100.0%</div>
+        <span class="stat-value">1</span>
+        <span class="stat-separator">of</span>
+        <span class="stat-value">1</span>
+        <span class="stat-separator"></span>
+        <span class="coverage-percent coverage-high">100.0%</span>
       </div>
     </div>
   </div>
@@ -2041,8 +2133,7 @@ document.addEventListener("DOMContentLoaded", () => {
 <div class="Box m-3 filelist">
   <div class="Box-header py-2 d-flex sticky">
     <div role="rowheader" class="color-fg-muted flex-auto min-width-0 col-md-2 sortable sorted-ascending">File</div>
-    <div role="rowheader" class="color-fg-muted d-flex flex-justify-end flex-auto min-width-0 flex-items-baseline"></div>
-    <div role="rowheader" class="color-fg-muted d-flex flex-justify-end col-2 sortable">Lines</div>
+    <div role="rowheader" class="color-fg-muted d-flex flex-justify-end flex-auto min-width-0 flex-items-baseline sortable">Lines</div>
     <div role="rowheader" class="color-fg-muted d-flex flex-justify-end col-2 sortable">Branches</div>
     <div role="rowheader" class="color-fg-muted d-flex flex-justify-end col-2 sortable">Functions</div>
   </div>
@@ -2052,27 +2143,32 @@ document.addEventListener("DOMContentLoaded", () => {
         <a class="" title="A" href="#A.7fc56270e7a70fa81a5935b72eacbe29.html">A</a>
       </span>
     </div>
-    <div role="gridcell" class="color-fg-muted d-flex v-center">
+    <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap flex-items-baseline v-center" data-sort="51.3">
+      <span class="stat-value">20</span>
+      <span class="stat-separator">of</span>
+      <span class="stat-total">39</span>
+      <span class="stat-separator"></span>
       <span class="meter Progress Progress--large d-inline-flex " style="width: 200px;">
         <span class="Progress-item coverage-low" style="width: 51.3%" title="51.3%"></span>
       </span>
-    </div>
-    <div role="gridcell" class="color-fg-muted d-flex col-2" data-sort="51.3">
-      <div class="d-flex flex-justify-end flex-wrap gcovr-m-l-5 coverage-low" style="width: 100%;">
-        <div class="counter">20 of 39</div>
-        <div class="percent">51.3%</div>
-      </div>
+      <span class="coverage-percent coverage-low">51.3%</span>
     </div>
     <div role="gridcell" class="color-fg-muted d-flex col-2" data-sort="30.0">
       <div class="d-flex flex-justify-end flex-wrap gcovr-m-l-5 coverage-low" style="width: 100%;">
-        <div class="counter">3 of 10</div>
-        <div class="percent">30.0%</div>
+        <span class="stat-value">3</span>
+        <span class="stat-separator">of</span>
+        <span class="stat-value">10</span>
+        <span class="stat-separator"></span>
+        <span class="coverage-percent coverage-low">30.0%</span>
       </div>
     </div>
     <div role="gridcell" class="color-fg-muted d-flex col-2" data-sort="55.6">
       <div class="d-flex flex-justify-end flex-wrap gcovr-m-l-5 coverage-low" style="width: 100%;">
-        <div class="counter">5 of 9</div>
-        <div class="percent">55.6%</div>
+        <span class="stat-value">5</span>
+        <span class="stat-separator">of</span>
+        <span class="stat-value">9</span>
+        <span class="stat-separator"></span>
+        <span class="coverage-percent coverage-low">55.6%</span>
       </div>
     </div>
   </div>
@@ -2082,27 +2178,32 @@ document.addEventListener("DOMContentLoaded", () => {
         <a class="" title="B" href="#B.9d5ed678fe57bcca610140957afab571.html">B</a>
       </span>
     </div>
-    <div role="gridcell" class="color-fg-muted d-flex v-center">
+    <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap flex-items-baseline v-center" data-sort="100.0">
+      <span class="stat-value">8</span>
+      <span class="stat-separator">of</span>
+      <span class="stat-total">8</span>
+      <span class="stat-separator"></span>
       <span class="meter Progress Progress--large d-inline-flex " style="width: 200px;">
         <span class="Progress-item coverage-high" style="width: 100.0%" title="100.0%"></span>
       </span>
-    </div>
-    <div role="gridcell" class="color-fg-muted d-flex col-2" data-sort="100.0">
-      <div class="d-flex flex-justify-end flex-wrap gcovr-m-l-5 coverage-high" style="width: 100%;">
-        <div class="counter">8 of 8</div>
-        <div class="percent">100.0%</div>
-      </div>
+      <span class="coverage-percent coverage-high">100.0%</span>
     </div>
     <div role="gridcell" class="color-fg-muted d-flex col-2" data-sort="25.0">
       <div class="d-flex flex-justify-end flex-wrap gcovr-m-l-5 coverage-low" style="width: 100%;">
-        <div class="counter">1 of 4</div>
-        <div class="percent">25.0%</div>
+        <span class="stat-value">1</span>
+        <span class="stat-separator">of</span>
+        <span class="stat-value">4</span>
+        <span class="stat-separator"></span>
+        <span class="coverage-percent coverage-low">25.0%</span>
       </div>
     </div>
     <div role="gridcell" class="color-fg-muted d-flex col-2" data-sort="100.0">
       <div class="d-flex flex-justify-end flex-wrap gcovr-m-l-5 coverage-high" style="width: 100%;">
-        <div class="counter">1 of 1</div>
-        <div class="percent">100.0%</div>
+        <span class="stat-value">1</span>
+        <span class="stat-separator">of</span>
+        <span class="stat-value">1</span>
+        <span class="stat-separator"></span>
+        <span class="coverage-percent coverage-high">100.0%</span>
       </div>
     </div>
   </div>
@@ -2133,22 +2234,31 @@ document.addEventListener("DOMContentLoaded", () => {
       <tr>
         <th scope="row">Lines:</th>
         <td class="coverage-none">
-          <div>0 of 5</div>
-          <div>0.0%</div>
+          <span class="stat-value">0</span>
+          <span class="stat-separator">of</span>
+          <span class="stat-value">5</span>
+          <span class="stat-separator"></span>
+          <span class="summary-coverage coverage-none">0.0%</span>
         </td>
       </tr>
       <tr>
         <th scope="row">Branches:</th>
         <td class="coverage-none">
-          <div>0 of 2</div>
-          <div>0.0%</div>
+          <span class="stat-value">0</span>
+          <span class="stat-separator">of</span>
+          <span class="stat-value">2</span>
+          <span class="stat-separator"></span>
+          <span class="summary-coverage coverage-none">0.0%</span>
         </td>
       </tr>
       <tr>
         <th scope="row">Functions:</th>
-        <td class="coverage-none">
-          <div>0 of 1</div>
-          <div>0.0%</div>
+        <td>
+          <span class="stat-value">0</span>
+          <span class="stat-separator">of</span>
+          <span class="stat-value">1</span>
+          <span class="stat-separator"></span>
+          <span class="summary-coverage coverage-none">0.0%</span>
         </td>
       </tr>
     </table>
@@ -2293,22 +2403,31 @@ document.addEventListener("DOMContentLoaded", () => {
       <tr>
         <th scope="row">Lines:</th>
         <td class="coverage-medium">
-          <div>4 of 5</div>
-          <div>80.0%</div>
+          <span class="stat-value">4</span>
+          <span class="stat-separator">of</span>
+          <span class="stat-value">5</span>
+          <span class="stat-separator"></span>
+          <span class="summary-coverage coverage-medium">80.0%</span>
         </td>
       </tr>
       <tr>
         <th scope="row">Branches:</th>
         <td class="coverage-low">
-          <div>1 of 2</div>
-          <div>50.0%</div>
+          <span class="stat-value">1</span>
+          <span class="stat-separator">of</span>
+          <span class="stat-value">2</span>
+          <span class="stat-separator"></span>
+          <span class="summary-coverage coverage-low">50.0%</span>
         </td>
       </tr>
       <tr>
         <th scope="row">Functions:</th>
-        <td class="coverage-high">
-          <div>1 of 1</div>
-          <div>100.0%</div>
+        <td>
+          <span class="stat-value">1</span>
+          <span class="stat-separator">of</span>
+          <span class="stat-value">1</span>
+          <span class="stat-separator"></span>
+          <span class="summary-coverage coverage-high">100.0%</span>
         </td>
       </tr>
     </table>
@@ -2455,22 +2574,31 @@ document.addEventListener("DOMContentLoaded", () => {
       <tr>
         <th scope="row">Lines:</th>
         <td class="coverage-medium">
-          <div>4 of 5</div>
-          <div>80.0%</div>
+          <span class="stat-value">4</span>
+          <span class="stat-separator">of</span>
+          <span class="stat-value">5</span>
+          <span class="stat-separator"></span>
+          <span class="summary-coverage coverage-medium">80.0%</span>
         </td>
       </tr>
       <tr>
         <th scope="row">Branches:</th>
         <td class="coverage-low">
-          <div>1 of 2</div>
-          <div>50.0%</div>
+          <span class="stat-value">1</span>
+          <span class="stat-separator">of</span>
+          <span class="stat-value">2</span>
+          <span class="stat-separator"></span>
+          <span class="summary-coverage coverage-low">50.0%</span>
         </td>
       </tr>
       <tr>
         <th scope="row">Functions:</th>
-        <td class="coverage-high">
-          <div>1 of 1</div>
-          <div>100.0%</div>
+        <td>
+          <span class="stat-value">1</span>
+          <span class="stat-separator">of</span>
+          <span class="stat-value">1</span>
+          <span class="stat-separator"></span>
+          <span class="summary-coverage coverage-high">100.0%</span>
         </td>
       </tr>
     </table>
@@ -2617,22 +2745,31 @@ document.addEventListener("DOMContentLoaded", () => {
       <tr>
         <th scope="row">Lines:</th>
         <td class="coverage-medium">
-          <div>4 of 5</div>
-          <div>80.0%</div>
+          <span class="stat-value">4</span>
+          <span class="stat-separator">of</span>
+          <span class="stat-value">5</span>
+          <span class="stat-separator"></span>
+          <span class="summary-coverage coverage-medium">80.0%</span>
         </td>
       </tr>
       <tr>
         <th scope="row">Branches:</th>
         <td class="coverage-low">
-          <div>1 of 2</div>
-          <div>50.0%</div>
+          <span class="stat-value">1</span>
+          <span class="stat-separator">of</span>
+          <span class="stat-value">2</span>
+          <span class="stat-separator"></span>
+          <span class="summary-coverage coverage-low">50.0%</span>
         </td>
       </tr>
       <tr>
         <th scope="row">Functions:</th>
-        <td class="coverage-high">
-          <div>1 of 1</div>
-          <div>100.0%</div>
+        <td>
+          <span class="stat-value">1</span>
+          <span class="stat-separator">of</span>
+          <span class="stat-value">1</span>
+          <span class="stat-separator"></span>
+          <span class="summary-coverage coverage-high">100.0%</span>
         </td>
       </tr>
     </table>
@@ -2779,22 +2916,31 @@ document.addEventListener("DOMContentLoaded", () => {
       <tr>
         <th scope="row">Lines:</th>
         <td class="coverage-low">
-          <div>4 of 10</div>
-          <div>40.0%</div>
+          <span class="stat-value">4</span>
+          <span class="stat-separator">of</span>
+          <span class="stat-value">10</span>
+          <span class="stat-separator"></span>
+          <span class="summary-coverage coverage-low">40.0%</span>
         </td>
       </tr>
       <tr>
         <th scope="row">Branches:</th>
         <td class="coverage-none">
-          <div>0 of 2</div>
-          <div>0.0%</div>
+          <span class="stat-value">0</span>
+          <span class="stat-separator">of</span>
+          <span class="stat-value">2</span>
+          <span class="stat-separator"></span>
+          <span class="summary-coverage coverage-none">0.0%</span>
         </td>
       </tr>
       <tr>
         <th scope="row">Functions:</th>
-        <td class="coverage-low">
-          <div>1 of 2</div>
-          <div>50.0%</div>
+        <td>
+          <span class="stat-value">1</span>
+          <span class="stat-separator">of</span>
+          <span class="stat-value">2</span>
+          <span class="stat-separator"></span>
+          <span class="summary-coverage coverage-low">50.0%</span>
         </td>
       </tr>
     </table>
@@ -2996,22 +3142,27 @@ document.addEventListener("DOMContentLoaded", () => {
       <tr>
         <th scope="row">Lines:</th>
         <td class="coverage-none">
-          <div>0 of 2</div>
-          <div>0.0%</div>
+          <span class="stat-value">0</span>
+          <span class="stat-separator">of</span>
+          <span class="stat-value">2</span>
+          <span class="stat-separator"></span>
+          <span class="summary-coverage coverage-none">0.0%</span>
         </td>
       </tr>
       <tr>
         <th scope="row">Branches:</th>
         <td class="coverage-unknown">
-          <div>0 of 0</div>
-          <div>-%</div>
+          <span class="coverage-percent coverage-unknown">-</span>
         </td>
       </tr>
       <tr>
         <th scope="row">Functions:</th>
-        <td class="coverage-none">
-          <div>0 of 1</div>
-          <div>0.0%</div>
+        <td>
+          <span class="stat-value">0</span>
+          <span class="stat-separator">of</span>
+          <span class="stat-value">1</span>
+          <span class="stat-separator"></span>
+          <span class="summary-coverage coverage-none">0.0%</span>
         </td>
       </tr>
     </table>
@@ -3121,22 +3272,27 @@ document.addEventListener("DOMContentLoaded", () => {
       <tr>
         <th scope="row">Lines:</th>
         <td class="coverage-low">
-          <div>4 of 7</div>
-          <div>57.1%</div>
+          <span class="stat-value">4</span>
+          <span class="stat-separator">of</span>
+          <span class="stat-value">7</span>
+          <span class="stat-separator"></span>
+          <span class="summary-coverage coverage-low">57.1%</span>
         </td>
       </tr>
       <tr>
         <th scope="row">Branches:</th>
         <td class="coverage-unknown">
-          <div>0 of 0</div>
-          <div>-%</div>
+          <span class="coverage-percent coverage-unknown">-</span>
         </td>
       </tr>
       <tr>
         <th scope="row">Functions:</th>
-        <td class="coverage-low">
-          <div>1 of 2</div>
-          <div>50.0%</div>
+        <td>
+          <span class="stat-value">1</span>
+          <span class="stat-separator">of</span>
+          <span class="stat-value">2</span>
+          <span class="stat-separator"></span>
+          <span class="summary-coverage coverage-low">50.0%</span>
         </td>
       </tr>
     </table>
@@ -3310,22 +3466,31 @@ document.addEventListener("DOMContentLoaded", () => {
       <tr>
         <th scope="row">Lines:</th>
         <td class="coverage-high">
-          <div>8 of 8</div>
-          <div>100.0%</div>
+          <span class="stat-value">8</span>
+          <span class="stat-separator">of</span>
+          <span class="stat-value">8</span>
+          <span class="stat-separator"></span>
+          <span class="summary-coverage coverage-high">100.0%</span>
         </td>
       </tr>
       <tr>
         <th scope="row">Branches:</th>
         <td class="coverage-low">
-          <div>1 of 4</div>
-          <div>25.0%</div>
+          <span class="stat-value">1</span>
+          <span class="stat-separator">of</span>
+          <span class="stat-value">4</span>
+          <span class="stat-separator"></span>
+          <span class="summary-coverage coverage-low">25.0%</span>
         </td>
       </tr>
       <tr>
         <th scope="row">Functions:</th>
-        <td class="coverage-high">
-          <div>1 of 1</div>
-          <div>100.0%</div>
+        <td>
+          <span class="stat-value">1</span>
+          <span class="stat-separator">of</span>
+          <span class="stat-value">1</span>
+          <span class="stat-separator"></span>
+          <span class="summary-coverage coverage-high">100.0%</span>
         </td>
       </tr>
     </table>

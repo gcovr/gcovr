@@ -269,6 +269,10 @@ span.diff {
   --partial_covered_color: var(--color-accent-subtle);
   --taken_color: var(--color-accent-fg);
 }
+.col-1-5 {
+  width: 12%
+}
+
 .transy-2 {
   transform: translateY(-2px);
 }
