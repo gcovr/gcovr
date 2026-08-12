@@ -9,6 +9,24 @@ Known bugs
 This list contains bugs for version 6.0 and newer, always check the latest
 version of this file available `here <https://gcovr.com/en/latest/known_bugs.html>`_.
 
+.. _fix_1290:
+
+Branches and conditions are not visible for uncovered lines
+-----------------------------------------------------------
+
+.. list-table::
+
+   * - Introduced
+     - :ref:`release_8_5`
+
+   * - Fixed
+     - :ref:`next_release`, :issue:`1290`
+
+In the HTML report for uncovered lines no branches and conditions are shown.
+A line must be at least partial covered to show the branches and conditions
+in the HTML report.
+
+
 .. _fix_1285:
 
 Link to lines in HTML single page report doesn't work
