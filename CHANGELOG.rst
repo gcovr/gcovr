@@ -52,6 +52,7 @@ Internal changes:
   source files. Also add a properties element which is cleared after each report format to store meta
   data for the report generation and update the dicts in the HTML report to use it. (:issue:`1261`)
 - Activate sorting of includes for ruff. (:issue:`1294`)
+- Add ``gcc-16``, ``clang-21`` and ``clang-22`` to the test suite. (:issue:`1300`)
 
 .. _release_8_6:
 
