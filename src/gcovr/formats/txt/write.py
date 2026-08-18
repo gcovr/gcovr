@@ -146,16 +146,15 @@ def write_summary_report(
                 total = stat.total
                 fh.write(f"{name}: {percent:0.1f}% ({covered} out of {total})\n")
 
-            stats = covdata.stats
-            print_stat("lines", stats.line)
-            print_stat("functions", stats.function)
-            print_stat("branches", stats.branch)
-            if stats.condition.total != 0:
-                print_stat("conditions", stats.condition)
+            print_stat("lines", covdata.line_coverage())
+            print_stat("functions", covdata.function_coverage())
+            print_stat("branches", covdata.branch_coverage())
+            if covdata.condition_coverage().total != 0:
+                print_stat("conditions", covdata.condition_coverage())
             if options.show_decision:
-                print_stat("decisions", stats.decision.to_coverage_stat)
+                print_stat("decisions", covdata.decision_coverage().to_coverage_stat)
             if options.show_calls:
-                print_stat("calls", stats.call)
+                print_stat("calls", covdata.call_coverage())
 
 
 def _diff_report_file(filecov: FileCoverage, options: Options) -> str:

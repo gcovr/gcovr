@@ -327,13 +327,22 @@ class RootInfo:
 
     def set_coverage(self, covdata: CoverageContainer) -> None:
         """Update this RootInfo with a summary of the CoverageContainer."""
-        stats = covdata.stats
-        self.lines = dict_from_stat(stats.line, self.line_coverage_class, 0.0)
-        self.functions = dict_from_stat(stats.function, self.coverage_class)
-        self.branches = dict_from_stat(stats.branch, self.branch_coverage_class)
-        self.conditions = dict_from_stat(stats.condition, self.coverage_class)
-        self.decisions = dict_from_stat(stats.decision, self.coverage_class)
-        self.calls = dict_from_stat(stats.call, self.coverage_class)
+        self.lines = dict_from_stat(
+            covdata.line_coverage(), self.line_coverage_class, 0.0
+        )
+        self.functions = dict_from_stat(
+            covdata.function_coverage(), self.coverage_class
+        )
+        self.branches = dict_from_stat(
+            covdata.branch_coverage(), self.branch_coverage_class
+        )
+        self.conditions = dict_from_stat(
+            covdata.condition_coverage(), self.coverage_class
+        )
+        self.decisions = dict_from_stat(
+            covdata.decision_coverage(), self.coverage_class
+        )
+        self.calls = dict_from_stat(covdata.call_coverage(), self.coverage_class)
 
     def line_coverage_class(self, coverage: float | None) -> str:
         """Get the coverage class for the line."""

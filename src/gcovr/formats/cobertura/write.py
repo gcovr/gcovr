@@ -34,15 +34,13 @@ def write_report(
 ) -> None:
     """produce an XML report in the Cobertura format"""
 
-    stats = covdata.stats
-
     root_elem = etree.Element("coverage")
-    root_elem.set("line-rate", _rate(stats.line))
-    root_elem.set("branch-rate", _rate(stats.branch))
-    root_elem.set("lines-covered", str(stats.line.covered))
-    root_elem.set("lines-valid", str(stats.line.total))
-    root_elem.set("branches-covered", str(stats.branch.covered))
-    root_elem.set("branches-valid", str(stats.branch.total))
+    root_elem.set("line-rate", _rate(covdata.line_coverage()))
+    root_elem.set("branch-rate", _rate(covdata.branch_coverage()))
+    root_elem.set("lines-covered", str(covdata.line_coverage().covered))
+    root_elem.set("lines-valid", str(covdata.line_coverage().total))
+    root_elem.set("branches-covered", str(covdata.branch_coverage().covered))
+    root_elem.set("branches-valid", str(covdata.branch_coverage().total))
     root_elem.set("complexity", "0.0")
     root_elem.set("timestamp", str(int(options.timestamp.timestamp())))
     root_elem.set("version", f"gcovr {get_version_for_report()}")
