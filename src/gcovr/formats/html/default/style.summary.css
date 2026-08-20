@@ -94,7 +94,7 @@ span.summary-coverage.coverage-high
   border: 1px solid;
   margin-right: 4px;
   color: white;
-  width: 3.5em;
+  min-width: 3.5em;
   display: inline-block;
   text-align: center;
 }
