@@ -128,9 +128,9 @@ class CoverageStat:
         12.3
 
         Coverage is capped at 99.9% unless everything is covered:
-        >>> CoverageStat(total=10000, covered=9999, excluded=^^^0).percent_or("default")
+        >>> CoverageStat(total=10000, covered=9999, excluded=0).percent_or("default")
         99.9
-        >>> CoverageStat(total=10000, covered=0, excluded=0).percent_or("default")
+        >>> CoverageStat(total=10000, covered=10000, excluded=0).percent_or("default")
         100.0
 
         If there are no elements, percentage is NaN and the default will be returned:
