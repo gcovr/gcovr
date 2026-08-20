@@ -154,8 +154,8 @@ details summary {
   font-family: monospace;
   white-space: pre;
 
-  tab-size: var(--tab_size);
-  -moz-tab-size: var(--tab_size);
+  tab-size: var(--tab-size);
+  -moz-tab-size: var(--tab-size);
 }
 
 span.takenBranch,

@@ -1,5 +1,10 @@
 @charset "utf-8";
 
+:root {
+  --base-size-8: 4px;
+  --stack-padding-normal: 8px
+}
+
 /*!
  * Primer CSS
  * https://primer.style

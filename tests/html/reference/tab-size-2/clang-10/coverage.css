@@ -2,7 +2,9 @@
 
 :root {
   font-family: sans-serif;
-  --tab_size: 2;
+  --tab-size: 2;
+  --base-size-8: 4px;
+  --stack-padding-normal: 8px;
 }
 
 .theme-green, .theme-blue {
@@ -642,8 +644,8 @@ details summary {
   font-family: monospace;
   white-space: pre;
 
-  tab-size: var(--tab_size);
-  -moz-tab-size: var(--tab_size);
+  tab-size: var(--tab-size);
+  -moz-tab-size: var(--tab-size);
 }
 
 span.takenBranch,
@@ -785,7 +787,7 @@ pre
   border-top-right-radius: 6px;
   border-width: 1px;
   margin: -1px -1px 0;
-  padding: 16px;
+  padding: 8px;
 }
 
 .Box-row {

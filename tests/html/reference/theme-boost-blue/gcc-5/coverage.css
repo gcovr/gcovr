@@ -1200,7 +1200,7 @@ body.sidebar-resizing .main-content {
   display: grid;
   grid-template-columns: minmax(200px, 2fr) minmax(200px, 1fr) 116px 116px;
   gap: 0;
-  padding: 0 16px;
+  padding: 0 8px;
 }
 
 .file-list-header {
@@ -1233,7 +1233,7 @@ body.sidebar-resizing .main-content {
 
 .file-list-header > div,
 .file-row > div {
-  padding-right: 8px;
+  padding-right: 4px;
 }
 
 .file-list-header > div:not(:first-child),
@@ -2301,7 +2301,7 @@ tr.source-line.nav-highlight > td {
   display: grid;
   grid-template-columns: 1fr 90px 70px 90px;
   gap: 0;
-  padding: 0 16px;
+  padding: 0 8px;
 }
 
 .functions-header {

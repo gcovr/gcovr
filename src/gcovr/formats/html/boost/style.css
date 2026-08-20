@@ -1200,7 +1200,7 @@ body.sidebar-resizing .main-content {
   display: grid;
   grid-template-columns: minmax(200px, 2fr) minmax(200px, 1fr) 116px{% if SHOW_CONDITION_COVERAGE %} 116px{% endif %}{% if SHOW_DECISION %} 116px{% endif %} 116px{% if SHOW_CALLS %} 116px{% endif %}{% if info is defined and info.diff_report %} 111px{% endif %};
   gap: 0;
-  padding: 0 16px;
+  padding: 0 8px;
 }
 
 .file-list-header {
@@ -1233,7 +1233,7 @@ body.sidebar-resizing .main-content {
 
 .file-list-header > div,
 .file-row > div {
-  padding-right: 8px;
+  padding-right: 4px;
 }
 
 .file-list-header > div:not(:first-child),
@@ -2301,7 +2301,7 @@ tr.source-line.nav-highlight > td {
   display: grid;
   grid-template-columns: 1fr 90px 70px{% if SHOW_CONDITION_COVERAGE %} 90px{% endif %}{% if SHOW_DECISION %} 90px{% endif %} 90px{% if SHOW_CALLS %} 90px{% endif %};
   gap: 0;
-  padding: 0 16px;
+  padding: 0 8px;
 }
 
 .functions-header {
