@@ -54,37 +54,37 @@
     <div class="col-sm-12 col-lg-3 float-left d-flex flex-column text-right flex-justify-end pr-3">
       <div class="d-flex">
         <div class="mr-2">Lines:</div>
-        <div class="mr-2" style="margin: auto;">{% if info.lines.coverage == '-' %}-{% else %}{{info.lines.exec}} of {{info.lines.total}}{% if info.lines.excluded %} - {{info.lines.excluded}} excluded{% endif %}{% endif %}</div>
+        <div class="mr-2" style="margin: auto;">{% if info.lines.coverage == '-' %}-{% else %}{{info.lines.exec}} / {{info.lines.total}}{% if info.lines.excluded %} - {{info.lines.excluded}} excl{% endif %}{% endif %}</div>
         <div class="Label--minw"><span class="{{info.lines.class}} IssueLabel color-fg-on-emphasis mr-1">{{info.lines.coverage}}%</span></div>
       </div>
       <div class="d-flex">
         <div class="mr-2">Branches:</div>
-        <div class="mr-2" style="margin: auto;">{% if info.branches.coverage == '-' %}-{% else %}{{info.branches.exec}} of {{info.branches.total}}{% if info.branches.excluded %} - {{info.branches.excluded}} excluded{% endif %}{% endif %}</div>
+        <div class="mr-2" style="margin: auto;">{% if info.branches.coverage == '-' %}-{% else %}{{info.branches.exec}} / {{info.branches.total}}{% if info.branches.excluded %} - {{info.branches.excluded}} excl{% endif %}{% endif %}</div>
         <div class="Label--minw"><span class="{{info.branches.class}} IssueLabel color-fg-on-emphasis mr-1">{{info.branches.coverage}}%</span></div>
       </div>
       {% if SHOW_CONDITION_COVERAGE %}
       <div class="d-flex">
         <div class="mr-2">Conditions:</div>
-        <div class="mr-2" style="margin: auto;">{% if info.conditions.coverage == '-' %}-{% else %}{{info.conditions.exec}} of {{info.conditions.total}}{% if info.conditions.excluded %} - {{info.conditions.excluded}} excluded{% endif %}{% endif %}</div>
+        <div class="mr-2" style="margin: auto;">{% if info.conditions.coverage == '-' %}-{% else %}{{info.conditions.exec}} / {{info.conditions.total}}{% if info.conditions.excluded %} - {{info.conditions.excluded}} excl{% endif %}{% endif %}</div>
         <div class="Label--minw"><span class="{{info.conditions.class}} IssueLabel color-fg-on-emphasis mr-1">{{info.conditions.coverage}}%</span></div>
       </div>
       {% endif %}
       {% if SHOW_DECISION %}
       <div class="d-flex">
         <div class="mr-2">Decisions:</div>
-        <div class="mr-2" style="margin: auto;">{% if info.decisions.coverage == '-' %}-{% else %}{{info.decisions.exec}} of {{info.decisions.total}}{% endif %}</div>
+        <div class="mr-2" style="margin: auto;">{% if info.decisions.coverage == '-' %}-{% else %}{{info.decisions.exec}} / {{info.decisions.total}}{% endif %}</div>
         <div class="Label--minw"><span class="{{info.decisions.class}} IssueLabel color-fg-on-emphasis mr-1">{{info.decisions.coverage}}%</span></div>
       </div>
       {% endif %}
       <div class="d-flex">
         <div class="mr-2">Functions:</div>
-        <div class="mr-2" style="margin: auto;">{% if info.functions.coverage == '-' %}-{% else %}{{info.functions.exec}} of {{info.functions.total}}{% if info.functions.excluded %} - {{info.functions.excluded}} excluded{% endif %}{% endif %}</div>
+        <div class="mr-2" style="margin: auto;">{% if info.functions.coverage == '-' %}-{% else %}{{info.functions.exec}} / {{info.functions.total}}{% if info.functions.excluded %} - {{info.functions.excluded}} excl{% endif %}{% endif %}</div>
         <div class="Label--minw"><span class="{{info.functions.class}} IssueLabel color-fg-on-emphasis mr-1">{{info.functions.coverage}}%</span></div>
       </div>
       {% if SHOW_CALLS %}
       <div class="d-flex">
         <div class="mr-2">Calls:</div>
-        <div class="mr-2" style="margin: auto;">{% if info.calls.coverage == '-' %}-{% else %}{{info.calls.exec}} of {{info.calls.total}}{% if info.calls.excluded %} - {{info.calls.excluded}} excluded{% endif %}{% endif %}</div>
+        <div class="mr-2" style="margin: auto;">{% if info.calls.coverage == '-' %}-{% else %}{{info.calls.exec}} / {{info.calls.total}}{% if info.calls.excluded %} - {{info.calls.excluded}} excl{% endif %}{% endif %}</div>
         <div class="Label--minw"><span class="{{info.calls.class}} IssueLabel color-fg-on-emphasis mr-1">{{info.calls.coverage}}%</span></div>
       </div>
       {% endif %}

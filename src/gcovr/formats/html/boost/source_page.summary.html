@@ -6,29 +6,29 @@
     <h2 class="source-filename">{{filename}}</h2>
     <div class="source-stats">
       <span class="stat {{lines.class}}">
-        <strong>{{lines.coverage}}%</strong> Lines ({{lines.exec}} of {{lines.total}}{% if lines.excluded %}, {{lines.excluded}} excluded{% endif %})
+        <strong>{{lines.coverage}}%</strong> Lines ({{lines.exec}} / {{lines.total}}{% if lines.excluded %}, {{lines.excluded}} excl{% endif %})
       </span>
       {% if info.branches.total > info.branches.excluded %}
       <span class="stat {{branches.class}}">
-        <strong>{{branches.coverage}}%</strong> Branches ({{branches.exec}} of {{branches.total}}{% if branches.excluded %}, {{branches.excluded}} excluded{% endif %})
+        <strong>{{branches.coverage}}%</strong> Branches ({{branches.exec}} / {{branches.total}}{% if branches.excluded %}, {{branches.excluded}} excl{% endif %})
       </span>
       {% endif %}
       {% if SHOW_CONDITION_COVERAGE %}
       <span class="stat {{conditions.class}}">
-        <strong>{{conditions.coverage}}%</strong> Conditions ({{conditions.exec}} of {{conditions.total}}{% if conditions.excluded %}, {{conditions.excluded}} excluded{% endif %})
+        <strong>{{conditions.coverage}}%</strong> Conditions ({{conditions.exec}} / {{conditions.total}}{% if conditions.excluded %}, {{conditions.excluded}} excl{% endif %})
       </span>
       {% endif %}
       {% if SHOW_DECISION %}
       <span class="stat {{decisions.class}}">
-        <strong>{{decisions.coverage}}%</strong> Decisions ({{decisions.exec}} of {{decisions.total}})
+        <strong>{{decisions.coverage}}%</strong> Decisions ({{decisions.exec}} / {{decisions.total}})
       </span>
       {% endif %}
       <span class="stat {{functions.class}}">
-        <strong>{{functions.coverage}}%</strong> Functions ({{functions.exec}} of {{functions.total}}{% if functions.excluded %}, {{functions.excluded}} excluded{% endif %})
+        <strong>{{functions.coverage}}%</strong> Functions ({{functions.exec}} / {{functions.total}}{% if functions.excluded %}, {{functions.excluded}} excl{% endif %})
       </span>
       {% if SHOW_CALLS %}
       <span class="stat {{calls.class}}">
-        <strong>{{calls.coverage}}%</strong> Calls ({{calls.exec}} of {{calls.total}}{% if calls.excluded %}, {{calls.excluded}} excluded{% endif %})
+        <strong>{{calls.coverage}}%</strong> Calls ({{calls.exec}} / {{calls.total}}{% if calls.excluded %}, {{calls.excluded}} excl{% endif %})
       </span>
       {% endif %}
     </div>

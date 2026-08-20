@@ -37,7 +37,7 @@
       {% if row.lines.coverage == "-" %}
       <span style="width: 200px;">-</span>
       {% else %}
-      <span class="text-small color-fg-muted mr-2">{{row.lines.exec}} of {{row.lines.total}}{% if row.lines.excluded %}, {{row.lines.excluded}} excl{% endif %}</span>
+      <span class="text-small color-fg-muted mr-2">{{row.lines.exec}} / {{row.lines.total}}{% if row.lines.excluded %}, {{row.lines.excluded}} excl{% endif %}</span>
       <span class="meter Progress Progress--large d-inline-flex mr-2" style="width: 200px;">
         <span class="Progress-item {{row.lines.class}}" style="width: {{row.lines.coverage}}%"></span>
       </span>
@@ -50,7 +50,7 @@
       {% if row.branches.coverage == '-' %}
       <span class="text-small color-fg-muted mr-2">-</span>
       {% else %}
-      <span class="text-small color-fg-muted mr-2">{{row.branches.exec}} of {{row.branches.total}}{% if row.branches.excluded %}, {{row.branches.excluded}} excl{% endif %}</span>
+      <span class="text-small color-fg-muted mr-2">{{row.branches.exec}} / {{row.branches.total}}{% if row.branches.excluded %}, {{row.branches.excluded}} excl{% endif %}</span>
       <div class="Label--minw">
         <span class="Label mr-1 Label--{{row.branches.class}}">{{row.branches.coverage}}%</span>
       </div>
@@ -61,7 +61,7 @@
       {% if row.conditions.coverage == '-' %}
       <span class="text-small color-fg-muted mr-2">-</span>
       {% else %}
-      <span class="text-small color-fg-muted mr-2">{{row.conditions.exec}} of {{row.conditions.total}}{% if row.conditions.excluded %}, {{row.conditions.excluded}} excl{% endif %}</span>
+      <span class="text-small color-fg-muted mr-2">{{row.conditions.exec}} / {{row.conditions.total}}{% if row.conditions.excluded %}, {{row.conditions.excluded}} excl{% endif %}</span>
       <div class="Label--minw">
         <span class="Label mr-1 Label--{{row.conditions.class}}">{{row.conditions.coverage}}%</span>
       </div>
@@ -73,7 +73,7 @@
       {% if row.decisions.coverage == '-' %}
       <span class="text-small color-fg-muted mr-2">-</span>
       {% else %}
-      <span class="text-small color-fg-muted mr-2">{{row.decisions.exec}} of {{row.decisions.total}}</span>
+      <span class="text-small color-fg-muted mr-2">{{row.decisions.exec}} / {{row.decisions.total}}</span>
       <div class="Label--minw">
         <span class="Label mr-1 Label--{{row.decisions.class}}">{{row.decisions.coverage}}%</span>
       </div>
@@ -84,7 +84,7 @@
       {% if row.functions.coverage == '-' %}
       <span class="text-small color-fg-muted mr-2">-</span>
       {% else %}
-      <span class="text-small color-fg-muted mr-2">{{row.functions.exec}} of {{row.functions.total}}{% if row.functions.excluded %}, {{row.functions.excluded}} excl{% endif %}</span>
+      <span class="text-small color-fg-muted mr-2">{{row.functions.exec}} / {{row.functions.total}}{% if row.functions.excluded %}, {{row.functions.excluded}} excl{% endif %}</span>
       <div class="Label--minw">
         <span class="Label mr-1 Label--{{row.functions.class}}">{{row.functions.coverage}}%</span>
       </div >
@@ -95,7 +95,7 @@
       {% if row.calls.coverage == '-' %}
       <span class="text-small color-fg-muted mr-2">-</span>
       {% else %}
-      <span class="text-small color-fg-muted mr-2">{{row.calls.exec}} of {{row.calls.total}}{% if row.calls.excluded %}, {{row.calls.excluded}} excl{% endif %} calls</span>
+      <span class="text-small color-fg-muted mr-2">{{row.calls.exec}} / {{row.calls.total}}{% if row.calls.excluded %}, {{row.calls.excluded}} excl{% endif %} calls</span>
       <div class="Label--minw">
         <span class="Label mr-1 Label--{{row.calls.class}}">{{row.calls.coverage}}%</span>
       </div>

@@ -69,12 +69,12 @@
           <span class="coverage-percent {{lines.class}}">-</span>
           {% else %}
           <span class="stat-value">{{lines.exec}}</span>
-          <span class="stat-separator">of</span>
+          <span class="stat-separator">/</span>
           <span class="stat-value">{{lines.total}}</span>
           {%  if lines.excluded %}
           <span class="stat-separator">,</span>
           <span class="stat-value">{{lines.excluded}}</span>
-          <span class="stat-separator">excluded</span>
+          <span class="stat-separator">excl</span>
           {%  else %}
           <span class="stat-separator"></span>
           {%  endif %}
@@ -89,12 +89,12 @@
           <span class="coverage-percent {{branches.class}}">-</span>
           {% else %}
           <span class="stat-value">{{branches.exec}}</span>
-          <span class="stat-separator">of</span>
+          <span class="stat-separator">/</span>
           <span class="stat-value">{{branches.total}}</span>
           {%  if branches.excluded %}
           <span class="stat-separator">,</span>
           <span class="stat-value">{{branches.excluded}}</span>
-          <span class="stat-separator">excluded</span>
+          <span class="stat-separator">excl</span>
           {%  else %}
           <span class="stat-separator"></span>
           {%  endif %}
@@ -110,12 +110,12 @@
           <span class="coverage-percent {{conditions.class}}">-</span>
           {% else %}
           <span class="stat-value">{{conditions.exec}}</span>
-          <span class="stat-separator">of</span>
+          <span class="stat-separator">/</span>
           <span class="stat-value">{{conditions.total}}</span>
           {%  if conditions.excluded %}
           <span class="stat-separator">,</span>
           <span class="stat-value">{{conditions.excluded}}</span>
-          <span class="stat-separator">excluded</span>
+          <span class="stat-separator">excl</span>
           {% else %}
           <span class="stat-separator"></span>
           {%  endif %}
@@ -132,7 +132,7 @@
           <span class="coverage-percent {{decisions.class}}">-</span>
           {% else %}
           <span class="stat-value">{{decisions.exec}}</span>
-          <span class="stat-separator">of</span>
+          <span class="stat-separator">/</span>
           <span class="stat-value">{{decisions.total}}</span>
           <span class="stat-separator"></span>
           <span class="summary-coverage {{decisions.class}}">{{decisions.coverage}}%</span>
@@ -147,12 +147,12 @@
           <span class="coverage-percent {{functions.class}}">-</span>
           {% else %}
           <span class="stat-value">{{functions.exec}}</span>
-          <span class="stat-separator">of</span>
+          <span class="stat-separator">/</span>
           <span class="stat-value">{{functions.total}}</span>
           {%  if functions.excluded %}
           <span class="stat-separator">,</span>
           <span class="stat-value">{{functions.excluded}}</span>
-          <span class="stat-separator">excluded</span>
+          <span class="stat-separator">excl</span>
           {%  else %}
           <span class="stat-separator"></span>
           {%  endif %}
@@ -168,12 +168,12 @@
           <span class="coverage-percent {{calls.class}}">-</span>
           {% else %}
           <span class="stat-value">{{calls.exec}}</span>
-          <span class="stat-separator">of</span>
+          <span class="stat-separator">/</span>
           <span class="stat-value">{{calls.total}}</span>
           {%  if calls.excluded %}
           <span class="stat-separator">,</span>
           <span class="stat-value">{{calls.excluded}}</span>
-          <span class="stat-separator">excluded</span>
+          <span class="stat-separator">excl</span>
           {%  else %}
           <span class="stat-separator"></span>
           {%  endif %}

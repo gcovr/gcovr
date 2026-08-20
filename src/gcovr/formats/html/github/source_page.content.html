@@ -13,7 +13,7 @@
       <button type="button" class="button_toggle_partialCoveredLine show_partialCoveredLine" value="partialCoveredLine" title="Toggle partial covered lines">{{lines.partial}} partial covered</button>
       {% endif %}
       {% if lines.excluded > 0 %}
-      <button type="button" class="button_toggle_excludedLine show_excludedLine" value="excludedLine" title="Toggle excluded lines">{{lines.excluded}} excluded</button>
+      <button type="button" class="button_toggle_excludedLine show_excludedLine" value="excludedLine" title="Toggle excluded lines">{{lines.excluded}} excl</button>
       {% endif %}
       {% if info.diff_report %}
       {%  if diff == 'ADDED' or diff == 'REMOVED' %}
@@ -88,7 +88,7 @@
               {%  set block_info = " %d &rightarrow; %d" | format(branch.source_block_id, branch.destination_block_id) | safe %}
               {% endif %}
               {% if branch.excluded %}
-              <div class="color-excluded-branch">&ndash; Branch {{block_info}} excluded.</div>
+              <div class="color-excluded-branch">&ndash; Branch {{block_info}} excl.</div>
               {% elif branch.taken %}
               <div class="color-taken-branch">&check; Branch {{block_info}} taken {{branch.count}} time{% if branch.count > 1 %}s{% endif %}.</div>
               {% else %}
@@ -169,7 +169,7 @@
               {% endif %}
               {% for call in linecall.calls %}
               {% if call.excluded %}
-              <div class="color-excluded-call">&check; Call {{call.name}} excluded.</div>
+              <div class="color-excluded-call">&check; Call {{call.name}} excl.</div>
               {% elif call.invoked %}
               <div class="color-invoked-call">&check; Call {{call.name}} invoked.</div>
               {% else %}

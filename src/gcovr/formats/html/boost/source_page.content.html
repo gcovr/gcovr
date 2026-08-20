@@ -172,7 +172,7 @@
                 {%  set branch_info = "%d &rightarrow; %d" | format(branch.source_block_id, branch.destination_block_id) | safe %}
                 {% endif %}
                 {% if branch.excluded %}
-                <div class="branch-excluded">&ndash; Branch {{branch_info}} excluded.</div>
+                <div class="branch-excluded">&ndash; Branch {{branch_info}} excl.</div>
                 {% elif branch.taken %}
                 <div class="branch-taken">&check; Branch {{branch_info}} taken {{branch.count}} time{% if branch.count > 1 %}s{% endif %}.</div>
                 {% else %}
@@ -251,7 +251,7 @@
                 {% endif %}
                 {% for call in linecall.calls %}
                 {% if call.excluded %}
-                <div class="call-excluded">&ndash; Call {{call.name}} excluded.</div>
+                <div class="call-excluded">&ndash; Call {{call.name}} excl.</div>
                 {% elif call.invoked %}
                 <div class="call-invoked">&check; Call {{call.name}} invoked.</div>
                 {% else %}
