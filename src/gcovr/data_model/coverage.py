@@ -2162,7 +2162,12 @@ class FunctionCoverage(CoverageBase):
                 data_dict["execution_count"] = execution_count
             if self.blocks_percent[lineno] is not None:
                 data_dict["blocks_percent"] = self.blocks_percent[lineno]
-            if self.start is not None and self.end is not None:
+            if (
+                self.start is not None
+                and self.end is not None
+                and lineno in self.start
+                and lineno in self.end
+            ):
                 data_dict["pos"] = (
                     ":".join([str(e) for e in self.start[lineno]]),
                     ":".join([str(e) for e in self.end[lineno]]),
@@ -2368,16 +2373,26 @@ class FunctionCoverage(CoverageBase):
                     }
                 )
 
-                if self.start is not None and other.start is not None:
-                    # or the minimum start
-                    self.start = CoverageDict[int, tuple[int, int]](
-                        {lineno: min(*self.start.values(), *other.start.values())}
-                    )
-                if self.end is not None and other.end is not None:
-                    # or the maximum end
-                    self.end = CoverageDict[int, tuple[int, int]](
-                        {lineno: max(*self.end.values(), *other.end.values())}
-                    )
+                # or the minimum start, dropping the positions if neither side has one
+                starts = [
+                    *(() if self.start is None else self.start.values()),
+                    *(() if other.start is None else other.start.values()),
+                ]
+                self.start = (
+                    None
+                    if not starts
+                    else CoverageDict[int, tuple[int, int]]({lineno: min(starts)})
+                )
+                # or the maximum end
+                ends = [
+                    *(() if self.end is None else self.end.values()),
+                    *(() if other.end is None else other.end.values()),
+                ]
+                self.end = (
+                    None
+                    if not ends
+                    else CoverageDict[int, tuple[int, int]]({lineno: max(ends)})
+                )
 
         self.merge_base_data(other)
 
