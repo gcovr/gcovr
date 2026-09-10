@@ -57,7 +57,7 @@ EXIT_SUCCESS = 0
 EXIT_CMDLINE_ERROR = 1
 EXIT_LINE_NOK = 2
 EXIT_BRANCH_NOK = 4
-EXIT_DECISION_NOK = 8
+EXIT_CONDITION_OR_DECISION_NOK = 8
 EXIT_FUNCTION_NOK = 16
 EXIT_READ_ERROR = 64
 EXIT_WRITE_ERROR = 128
@@ -70,7 +70,7 @@ def get_exit_code(
     covdata: CoverageContainer,
     threshold_line: float,
     threshold_branch: float,
-    threshold_decision: float,
+    threshold_condition_or_decision: float,
     threshold_function: float,
 ) -> int:
     """Fail depending on the coverage result."""
@@ -79,7 +79,7 @@ def get_exit_code(
     if (
         threshold_line > 0.0
         or threshold_branch > 0.0
-        or threshold_decision > 0.0
+        or threshold_condition_or_decision > 0.0
         or threshold_function > 0.0
     ):
         line_nok = False
@@ -108,16 +108,26 @@ def get_exit_code(
                     threshold_branch,
                 )
 
-        decision_nok = False
-        if threshold_decision > 0.0:
+        condition_or_decision_nok = False
+        if threshold_condition_or_decision > 0.0:
+            # Allow data with no conditions.
+            percent_condition = covdata.condition_coverage().percent_or(100.0)
+            if percent_condition < threshold_condition_or_decision:
+                condition_or_decision_nok = True
+                LOGGER.error(
+                    "Failed minimum condition coverage (got %s%%, minimum %s%%)",
+                    percent_condition,
+                    threshold_condition_or_decision,
+                )
+
             # Allow data with no decisions.
             percent_decision = covdata.decision_coverage().percent_or(100.0)
-            if percent_decision < threshold_decision:
-                decision_nok = True
+            if percent_decision < threshold_condition_or_decision:
+                condition_or_decision_nok = True
                 LOGGER.error(
                     "Failed minimum decision coverage (got %s%%, minimum %s%%)",
                     percent_decision,
-                    threshold_decision,
+                    threshold_condition_or_decision,
                 )
 
         function_nok = False
@@ -136,8 +146,8 @@ def get_exit_code(
             exit_code |= EXIT_LINE_NOK
         if branch_nok:
             exit_code |= EXIT_BRANCH_NOK
-        if decision_nok:
-            exit_code |= EXIT_DECISION_NOK
+        if condition_or_decision_nok:
+            exit_code |= EXIT_CONDITION_OR_DECISION_NOK
         if function_nok:
             exit_code |= EXIT_FUNCTION_NOK
 
@@ -393,10 +403,6 @@ def main(args: list[str] | None = None) -> int:  # pylint: disable=too-many-retu
         LOGGER.error("%s", e)
         return EXIT_CMDLINE_ERROR
 
-    if options.fail_under_decision > 0.0 and not options.show_decision:
-        LOGGER.error("--fail-under-decision need also option --decision.")
-        return EXIT_CMDLINE_ERROR
-
     if options.show_decision:
         LOGGER.info(
             "Attention, the decision analysis is experimental. "
@@ -428,7 +434,7 @@ def main(args: list[str] | None = None) -> int:  # pylint: disable=too-many-retu
         covdata,
         options.fail_under_line,
         options.fail_under_branch,
-        options.fail_under_decision,
+        options.fail_under_condition_or_decision,
         options.fail_under_function,
     )
 

@@ -151,6 +151,7 @@
         "pypy",
         "pyright",
         "pytest",
+        "pytestmark",
         "pywin32",
         "Quickstart",
         "realpath",

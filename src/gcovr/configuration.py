@@ -565,7 +565,7 @@ GCOVR_CONFIG_OPTIONS = [
             "Exit with a status of 2 "
             "if the total line coverage is less than MIN. "
             "Can be ORed with exit status of '--fail-under-branch', "
-            "'--fail-under-decision', and '--fail-under-function' option."
+            "'--fail-under-condition-or-decision' and '--fail-under-function'."
         ),
         default=0.0,
     ),
@@ -578,20 +578,24 @@ GCOVR_CONFIG_OPTIONS = [
             "Exit with a status of 4 "
             "if the total branch coverage is less than MIN. "
             "Can be ORed with exit status of '--fail-under-line', "
-            "'--fail-under-decision', and '--fail-under-function' option."
+            "'--fail-under-condition-or-decision' and '--fail-under-function'."
         ),
         default=0.0,
     ),
     GcovrConfigOption(
-        "fail_under_decision",
-        ["--fail-under-decision"],
+        "fail_under_condition_or_decision",
+        [
+            "--fail-under-condition-or-decision",
+            "--fail-under-condition",
+            "--fail-under-decision",
+        ],
         type=check_percentage,
         metavar="MIN",
         help=(
             "Exit with a status of 8 "
-            "if the total decision coverage is less than MIN. "
+            "if the total condition or decision coverage is less than MIN. "
             "Can be ORed with exit status of '--fail-under-line', "
-            "'--fail-under-branch', and '--fail-under-function' option."
+            "'--fail-under-branch' and '--fail-under-function'."
         ),
         default=0.0,
     ),
@@ -604,7 +608,7 @@ GCOVR_CONFIG_OPTIONS = [
             "Exit with a status of 16 "
             "if the total function coverage is less than MIN. "
             "Can be ORed with exit status of '--fail-under-line', "
-            "'--fail-under-branch', and '--fail-under-decision' option."
+            "'--fail-under-branch' and '--fail-under-condition-or-decision'."
         ),
         default=0.0,
     ),

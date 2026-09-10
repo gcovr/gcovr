@@ -122,13 +122,14 @@ USE_GCC_JSON_INTERMEDIATE_FORMAT = (
 )
 USE_PROFDATA_POSSIBLE = IS_LINUX and not IS_GCC
 GCOVR_TEST_USE_CXX_LAMBDA_EXPRESSIONS = "c++20" in _CC_HELP_OUTPUT
+CONDITION_COVERAGE_POSSIBLE = "condition-coverage" in _CC_HELP_OUTPUT
 
 _CFLAGS = [
     "-fPIC",
     "-fprofile-arcs",
     "-ftest-coverage",
 ]
-if "condition-coverage" in _CC_HELP_OUTPUT:
+if CONDITION_COVERAGE_POSSIBLE:
     _CFLAGS.append("-fcondition-coverage")
 
 _CFLAGS_PROFDATA = [

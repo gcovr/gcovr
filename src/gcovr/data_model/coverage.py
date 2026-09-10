@@ -2789,8 +2789,6 @@ class FileCoverage(CoverageBase):
         ):
             yield from self.__linecov_by_function[functioncov.mangled_name]
 
-        return
-
     def remove_function_coverage(self, functioncov: FunctionCoverage) -> None:
         """Remove line coverage objects."""
         # Remove function and exclude the related lines

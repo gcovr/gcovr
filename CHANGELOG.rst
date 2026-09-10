@@ -27,6 +27,8 @@ New features and notable changes:
 - Add compare mode for JSON, text and HTML reports. (:issue:`1240`, :issue:`1266`)
 - Stub missing line coverage for branches in LLVM source based code coverage format. (:issue:`1245`)
 - Add support for TOML files with :option:`--config` (:issue:`1258`)
+- Add :option:`--fail-under-condition-or-decision` with :option:`--fail-under-condition` and
+  :option:`--fail-under-decision` as synonyms, change the key for the configuration file. (:issue:`1293`)
 
 Bug fixes and small improvements:
 
