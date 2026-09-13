@@ -8,6 +8,8 @@
 # (While linguist-generated might be appropriate here,
 # that attribute would also suppress diffs on GH. Can't have that!)
 */reference/**/*.* linguist-detectable=false
+*/source/*.*       linguist-detectable=false
+*/source/**/*.*    linguist-detectable=false
 **/Makefile        linguist-detectable=false
 **/CMakeLists.txt  linguist-detectable=false
 **/*.cmd           linguist-detectable=false

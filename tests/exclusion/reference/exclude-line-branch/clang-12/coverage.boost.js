@@ -811,18 +811,16 @@
   // ===========================================
 
   function initFunctionRows() {
-    var dataEl = document.getElementById('functions-data');
-    if (!dataEl) return;
+    if (!window.GCOVR_FUNCTION_DATA) return;
 
     var config = window.__functionsPageConfig || {};
-    var data = JSON.parse(dataEl.textContent);
+    var data = window.GCOVR_FUNCTION_DATA;
     var container = document.querySelector('.functions-body');
     var loadingEl = document.getElementById('functions-loading');
     var showBranches = config.showBranches;
     var showConditions = config.showConditions;
     var showDecisions = config.showDecisions;
     var showCalls = config.showCalls;
-    var singlePage = config.singlePage;
     var currentFile = config.htmlFilename || '';
 
     if (data.length === 0) {
@@ -843,11 +841,6 @@
       renderVisible();
     });
 
-    function buildHref(entry) {
-      if (singlePage) return '#' + entry.html_filename + '|l' + entry.line;
-      if (currentFile !== entry.html_filename) return entry.html_filename + '#l' + entry.line;
-      return '#l' + entry.line;
-    }
 
     function entryKey(entry) {
       return entry.name + '|' + entry.filename + ':' + entry.line;
@@ -869,7 +862,7 @@
       // col-function
       var colFn = el('div', 'col-function');
       var a = document.createElement('a');
-      a.href = buildHref(entry);
+      a.href = entry.html_filename + '#L' + entry.line;
       a.appendChild(el('span', 'function-name', entry.name));
       a.appendChild(el('span', 'function-location', entry.filename + ':' + entry.line));
       colFn.appendChild(a);

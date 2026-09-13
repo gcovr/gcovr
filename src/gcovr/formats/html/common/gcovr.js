@@ -17,12 +17,12 @@ gcovr.fileLoaded = function () {
 
   gcovr.addOnClickHandler("div.sortable", gcovr.sortGridTable);
 
-  {% if info.single_page %}
+/* {% if info.single_page %} */
   gcovr.singlePageSetup();
-  {% else %}
+/* {% else %} */
   gcovr.source_table_body = document.querySelector(".source-table-container > table > tbody")
   gcovr.initScrollMarkers();
-  {% endif %}
+/* {% endif %} */
   window.addEventListener("resize", () => {
     gcovr.initScrollMarkers();
   });
@@ -35,7 +35,7 @@ gcovr.addOnClickHandler = function (selector, handler) {
   });
 };
 
-{% if info.single_page %}
+/* {% if info.single_page %} */
 gcovr.singlePageSetup = function () {
   document.body.classList.add("js-enabled")
   document.body.classList.remove("js-disabled")
@@ -115,7 +115,7 @@ gcovr.singlePageActivateElement = function () {
     gcovr.initScrollMarkers();
   }
 };
-{% endif %}
+/* {% endif %} */
 
 gcovr.toggleLines = function (event) {
   const btn = event.target.closest("button");

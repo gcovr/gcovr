@@ -562,7 +562,11 @@ def write_report(
     javascript_data = (
         None
         if options.html_static_report
-        else theme_environment(options).get_template("gcovr.js").render(**data).strip()
+        else re.sub(
+            r"/\*\s*\*/\n",  # Remove empty comments which are a leftover around jinja2 directives
+            "",
+            theme_environment(options).get_template("gcovr.js").render(**data),
+        ).strip()
     )
 
     if self_contained:

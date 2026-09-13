@@ -638,7 +638,9 @@ def html2jpeg(session: nox.Session) -> None:
 
             content = re.sub(
                 r'<link rel="stylesheet" href="([^"]+)"/>',
-                lambda match: f'<style type="text/css">{read_file(os.path.join(os.path.dirname(html), match[1]))}</style>',
+                lambda match: (
+                    f'<style type="text/css">{read_file(os.path.join(os.path.dirname(html), match[1]))}</style>'
+                ),
                 read_file(html),
             )
             payload: requests._types.JsonType = {

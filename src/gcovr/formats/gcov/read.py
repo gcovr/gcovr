@@ -124,8 +124,9 @@ def find_existing_gcov_files(
         LOGGER.debug("Scanning directory %s for gcov files...", search_path)
         gcov_files = list(
             search_file(
-                lambda fname: re.compile(r".*\.gcov(?:\.json\.gz)?$").match(fname)
-                is not None,
+                lambda fname: (
+                    re.compile(r".*\.gcov(?:\.json\.gz)?$").match(fname) is not None
+                ),
                 search_path,
                 exclude_directory=exclude_directory,
             )
