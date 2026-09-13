@@ -97,7 +97,7 @@ def test_decisions(gcovr_test_exec: "GcovrTestExec") -> None:
 
 @pytest.mark.skipif(
     not USE_PROFDATA_POSSIBLE,
-    reason="Parsing of decision is independent of OS and we do not want to have separate data for Windows and Darwin and LLVM profdata is not compatible with GCC coverage data.",
+    reason="LLVM profdata is needed.",
 )
 @pytest.mark.json
 def test_decisions_llvm_profdata(gcovr_test_exec: "GcovrTestExec", check) -> None:  # type: ignore[no-untyped-def]
@@ -123,6 +123,7 @@ def test_decisions_llvm_profdata(gcovr_test_exec: "GcovrTestExec", check) -> Non
         "--delete-input-files",
         "--decisions",
         "--llvm-cov-binary=./testcase",
+        "--keep-intermediate-files",
         "--json-pretty",
         "--json=coverage.json.gz",
         "default.profraw",
