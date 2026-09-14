@@ -45,8 +45,8 @@ IS_DARWIN = platform.system() == "Darwin"
 IS_WINDOWS = platform.system() == "Windows"
 GCOVR_ISOLATED_TEST = os.getenv("GCOVR_ISOLATED_TEST") == "zkQEVaBpXF1i"
 ALL_COMPILER_VERSIONS = [
-    *[f"gcc-{v}" for v in range(5, 16)],
-    *[f"clang-{v}" for v in range(10, 21)],
+    *[f"gcc-{v}" for v in range(5, 17)],
+    *[f"clang-{v}" for v in range(10, 23)],
 ]
 DEFAULT_COMPILER_VERSION = ALL_COMPILER_VERSIONS[0]
 
@@ -63,9 +63,25 @@ ALL_GCC_VERSIONS = [v for v in ALL_COMPILER_VERSIONS if v.startswith("gcc-")]
 ALL_CLANG_VERSIONS = [v for v in ALL_COMPILER_VERSIONS if v.startswith("clang-")]
 
 CC_VERSIONS_BY_OS_VERSION = {
-    "18.04": ["gcc-5", "gcc-6"],
-    "20.04": ["gcc-7", "gcc-8", "gcc-9", "clang-10", "clang-11", "clang-12"],
-    "22.04": ["gcc-10", "gcc-11", "clang-13", "clang-14", "clang-15"],
+    "18.04": [
+        "gcc-5",
+        "gcc-6",
+    ],
+    "20.04": [
+        "gcc-7",
+        "gcc-8",
+        "gcc-9",
+        "clang-10",
+        "clang-11",
+        "clang-12",
+    ],
+    "22.04": [
+        "gcc-10",
+        "gcc-11",
+        "clang-13",
+        "clang-14",
+        "clang-15",
+    ],
     "24.04": [
         "gcc-12",
         "gcc-13",
@@ -75,7 +91,13 @@ CC_VERSIONS_BY_OS_VERSION = {
         "clang-18",
         "clang-19",
     ],
-    "25.04": ["gcc-15", "clang-20"],
+    "26.04": [
+        "gcc-15",
+        "gcc-16",
+        "clang-20",
+        "clang-21",
+        "clang-22",
+    ],
 }
 
 DEFAULT_TEST_DIRECTORIES = ["doc/examples", "src", "tests"]

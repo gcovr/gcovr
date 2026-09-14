@@ -56,7 +56,10 @@ from ...utils import get_md5_hexdigest, read_source_file, search_file, write_jso
 LOGGER = logging.getLogger("gcovr")
 
 EXPECTED_TYPE = "llvm.coverage.json.export"
-EXPECTED_MAJOR_VERSION = 2
+EXPECTED_MAJOR_VERSIONS = [
+    2,
+    3,  # Decisions added to MC/DC records in version 3.0.0, see <https://github.com/llvm/llvm-project/commit/da5c442550a3823fff05c14300c1664d0fbf68c8>
+]
 
 
 #
@@ -93,11 +96,13 @@ def read_report(options: Options) -> CoverageContainer:
             raise AssertionError(
                 f"Wrong JSON type, got {current_type} expected {EXPECTED_TYPE}."
             )
-        if not (current_version := llvm_json_data.get("version", "")).startswith(
-            f"{EXPECTED_MAJOR_VERSION}."
+        current_version = llvm_json_data.get("version", "")
+        if not any(
+            current_version.startswith(f"{major_version}.")
+            for major_version in EXPECTED_MAJOR_VERSIONS
         ):
             raise AssertionError(
-                f"Wrong major version, got {current_version or None} expected {EXPECTED_MAJOR_VERSION}.x.x."
+                f"Wrong major version of clang profdata format detected, got {current_version or None} expected {', '.join((str(v) + '.x.x') for v in EXPECTED_MAJOR_VERSIONS)}."
             )
 
         covdata.merge(

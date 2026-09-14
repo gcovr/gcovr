@@ -151,8 +151,8 @@ An easier way is to :ref:`run tests with Docker <docker tests>`.
     the PATH environment. If one of the following command groups works
     everything is OK.
 
-    - gcc-5/g++-5/gcov-5 to gcc-15/g++-15/gcov-15
-    - clang-10/clang++-10/llvm-cov to clang-19/clang++-19/llvm-cov
+    - gcc-5/g++-5/gcov-5 to gcc-16/g++-16/gcov-16
+    - clang-10/clang++-10/llvm-cov to clang-22/clang++-22/llvm-cov
 
     are available everything is OK.
     The test suite uses the newest GCC found in the PATH. To use another one you
@@ -313,8 +313,8 @@ and have set up a :ref:`development environment <development environment>`.
 You can select a different GCC version by setting the CC environment variable.
 Supported versions are:
 
-- ``gcc``: ``5``, ``6`` and ``8`` to ``15``
-- ``clang``: ``10`` and ``13`` to ``19``
+- ``gcc``: ``5`` to ``16``
+- ``clang``: ``10`` to ``22``
 
 You can run the tests with additional options by adding ``--`` and then the options
 to the test invocation. Run all tests after each change is a bit slow, therefore you can
@@ -413,8 +413,8 @@ Or to build and run the container in one step:
     python3 -m nox -s docker
 
 You can select the gcc version to use inside the docker by setting the environment
-variable CC to ``gcc-5`` (default), ``gcc-6``, ``gcc-8`` to ``gcc-15``,
-``clang-10``, ``clang-13`` to ``clang-19`` or you can build and run the
+variable CC to ``gcc-5`` (default) to ``gcc-16`` or
+``clang-10`` to ``clang-22`` or you can build and run the
 container with a specific version:
 
 .. code:: bash
