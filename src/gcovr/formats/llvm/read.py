@@ -101,11 +101,8 @@ def read_report(options: Options) -> CoverageContainer:
             current_version.startswith(f"{major_version}.")
             for major_version in EXPECTED_MAJOR_VERSIONS
         ):
-            version_list_as_str = (
-                ".x.x, ".join(str(v) for v in EXPECTED_MAJOR_VERSIONS) + ".x.x"
-            )
             raise AssertionError(
-                f"Wrong major version of clang profdata format detected, got {current_version or None} expected {version_list_as_str}."
+                f"Wrong major version of clang profdata format detected, got {current_version or None} expected {', '.join((str(v) + '.x.x') for v in EXPECTED_MAJOR_VERSIONS)}."
             )
 
         covdata.merge(
