@@ -30,8 +30,8 @@ class UseBranchMetricAction(GcovrDeprecatedConfigOptionAction):
     """Argparse action for mapping deprecated option to new option."""
 
     option = "--txt-metric"
-    config = "txt-metric"
-    value = "branch"
+    config = "txt-metrics"
+    value = ["branch"]
 
 
 class TxtHandler(BaseHandler):
@@ -45,16 +45,19 @@ class TxtHandler(BaseHandler):
             "show_decision",  # Only for summary report
             # Local options
             GcovrConfigOption(
-                "txt_metric",
+                "txt_metrics",
                 ["--txt-metric"],
-                config="txt-metric",
+                config="txt-metrics",
                 group="output_options",
-                help=("The metric type to report. Default is '{default!s}'."),
+                help=(
+                    "The metric type to report. If option is given multiple times the "
+                    "reports are printed in the given order. Default is 'line'."
+                ),
                 choices=("line", "branch", "decision"),
-                default="line",
+                action="append",
             ),
             GcovrConfigOption(
-                "txt_metric",
+                "txt_metrics",
                 ["-b", "--txt-branches", "--branches"],
                 config="txt-branch",
                 group="output_options",

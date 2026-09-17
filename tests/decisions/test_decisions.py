@@ -70,6 +70,13 @@ def test_decisions(gcovr_test_exec: "GcovrTestExec") -> None:
     )
     gcovr_test_exec.compare_html()
 
+    gcovr_test_exec.gcovr(
+        "--verbose",
+        "--json-add-tracefile=coverage.json.gz",
+        "--txt-metric=decision",
+        "--txt-metric=line",
+        "--txt=coverage_multiple.txt",
+    )
     process = gcovr_test_exec.gcovr(
         "--verbose",
         "--json-add-tracefile=coverage.json.gz",

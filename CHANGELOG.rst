@@ -13,6 +13,8 @@ Breaking changes:
 - Jinja2 environment for HTML report is now created with ``undefined=StrictUndefined`` to raise an
   error if a variable is not defined in the template. (:issue:`1282`, :issue:`1283`)
 - Links to lines in HTML reports now use ``L<line>`` instead of a ``l<line>``. (:issue:`1285`)
+- Rename config key ``txt-metric`` (string) to ``txt_metrics`` (list of strings in TOML and multiple
+  entries in gcovr.config). (:issue:`1302`)
 
 New features and notable changes:
 
@@ -29,6 +31,7 @@ New features and notable changes:
 - Add support for TOML files with :option:`--config` (:issue:`1258`)
 - Add :option:`--fail-under-condition-or-decision` with :option:`--fail-under-condition` and
   :option:`--fail-under-decision` as synonyms, change the key for the configuration file. (:issue:`1293`)
+- Add support for multiple text metrics in one execution. (:issue:`1302`)
 
 Bug fixes and small improvements:
 

@@ -17,7 +17,8 @@
 #
 # ****************************************************************************
 
-from typing import Iterable
+import re
+from typing import Iterable, Literal
 
 from ...data_model.container import CoverageContainer
 from ...data_model.coverage import CoverageDiff, FileCoverage
@@ -40,9 +41,13 @@ def write_report(
 ) -> None:
     """Produce the classic gcovr text report"""
 
+    all_metrics: list[Literal["line", "branch", "decision"]] = options.txt_metrics or [
+        "line"
+    ]
+
     diff_report = covdata.is_compare_info_available()
     if diff_report:
-        if options.txt_metric != "line":
+        if all_metrics != ["line"]:
             raise RuntimeError(
                 "Diff report is only supported for line coverage at this time."
             )
@@ -59,59 +64,68 @@ def write_report(
         # fh.write(" " * 27 + "GCC Code Coverage Report\n")
         fh.write("Directory: " + force_unix_separator(options.root) + "\n")
 
-        fh.write("-" * LINE_WIDTH + "\n")
-        # Data
-        filecov_list = covdata.sorted_filecov(
-            sort_key=options.sort_key,
-            sort_reverse=options.sort_reverse,
-            by_metric=options.txt_metric,
-            recurse=True,
-        )
-        if diff_report:
-            fh.write(
-                "File".ljust(COL_FILE_WIDTH)
-                + "State".rjust(COL_DIFF_STATE_WIDTH)
-                + SEPARATOR
-                + "Lines\n"
+        for metric in all_metrics:
+            fh.write("-" * LINE_WIDTH + "\n")
+            # Data
+            filecov_list = covdata.sorted_filecov(
+                sort_key=options.sort_key,
+                sort_reverse=options.sort_reverse,
+                by_metric=metric,
+                recurse=True,
             )
-            for filecov in filecov_list:
-                txt = _diff_report_file(filecov, options)
-                fh.write(txt + "\n")
-        else:
-            if options.txt_metric == "branch":
-                title_total = "Branches"
-                title_covered = "Taken"
-            elif options.txt_metric == "decision":
-                title_total = "Decisions"
-                title_covered = "Taken"
+            if diff_report:
+                fh.write(
+                    "File".ljust(COL_FILE_WIDTH)
+                    + "State".rjust(COL_DIFF_STATE_WIDTH)
+                    + SEPARATOR
+                    + "Lines\n"
+                )
+                for filecov in filecov_list:
+                    txt = _diff_report_file(filecov, options.root_filter)
+                    fh.write(txt + "\n")
             else:
-                title_total = "Lines"
-                title_covered = "Exec"
+                if metric == "branch":
+                    title_total = "Branches"
+                    title_covered = "Taken"
+                elif metric == "decision":
+                    title_total = "Decisions"
+                    title_covered = "Taken"
+                else:
+                    title_total = "Lines"
+                    title_covered = "Exec"
 
-            title_percentage = "Cover"
-            title_un_covered = "Covered" if options.txt_report_covered else "Missing"
-            fh.write(
-                "File".ljust(COL_FILE_WIDTH)
-                + title_total.rjust(COL_TOTAL_COUNT_WIDTH)
-                + title_covered.rjust(COL_COVERED_COUNT_WIDTH)
-                + title_percentage.rjust(COL_PERCENTAGE_WIDTH)
-                + SEPARATOR
-                + title_un_covered
-                + "\n"
-            )
+                title_percentage = "Cover"
+                title_un_covered = (
+                    "Covered" if options.txt_report_covered else "Missing"
+                )
+                fh.write(
+                    "File".ljust(COL_FILE_WIDTH)
+                    + title_total.rjust(COL_TOTAL_COUNT_WIDTH)
+                    + title_covered.rjust(COL_COVERED_COUNT_WIDTH)
+                    + title_percentage.rjust(COL_PERCENTAGE_WIDTH)
+                    + SEPARATOR
+                    + title_un_covered
+                    + "\n"
+                )
+                fh.write("-" * LINE_WIDTH + "\n")
+
+                total_stat = CoverageStat.new_empty()
+                for filecov in filecov_list:
+                    (stat, txt) = _report_file(
+                        metric, options.txt_report_covered, filecov, options.root_filter
+                    )
+                    total_stat += stat
+                    fh.write(txt + "\n")
+
+                # Footer & summary
+                fh.write("-" * LINE_WIDTH + "\n")
+                fh.write(_format_line("TOTAL", total_stat, "") + "\n")
+
             fh.write("-" * LINE_WIDTH + "\n")
 
-            total_stat = CoverageStat.new_empty()
-            for filecov in filecov_list:
-                (stat, txt) = _report_file(filecov, options)
-                total_stat += stat
-                fh.write(txt + "\n")
-
-            # Footer & summary
-            fh.write("-" * LINE_WIDTH + "\n")
-            fh.write(_format_line("TOTAL", total_stat, "") + "\n")
-
-        fh.write("-" * LINE_WIDTH + "\n")
+            # There is a another metric to be printed, so add a blank line to separate the two metrics
+            if metric != all_metrics[-1]:
+                fh.write("\n")
 
 
 def write_summary_report(
@@ -157,8 +171,8 @@ def write_summary_report(
                 print_stat("calls", covdata.call_coverage())
 
 
-def _diff_report_file(filecov: FileCoverage, options: Options) -> str:
-    filename = filecov.presentable_filename(options.root_filter)
+def _diff_report_file(filecov: FileCoverage, root_filter: re.Pattern[str]) -> str:
+    filename = filecov.presentable_filename(root_filter)
 
     filename = filename.ljust(COL_FILE_WIDTH)
     if len(filename) > 40:
@@ -208,14 +222,19 @@ def _diff_report_file(filecov: FileCoverage, options: Options) -> str:
     return "\n".join(lines_with_diff)
 
 
-def _report_file(filecov: FileCoverage, options: Options) -> tuple[CoverageStat, str]:
-    filename = filecov.presentable_filename(options.root_filter)
+def _report_file(
+    metric: str,
+    report_covered: bool,
+    filecov: FileCoverage,
+    root_filter: re.Pattern[str],
+) -> tuple[CoverageStat, str]:
+    filename = filecov.presentable_filename(root_filter)
 
-    if options.txt_report_covered:
-        if options.txt_metric == "branch":
+    if report_covered:
+        if metric == "branch":
             stat = filecov.branch_coverage()
             covered_lines = _covered_branches_str(filecov)
-        elif options.txt_metric == "decision":
+        elif metric == "decision":
             stat = filecov.decision_coverage().to_coverage_stat
             covered_lines = _covered_decisions_str(filecov)
         else:
@@ -224,10 +243,10 @@ def _report_file(filecov: FileCoverage, options: Options) -> tuple[CoverageStat,
 
         return stat, _format_line(filename, stat, covered_lines)
 
-    if options.txt_metric == "branch":
+    if metric == "branch":
         stat = filecov.branch_coverage()
         uncovered_lines = _uncovered_branches_str(filecov)
-    elif options.txt_metric == "decision":
+    elif metric == "decision":
         stat = filecov.decision_coverage().to_coverage_stat
         uncovered_lines = _uncovered_decisions_str(filecov)
     else:
