@@ -53,7 +53,7 @@ class TxtHandler(BaseHandler):
                     "The metric type to report. If option is given multiple times the "
                     "reports are printed in the given order. Default is 'line'."
                 ),
-                choices=("line", "branch", "decision"),
+                choices=("line", "branch", "condition", "decision"),
                 action="append",
             ),
             GcovrConfigOption(
