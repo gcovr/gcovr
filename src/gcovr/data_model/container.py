@@ -176,7 +176,7 @@ class CoverageContainer:
         covdata_list: list[FileCoverage],
         sort_key: Literal["filename", "uncovered-number", "uncovered-percent"],
         sort_reverse: bool,
-        by_metric: Literal["line", "branch", "decision"],
+        by_metric: Literal["line", "branch", "condition", "decision"],
         filename_uses_relative_pathname: bool,
     ) -> list[FileCoverage]:
         """Sort a list of FileCoverage objects."""
@@ -188,7 +188,7 @@ class CoverageContainer:
         covdata_list: list[CoverageContainer],
         sort_key: Literal["filename", "uncovered-number", "uncovered-percent"],
         sort_reverse: bool,
-        by_metric: Literal["line", "branch", "decision"],
+        by_metric: Literal["line", "branch", "condition", "decision"],
         filename_uses_relative_pathname: bool,
     ) -> list[CoverageContainer]:
         """Sort a list of CoverageContainer objects."""
@@ -200,7 +200,7 @@ class CoverageContainer:
         covdata_list: list[FileCoverage | CoverageContainer],
         sort_key: Literal["filename", "uncovered-number", "uncovered-percent"],
         sort_reverse: bool,
-        by_metric: Literal["line", "branch", "decision"],
+        by_metric: Literal["line", "branch", "condition", "decision"],
         filename_uses_relative_pathname: bool,
     ) -> list[FileCoverage | CoverageContainer]:
         """Sort a list of FileCoverage objects."""
@@ -213,7 +213,7 @@ class CoverageContainer:
         | list[FileCoverage | CoverageContainer],
         sort_key: Literal["filename", "uncovered-number", "uncovered-percent"],
         sort_reverse: bool,
-        by_metric: Literal["line", "branch", "decision"],
+        by_metric: Literal["line", "branch", "condition", "decision"],
         filename_uses_relative_pathname: bool,
     ) -> (
         list[FileCoverage]
@@ -225,7 +225,7 @@ class CoverageContainer:
         covdata_list (list[CoverageContainer | FileCoverage]): The coverage list
         sort_key ("filename", "uncovered-number", "uncovered-percent"): The values to sort by
         sort_reverse (bool): Reverse order if True
-        by_metric ("line", "branch", "decision"): Select the metric to sort
+        by_metric ("line", "branch", "condition", "decision"): Select the metric to sort
         filename_uses_relative_pathname (bool): For HTML, we break down a pathname to the
             relative path, but not for other formats.
 
@@ -263,6 +263,8 @@ class CoverageContainer:
         def coverage_stat(covdata: CoverageContainer | FileCoverage) -> CoverageStat:
             if by_metric == "branch":
                 return covdata.branch_coverage()
+            if by_metric == "condition":
+                return covdata.condition_coverage()
             if by_metric == "decision":
                 return covdata.decision_coverage().to_coverage_stat
             return covdata.line_coverage()
@@ -303,7 +305,7 @@ class CoverageContainer:
         self,
         sort_key: Literal["filename", "uncovered-number", "uncovered-percent"],
         sort_reverse: bool,
-        by_metric: Literal["line", "branch", "decision"],
+        by_metric: Literal["line", "branch", "condition", "decision"],
         filename_uses_relative_pathname: bool = False,
         recurse: bool = False,
     ) -> list[FileCoverage]:
@@ -311,7 +313,7 @@ class CoverageContainer:
 
         sort_key ("filename", "uncovered-number", "uncovered-percent"): the values to sort by
         sort_reverse (bool): reverse order if True
-        by_metric ("line", "branch", "decision"): select the metric to sort
+        by_metric ("line", "branch", "condition", "decision"): select the metric to sort
         filename_uses_relative_pathname (bool): for html, we break down a pathname to the
             relative path, but not for other formats.
         recurse (bool): whether to include file coverage from subdirectories
@@ -331,14 +333,14 @@ class CoverageContainer:
         self,
         sort_key: Literal["filename", "uncovered-number", "uncovered-percent"],
         sort_reverse: bool,
-        by_metric: Literal["line", "branch", "decision"],
+        by_metric: Literal["line", "branch", "condition", "decision"],
         filename_uses_relative_pathname: bool = False,
     ) -> list[CoverageContainer | FileCoverage]:
         """Sort a coverage dict.
 
         sort_key ("filename", "uncovered-number", "uncovered-percent"): the values to sort by
         sort_reverse (bool): reverse order if True
-        by_metric ("line", "branch", "decision"): select the metric to sort
+        by_metric ("line", "branch", "condition", "decision"): select the metric to sort
         filename_uses_relative_pathname (bool): for html, we break down a pathname to the
             relative path, but not for other formats.
 

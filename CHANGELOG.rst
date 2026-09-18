@@ -16,6 +16,7 @@ Breaking changes:
 - Rename config key ``txt-metric`` (string) to ``txt-metrics`` (list of strings in TOML and multiple
   entries in gcovr.config). Remove the deprecated aliases ``-b``, ``--txt-branches`` and
   ``--branches``. (:issue:`1302`)
+- Adjust column width of total count in text reports. (:issue:`1302`)
 
 New features and notable changes:
 
@@ -32,7 +33,7 @@ New features and notable changes:
 - Add support for TOML files with :option:`--config` (:issue:`1258`)
 - Add :option:`--fail-under-condition-or-decision` with :option:`--fail-under-condition` and
   :option:`--fail-under-decision` as synonyms, change the key for the configuration file. (:issue:`1293`)
-- Add support for multiple text metrics in one execution. (:issue:`1302`)
+- Add support for multiple metrics in one text report and add support for condition coverage. (:issue:`1302`)
 
 Bug fixes and small improvements:
 

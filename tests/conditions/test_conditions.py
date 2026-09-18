@@ -56,6 +56,9 @@ def test_report(gcovr_test_exec: "GcovrTestExec") -> None:
     process = gcovr_test_exec.gcovr(
         "--json-add-tracefile=coverage.json",
         "--txt-summary",
+        "--txt-metric=line",
+        "--txt-metric=branch",
+        "--txt-metric=condition",
         "--txt=coverage.txt",
     )
     (gcovr_test_exec.output_dir / "coverage_summary.txt").write_text(

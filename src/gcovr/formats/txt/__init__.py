@@ -34,6 +34,7 @@ class TxtHandler(BaseHandler):
             # Global options needed for report
             "show_calls",
             "show_decision",  # Only for summary report
+            "json_compare",  # Only for validation of options
             # Local options
             GcovrConfigOption(
                 "txt_metrics",
@@ -44,7 +45,7 @@ class TxtHandler(BaseHandler):
                     "The metric type to report. If option is given multiple times the "
                     "reports are printed in the given order. Default is 'line'."
                 ),
-                choices=("line", "branch", "decision"),
+                choices=("line", "branch", "condition", "decision"),
                 action="append",
             ),
             GcovrConfigOption(
@@ -78,6 +79,14 @@ class TxtHandler(BaseHandler):
                 action="store_true",
             ),
         ]
+
+    def validate_options(self) -> None:
+        """Validation of command line options"""
+        if self.options.txt_metrics is not None:
+            if len(self.options.txt_metrics) > 1 and self.options.json_compare:
+                raise ValueError(
+                    "A txt report with several metrics is not possible with --json-compare."
+                )
 
     def write_report(self, covdata: CoverageContainer, output_file: str) -> None:
         from .write import (  # pylint: disable=import-outside-toplevel # Lazy loading is intended here
