@@ -62,11 +62,12 @@ def test_config_deprecated(
     assert messages[0][1] == logging.WARNING
     assert (
         messages[0][2]
-        == "Deprecated config key txt-branch used, please use 'txt-metric=branch' instead."
+        == "Deprecated config key txt-branch used, please use \"txt-metrics=['branch']\" instead."
     )
 
 
 @pytest.mark.json
+@pytest.mark.txt
 def test_gcovr_config(gcovr_test_exec: "GcovrTestExec") -> None:
     """Test JSON output with gcovr.config."""
     gcovr_test_exec.cxx_link(
@@ -76,12 +77,14 @@ def test_gcovr_config(gcovr_test_exec: "GcovrTestExec") -> None:
 
     gcovr_test_exec.run("./testcase")
     gcovr_test_exec.gcovr(
-        "--config=config/gcovr.json.config",
+        "--config=config/gcovr.config",
     )
     gcovr_test_exec.compare_json()
+    gcovr_test_exec.compare_txt()
 
 
 @pytest.mark.json
+@pytest.mark.txt
 def test_pyproject_toml(gcovr_test_exec: "GcovrTestExec") -> None:
     """Test JSON output with pyproject.toml."""
     gcovr_test_exec.cxx_link(
@@ -96,9 +99,11 @@ def test_pyproject_toml(gcovr_test_exec: "GcovrTestExec") -> None:
     )
     gcovr_test_exec.gcovr()
     gcovr_test_exec.compare_json()
+    gcovr_test_exec.compare_txt()
 
 
 @pytest.mark.json
+@pytest.mark.txt
 def test_gcovr_toml(gcovr_test_exec: "GcovrTestExec") -> None:
     """Test JSON output with gcovr.toml."""
     gcovr_test_exec.cxx_link(
@@ -119,3 +124,4 @@ def test_gcovr_toml(gcovr_test_exec: "GcovrTestExec") -> None:
     )
     gcovr_test_exec.gcovr()
     gcovr_test_exec.compare_json()
+    gcovr_test_exec.compare_txt()

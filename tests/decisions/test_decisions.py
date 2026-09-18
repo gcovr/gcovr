@@ -21,7 +21,12 @@ from pathlib import Path
 
 import pytest
 
-from tests.conftest import IS_LINUX, USE_PROFDATA_POSSIBLE, GcovrTestExec
+from tests.conftest import (
+    CONDITION_COVERAGE_POSSIBLE,
+    IS_LINUX,
+    USE_PROFDATA_POSSIBLE,
+    GcovrTestExec,
+)
 
 
 @pytest.mark.skipif(
@@ -70,10 +75,18 @@ def test_decisions(gcovr_test_exec: "GcovrTestExec") -> None:
     )
     gcovr_test_exec.compare_html()
 
+    gcovr_test_exec.gcovr(
+        "--verbose",
+        "--json-add-tracefile=coverage.json.gz",
+        "--txt-metric=decision",
+        "--txt-metric=line",
+        "--txt=coverage_multiple.txt",
+    )
     process = gcovr_test_exec.gcovr(
         "--verbose",
         "--json-add-tracefile=coverage.json.gz",
         "--txt-metric=decision",
+        *(["--txt-metric=condition"] if CONDITION_COVERAGE_POSSIBLE else []),
         "--txt-summary",
         "--txt=coverage.txt",
     )

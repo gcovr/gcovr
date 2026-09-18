@@ -262,7 +262,7 @@ class GcovrDeprecatedConfigOptionAction(GcovrConfigOptionAction):
             "Deprecated option %s used, please use '%s %s' instead.",
             option_string,
             self.option,
-            self.value,
+            self.value if isinstance(self.value, str) else " ".join(self.value),
         )
         setattr(namespace, self.dest, self.value)
 
@@ -271,7 +271,7 @@ class GcovrDeprecatedConfigOptionAction(GcovrConfigOptionAction):
     ) -> None:
         if config is not None:
             LOGGER.warning(
-                "Deprecated config key %s used, please use '%s=%s' instead.",
+                'Deprecated config key %s used, please use "%s=%s" instead.',
                 config,
                 self.config,
                 self.value,
