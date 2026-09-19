@@ -21,17 +21,8 @@ from ...data_model.container import CoverageContainer
 from ...formats.base import BaseHandler
 from ...options import (
     GcovrConfigOption,
-    GcovrDeprecatedConfigOptionAction,
     OutputOrDefault,
 )
-
-
-class UseBranchMetricAction(GcovrDeprecatedConfigOptionAction):
-    """Argparse action for mapping deprecated option to new option."""
-
-    option = "--txt-metric"
-    config = "txt-metrics"
-    value = ["branch"]
 
 
 class TxtHandler(BaseHandler):
@@ -55,18 +46,6 @@ class TxtHandler(BaseHandler):
                 ),
                 choices=("line", "branch", "decision"),
                 action="append",
-            ),
-            GcovrConfigOption(
-                "txt_metrics",
-                ["-b", "--txt-branches", "--branches"],
-                config="txt-branch",
-                group="output_options",
-                help=(
-                    "Deprecated, please use '--txt-metric branch' instead."
-                    "Report the branch coverage instead of the line coverage in text report."
-                ),
-                nargs=0,
-                action=UseBranchMetricAction,
             ),
             GcovrConfigOption(
                 "txt_report_covered",

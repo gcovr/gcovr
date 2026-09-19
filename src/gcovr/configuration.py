@@ -326,7 +326,10 @@ def merge_options_and_set_defaults(
     target = dict[str, Any]()
     for namespace in partial_namespaces:
         for option in all_options:
-            if option.name not in namespace:
+            if option.name not in namespace or (
+                not isinstance(option.action, str)
+                and issubclass(option.action, GcovrDeprecatedConfigOptionAction)
+            ):
                 continue
 
             _assign_value_to_dict(

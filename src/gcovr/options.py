@@ -235,7 +235,7 @@ class Options:
 
 
 class GcovrConfigOptionAction(argparse.Action):  # pylint: disable=abstract-method
-    """Abstract class to be detect our own actions."""
+    """Abstract class for our own actions."""
 
     @abstractmethod
     def store_config_key(
@@ -262,7 +262,7 @@ class GcovrDeprecatedConfigOptionAction(GcovrConfigOptionAction):
             "Deprecated option %s used, please use '%s %s' instead.",
             option_string,
             self.option,
-            self.value if isinstance(self.value, str) else " ".join(self.value),
+            self.value,
         )
         setattr(namespace, self.dest, self.value)
 
@@ -270,12 +270,14 @@ class GcovrDeprecatedConfigOptionAction(GcovrConfigOptionAction):
         self, namespace: dict[str, Any], values: Any, config: str | None
     ) -> None:
         if config is not None:
+            values = self.value
             LOGGER.warning(
-                'Deprecated config key %s used, please use "%s=%s" instead.',
+                "Deprecated config key %s used, please use '%s=%s' instead.",
                 config,
                 self.config,
-                self.value,
+                values,
             )
+
         namespace[self.dest] = values
 
 

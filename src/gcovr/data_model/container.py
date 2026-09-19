@@ -232,6 +232,14 @@ class CoverageContainer:
         returns: the sorted keys
         """
 
+        LOGGER.debug(
+            "Sorting coverage data by %s, reverse=%s, metric=%s, relative_pathname=%s",
+            sort_key,
+            sort_reverse,
+            by_metric,
+            filename_uses_relative_pathname,
+        )
+
         basedir = commonpath([covdata.filename for covdata in covdata_list])
 
         def key_filename(covdata: CoverageContainer | FileCoverage) -> list[int | str]:

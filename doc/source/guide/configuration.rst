@@ -36,7 +36,6 @@ can be used as a config key.
 If not, this is documented in the option's help message.
 For example, :option:`--gcov-executable`
 can be set via the ``gcov-executable`` config key.
-But :option:`-b/--branches <--branches>` is set via ``txt-branch``.
 
 Just like command line options,
 the config keys can be specified multiple times.

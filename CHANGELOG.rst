@@ -13,8 +13,9 @@ Breaking changes:
 - Jinja2 environment for HTML report is now created with ``undefined=StrictUndefined`` to raise an
   error if a variable is not defined in the template. (:issue:`1282`, :issue:`1283`)
 - Links to lines in HTML reports now use ``L<line>`` instead of a ``l<line>``. (:issue:`1285`)
-- Rename config key ``txt-metric`` (string) to ``txt_metrics`` (list of strings in TOML and multiple
-  entries in gcovr.config). (:issue:`1302`)
+- Rename config key ``txt-metric`` (string) to ``txt-metrics`` (list of strings in TOML and multiple
+  entries in gcovr.config). Remove the deprecated aliases ``-b``, ``--txt-branches`` and
+  ``--branches``. (:issue:`1302`)
 
 New features and notable changes:
 
@@ -596,7 +597,7 @@ New features and notable changes:
 - Ignore all negative hits if :option:`--gcov-ignore-parse-errors` is used. (:issue:`852`)
 - Use literal options for sorting and TXT metric. (:issue:`867`)
 
-  - The :option:`-b`, :option:`--txt-branches` and :option:`--branches` are deprecated, use :option:`--txt-metric` instead.
+  - The ``-b``, ``--txt-branches`` and ``--branches`` are deprecated, use :option:`--txt-metric` instead.
     The reason for this is that we have line, branch and decision coverage and handle this with flags is more complex than
     using an enumeration.
   - The :option:`--sort-uncovered` and :option:`--sort-percentage` are deprecated, use :option:`--sort` instead.

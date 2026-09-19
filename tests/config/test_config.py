@@ -62,7 +62,7 @@ def test_config_deprecated(
     assert messages[0][1] == logging.WARNING
     assert (
         messages[0][2]
-        == "Deprecated config key txt-branch used, please use \"txt-metrics=['branch']\" instead."
+        == "Deprecated config key sort-percentage used, please use 'sort=uncovered-percent' instead."
     )
 
 
