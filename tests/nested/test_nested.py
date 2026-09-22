@@ -40,10 +40,16 @@ from tests.conftest import GCOVR_ISOLATED_TEST, USE_PROFDATA_POSSIBLE, GcovrTest
 @pytest.mark.txt
 def test_standard(gcovr_test_exec: "GcovrTestExec", check) -> None:  # type: ignore[no-untyped-def]
     """Test nested coverage report generation."""
+    file2_cpp = gcovr_test_exec.output_dir / "subdir" / "A" / "File2.cpp"
+    deep_dir = file2_cpp.parent.joinpath(*[f"subdir_{i}" for i in range(0, 10)])
+    deep_dir.mkdir(parents=True, exist_ok=True)
+    file2_cpp = file2_cpp.rename(deep_dir / file2_cpp.name).relative_to(
+        gcovr_test_exec.output_dir
+    )
     gcovr_test_exec.cxx_link(
         "subdir/testcase",
         gcovr_test_exec.cxx_compile("subdir/A/file1.cpp"),
-        gcovr_test_exec.cxx_compile("subdir/A/File2.cpp"),
+        gcovr_test_exec.cxx_compile(file2_cpp),
         gcovr_test_exec.cxx_compile("subdir/A/file3.cpp"),
         gcovr_test_exec.cxx_compile("subdir/A/File4.cpp"),
         gcovr_test_exec.cxx_compile("subdir/A/file7.cpp"),

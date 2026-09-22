@@ -2,18 +2,6 @@
 <!DOCTYPE report SYSTEM 'https://www.jacoco.org/jacoco/trunk/coverage/report.dtd'>
 <report name="GCOVR report">
   <package name="A">
-    <sourcefile name="File2.cpp">
-      <line nr="1"/>
-      <line nr="3"/>
-      <line nr="4"/>
-      <line nr="5"/>
-      <line nr="8"/>
-      <line nr="10"/>
-      <line nr="11"/>
-      <counter type="LINE" missed="3" covered="4"/>
-      <counter type="BRANCH" missed="0" covered="0"/>
-      <counter type="METHOD" missed="1" covered="1"/>
-    </sourcefile>
     <sourcefile name="File4.cpp">
       <line nr="1"/>
       <line nr="3" mb="1" cb="1"/>
@@ -53,9 +41,9 @@
       <counter type="BRANCH" missed="0" covered="0"/>
       <counter type="METHOD" missed="1" covered="0"/>
     </sourcefile>
-    <counter type="LINE" missed="12" covered="14"/>
+    <counter type="LINE" missed="9" covered="10"/>
     <counter type="BRANCH" missed="4" covered="2"/>
-    <counter type="METHOD" missed="3" covered="4"/>
+    <counter type="METHOD" missed="2" covered="3"/>
   </package>
   <package name="A.C">
     <sourcefile name="file5.cpp">
@@ -84,6 +72,23 @@
     <counter type="LINE" missed="4" covered="0"/>
     <counter type="BRANCH" missed="2" covered="0"/>
     <counter type="METHOD" missed="1" covered="0"/>
+  </package>
+  <package name="A.subdir_0.subdir_1.subdir_2.subdir_3.subdir_4.subdir_5.subdir_6.subdir_7.subdir_8.subdir_9">
+    <sourcefile name="File2.cpp">
+      <line nr="1"/>
+      <line nr="3"/>
+      <line nr="4"/>
+      <line nr="5"/>
+      <line nr="8"/>
+      <line nr="10"/>
+      <line nr="11"/>
+      <counter type="LINE" missed="3" covered="4"/>
+      <counter type="BRANCH" missed="0" covered="0"/>
+      <counter type="METHOD" missed="1" covered="1"/>
+    </sourcefile>
+    <counter type="LINE" missed="3" covered="4"/>
+    <counter type="BRANCH" missed="0" covered="0"/>
+    <counter type="METHOD" missed="1" covered="1"/>
   </package>
   <package name="B">
     <sourcefile name="main.cpp">
