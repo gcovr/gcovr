@@ -586,7 +586,7 @@ New features and notable changes:
     (see `str.casefold <https://docs.python.org/3.11/library/stdtypes.html?highlight=str%20casefold#str.casefold>`_)
     (``file_10.c`` comes after ``file_0.c``).
   - Always sort at the end by filename if line or branch coverage is identical for a file.
-  - Add :option:`--sort-branches` to sort by branches instead of lines, this is the default if :option:`--txt-branches` is used.
+  - Add :option:`--sort-branches` to sort by branches instead of lines, this is the default if ``--txt-branches`` is used.
   - Add :option:`--sort-reverse` to reverse the sort order.
 
 - Add option to report covered lines in txt report. (:issue:`836`)
