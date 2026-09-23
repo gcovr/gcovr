@@ -1,5 +1,3 @@
-# -*- coding:utf-8 -*-
-
 #  ************************** Copyrights and license ***************************
 #
 # This file is part of gcovr 8.6+main, a parsing and reporting tool for gcov.
@@ -16,6 +14,8 @@
 # For more information, see the README.rst file.
 #
 # ****************************************************************************
+
+"""GCOVR HTML report interface."""
 
 from ...data_model.container import CoverageContainer
 from ...formats.base import BaseHandler
@@ -42,6 +42,7 @@ class HtmlHandler(BaseHandler):
 
     @classmethod
     def get_options(cls) -> list[GcovrConfigOption | str]:
+        """Get the report options."""
         return [
             # Global options needed for report
             "show_calls",
@@ -223,16 +224,18 @@ class HtmlHandler(BaseHandler):
         ]
 
     def validate_options(self) -> None:
+        """Validate options."""
         if self.options.html_title == "":
-            raise RuntimeError("An empty --html-title= is not allowed.")
+            msg = "An empty --html-title= is not allowed."
+            raise RuntimeError(msg)
 
         if self.options.html_tab_size < 1:
-            raise RuntimeError("Value of --html-tab-size should be greater 0.")
+            msg_0 = "Value of --html-tab-size should be greater 0."
+            raise RuntimeError(msg_0)
 
         if self.options.html_details and self.options.html_nested:
-            raise RuntimeError(
-                "--html-details and --html-nested can not be used together."
-            )
+            msg = "--html-details and --html-nested can not be used together."
+            raise RuntimeError(msg)
 
         html_output = None
         if self.options.html and self.options.html.value:
@@ -245,52 +248,51 @@ class HtmlHandler(BaseHandler):
             html_output = self.options.output.value
 
         if self.options.html_details and not html_output:
-            raise RuntimeError(
-                "a named output must be given, if the option --html-details is used."
-            )
+            msg = "a named output must be given, if the option --html-details is used."
+            raise RuntimeError(msg)
 
         if self.options.html_nested and not html_output:
-            raise RuntimeError(
-                "a named output must be given, if the option --html-nested is used."
-            )
+            msg = "a named output must be given, if the option --html-nested is used."
+            raise RuntimeError(msg)
 
         if (
             html_output == "-"
             and not self.options.html_single_page
             and (self.options.html_details or self.options.html_nested)
         ):
-            raise RuntimeError(
+            msg = (
                 "detailed reports can only be printed to STDOUT as --html-single-page."
             )
+            raise RuntimeError(msg)
 
         if self.options.html_single_page and not (
             self.options.html_details or self.options.html_nested
         ):
-            raise RuntimeError(
-                "option --html-details or --html-nested is needed, if the option --html-single-page is used."
-            )
+            msg = "option --html-details or --html-nested is needed, if the option --html-single-page is used."
+            raise RuntimeError(msg)
 
         if self.options.html_self_contained is False and not html_output:
-            raise RuntimeError(
-                "can only disable --html-self-contained when a named output is given."
-            )
+            msg = "can only disable --html-self-contained when a named output is given."
+            raise RuntimeError(msg)
 
         if (
             self.options.html_self_contained is False
             and html_output == "-"
             and not self.options.html_single_page
         ):
-            raise RuntimeError("only self contained reports can be printed to STDOUT")
+            msg = "only self contained reports can be printed to STDOUT"
+            raise RuntimeError(msg)
 
         if self.options.html_theme.startswith("boost") and (
             self.options.html_single_page or self.options.html_static_report
         ):
-            raise RuntimeError(
-                "Boost theme is not compatible with --html-single-page or --html-static-report"
-            )
+            msg = "Boost theme is not compatible with --html-single-page or --html-static-report"
+            raise RuntimeError(msg)
 
     def write_report(self, covdata: CoverageContainer, output_file: str) -> None:
-        from .write import (  # pylint: disable=import-outside-toplevel # Lazy loading is intended here
+        """Write report."""
+        # Lazy loading is intended here
+        from .write import (  # pylint: disable=import-outside-toplevel  # noqa: PLC0415
             write_report,
         )
 

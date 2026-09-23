@@ -1,5 +1,3 @@
-# -*- coding:utf-8 -*-
-
 #  ************************** Copyrights and license ***************************
 #
 # This file is part of gcovr 8.6+main, a parsing and reporting tool for gcov.
@@ -59,12 +57,10 @@ def parse_coverage(
     activate_trace_logging: bool = False,
 ) -> Iterator[tuple[FileCoverage, list[str]]]:
     """Process a GCOV JSON output."""
-
     # Check format version because the file can be created external
     if gcov_json_data["format_version"] != GCOV_JSON_VERSION:
-        raise RuntimeError(
-            f"Got wrong JSON format version {gcov_json_data['format_version']}, expected {GCOV_JSON_VERSION}"
-        )
+        msg = f"Got wrong JSON format version {gcov_json_data['format_version']}, expected {GCOV_JSON_VERSION}"
+        raise RuntimeError(msg)
 
     for file in gcov_json_data["files"]:
         if not file["lines"] and not file["functions"]:
@@ -121,17 +117,20 @@ def _parse_file_node(
     Coverage exclusion decisions are reported as verbose messages.
 
     Arguments:
+        data_fname: source of this node, for reporting
         gcov_file_node: one of the "files" node in the gcov json format
         filename: for error reports
         source_lines: decoded source code lines, for reporting
-        data_fname: source of this node, for reporting
         ignore_parse_errors: which errors should be converted to warnings
+        suspicious_hits_threshold: Threshold for detecting suspicious hits.
+        activate_trace_logging: Activate trace commands.
 
     Returns:
         The coverage data
 
     Raises:
         Any exceptions during parsing, unless ignore_parse_errors is set.
+
     """
     persistent_states: dict[str, Any] = {"location": (filename, 0)}
 

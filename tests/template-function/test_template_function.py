@@ -1,5 +1,3 @@
-# -*- coding:utf-8 -*-
-
 #  ************************** Copyrights and license ***************************
 #
 # This file is part of gcovr 8.6+main, a parsing and reporting tool for gcov.
@@ -18,6 +16,7 @@
 # ****************************************************************************
 
 import pytest
+from pytest_check import check
 
 from tests.conftest import USE_PROFDATA_POSSIBLE, GcovrTestExec
 
@@ -141,11 +140,9 @@ def test_template_function(gcovr_test_exec: "GcovrTestExec") -> None:
 @pytest.mark.json
 @pytest.mark.skipif(
     not USE_PROFDATA_POSSIBLE,
-    reason="LLVM profdata is not compatible with GCC coverage data.",  # noqa: F821
+    reason="LLVM profdata is not compatible with GCC coverage data.",
 )
-def test_template_function_llvm_profdata(  # type: ignore[no-untyped-def]
-    gcovr_test_exec: "GcovrTestExec", check
-) -> None:
+def test_template_function_llvm_profdata(gcovr_test_exec: "GcovrTestExec") -> None:
     """Test template function coverage and merge-lines option."""
     gcovr_test_exec.use_llvm_profdata = True
 
@@ -167,7 +164,7 @@ def test_template_function_llvm_profdata(  # type: ignore[no-untyped-def]
         "--json=coverage.merged.json",
     )
     gcovr_test_exec.compare_json()
-    if gcovr_test_exec.cc_version() >= 12:
+    if gcovr_test_exec.cc_version() >= 12:  # noqa: PLR2004
         check.is_not_in(
             "No branches found in LLVM JSON, this needs at least clang 12.",
             process.stderr,

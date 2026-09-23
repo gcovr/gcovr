@@ -1,5 +1,3 @@
-# -*- coding:utf-8 -*-
-
 #  ************************** Copyrights and license ***************************
 #
 # This file is part of gcovr 8.6+main, a parsing and reporting tool for gcov.
@@ -16,6 +14,8 @@
 # For more information, see the README.rst file.
 #
 # ****************************************************************************
+
+"""GCOVR entry point."""
 
 import os
 import re
@@ -154,7 +154,6 @@ def get_exit_code(
 
 def create_argument_parser() -> ArgumentParser:
     """Create the argument parser."""
-
     parser = ArgumentParser(add_help=False, exit_on_error=False)
     parser.usage = "gcovr [options] [search_paths...]"
     parser.description = (
@@ -192,7 +191,7 @@ def find_config_name(root: str, *filenames: str) -> str | None:
     """Find the configuration to use."""
     for filename in filenames:
         if root:
-            filename = os.path.join(root, filename)
+            filename = os.path.join(root, filename)  # noqa: PLW2901
 
         if os.path.isfile(filename):
             return filename
@@ -201,7 +200,7 @@ def find_config_name(root: str, *filenames: str) -> str | None:
 
 
 def load_config(partial_options: Namespace) -> dict[str, Any]:
-    """Load a config file if configured or found by default names"""
+    """Load a config file if configured or found by default names."""
     root = getattr(partial_options, "root", "")
     filename = getattr(partial_options, "config", None)
     if filename is None:
@@ -221,14 +220,15 @@ def load_config(partial_options: Namespace) -> dict[str, Any]:
 
 
 def main(args: list[str] | None = None) -> int:  # pylint: disable=too-many-return-statements
-    """The main entry point of GCOVR."""
+    """Entry point of GCOVR."""
     configure_logging()
     try:
         parser = create_argument_parser()
         cli_options = parser.parse_args(args=args)
     except SystemExit as e:
         if e.code != 0:
-            raise SanityCheckError("Exitcode must be 0.") from e
+            msg = "Exitcode must be 0."
+            raise SanityCheckError(msg) from e
         return EXIT_SUCCESS
     except ArgumentError as e:
         sys.stderr.write(f"gcovr: error: {e}\n")
@@ -296,13 +296,11 @@ def main(args: list[str] | None = None) -> int:  # pylint: disable=too-many-retu
             "uncovered-number",
             "uncovered-percent",
         ]:
-            raise RuntimeError(
-                "The options --sort-branches without '--sort uncovered-number' or '--sort uncovered-percent' doesn't make sense."
-            )
+            msg = "The options --sort-branches without '--sort uncovered-number' or '--sort uncovered-percent' doesn't make sense."
+            raise RuntimeError(msg)
         if options.show_decision and options.json_compare:
-            raise RuntimeError(
-                "Decision coverage in json compare mode is not supported."
-            )
+            msg = "Decision coverage in json compare mode is not supported."
+            raise RuntimeError(msg)
         gcovr_formats.validate_options(options)
     except RuntimeError as exc:
         LOGGER.error("%s", str(exc))
@@ -323,7 +321,7 @@ def main(args: list[str] | None = None) -> int:  # pylint: disable=too-many-retu
         patterns: list[FilterOption],
         default_filter: Filter | None = None,
     ) -> tuple[Filter, ...]:
-        """Setup a filter and handle the exception."""
+        """Compile the filter and handle the exceptions."""
         try:
             filters = list[Filter]()
             if len(patterns):
@@ -337,12 +335,11 @@ def main(args: list[str] | None = None) -> int:  # pylint: disable=too-many-retu
         except re.error as e:
             # mypy is thinking that the pattern can be a byte string therefore we need to explicit use !s.
             # See also discussion https://github.com/gcovr/gcovr/pull/1028#discussion_r1855437452
-            raise RuntimeError(
-                f"Error setting up filter {option}='{e.pattern!s}': {e}"
-            ) from None
+            msg = f"Error setting up filter {option}='{e.pattern!s}': {e}"
+            raise RuntimeError(msg) from None
 
     def _setup_pattern(option: str, patterns: list[str]) -> tuple[re.Pattern[str], ...]:
-        """Setup a filter and handle the exception."""
+        """Compile the patterns and handle the exceptions."""
         try:
             compiled_patterns = list[re.Pattern[str]]()
             if len(patterns):
@@ -354,9 +351,8 @@ def main(args: list[str] | None = None) -> int:  # pylint: disable=too-many-retu
         except re.error as e:
             # mypy is thinking that the pattern can be a byte string therefore we need to explicit use !s.
             # See also discussion https://github.com/gcovr/gcovr/pull/1028#discussion_r1855437452
-            raise RuntimeError(
-                f"Error setting up pattern {option}='{e.pattern!s}': {e}"
-            ) from None
+            msg = f"Error setting up pattern {option}='{e.pattern!s}': {e}"
+            raise RuntimeError(msg) from None
 
     try:
         options.include_filter = _setup_filter(
@@ -410,10 +406,10 @@ def main(args: list[str] | None = None) -> int:  # pylint: disable=too-many-retu
     LOGGER.info("Reading coverage data...")
     try:
         covdata = gcovr_formats.read_reports(options)
-    except Workers.WorkerThreadException as exc:
+    except Workers.WorkerThreadError as exc:
         LOGGER.error("Error occurred while reading reports: %s", exc)
         return EXIT_READ_ERROR
-    except Exception:  # pylint: disable=broad-exception-caught
+    except Exception:  # pylint: disable=broad-exception-caught  # noqa: BLE001
         LOGGER.error(
             "Error occurred while reading reports:\n%s", traceback.format_exc()
         )
@@ -422,7 +418,7 @@ def main(args: list[str] | None = None) -> int:  # pylint: disable=too-many-retu
     LOGGER.info("Writing coverage report...")
     try:
         gcovr_formats.write_reports(covdata, options)
-    except Exception:  # pylint: disable=broad-exception-caught
+    except Exception:  # pylint: disable=broad-exception-caught  # noqa: BLE001
         LOGGER.error(
             "Error occurred while printing reports:\n%s", traceback.format_exc()
         )

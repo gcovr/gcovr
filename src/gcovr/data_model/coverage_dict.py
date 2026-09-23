@@ -1,5 +1,3 @@
-# -*- coding:utf-8 -*-
-
 #  ************************** Copyrights and license ***************************
 #
 # This file is part of gcovr 8.6+main, a parsing and reporting tool for gcov.
@@ -17,11 +15,14 @@
 #
 # ****************************************************************************
 
+"""GCOVR coverage dictionary handling."""
+
 from __future__ import annotations
 
-from typing import TypeVar
+from typing import TYPE_CHECKING, TypeVar
 
-from .merging import MergeOptions
+if TYPE_CHECKING:
+    from .merging import MergeOptions
 
 LinecovCollectionKeyType = int
 LinecovKeyType = str
@@ -49,11 +50,10 @@ class CoverageDict(dict[_Key, _T]):
         other: CoverageDict[_Key, _T],
         options: MergeOptions,
     ) -> None:
-        """Helper function to merge items in a dictionary."""
-
+        """Merge items in a dictionary."""
         compare_mode = options.json_compare and self
         if compare_mode:
-            for key in set(self.keys()) - set(other.keys()):
+            for key in sorted(set(self.keys()) - set(other.keys())):
                 if hasattr(self[key], "set_removed"):
                     self[key].set_removed()
         # Merge other into self

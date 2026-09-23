@@ -1,5 +1,3 @@
-# -*- coding:utf-8 -*-
-
 #  ************************** Copyrights and license ***************************
 #
 # This file is part of gcovr 8.6+main, a parsing and reporting tool for gcov.
@@ -17,20 +15,25 @@
 #
 # ****************************************************************************
 
+"""GCOVR SonarQube report."""
+
+from typing import TYPE_CHECKING
+
 from lxml import etree  # nosec # We only write XML files
 
 from ...data_model.container import CoverageContainer
-from ...data_model.stats import CoverageStat, DecisionCoverageStat
 from ...logging import LOGGER
 from ...options import Options
 from ...utils import write_xml_output
+
+if TYPE_CHECKING:
+    from ...data_model.stats import CoverageStat, DecisionCoverageStat
 
 
 def write_report(
     covdata: CoverageContainer, output_file: str, options: Options
 ) -> None:
-    """produce an XML report in the SonarQube generic coverage format"""
-
+    """Write an XML report in the SonarQube generic coverage format."""
     if not any(
         filter(
             lambda filecov: filecov.condition_coverage().total > 0,  # type: ignore [arg-type]

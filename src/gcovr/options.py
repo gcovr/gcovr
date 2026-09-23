@@ -1,5 +1,3 @@
-# -*- coding:utf-8 -*-
-
 #  ************************** Copyrights and license ***************************
 #
 # This file is part of gcovr 8.6+main, a parsing and reporting tool for gcov.
@@ -17,6 +15,8 @@
 #
 # ****************************************************************************
 
+"""GCOVR option handling."""
+
 from __future__ import annotations
 
 import argparse
@@ -25,34 +25,29 @@ import platform
 import re
 from abc import abstractmethod
 from argparse import ArgumentParser, ArgumentTypeError, Namespace
-from typing import Any, Callable, Type
+from typing import Any, Callable
 
 from .filter import AbsoluteFilter, Filter, RelativeFilter
 from .logging import LOGGER
 
 
 def check_percentage(value: str) -> float:
-    r"""
-    Check that the percentage is within a reasonable range and if so return it.
-    """
-
+    r"""Check that the percentage is within a reasonable range and if so return it."""
     # strip trailing percent sign if present, useful for config files
-    if value.endswith("%"):
-        value = value[:-1]
+    value = value.removesuffix("%")
 
     try:
         x = float(value)
-        if not (0.0 <= x <= 100.0):
-            raise ValueError()
+        if not (0.0 <= x <= 100.0):  # noqa: PLR2004
+            raise ValueError
     except ValueError:
-        raise ArgumentTypeError(f"{value} not in range [0.0, 100.0]") from None
+        msg = f"{value} not in range [0.0, 100.0]"
+        raise ArgumentTypeError(msg) from None
     return x
 
 
 def check_input_file(value: str, basedir: str | None = None) -> str:
-    r"""
-    Check that the input file is present. Return the full path.
-    """
+    r"""Check that the input file is present. Return the full path."""
     if basedir is None:
         basedir = os.getcwd()
 
@@ -61,19 +56,17 @@ def check_input_file(value: str, basedir: str | None = None) -> str:
     value = os.path.normpath(value)
 
     if not os.path.isfile(value):
-        raise ArgumentTypeError(
-            f"Should be a file that already exists: {value!r}"
-        ) from None
+        msg = f"Should be a file that already exists: {value!r}"
+        raise ArgumentTypeError(msg) from None
 
     return os.path.abspath(value)
 
 
 def relative_path(value: str, basedir: str | None = None) -> str:
-    r"""
-    Make a absolute path if value is a relative path.
-    """
+    r"""Make a absolute path if value is a relative path."""
     if not value:
-        raise ArgumentTypeError("Should not be set to an empty string.") from None
+        msg = "Should not be set to an empty string."
+        raise ArgumentTypeError(msg) from None
 
     if basedir is None:
         basedir = os.getcwd()
@@ -88,6 +81,7 @@ class FilterOption:
     """Argparse type for filter options."""
 
     def __init__(self, regex: str, path_context: str | None = None) -> None:
+        """Initialize the FilterOption instance."""
         self.regex = regex
         self.path_context = os.getcwd() if path_context is None else path_context
 
@@ -119,13 +113,16 @@ class NonEmptyFilterOption(FilterOption):
     """Argparse type to check filters."""
 
     def __init__(self, regex: str, path_context: str | None = None) -> None:
+        """Initialize the NonEmptyFilterOption instance."""
         if not regex:
-            raise ArgumentTypeError("filter cannot be empty")
+            msg = "filter cannot be empty"
+            raise ArgumentTypeError(msg)
         super().__init__(regex, path_context)
 
 
 class OutputOrDefault:
-    """An output path that may be empty.
+    """
+    An output path that may be empty.
 
     - ``None``: the option is not set
     - ``OutputOrDefault(None)``: fall back to some default value
@@ -133,19 +130,18 @@ class OutputOrDefault:
     """
 
     def __init__(self, value: str | None, basedir: str | None = None) -> None:
+        """Initialize the OutputOrDefault instance."""
         self.value = value
         self._check_output_and_make_abspath(os.getcwd() if basedir is None else basedir)
 
     def __repr__(self) -> str:
+        """Get a string representation of the OutputOrDefault instance."""
         name = self.__class__.__name__
         value = self.value
         return f"{name}({value!r})"
 
     def _check_output_and_make_abspath(self, basedir: str) -> None:
-        r"""
-        Check if the output file can be created.
-        """
-
+        r"""Check if the output file can be created."""
         if self.value in (None, "-"):
             self.abspath = "-"
             self.is_dir = False
@@ -168,17 +164,15 @@ class OutputOrDefault:
                     try:
                         os.mkdir(value)
                     except OSError as e:
-                        raise ArgumentTypeError(
-                            f"Could not create output directory {self.value!r}: {e.strerror}"
-                        ) from None
+                        msg = f"Could not create output directory {self.value!r}: {e.strerror}"
+                        raise ArgumentTypeError(msg) from None
             else:
                 try:
                     with open(value, "w", encoding="utf-8") as _:
                         pass
                 except OSError as e:
-                    raise ArgumentTypeError(
-                        f"Could not create output file {self.value!r}: {e.strerror}"
-                    ) from None
+                    msg = f"Could not create output file {self.value!r}: {e.strerror}"
+                    raise ArgumentTypeError(msg) from None
                 os.unlink(value)
 
     @classmethod
@@ -187,27 +181,28 @@ class OutputOrDefault:
         choices: list[OutputOrDefault | None],
         default: OutputOrDefault | None = None,
     ) -> OutputOrDefault | None:
-        """select the first choice that contains a value
+        """
+        Select the first choice that contains a value.
 
-        Example: chooses a truthy value over None:
+        Examples, chooses a truthy value over None:
         >>> OutputOrDefault.choose([None, OutputOrDefault(42)])
         OutputOrDefault(42)
 
-        Example: chooses a truthy value over empty value:
+        Examples, chooses a truthy value over empty value:
         >>> OutputOrDefault.choose([OutputOrDefault(None), OutputOrDefault('x')])
         OutputOrDefault('x')
 
-        Example: chooses default when given empty list
+        Examples, chooses default when given empty list
         >>> OutputOrDefault.choose([], default=OutputOrDefault('default'))
         OutputOrDefault('default')
 
-        Example: chooses default when only given false values:
+        Examples, chooses default when only given false values:
         >>> OutputOrDefault.choose(
         ...     [None, OutputOrDefault(None)],
         ...     default=OutputOrDefault('default'))
         OutputOrDefault('default')
 
-        Example: throws when given other value
+        Examples, throws when given other value
         >>> OutputOrDefault.choose([True])
         Traceback (most recent call last):
           ...
@@ -217,7 +212,8 @@ class OutputOrDefault:
             if choice is None:
                 continue
             if not isinstance(choice, OutputOrDefault):
-                raise TypeError(f"expected OutputOrDefault instance, got: {choice}")
+                msg = f"expected OutputOrDefault instance, got: {choice}"
+                raise TypeError(msg)
             if choice.value is not None:
                 return choice
         return default
@@ -227,10 +223,11 @@ class Options:
     """Wrapper for holding the configuration."""
 
     def __init__(self, **kwargs: Any) -> None:
+        """Initialize the Options instance."""
         self.__dict__.update(kwargs)
 
     def get(self, name: str) -> Any:
-        """Function to get an option by name."""
+        """Get option by name."""
         return self.__dict__.get(name)
 
 
@@ -241,23 +238,24 @@ class GcovrConfigOptionAction(argparse.Action):  # pylint: disable=abstract-meth
     def store_config_key(
         self, namespace: dict[str, Any], values: Any, config: str | None
     ) -> None:
-        """Method to store a configuration key."""
+        """Store the configuration key in the namespace."""
 
 
 class GcovrDeprecatedConfigOptionAction(GcovrConfigOptionAction):
     """Argparse action for deprecated options to map on new option with a deprecation warning."""
 
     def __init__(self, option_strings: list[str], dest: str, **kwargs: Any) -> None:
+        """Initialize the deprecated option action."""
         super().__init__(option_strings, dest, **kwargs)
 
     def __call__(
         self,
-        parser: ArgumentParser,
+        _parser: ArgumentParser,
         namespace: Namespace,
-        values: Any,
+        _values: Any,
         option_string: str | None = None,
     ) -> None:
-        """Used by argparse to store the values."""
+        """Store the values."""
         LOGGER.warning(
             "Deprecated option %s used, please use '%s %s' instead.",
             option_string,
@@ -269,6 +267,7 @@ class GcovrDeprecatedConfigOptionAction(GcovrConfigOptionAction):
     def store_config_key(
         self, namespace: dict[str, Any], values: Any, config: str | None
     ) -> None:
+        """Store the configuration key with a deprecation warning."""
         if config is not None:
             values = self.value
             LOGGER.warning(
@@ -347,6 +346,7 @@ class GcovrConfigOption:
 
     Constraint: an option must be either have a flag or be positional
     or have a config key, or a combination thereof.
+
     """
 
     def __init__(
@@ -355,7 +355,7 @@ class GcovrConfigOption:
         flags: list[str] | None = None,
         *,
         help: str,
-        action: str | Type[GcovrConfigOptionAction] = "store",
+        action: str | type[GcovrConfigOptionAction] = "store",
         choices: tuple[int, ...] | tuple[str, ...] | None = None,
         const: Any = None,
         const_negate: Any = None,
@@ -366,54 +366,58 @@ class GcovrConfigOption:
         nargs: int | str | None = None,
         positional: bool = False,
         required: bool = False,
-        type: Callable[[str], Any] | Type[FilterOption] | None = None,
+        type: Callable[[str], Any] | type[FilterOption] | None = None,
     ) -> None:
+        """Initialize a GcovrConfigOption instance."""
         if flags is None:
             flags = []
 
         if flags and positional:
-            raise AssertionError("Option cannot have flags and be positional")
+            msg = "Option cannot have flags and be positional"
+            raise AssertionError(msg)
 
-        config_keys = _derive_configuration_key(config, flags=flags)
+        config_keys = _derive_configuration_key(config=config, flags=flags)
         del config
 
         if not (flags or positional or config_keys):
-            raise AssertionError(
-                "Option must be named, positional, or config argument."
-            )
+            msg = "Option must be named, positional, or config argument."
+            raise AssertionError(msg)
 
         negate = list[str]()
         if flags and const_negate is not None:
             negate = ["--no-" + f[2:] for f in flags if f.startswith("--")]
             if not negate:
-                raise AssertionError("Cannot autogenerate negation")
+                msg = "Cannot autogenerate negation"
+                raise AssertionError(msg)
 
         if not help:
-            raise AssertionError("help required")
+            msg = "help required"
+            raise AssertionError(msg)
         if negate:
             help += f" Negation: {', '.join(negate)}."
         if (flags or positional) and config_keys:
-            config_keys_help = []
-            for config_key in config_keys:
-                config_keys_help.append(config_key)
-            help += f" Config key(s): {', '.join(config_keys_help)}."
+            help += f" Config key(s): {', '.join(config_keys)}."
 
         # the store_true and store_false actions have hardcoded boolean
         # constants in their definitions so they need switched to the generic
         # store_const in order for the logic here to work correctly.
         if action == "store_true":
             if const is not None:
-                raise AssertionError("action=store_true and const conflict")
+                msg = "action=store_true and const conflict"
+                raise AssertionError(msg)
             if default is not None:
-                raise AssertionError("action=store_true and default conflict")
+                msg = "action=store_true and default conflict"
+                raise AssertionError(msg)
             action = "store_const"
             const = True
             default = False
         elif action == "store_false":
             if const is not None:
-                raise AssertionError("action=store_false and const conflict")
+                msg = "action=store_false and const conflict"
+                raise AssertionError(msg)
             if default is not None:
-                raise AssertionError("action=store_false and default conflict")
+                msg = "action=store_false and default conflict"
+                raise AssertionError(msg)
             action = "store_const"
             const = False
             default = True
@@ -422,7 +426,8 @@ class GcovrConfigOption:
             action in ("store", "store_const", "append")
             or issubclass(action, GcovrConfigOptionAction)  # type: ignore [arg-type]
         ):
-            raise AssertionError(f"Unknown action {action!r}")
+            msg = f"Unknown action {action!r}"
+            raise AssertionError(msg)
 
         self.name = name
         self.flags = flags
@@ -446,7 +451,8 @@ class GcovrConfigOption:
         self.help = help.format(**self.__dict__)
 
     def __repr__(self) -> str:
-        r"""String representation of instance.
+        r"""
+        Representation of config instance.
 
         >>> GcovrConfigOption('foo', ['-f', '--foo'], help="foo text.")
         GcovrConfigOption('foo', [-f, --foo], ..., help='foo text. Config key(s): foo.', ...)
@@ -463,21 +469,20 @@ class GcovrConfigOption:
 
 
 def _derive_configuration_key(
-    config: str | bool,
     *,
+    config: str | bool,
     flags: list[str],
 ) -> list[str] | None:
     if config is True:
-        config_keys = []
-        for flag in flags:
-            if flag.startswith("--"):
-                config_keys.append(flag.lstrip("-"))
+        config_keys = [flag.lstrip("-") for flag in flags if flag.startswith("--")]
         if not config_keys:
-            raise AssertionError("Could not autogenerate config key from {flags!r}.")
+            msg = "Could not autogenerate config key from {flags!r}."
+            raise AssertionError(msg)
         return config_keys
     if config is False:
         return None
     if isinstance(config, str):
         return [config]
 
-    raise AssertionError(f"Unexpected config entry type {config!r}")
+    msg = f"Unexpected config entry type {config!r}"
+    raise AssertionError(msg)

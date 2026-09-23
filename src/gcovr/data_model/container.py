@@ -1,5 +1,3 @@
-# -*- coding:utf-8 -*-
-
 #  ************************** Copyrights and license ***************************
 #
 # This file is part of gcovr 8.6+main, a parsing and reporting tool for gcov.
@@ -17,26 +15,31 @@
 #
 # ****************************************************************************
 
+"""GCOVR coverage container."""
+
 from __future__ import annotations
 
 import os
 import re
-from typing import Any, Iterator, Literal, ValuesView, overload
+from typing import TYPE_CHECKING, Any, Iterator, Literal, ValuesView, overload
 
 from ..filter import is_file_excluded
 from ..logging import LOGGER
-from ..options import Options
 from ..utils import commonpath, force_unix_separator
 from .coverage import CoverageDiff, FileCoverage, summarize_coverage_diff
 from .coverage_dict import CoverageDict
-from .merging import MergeOptions
 from .stats import CoverageStat, DecisionCoverageStat, SummarizedStats
+
+if TYPE_CHECKING:
+    from ..options import Options
+    from .merging import MergeOptions
 
 
 class CoverageContainer:
     """Coverage container holding all the coverage data."""
 
     def __init__(self, dirname: str, parent: CoverageContainer | None = None) -> None:
+        """Initialize a coverage container."""
         self.data = CoverageDict[str, CoverageContainer | FileCoverage]()
         self.dirname = os.path.abspath(dirname) + os.path.sep
         self.parent = parent
@@ -45,21 +48,26 @@ class CoverageContainer:
         self._stats: SummarizedStats | None = None
 
     def __getitem__(self, key: str) -> CoverageContainer | FileCoverage:
+        """Get item."""
         return self.data[key]
 
     def __setitem__(
         self, key: str, value: CoverageContainer | FileCoverage
     ) -> CoverageContainer | FileCoverage:
+        """Set item."""
         self.data[key] = value
         return value
 
     def __delitem__(self, key: str) -> None:
+        """Delete item."""
         del self.data[key]
 
     def __len__(self) -> int:
+        """Get number of items."""
         return len(self.data)
 
     def __contains__(self, key: str) -> bool:
+        """Check if item exists."""
         return key in self.data
 
     def clear(
@@ -72,7 +80,7 @@ class CoverageContainer:
         """Get the file coverage data objects."""
         return self.data.values()
 
-    def filecov(self, recurse: bool = False) -> Iterator[FileCoverage]:
+    def filecov(self, *, recurse: bool = False) -> Iterator[FileCoverage]:
         """Get the file coverage data objects."""
         for value in self.values():
             if isinstance(value, FileCoverage):
@@ -80,12 +88,11 @@ class CoverageContainer:
             elif recurse:
                 yield from value.filecov(recurse=True)
 
-    def dircov(self, recurse: bool = False) -> Iterator[CoverageContainer]:
+    def dircov(self, *, recurse: bool = False) -> Iterator[CoverageContainer]:
         """Get the directory coverage data objects."""
         for value in self.values():
-            if isinstance(value, CoverageContainer):
-                if recurse:
-                    yield from value.dircov(recurse=True)
+            if isinstance(value, CoverageContainer) and recurse:
+                yield from value.dircov(recurse=True)
         yield self
 
     def traverse(self) -> Iterator[CoverageContainer | FileCoverage]:
@@ -166,48 +173,52 @@ class CoverageContainer:
                 if isinstance(value, CoverageContainer):
                     value.update_diff()
             self.diff = summarize_coverage_diff(
-                set(covdata.diff for covdata in self.values())
+                {covdata.diff for covdata in self.values()}
             )
 
     @overload
     @classmethod
     def __sorted(
         cls,
+        *,
         covdata_list: list[FileCoverage],
         sort_key: Literal["filename", "uncovered-number", "uncovered-percent"],
         sort_reverse: bool,
         by_metric: Literal["line", "branch", "condition", "decision"],
         filename_uses_relative_pathname: bool,
     ) -> list[FileCoverage]:
-        """Sort a list of FileCoverage objects."""
+        pass
 
     @overload
     @classmethod
     def __sorted(
         cls,
+        *,
         covdata_list: list[CoverageContainer],
         sort_key: Literal["filename", "uncovered-number", "uncovered-percent"],
         sort_reverse: bool,
         by_metric: Literal["line", "branch", "condition", "decision"],
         filename_uses_relative_pathname: bool,
     ) -> list[CoverageContainer]:
-        """Sort a list of CoverageContainer objects."""
+        pass
 
     @overload
     @classmethod
     def __sorted(
         cls,
+        *,
         covdata_list: list[FileCoverage | CoverageContainer],
         sort_key: Literal["filename", "uncovered-number", "uncovered-percent"],
         sort_reverse: bool,
         by_metric: Literal["line", "branch", "condition", "decision"],
         filename_uses_relative_pathname: bool,
     ) -> list[FileCoverage | CoverageContainer]:
-        """Sort a list of FileCoverage objects."""
+        pass
 
     @classmethod
     def __sorted(
         cls,
+        *,
         covdata_list: list[FileCoverage]
         | list[CoverageContainer]
         | list[FileCoverage | CoverageContainer],
@@ -220,7 +231,8 @@ class CoverageContainer:
         | list[CoverageContainer]
         | list[FileCoverage | CoverageContainer]
     ):
-        """Sort a coverage dict.
+        """
+        Sort a coverage dict.
 
         covdata_list (list[CoverageContainer | FileCoverage]): The coverage list
         sort_key ("filename", "uncovered-number", "uncovered-percent"): The values to sort by
@@ -231,7 +243,6 @@ class CoverageContainer:
 
         returns: the sorted keys
         """
-
         LOGGER.debug(
             "Sorting coverage data by %s, reverse=%s, metric=%s, relative_pathname=%s",
             sort_key,
@@ -271,17 +282,14 @@ class CoverageContainer:
 
         def key_num_uncovered(covdata: CoverageContainer | FileCoverage) -> int:
             stat = coverage_stat(covdata)
-            uncovered = stat.total - stat.covered
-            return uncovered
+            return stat.total - stat.covered
 
         def key_percent_uncovered(covdata: CoverageContainer | FileCoverage) -> float:
             stat = coverage_stat(covdata)
-            covered = stat.covered
-            total = stat.total
 
             # No branches are always put directly after (or before when reversed)
             # files with 100% coverage (by assigning such files 110% coverage)
-            return covered / total if total > 0 else 1.1
+            return stat.covered / stat.total if stat.total > 0 else 1.1
 
         if sort_key == "uncovered-number":
             # First sort filename alphabetical and then by the requested key
@@ -303,13 +311,15 @@ class CoverageContainer:
 
     def sorted_filecov(
         self,
+        *,
         sort_key: Literal["filename", "uncovered-number", "uncovered-percent"],
         sort_reverse: bool,
         by_metric: Literal["line", "branch", "condition", "decision"],
         filename_uses_relative_pathname: bool = False,
         recurse: bool = False,
     ) -> list[FileCoverage]:
-        """Sort a coverage dict.
+        """
+        Sort a coverage dict.
 
         sort_key ("filename", "uncovered-number", "uncovered-percent"): the values to sort by
         sort_reverse (bool): reverse order if True
@@ -320,23 +330,24 @@ class CoverageContainer:
 
         returns: the sorted keys
         """
-
         return self.__sorted(
-            list(self.filecov(recurse=recurse)),
-            sort_key,
-            sort_reverse,
-            by_metric,
-            filename_uses_relative_pathname,
+            covdata_list=list(self.filecov(recurse=recurse)),
+            sort_key=sort_key,
+            sort_reverse=sort_reverse,
+            by_metric=by_metric,
+            filename_uses_relative_pathname=filename_uses_relative_pathname,
         )
 
     def sorted_coverage(
         self,
+        *,
         sort_key: Literal["filename", "uncovered-number", "uncovered-percent"],
         sort_reverse: bool,
         by_metric: Literal["line", "branch", "condition", "decision"],
         filename_uses_relative_pathname: bool = False,
     ) -> list[CoverageContainer | FileCoverage]:
-        """Sort a coverage dict.
+        """
+        Sort a coverage dict.
 
         sort_key ("filename", "uncovered-number", "uncovered-percent"): the values to sort by
         sort_reverse (bool): reverse order if True
@@ -346,18 +357,17 @@ class CoverageContainer:
 
         returns: the sorted keys
         """
-
         return self.__sorted(
-            list(self.values()),
-            sort_key,
-            sort_reverse,
-            by_metric,
-            filename_uses_relative_pathname,
+            covdata_list=list(self.values()),
+            sort_key=sort_key,
+            sort_reverse=sort_reverse,
+            by_metric=by_metric,
+            filename_uses_relative_pathname=filename_uses_relative_pathname,
         )
 
     @property
     def filename(self) -> str:
-        """Helpful function for when we use this DirectoryCoverage in a union with FileCoverage"""
+        """Helpful function for when we use this DirectoryCoverage in a union with FileCoverage."""
         return self.dirname
 
     def merge_lines(self, options: Options) -> None:
@@ -366,7 +376,7 @@ class CoverageContainer:
         for value in self.values():
             if isinstance(value, FileCoverage):
                 value.merge_lines(
-                    is_file_excluded(
+                    activate_trace_logging=is_file_excluded(
                         "trace",
                         value.filename,
                         options.trace_include_filter,
@@ -401,9 +411,8 @@ class CoverageContainer:
             if key in self.data:
                 value = self.data[key]
                 if not isinstance(value, FileCoverage):
-                    raise TypeError(
-                        f"Expected a FileCoverage object for key {key}, but got {type(value)}."
-                    )
+                    msg = f"Expected a FileCoverage object for key {key}, but got {type(value)}."
+                    raise TypeError(msg)
                 value.merge(filecov, options)
             else:
                 self.data[key] = filecov
@@ -425,9 +434,8 @@ class CoverageContainer:
                     self,
                 )
             if not isinstance(covdata, CoverageContainer):
-                raise TypeError(
-                    f"Expected a CoverageContainer object for key {covdata_dirname}, but got {type(covdata)}."
-                )
+                msg = f"Expected a CoverageContainer object for key {covdata_dirname}, but got {type(covdata)}."
+                raise TypeError(msg)
             covdata.insert_file_coverage(filecov, options)
 
     @property

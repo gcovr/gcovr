@@ -1,5 +1,3 @@
-# -*- coding:utf-8 -*-
-
 #  ************************** Copyrights and license ***************************
 #
 # This file is part of gcovr 8.6+main, a parsing and reporting tool for gcov.
@@ -17,6 +15,8 @@
 #
 # ****************************************************************************
 
+"""GCOVR CSV report."""
+
 import csv
 
 from ...data_model.container import CoverageContainer
@@ -28,8 +28,7 @@ from ...utils import open_text_for_writing
 def write_report(
     covdata: CoverageContainer, output_file: str, options: Options
 ) -> None:
-    """produce gcovr csv report"""
-
+    """GCOVR CSV report."""
     # Open output without translation of line endings.
     # The CSV writer uses as default line endings "\r\n" (according to
     # https://datatracker.ietf.org/doc/html/rfc4180)
@@ -70,7 +69,7 @@ def write_report(
 
 
 def _stat_tuple(stat: CoverageStat) -> tuple[int, int, float | None]:
-    """creates tuple (total, covered, ratio) with ratio in range 0..1 incl"""
+    """Get tuple (total, covered, ratio) with ratio in range 0..1 incl."""
     percent = stat.percent
     if percent is not None:
         percent = percent / 100.0

@@ -1,5 +1,3 @@
-# -*- coding:utf-8 -*-
-
 #  ************************** Copyrights and license ***************************
 #
 # This file is part of gcovr 8.6+main, a parsing and reporting tool for gcov.
@@ -20,11 +18,12 @@
 import os
 import re
 import subprocess  # nosec
-import typing
 from contextlib import contextmanager
 from pathlib import Path
+from typing import Generator
 
 import pytest
+from pytest_check import check
 
 from tests.conftest import (
     GCOVR_ISOLATED_TEST,
@@ -40,7 +39,7 @@ CHMOD_IS_WORKING = (
 
 
 @contextmanager
-def chmod(mode: int, *paths: Path) -> typing.Iterator[None]:
+def chmod(mode: int, *paths: Path) -> Generator[None, None, None]:
     """Change mode during execution."""
     modes = []
     try:
@@ -49,20 +48,19 @@ def chmod(mode: int, *paths: Path) -> typing.Iterator[None]:
             path.chmod(mode)
         yield
     finally:
-        for index, mode in enumerate(modes):
-            paths[index].chmod(mode)
+        for index, old_mode in enumerate(modes):
+            paths[index].chmod(old_mode)
 
 
 @pytest.mark.skipif(IS_WINDOWS, reason="GCOV stub script isn't working under Windows")
-def test_kill_by_signal(gcovr_test_exec: "GcovrTestExec", check) -> None:  # type: ignore[no-untyped-def]
+def test_kill_by_signal(gcovr_test_exec: "GcovrTestExec") -> None:
     """Test a unknown CLA."""
-
     gcovr_test_exec.cxx_link("testcase", "src/main.cpp")
 
     gcovr_test_exec.run("./testcase")
+    env = os.environ.copy()
+    env.update({"GCOV_STUB_KILL_BY_SIGNAL": "SIGSEGV"})
     with pytest.raises(subprocess.CalledProcessError) as exc:
-        env = os.environ.copy()
-        env.update({"GCOV_STUB_KILL_BY_SIGNAL": "SIGSEGV"})
         gcovr_test_exec.gcovr(
             "--verbose",
             "--gcov-executable=./gcov-stub",
@@ -85,15 +83,14 @@ def test_kill_by_signal(gcovr_test_exec: "GcovrTestExec", check) -> None:  # typ
 
 
 @pytest.mark.skipif(IS_WINDOWS, reason="GCOV stub script isn't working under Windows")
-def test_unknown_cla(gcovr_test_exec: "GcovrTestExec", check) -> None:  # type: ignore[no-untyped-def]
+def test_unknown_cla(gcovr_test_exec: "GcovrTestExec") -> None:
     """Test a unknown CLA."""
-
     gcovr_test_exec.cxx_link("testcase", "src/main.cpp")
 
     gcovr_test_exec.run("./testcase")
+    env = os.environ.copy()
+    env.update({"GCOV_STUB_ADDITIONAL_CLA": "--cla-does-not-exist"})
     with pytest.raises(subprocess.CalledProcessError) as exc:
-        env = os.environ.copy()
-        env.update({"GCOV_STUB_ADDITIONAL_CLA": "--cla-does-not-exist"})
         gcovr_test_exec.gcovr(
             "--verbose",
             "--gcov-executable=./gcov-stub",
@@ -119,19 +116,18 @@ def test_unknown_cla(gcovr_test_exec: "GcovrTestExec", check) -> None:  # type: 
 
 
 @pytest.mark.skipif(IS_WINDOWS, reason="GCOV stub script isn't working under Windows")
-def test_wrong_version(gcovr_test_exec: "GcovrTestExec", check) -> None:  # type: ignore[no-untyped-def]
+def test_wrong_version(gcovr_test_exec: "GcovrTestExec") -> None:
     """Test a version mismatch between gcc and gcov."""
-
     gcovr_test_exec.cxx_link("testcase", "src/main.cpp")
 
     gcovr_test_exec.run("./testcase")
+    env = os.environ.copy()
+    env.update(
+        {
+            "GCOV_STUB_ADDITIONAL_STDERR": "./dummy.gcda:version 'B32*', prefer version 'B42*'"
+        }
+    )
     with pytest.raises(subprocess.CalledProcessError) as exc:
-        env = os.environ.copy()
-        env.update(
-            {
-                "GCOV_STUB_ADDITIONAL_STDERR": "./dummy.gcda:version 'B32*', prefer version 'B42*'"
-            }
-        )
         gcovr_test_exec.gcovr(
             "--verbose",
             "--gcov-executable=./gcov-stub",
@@ -158,9 +154,8 @@ def test_wrong_version(gcovr_test_exec: "GcovrTestExec", check) -> None:  # type
     CHMOD_IS_WORKING,
     reason="Only available in docker on hosts != MacOs",
 )
-def test_wd_not_found(gcovr_test_exec: "GcovrTestExec", check) -> None:  # type: ignore[no-untyped-def]
+def test_wd_not_found(gcovr_test_exec: "GcovrTestExec") -> None:
     """Test working directory not found."""
-
     (gcovr_test_exec.output_dir / "build").mkdir()
     gcovr_test_exec.cxx_link(
         "testcase",
@@ -183,7 +178,7 @@ def test_wd_not_found(gcovr_test_exec: "GcovrTestExec", check) -> None:  # type:
                 "--root=src",
                 "build",
             )
-        assert exc.value.returncode == 64
+        assert exc.value.returncode == 64  # noqa: PLR2004
         check.is_in(
             "GCOV could not write output file, this can be ignored with --gcov-ignore-errors=output_error.",
             exc.value.stderr,
@@ -211,9 +206,8 @@ def test_wd_not_found(gcovr_test_exec: "GcovrTestExec", check) -> None:  # type:
     reason="Only available in docker on hosts != MacOs",
 )
 @pytest.mark.json
-def test_ignore_output_error(gcovr_test_exec: "GcovrTestExec", check) -> None:  # type: ignore[no-untyped-def]
+def test_ignore_output_error(gcovr_test_exec: "GcovrTestExec") -> None:
     """Test ignoring GCOV output errors."""
-
     (gcovr_test_exec.output_dir / "build").mkdir()
     gcovr_test_exec.cxx_link(
         "testcase",
@@ -256,9 +250,8 @@ def test_ignore_output_error(gcovr_test_exec: "GcovrTestExec", check) -> None:  
     reason="Only available in docker on hosts != MacOs",
 )
 @pytest.mark.json
-def test_ignore_source_not_found(gcovr_test_exec: "GcovrTestExec", check) -> None:  # type: ignore[no-untyped-def]
+def test_ignore_source_not_found(gcovr_test_exec: "GcovrTestExec") -> None:
     """Test ignoring GCOV source not found errors."""
-
     (gcovr_test_exec.output_dir / "build").mkdir()
     gcovr_test_exec.cxx_link(
         "testcase",
@@ -302,9 +295,8 @@ def test_ignore_source_not_found(gcovr_test_exec: "GcovrTestExec", check) -> Non
     reason="Only available in docker on hosts != MacOs",
 )
 @pytest.mark.json
-def test_ignore_no_working_dir_found(gcovr_test_exec: "GcovrTestExec", check) -> None:  # type: ignore[no-untyped-def]
+def test_ignore_no_working_dir_found(gcovr_test_exec: "GcovrTestExec") -> None:
     """Test gcov-no_working_dir_found logic."""
-
     (gcovr_test_exec.output_dir / "build").mkdir()
     gcovr_test_exec.cxx_link(
         "testcase",
@@ -345,15 +337,14 @@ def test_ignore_no_working_dir_found(gcovr_test_exec: "GcovrTestExec", check) ->
 
 
 @pytest.mark.skipif(IS_WINDOWS, reason="GCOV stub script isn't working under Windows")
-def test_worker_exception(gcovr_test_exec: "GcovrTestExec", check) -> None:  # type: ignore[no-untyped-def]
+def test_worker_exception(gcovr_test_exec: "GcovrTestExec") -> None:
     """Test a gcovr worker exception."""
-
     gcovr_test_exec.cxx_link("testcase", "src/main.cpp")
 
     gcovr_test_exec.run("./testcase")
+    env = os.environ.copy()
+    env.update({"GCOV_STUB_ADDITIONAL_STDOUT": "Creating 'does#not#exist.gcov'"})
     with pytest.raises(subprocess.CalledProcessError) as exc:
-        env = os.environ.copy()
-        env.update({"GCOV_STUB_ADDITIONAL_STDOUT": "Creating 'does#not#exist.gcov'"})
         gcovr_test_exec.gcovr(
             "--verbose",
             "--gcov-executable=./gcov-stub",

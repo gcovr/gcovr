@@ -1,7 +1,5 @@
 #!/usr/bin/env PYTHONPATH=./gcovr python3
 
-# -*- coding:utf-8 -*-
-
 #  ************************** Copyrights and license ***************************
 #
 # This file is part of gcovr 8.6+main, a parsing and reporting tool for gcov.
@@ -19,6 +17,8 @@
 #
 # ****************************************************************************
 
+"""Script to update all files for a release and to prepare the next release iteration."""
+
 import copy
 import datetime
 import logging
@@ -29,6 +29,7 @@ import sys
 import time
 from typing import Callable, Iterator
 
+LOGGER = logging.getLogger(__name__)
 SOURCE_DATE_EPOCH = int(time.time())
 SOURCE_DATE_EPOCH_STR = str(SOURCE_DATE_EPOCH)
 UTC_DATE_TIME = datetime.datetime.fromtimestamp(
@@ -38,7 +39,7 @@ ISO_DATE_TIME = datetime.datetime.fromtimestamp(
     SOURCE_DATE_EPOCH, datetime.timezone.utc
 ).isoformat(sep=" ", timespec="seconds")
 DATE = subprocess.check_output(  # nosec # We run on several system and do not know the full path
-    ["git", "log", "-1", "--format=format:%ad", "--date=short"],
+    ["git", "log", "-1", "--format=format:%ad", "--date=short"],  # noqa: S607
     universal_newlines=True,
 )
 YEAR = DATE[:4]
@@ -100,12 +101,6 @@ def add_copyright_header_to_python_file(
         new_lines.append(lines.pop(0))
         new_lines.append("")
 
-    # Set the encoding
-    if lines[0].startswith("# -*- coding:"):
-        lines.pop(0)
-    new_lines.append("# -*- coding:utf-8 -*-")
-    new_lines.append("")
-
     # Add license information
     new_lines.extend(get_copyright_header(version))
 
@@ -115,12 +110,12 @@ def add_copyright_header_to_python_file(
     # skip lines until header end marker
     for line in iter_lines:
         if len(line) > 0 and line == "#" + HEADER_END:
-            for line in iter_lines:
+            for line in iter_lines:  # noqa: PLW2901
                 if line != "":
                     # Use one empty line
                     new_lines.append("")
                     # except for classes or functions, there we need two.
-                    if line.startswith("class") or line.startswith("def"):
+                    if line.startswith(("class", "def")):
                         new_lines.append("")
                     new_lines.append(line)
                     break
@@ -149,17 +144,18 @@ def update_copyright_string(
         if line == "COPYRIGHT = (":
             break
     else:
-        raise RuntimeError(f"Start of copyright not found in {filename!r}.")
+        msg = f"Start of copyright not found in {filename!r}."
+        raise RuntimeError(msg)
 
-    for line in COPYRIGHT:
-        new_lines.append(f'    "{line}\\n"')
+    new_lines.extend(f'    "{line}\\n"' for line in COPYRIGHT)
 
     for line in iter_lines:
         if line == ")":
             new_lines.append(line)
             break
     else:
-        raise RuntimeError(f"End of copyright not found in {filename!r}.")
+        msg_0 = f"End of copyright not found in {filename!r}."
+        raise RuntimeError(msg_0)
 
     new_lines.extend(iter_lines)
 
@@ -193,20 +189,20 @@ def update_changelog(filename: str, lines: list[str], version: str) -> list[str]
             break
         new_lines.append(line)
     else:
-        raise RuntimeError(
-            f"Call of {next_release_link_target!r} not found in {filename!r}."
-        )
+        msg = f"Call of {next_release_link_target!r} not found in {filename!r}."
+        raise RuntimeError(msg)
 
     next_release = "Next Release"
     for line in iter_lines:
         if line == next_release:
-            line = f"{version} ({time.strftime('%d %B %Y')})"
-            new_lines.extend([line, "-" * len(line)])
+            version_line = f"{version} ({time.strftime('%d %B %Y')})"
+            new_lines.extend([version_line, "-" * len(version_line)])
             iter_lines.__next__()  # pylint: disable=unnecessary-dunder-call
             break
         new_lines.append(line)
     else:
-        raise RuntimeError(f"Call of {next_release!r} not found in {filename!r}.")
+        msg_0 = f"Call of {next_release!r} not found in {filename!r}."
+        raise RuntimeError(msg_0)
 
     new_lines += list(iter_lines)
 
@@ -219,19 +215,16 @@ def update_documentation(_filename: str, lines: list[str], version: str) -> list
 
     for line in lines:
         if "NEXT" in line:
-            line = re.sub(
+            line = re.sub(  # noqa: PLW2901
                 r"(\.\. (?:versionadded|versionchanged|deprecated|versionremoved):: )NEXT",
                 r"\g<1>" + version,
                 line,
             )
-        # We need to also change the line after "Next Release"
-        # because the minus must have the same length than the
-        # headline to have valid RST.
         # We change:
         #    :ref:`next_release`
         # to:
         #    :ref:`release_x_y`
-        line = re.sub(
+        line = re.sub(  # noqa: PLW2901
             r":ref:`next_release`",
             f":ref:`release_{version.replace('.', '_')}`",
             line,
@@ -256,32 +249,32 @@ def update_reference_data(_filename: str, lines: list[str], version: str) -> lis
 
     for line in lines:
         if "Created using " in line:
-            line = re.sub(
+            line = re.sub(  # noqa: PLW2901
                 r'(Created using <a href="http://gcovr.com/en/).+?(">GCOVR \(Version ).+?(\)</a>)',
                 replace_html_version,
                 line,
             )
         if "version=" in line:
-            line = re.sub(
+            line = re.sub(  # noqa: PLW2901
                 r'(version="gcovr ).+?(">)',
                 replace_xml_version,
                 line,
             )
         if "+00:00" in line:
-            line = re.sub(
+            line = re.sub(  # noqa: PLW2901
                 r"\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}\+00:00",
                 ISO_DATE_TIME,
                 line,
             )
         if '"run_at":' in line:
-            line = re.sub(
+            line = re.sub(  # noqa: PLW2901
                 r'"run_at": "\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2} UTC",',
                 rf'"run_at": "{UTC_DATE_TIME}",',
                 line,
             )
         for att in ["timestamp", "clover", "generated"]:
             if f' {att}="' in line:
-                line = re.sub(
+                line = re.sub(  # noqa: PLW2901
                     rf'( {att}=")\d+(")',
                     replace_xml_timestamp,
                     line,
@@ -298,8 +291,7 @@ def update_license(filename: str, lines: list[str], _version: str) -> list[str]:
         "",
     ]
 
-    for line in COPYRIGHT:
-        new_lines.append(line)
+    new_lines.extend(COPYRIGHT)
     new_lines.append("")
 
     iter_lines = iter(lines)
@@ -308,7 +300,8 @@ def update_license(filename: str, lines: list[str], _version: str) -> list[str]:
             new_lines.append(line)
             break
     else:
-        raise RuntimeError(f"Start of license not found in {filename!r}.")
+        msg = f"Start of license not found in {filename!r}."
+        raise RuntimeError(msg)
 
     new_lines.extend(iter_lines)
 
@@ -325,14 +318,12 @@ def update_source_date_epoch_for_pytest(
     iter_lines = iter(lines)
     for line in iter_lines:
         if line.lstrip().startswith(env_source_date_epoch):
-            line = re.sub(r"\d+", SOURCE_DATE_EPOCH_STR, line)
-            new_lines.append(line)
+            new_lines.append(re.sub(r"\d+", SOURCE_DATE_EPOCH_STR, line))
             break
         new_lines.append(line)
     else:
-        raise RuntimeError(
-            f"Call of {env_source_date_epoch!r} not found in {filename!r}."
-        )
+        msg = f"Call of {env_source_date_epoch!r} not found in {filename!r}."
+        raise RuntimeError(msg)
 
     new_lines.extend(iter_lines)
 
@@ -340,7 +331,7 @@ def update_source_date_epoch_for_pytest(
 
 
 def main(version: str, for_file: str | None = None) -> None:
-    """Main entry point."""
+    """Entry point."""
     for root, dirs, files in os.walk(".", topdown=True):
 
         def skip_dir(directory: str) -> bool:
@@ -356,7 +347,7 @@ def main(version: str, for_file: str | None = None) -> None:
                 fullname
             ):
                 continue
-            if filename.endswith(".py") and filename not in ["version.py"]:
+            if filename.endswith(".py") and filename != "version.py":
                 handlers.append(add_copyright_header_to_python_file)
             if filename == "__main__.py":
                 handlers.append(update_copyright_string)
@@ -388,15 +379,15 @@ def main(version: str, for_file: str | None = None) -> None:
                 with open(fullname, encoding=encoding) as fh_in:
                     lines = fh_in.readlines()
                     trailing_newline = lines and lines[-1][-1] == "\n"
-                    lines = list(line.rstrip() for line in lines)
+                    lines = [line.rstrip() for line in lines]
                 new_lines = copy.copy(
                     lines
                 )  # use a copy because of the compare at the end
                 for handler in handlers:
                     new_lines = handler(fullname, new_lines, version)
                 if new_lines != lines:
-                    logging.info("Modifying %s", fullname)
-                    new_lines = list(f"{line}\n" for line in new_lines)
+                    LOGGER.info("Modifying %s", fullname)
+                    new_lines = [f"{line}\n" for line in new_lines]
                     if not trailing_newline:
                         new_lines[-1] = new_lines[-1][:-1]
                     with open(fullname, "w", encoding=encoding) as fh_out:

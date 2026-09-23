@@ -1,5 +1,3 @@
-# -*- coding:utf-8 -*-
-
 #  ************************** Copyrights and license ***************************
 #
 # This file is part of gcovr 8.6+main, a parsing and reporting tool for gcov.
@@ -20,7 +18,6 @@
 # cspell:ignore addoption
 import difflib
 import fnmatch
-import logging
 import os
 import platform
 import re
@@ -31,17 +28,16 @@ import zipfile
 from contextlib import contextmanager
 from pathlib import Path
 from sys import stderr, stdout
-from typing import Callable, Generator, List, NoReturn
+from typing import Callable, Generator, NoReturn
 from unittest import mock
 
 import pytest
 from lxml import etree  # nosec # Data is trusted.
+from pytest_check import check
 from yaxmldiff import compare_xml
 
 from gcovr.__main__ import main as gcovr_main
 from gcovr.formats.gcov.parser.json import GCOV_JSON_VERSION
-
-LOGGER = logging.getLogger(__name__)
 
 _BASE_DIRECTORY = Path(__file__).absolute().parent
 GCOVR_ISOLATED_TEST = os.getenv("GCOVR_ISOLATED_TEST") == "zkQEVaBpXF1i"
@@ -69,21 +65,21 @@ GCOV = [CC.parent / CC.name.replace("clang", "llvm-cov").replace("gcc", "gcov")]
 os.environ["GCOV"] = shlex.join(str(e) for e in GCOV)
 
 # The arguments to subprocess are constructed from trusted sources.
-_CC_HELP_OUTPUT = subprocess.run(  # nosec: B603
+_CC_HELP_OUTPUT = subprocess.run(  # nosec: B603  # noqa: S603
     [CC, "--help", "--verbose"],
     capture_output=True,
     text=True,
     check=False,  # Some versions return 1
     shell=False,
 ).stdout
-_CC_VERSION_OUTPUT = subprocess.run(  # nosec: B603
+_CC_VERSION_OUTPUT = subprocess.run(  # nosec: B603  # noqa: S603
     [CC, "--version"],
     capture_output=True,
     text=True,
     check=True,
     shell=False,
 ).stdout
-_GCOV_VERSION_OUTPUT = subprocess.run(  # nosec: B603
+_GCOV_VERSION_OUTPUT = subprocess.run(  # nosec: B603  # noqa: S603
     [*GCOV, "--version"],
     capture_output=True,
     text=True,
@@ -97,7 +93,7 @@ _GCOV_VERSION_OUTPUT = subprocess.run(  # nosec: B603
 #   Copyright (C) 2015 Free Software Foundation, Inc.
 #   This is free software; see the source for copying conditions.  There is NO
 #   warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-if matches := re.search(r"^gcc\b.* ([0-9]+)\..+$", _CC_VERSION_OUTPUT, re.M):
+if matches := re.search(r"^gcc\b.* ([0-9]+)\..+$", _CC_VERSION_OUTPUT, re.MULTILINE):
     CC_VERSION = int(matches.group(1))
     IS_GCC = True
     _REFERENCE_DIR_VERSION_LIST = [
@@ -108,14 +104,17 @@ if matches := re.search(r"^gcc\b.* ([0-9]+)\..+$", _CC_VERSION_OUTPUT, re.M):
 #    Target: arm64-apple-darwin21.5.0
 #    Thread model: posix
 #    InstalledDir: /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin
-elif matches := re.search(r"\bclang version ([0-9]+)\.", _CC_VERSION_OUTPUT, re.M):
+elif matches := re.search(
+    r"\bclang version ([0-9]+)\.", _CC_VERSION_OUTPUT, re.MULTILINE
+):
     CC_VERSION = int(matches.group(1))
     IS_GCC = False
     _REFERENCE_DIR_VERSION_LIST = [
         f"clang-{version}" for version in range(10, CC_VERSION + 1)
     ]
 else:
-    raise AssertionError(f"Unable to get compiler version from:\n{_CC_VERSION_OUTPUT}")
+    msg = f"Unable to get compiler version from:\n{_CC_VERSION_OUTPUT}"
+    raise AssertionError(msg)
 
 USE_GCC_JSON_INTERMEDIATE_FORMAT = (
     IS_GCC and f"JSON format version: {GCOV_JSON_VERSION}" in _GCOV_VERSION_OUTPUT
@@ -152,10 +151,10 @@ for ref in _REFERENCE_DIR_VERSION_LIST:  # pragma: no cover
 REFERENCE_DIRS.reverse()
 
 
-def pytest_report_header(config: pytest.Config) -> tuple[str, ...]:
+def pytest_report_header(config: pytest.Config) -> tuple[str, ...]:  # noqa: ARG001
     """Get additional info printed in pytest header."""
     if cmake := shutil.which("cmake"):
-        cmake_version = subprocess.check_output(  # nosec: B603
+        cmake_version = subprocess.check_output(  # nosec: B603  # noqa: S603
             [cmake, "--version"],
             shell=False,
             text=True,
@@ -163,7 +162,7 @@ def pytest_report_header(config: pytest.Config) -> tuple[str, ...]:
     else:
         cmake_version = "No CMake found"
     if make := shutil.which("make"):
-        make_version = subprocess.check_output(  # nosec: B603
+        make_version = subprocess.check_output(  # nosec: B603  # noqa: S603
             [make, "--version"],
             shell=False,
             text=True,
@@ -173,7 +172,7 @@ def pytest_report_header(config: pytest.Config) -> tuple[str, ...]:
     if ninja := shutil.which("ninja"):
         ninja_version = (
             "ninja "
-            + subprocess.check_output(  # nosec: B603
+            + subprocess.check_output(  # nosec: B603  # noqa: S603
                 [ninja, "--version"],
                 shell=False,
                 text=True,
@@ -225,17 +224,17 @@ def chdir(directory: Path) -> Generator[None, None, None]:
 def log_command(
     capsys: pytest.CaptureFixture[str],
     cwd: Path,
-    cmd: List[str],
+    cmd: list[str],
 ) -> Generator[None, None, None]:
     """Context manager to log the start and end of a command to stderr."""
     try:
         with capsys.disabled():
             cmd_quoted = shlex.join(cmd)
-            print(f"\nRunning in {cwd}: {cmd_quoted}", file=stderr)
+            print(f"\nRunning in {cwd}: {cmd_quoted}", file=stderr)  # noqa: T201
         yield
     finally:
         with capsys.disabled():
-            print("-------------- done --------------\n", file=stderr)
+            print("-------------- done --------------\n", file=stderr)  # noqa: T201
 
 
 @contextmanager
@@ -292,7 +291,7 @@ class GcovrTestCompare:
         generate_reference: bool,
         update_reference: bool,
         archive_differences: bool,
-    ):
+    ) -> None:
         """Init the object."""
         self.output_dir = output_dir
         reference_root = Path.cwd() / "reference"
@@ -316,11 +315,11 @@ class GcovrTestCompare:
                             if self.generate_reference
                             else reference_file
                         )
-        self.reference_files = list(sorted(reference_files))
+        self.reference_files = sorted(reference_files)
         if reference_files:
             with self.capsys.disabled():
                 files = "\n  - ".join(str(p) for p in reference_files)
-                print(
+                print(  # noqa: T201
                     f"Expect following file(s) to be compared:\n  - {files}",
                     file=stderr,
                 )
@@ -353,25 +352,22 @@ class GcovrTestCompare:
     @staticmethod
     def scrub_xml(contents: str) -> str:
         """Scrub data for compare."""
-        contents = GcovrTestCompare.RE_DECIMAL.sub(
+        return GcovrTestCompare.RE_DECIMAL.sub(
             lambda m: str(round(float(m.group(1)), 5)), contents
         )
-        return contents
 
     @staticmethod
     def scrub_cobertura(contents: str) -> str:
         """Scrub data for compare."""
         contents = GcovrTestCompare.scrub_xml(contents)
-        contents = GcovrTestCompare.RE_COBERTURA_SOURCE_DIR.sub(r"\1\2", contents)
-        return contents
+        return GcovrTestCompare.RE_COBERTURA_SOURCE_DIR.sub(r"\1\2", contents)
 
     @staticmethod
     def scrub_coveralls(contents: str) -> str:
         """Scrub data for compare."""
         contents = GcovrTestCompare.RE_COVERALLS_CLEAN_KEYS.sub('"\\1": ""', contents)
         contents = GcovrTestCompare.RE_COVERALLS_GIT_PRETTY.sub("", contents)
-        contents = GcovrTestCompare.RE_COVERALLS_GIT.sub("", contents)
-        return contents
+        return GcovrTestCompare.RE_COVERALLS_GIT.sub("", contents)
 
     def __find_reference_files(
         self, output_pattern: list[str]
@@ -559,9 +555,8 @@ class GcovrTestCompare:
                     if scrub is not None:
                         test_content = scrub(test_content)
                 except UnicodeDecodeError as e:  # pragma: no cover
-                    raise AssertionError(
-                        f"Unable to read test file {test_file}: {e}"
-                    ) from e
+                    msg = f"Unable to read test file {test_file}: {e}"
+                    raise AssertionError(msg) from e
 
             # Overwrite the file created above with the scrubbed content
             if self.generate_reference:  # pragma: no cover
@@ -591,7 +586,7 @@ class GcovrTestCompare:
                 )
 
                 if force_file_present and reference_file.parent != self.main_reference:
-                    reference_file = self.__update_reference_data(
+                    reference_file = self.__update_reference_data(  # noqa: PLW2901
                         reference_file, test_content, encoding
                     )
                     if self.archive_differences:
@@ -601,7 +596,7 @@ class GcovrTestCompare:
             except AssertionError as e:  # pragma: no cover
                 all_compare_errors.append(str(e) + "\n")
                 if self.update_reference:
-                    reference_file = self.__update_reference_data(
+                    reference_file = self.__update_reference_data(  # noqa: PLW2901
                         reference_file, test_content, encoding
                     )
                 if self.archive_differences:
@@ -619,11 +614,11 @@ class GcovrTestCompare:
                 )
 
         if all_compare_errors:  # pragma: no cover
-            raise AssertionError(f"Differences found:\n{''.join(all_compare_errors)}")
+            msg = f"Differences found:\n{''.join(all_compare_errors)}"
+            raise AssertionError(msg)
 
     def raise_not_compared_reference_files(self) -> None:
         """Must be called at the end of the test to get the missing compare calls."""
-
         not_compared_files = len(self.reference_files) == 0
         message = f"Not compared files found, update the test: {', '.join(str(p) for p in self.reference_files)}"
         self.reference_files.clear()
@@ -634,25 +629,23 @@ class GcovrTestCompare:
 class GcovrTestExec:
     """Builder to compile the test executable."""
 
-    def __init__(  # type: ignore[no-untyped-def]
+    def __init__(
         self,
         *,
         output_dir: Path,
         test_name: str | None,
         test_id: str,
         capsys: pytest.CaptureFixture[str],
-        check,
         markers: list[pytest.Mark],
         compare: GcovrTestCompare,
-    ):
+    ) -> None:
         """Init the builder."""
         self.output_dir = output_dir
         self.test_name = test_name
         self.test_id = test_id
         self.capsys = capsys
-        self.check = check
         self.markers = markers
-        self._compare = compare
+        self.compare = compare
         self.use_llvm_profdata = False
 
     @staticmethod
@@ -724,12 +717,13 @@ class GcovrTestExec:
                 )
 
         if not source.exists():
-            raise ValueError(f"Source data {source.absolute()} does not exist.")
+            msg = f"Source data {source.absolute()} does not exist."
+            raise ValueError(msg)
         if source.is_file():
             shutil.copy(source, self.output_dir)
         else:
             for entry in source.glob("*"):
-                print(f"Copying {entry} to {self.output_dir}", file=stderr)
+                print(f"Copying {entry} to {self.output_dir}", file=stderr)  # noqa: T201
                 if entry.is_dir():
                     shutil.copytree(entry, self.output_dir / entry.name)
                 else:
@@ -737,7 +731,7 @@ class GcovrTestExec:
 
     def skip(self, message: str) -> NoReturn:
         """Skip the current test."""
-        self._compare.reference_files.clear()
+        self.compare.reference_files.clear()
         pytest.skip(message)
 
     def __get_env(self, env: dict[str, str] | None) -> dict[str, str]:
@@ -778,19 +772,19 @@ class GcovrTestExec:
         elif not cwd.is_absolute():
             cwd = self.output_dir / cwd
         with log_command(self.capsys, cwd, cmd):
-            # pylint: disable=subprocess-run-check
-            process = subprocess.run(  # nosec
+            process = subprocess.run(  # nosec: B603  # noqa: S603
                 self.__get_subprocess_cmd(cwd, cmd),
                 capture_output=True,
                 encoding="utf-8",
                 env=self.__get_env(env),
                 cwd=str(cwd),
+                check=False,
             )
             with self.capsys.disabled():
                 if process.stdout:
-                    print(process.stdout, file=stdout)
+                    print(process.stdout, file=stdout)  # noqa: T201
                 if process.stderr:
-                    print(process.stderr, file=stderr)
+                    print(process.stderr, file=stderr)  # noqa: T201
             process.check_returncode()
 
         return process
@@ -806,12 +800,12 @@ class GcovrTestExec:
         try:
             for index, current_cwd in enumerate(cwd, start=1):
                 with self.capsys.disabled():
-                    print(
+                    print(  # noqa: T201
                         f"\n[{index}] Starting in {current_cwd.relative_to(Path.cwd())}: {' '.join(args)}",
                         file=stderr,
                     )
                 processes.append(
-                    subprocess.Popen(  # nosec
+                    subprocess.Popen(  # nosec: B603  # noqa: S603
                         self.__get_subprocess_cmd(current_cwd, list(args)),
                         encoding="utf-8",
                         env=self.__get_env(env),
@@ -822,7 +816,7 @@ class GcovrTestExec:
             for index, process in enumerate(processes, start=1):
                 process.wait()
                 with self.capsys.disabled():
-                    print(
+                    print(  # noqa: T201
                         f"\n[{index}] done with exitcode {process.returncode}",
                         file=stderr,
                     )
@@ -866,7 +860,7 @@ class GcovrTestExec:
         source: str | Path,
         *,
         target: str | None = None,
-        options: List[str] | None = None,
+        options: list[str] | None = None,
         cwd: Path | None = None,
         launcher: str | None = None,
     ) -> str:
@@ -882,7 +876,7 @@ class GcovrTestExec:
         source: str | Path,
         *,
         target: str | None = None,
-        options: List[str] | None = None,
+        options: list[str] | None = None,
         cwd: Path | None = None,
         launcher: str | None = None,
     ) -> str:
@@ -920,52 +914,52 @@ class GcovrTestExec:
         env: dict[str, str] | None = None,
         use_main: bool = False,
     ) -> subprocess.CompletedProcess[str]:
-        """Run GCOVR with the given arguments"""
+        """Run GCOVR with the given arguments."""
         if use_main:
             cwd = cwd or self.output_dir
-            with chdir(cwd):
-                with mock.patch.dict("os.environ", env or {}, clear=True):
-                    cmd = ["--gcov-executable", shlex.join(str(e) for e in GCOV)] + [
-                        str(arg) for arg in args
-                    ]
-                    with log_command(self.capsys, cwd, ["gcovr-main", *cmd]):
-                        returncode = gcovr_main(cmd)
-                        out, err = self.capsys.readouterr()
-                        with self.capsys.disabled():
-                            print(out, file=stdout)
-                            print(err, file=stderr)
-                    return subprocess.CompletedProcess(args, returncode, out, err)
+            with chdir(cwd), mock.patch.dict("os.environ", env or {}, clear=True):
+                cmd = ["--gcov-executable", shlex.join(str(e) for e in GCOV)] + [
+                    str(arg) for arg in args
+                ]
+                with log_command(self.capsys, cwd, ["gcovr-main", *cmd]):
+                    returncode = gcovr_main(cmd)
+                    out, err = self.capsys.readouterr()
+                    with self.capsys.disabled():
+                        print(out, file=stdout)  # noqa: T201
+                        print(err, file=stderr)  # noqa: T201
+                return subprocess.CompletedProcess(args, returncode, out, err)
         else:
             return self.run("gcovr", *args, cwd=cwd, env=env)
 
     def __check_and_update_marker(self, required_marker: str) -> None:
         if not any(m.name == required_marker for m in self.markers):
-            raise RuntimeError(f"Marker '{required_marker}' not found in test markers.")
+            msg = f"Marker '{required_marker}' not found in test markers."
+            raise RuntimeError(msg)
         self.markers = [m for m in self.markers if m.name != required_marker]
 
     # Compare methods for our own formats
     def compare_csv(self) -> None:
         """Compare the CSV output files."""
-        with self.check:
+        with check:
             self.__check_and_update_marker("csv")
-            self._compare.compare_files(
+            self.compare.compare_files(
                 output_pattern=["coverage*.csv"],
                 translate_new_line=False,
             )
 
     def compare_json(self) -> None:
         """Compare the JSON output files."""
-        with self.check:
+        with check:
             self.__check_and_update_marker("json")
-            self._compare.compare_files(
+            self.compare.compare_files(
                 output_pattern=["coverage*.json"],
             )
 
     def compare_html(self, encoding: str = "utf8") -> None:
         """Compare the HTML report files."""
-        with self.check:
+        with check:
             self.__check_and_update_marker("html")
-            self._compare.compare_files(
+            self.compare.compare_files(
                 output_pattern=["coverage*.html", "coverage*.js", "coverage*.css"],
                 encoding=encoding,
                 lambda_force_files_present=(
@@ -978,18 +972,18 @@ class GcovrTestExec:
 
     def compare_txt(self) -> None:
         """Compare the text output files."""
-        with self.check:
+        with check:
             self.__check_and_update_marker("txt")
-            self._compare.compare_files(
+            self.compare.compare_files(
                 output_pattern=["coverage*.txt"],
-                scrub=self._compare.scrub_txt,
+                scrub=self.compare.scrub_txt,
             )
 
     def compare_markdown(self) -> None:
         """Compare the markdown output files."""
-        with self.check:
+        with check:
             self.__check_and_update_marker("markdown")
-            self._compare.compare_files(
+            self.compare.compare_files(
                 output_pattern=["coverage*.md"],
             )
 
@@ -997,60 +991,59 @@ class GcovrTestExec:
 
     def compare_clover(self) -> None:
         """Compare the clover output files."""
-        with self.check:
+        with check:
             self.__check_and_update_marker("clover")
-            self._compare.compare_files(
+            self.compare.compare_files(
                 output_pattern=["clover*.xml"],
-                scrub=self._compare.scrub_xml,
+                scrub=self.compare.scrub_xml,
             )
 
     def compare_cobertura(self) -> None:
         """Compare the cobertura output files."""
-        with self.check:
+        with check:
             self.__check_and_update_marker("cobertura")
-            self._compare.compare_files(
+            self.compare.compare_files(
                 output_pattern=["cobertura*.xml"],
-                scrub=self._compare.scrub_cobertura,
+                scrub=self.compare.scrub_cobertura,
             )
 
     def compare_coveralls(self) -> None:
         """Compare the coveralls output files."""
-        with self.check:
+        with check:
             self.__check_and_update_marker("coveralls")
-            self._compare.compare_files(
+            self.compare.compare_files(
                 output_pattern=["coveralls*.json"],
-                scrub=self._compare.scrub_coveralls,
+                scrub=self.compare.scrub_coveralls,
             )
 
     def compare_jacoco(self) -> None:
         """Compare the jacoco output files."""
-        with self.check:
+        with check:
             self.__check_and_update_marker("jacoco")
-            self._compare.compare_files(
+            self.compare.compare_files(
                 output_pattern=["jacoco*.xml"],
-                scrub=self._compare.scrub_xml,
+                scrub=self.compare.scrub_xml,
             )
 
     def compare_lcov(self) -> None:
         """Compare the LCOV output files."""
-        with self.check:
+        with check:
             self.__check_and_update_marker("lcov")
-            self._compare.compare_files(
+            self.compare.compare_files(
                 output_pattern=["coverage*.lcov"],
-                scrub=self._compare.scrub_lcov,
+                scrub=self.compare.scrub_lcov,
             )
 
     def compare_sonarqube(self) -> None:
         """Compare the sonarqube output files."""
-        with self.check:
+        with check:
             self.__check_and_update_marker("sonarqube")
-            self._compare.compare_files(
+            self.compare.compare_files(
                 output_pattern=["sonarqube*.xml"],
             )
 
     def raise_not_used_markers(self) -> None:
         """Must be called at the end of the test to get the markers which were not used."""
-
         if self.markers:
             raise AssertionError(
                 "Following markers were not used: "
@@ -1058,11 +1051,9 @@ class GcovrTestExec:
             )
 
 
-@pytest.fixture(scope="function")
-def gcovr_test_exec(  # type: ignore[no-untyped-def]
-    request: pytest.FixtureRequest,
-    capsys: pytest.CaptureFixture[str],
-    check,
+@pytest.fixture
+def gcovr_test_exec(
+    request: pytest.FixtureRequest, capsys: pytest.CaptureFixture[str]
 ) -> Generator[GcovrTestExec, None, None]:
     """Test fixture to build an object/executable and run gcovr tool with comparison of files."""
     function_name = request.node.name
@@ -1076,30 +1067,31 @@ def gcovr_test_exec(  # type: ignore[no-untyped-def]
     if parameter is not None:
         test_id_parts.append(parameter.replace("_", "-"))
     test_id = "-".join(test_id_parts)
-    with chdir(request.path.parent) as _test_dir:
-        with create_output(test_id, request) as output_dir:
-            test_exec = GcovrTestExec(
+    with (
+        chdir(request.path.parent) as _test_dir,
+        create_output(test_id, request) as output_dir,
+    ):
+        test_exec = GcovrTestExec(
+            output_dir=output_dir,
+            test_name=test_id_parts[0] if test_id_parts else None,
+            test_id=test_id,
+            capsys=capsys,
+            markers=[
+                m
+                for m in request.node.iter_markers()
+                if m.name not in ("skipif", "parametrize")
+            ],
+            compare=GcovrTestCompare(
                 output_dir=output_dir,
-                test_name=test_id_parts[0] if test_id_parts else None,
                 test_id=test_id,
                 capsys=capsys,
-                check=check,
-                markers=[
-                    m
-                    for m in request.node.iter_markers()
-                    if m.name not in ("skipif", "parametrize")
-                ],
-                compare=GcovrTestCompare(
-                    output_dir=output_dir,
-                    test_id=test_id,
-                    capsys=capsys,
-                    generate_reference=request.config.getoption("generate_reference"),
-                    update_reference=request.config.getoption("update_reference"),
-                    archive_differences=request.config.getoption("archive_differences"),
-                ),
-            )
-            test_exec.copy_source()
+                generate_reference=request.config.getoption("generate_reference"),
+                update_reference=request.config.getoption("update_reference"),
+                archive_differences=request.config.getoption("archive_differences"),
+            ),
+        )
+        test_exec.copy_source()
 
-            yield test_exec
-            test_exec.raise_not_used_markers()
-            test_exec._compare.raise_not_compared_reference_files()
+        yield test_exec
+        test_exec.raise_not_used_markers()
+        test_exec.compare.raise_not_compared_reference_files()

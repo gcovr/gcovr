@@ -1,5 +1,3 @@
-# -*- coding:utf-8 -*-
-
 #  ************************** Copyrights and license ***************************
 #
 # This file is part of gcovr 8.6+main, a parsing and reporting tool for gcov.
@@ -16,6 +14,8 @@
 # For more information, see the README.rst file.
 #
 # ****************************************************************************
+
+"""GCOVR JSON report."""
 
 import os
 from typing import Any
@@ -36,7 +36,11 @@ KEY_SUMMARY_FORMAT_VERSION = "gcovr/summary_format_version"
 def write_report(
     covdata: CoverageContainer, output_file: str, options: Options
 ) -> None:
-    """Produce an JSON report in the format partially compatible with gcov JSON output."""
+    """
+    Write JSON report.
+
+    The JSON report format is partially compatible with gcov JSON output.
+    """
     write_json_output(
         {
             "gcovr/format_version": version.FORMAT_VERSION,
@@ -52,7 +56,6 @@ def write_summary_report(
     covdata: CoverageContainer, output_file: str, options: Options
 ) -> None:
     """Produce gcovr JSON summary report."""
-
     json_dict = dict[str, Any]()
 
     json_dict["root"] = force_unix_separator(
@@ -76,7 +79,7 @@ def write_summary_report(
     for filecov in filecov_list:
         filename = filecov.presentable_filename(options.root_filter)
         if options.json_base:
-            filename = "/".join([options.json_base, filename])
+            filename = f"{options.json_base}/{filename}"
 
         files.append(
             {

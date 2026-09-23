@@ -1,5 +1,3 @@
-# -*- coding:utf-8 -*-
-
 #  ************************** Copyrights and license ***************************
 #
 # This file is part of gcovr 8.6+main, a parsing and reporting tool for gcov.
@@ -17,6 +15,8 @@
 #
 # ****************************************************************************
 
+"""GCOVR filter definitions."""
+
 import functools
 import os
 import platform
@@ -30,6 +30,7 @@ class Filter:
     """Base class for a filename filter."""
 
     def __init__(self, pattern: str) -> None:
+        """Initialize the filter."""
         flags = re.IGNORECASE if is_fs_case_insensitive() else 0
         self.pattern = re.compile(pattern, flags)
 
@@ -42,6 +43,7 @@ class Filter:
         return False
 
     def __str__(self) -> str:
+        """Get string representation of filter."""
         return f"{type(self).__name__}({self.pattern.pattern})"
 
 
@@ -58,6 +60,7 @@ class RelativeFilter(Filter):
     """Class for a filename filter which matches against the relative paths of a file."""
 
     def __init__(self, root: str, pattern: str) -> None:
+        """Initialize the filter."""
         super().__init__(pattern)
         self.root = os.path.realpath(root)
 
@@ -77,6 +80,7 @@ class RelativeFilter(Filter):
         return super().match(relpath)
 
     def __str__(self) -> str:
+        """Get string representation of the filter."""
         return f"RelativeFilter({self.pattern.pattern} root={self.root})"
 
 
@@ -84,9 +88,10 @@ class AlwaysMatchFilter(Filter):
     """Class for a filter which matches for all files."""
 
     def __init__(self) -> None:
+        """Initialize the filter."""
         super().__init__("")
 
-    def match(self, path: str) -> bool:
+    def match(self, path: str) -> bool:  # noqa: ARG002
         """Return always True."""
         LOGGER.debug("  Filter %s matched.", self)
         return True
@@ -96,6 +101,7 @@ class DirectoryPrefixFilter(Filter):
     """Class for a filename filter which matches for all files in a directory."""
 
     def __init__(self, directory: str) -> None:
+        """Initialize the filter."""
         os_independent_path = force_unix_separator(directory)
         pattern = re.escape(f"{os_independent_path}/")
         super().__init__(pattern)
@@ -108,18 +114,20 @@ class DirectoryPrefixFilter(Filter):
 
 @functools.cache
 def __is_file_matching_any(filename: str, filters: tuple[Filter, ...]) -> bool:
-    """Check if filename matches any of the given filters.
+    """
+    Check if filename matches any of the given filters.
 
     The filename is tested against all filters in the list.
     The first matching filter causes a True result.
 
-    filename (str): the file path to match
-    filters (list of Filter): the filters to test against
+    Arguments:
+        filename (str): the file path to match
+        filters (list of Filter): the filters to test against
 
-    returns:
+    Returns:
         True when filename is matching any filter.
-    """
 
+    """
     if any(f.match(filename) for f in filters):
         return True
 
@@ -133,21 +141,24 @@ def is_file_excluded(
     include_filter: tuple[Filter, ...],
     exclude_filter: tuple[Filter, ...],
 ) -> bool:
-    """Apply inclusion/exclusion filters to filename.
+    """
+    Apply inclusion/exclusion filters to filename.
 
     The include_filter are tested against
     the given (relative) filename.
     The exclude_filter are tested against
     the stripped, given (relative), and absolute filenames.
 
-    filename (str): the absolute file path to match
-    include_filter (list of FilterOption): ANY of these filters must match
-    exclude_filter (list of FilterOption): NONE of these filters must match
+    Arguments:
+        filter_type (str): Type of filter. Used for logging.
+        filename (str): the absolute file path to match
+        include_filter (list of FilterOption): ANY of these filters must match
+        exclude_filter (list of FilterOption): NONE of these filters must match
 
-    returns:
+    Returns:
         True when filename is not matching a include filter or matches an exclude filter.
-    """
 
+    """
     LOGGER.debug("Check if %s is included (%s)...", filename, filter_type)
     is_included = __is_file_matching_any(filename, include_filter)
     if is_included and exclude_filter:

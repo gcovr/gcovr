@@ -1,5 +1,3 @@
-# -*- coding:utf-8 -*-
-
 #  ************************** Copyrights and license ***************************
 #
 # This file is part of gcovr 8.6+main, a parsing and reporting tool for gcov.
@@ -16,6 +14,8 @@
 # For more information, see the README.rst file.
 #
 # ****************************************************************************
+
+"""GCOVR HTML report."""
 
 # cspell:ignore xmlcharrefreplace
 
@@ -40,8 +40,8 @@ from pygments.filter import Filter
 from pygments.formatters.html import HtmlFormatter
 from pygments.lexer import Lexer
 from pygments.lexers import get_lexer_for_filename
-from pygments.style import Style
-from pygments.styles.default import DefaultStyle
+from pygments.styles.default import DefaultStyle as PygmentsDefaultStyle
+from pygments.styles.default import Style
 from pygments.token import Token, _TokenType
 
 from ...data_model.container import CoverageContainer
@@ -73,10 +73,10 @@ PYGMENTS_CSS_MARKER = "/* Comment.Preproc */"
 
 
 # html_theme string is <theme_directory>.<color> or only <color> (if only color use default)
-# examples: github.green github.blue or blue or green
+# e.g. github.green github.blue or blue or green
 def get_theme_name(html_theme: str) -> str:
     """Get the theme name without the color."""
-    return html_theme.split(".")[0] if "." in html_theme else "default"
+    return html_theme.split(".", maxsplit=1)[0] if "." in html_theme else "default"
 
 
 def get_theme_color(html_theme: str) -> str:
@@ -175,20 +175,27 @@ class PygmentsHighlighting:
     class DefaultStyle(Style):
         """GCOVR default style."""
 
-        styles = dict(
-            list(DefaultStyle.styles.items()) + [(Token.Comment.Special, "bold")]
+        styles = dict(  # noqa: RUF012
+            [
+                *list(PygmentsDefaultStyle.styles.items()),
+                (Token.Comment.Special, "bold"),
+            ],
         )
 
     class MarkerFilter(Filter):
-        """A filter to highlight the marker keywords"""
+        """A filter to highlight the marker keywords."""
 
-        def __init__(self, markers_regex: re.Pattern[str], **options: Any):
+        def __init__(self, markers_regex: re.Pattern[str], **options: Any) -> None:
+            """Initialize the marker filter."""
             super().__init__(**options)
             self.markers_regex = markers_regex
 
         def filter(
-            self, lexer: Lexer | None, stream: Iterable[tuple[_TokenType, str]]
+            self,
+            lexer: Lexer | None,  # noqa: ARG002
+            stream: Iterable[tuple[_TokenType, str]],
         ) -> Iterator[tuple[_TokenType, str]]:
+            """Filter the given stream."""
             for ttype, value in stream:
                 if _EXCLUDE_FLAG in value:
                     last = 0
@@ -204,6 +211,7 @@ class PygmentsHighlighting:
                     yield ttype, value
 
     def __init__(self, style: str, markers_regex: re.Pattern[str]) -> None:
+        """Initialize the highlighting."""
         self.filter = PygmentsHighlighting.MarkerFilter(markers_regex)
         self.formatter = None
         try:
@@ -234,7 +242,7 @@ class PygmentsHighlighting:
             lexer.add_filter(self.filter)
             formatter = self.formatter
             return lambda code: [
-                Markup(line.rstrip())  # nosec
+                Markup(line.rstrip())  # nosec: B704  # noqa: S704
                 for line in pygments.highlight(code, lexer, formatter).split("\n")
             ]
         except pygments.util.ClassNotFound:  # pragma: no cover
@@ -275,7 +283,8 @@ def coverage_to_class(
 class RootInfo:
     """Class holding the information used in Jinja2 template."""
 
-    def __init__(self, options: Options, diff_report: bool) -> None:
+    def __init__(self, options: Options, *, diff_report: bool) -> None:
+        """Initialize the root information."""
         self.sort_by = (
             "filename"
             if options.sort_key == "filename"
@@ -366,7 +375,7 @@ class RootInfo:
 def write_report(
     covdata: CoverageContainer, output_file: str, options: Options
 ) -> None:
-    """Write the HTML report"""
+    """Write the HTML report."""
     medium_threshold = options.medium_threshold
     high_threshold = options.high_threshold
     medium_threshold_line = options.medium_threshold_line
@@ -440,9 +449,7 @@ def write_report(
         if options.html_details or options.html_nested or options.html_single_page:
             if cdata == covdata:
                 _, cdata.properties["sourcefile"] = os.path.split(
-                    output_file[: -len(GZIP_SUFFIX)]
-                    if output_file.endswith(GZIP_SUFFIX)
-                    else output_file
+                    output_file.removesuffix(GZIP_SUFFIX)
                 )
             else:
                 cdata.properties["sourcefile"] = _make_short_source_filename(
@@ -460,7 +467,6 @@ def write_report(
             cdata.properties["sourcefile"] = None
 
     # Generate the coverage output (on a per-package basis)
-    # source_dirs = set()
     filecov_list = sorted(
         covdata.filecov(recurse=True), key=lambda x: x.filename.lower()
     )
@@ -494,9 +500,10 @@ def write_report(
         fname = filecov.properties["filtered_name"]
         root_info.navigation[fname] = (previous_link_report, None)
         link_report = filecov.properties["sourcefile"]
-        if link_report is not None:
-            if root_info.relative_anchors or root_info.single_page:
-                link_report = os.path.basename(link_report)
+        if link_report is not None and (
+            root_info.relative_anchors or root_info.single_page
+        ):
+            link_report = os.path.basename(link_report)
         if previous_fname is not None:
             root_info.navigation[previous_fname] = (
                 root_info.navigation[previous_fname][0],
@@ -579,11 +586,11 @@ def write_report(
             fh_out.write(css_data)
             fh_out.write("\n")
 
-        if options.html_relative_anchors:
-            css_link = os.path.basename(css_output)
-        else:  # pragma: no cover  Can't be checked because of the reference compare
-            css_link = css_output
-        data["css_link"] = css_link
+        data["css_link"] = (
+            os.path.basename(css_output)
+            if options.html_relative_anchors
+            else css_output
+        )
 
         if javascript_data is not None:
             javascript_output = os.path.splitext(output_file)[0] + ".js"
@@ -591,11 +598,11 @@ def write_report(
                 fh_out.write(javascript_data)
                 fh_out.write("\n")
 
-            if options.html_relative_anchors:
-                javascript_link = os.path.basename(javascript_output)
-            else:  # pragma: no cover  Can't be checked because of the reference compare
-                javascript_link = javascript_output
-            data["javascript_link"] = javascript_link
+            data["javascript_link"] = (
+                os.path.basename(javascript_output)
+                if options.html_relative_anchors
+                else javascript_output
+            )
 
     LOGGER.debug("Render HTML file(s)...")
     if options.html_single_page:
@@ -669,10 +676,11 @@ def write_directory_pages(
             )
         )
         filename = None
-        if dircov.dirname in [root_key, ""]:
-            filename = output_file
-        else:
-            filename = dircov.properties["sourcefile"]
+        filename = (
+            output_file
+            if dircov.dirname in [root_key, ""]
+            else dircov.properties["sourcefile"]
+        )
 
         if filename:
             with open_text_for_writing(
@@ -729,7 +737,8 @@ def write_source_pages(
         fh.write(html_string + "\n")
 
     if error_no_files_not_found != 0:
-        raise RuntimeError(f"{error_no_files_not_found} source file(s) not found.")
+        msg = f"{error_no_files_not_found} source file(s) not found."
+        raise RuntimeError(msg)
 
 
 def write_single_page(
@@ -764,7 +773,9 @@ def write_single_page(
     # For a static report we do not need to generate the directory tree data for each directory.
     if options.html_nested and not root_info.static_report:
         for dircov in covdata.dircov(recurse=True):
-            directories.append(get_directory_data(options, root_info, dircov))
+            directories.append(
+                get_directory_data(options, root_info, dircov, recurse_files=False)
+            )
 
     html_string = (
         theme_environment(options)
@@ -784,7 +795,8 @@ def write_single_page(
         fh.write(html_string + "\n")
 
     if error_no_files_not_found != 0:
-        raise RuntimeError(f"{error_no_files_not_found} source file(s) not found.")
+        msg = f"{error_no_files_not_found} source file(s) not found."
+        raise RuntimeError(msg)
 
 
 def get_coverage_data(
@@ -792,8 +804,7 @@ def get_coverage_data(
     cdata: CoverageContainer | FileCoverage,
     relative_path: str = "",
 ) -> dict[str, Any]:
-    """Get the coverage data"""
-
+    """Get the coverage data."""
     medium_threshold = root_info.medium_threshold
     high_threshold = root_info.high_threshold
     medium_threshold_line = root_info.medium_threshold_line
@@ -889,9 +900,10 @@ def get_coverage_data(
     )
 
     link_report = None
-    if cdata.properties["sourcefile"] is not None:
-        if root_info.relative_anchors or root_info.single_page:
-            link_report = os.path.basename(cdata.properties["sourcefile"])
+    if cdata.properties["sourcefile"] is not None and (
+        root_info.relative_anchors or root_info.single_page
+    ):
+        link_report = os.path.basename(cdata.properties["sourcefile"])
 
     return {
         "filename": display_filename,
@@ -910,9 +922,10 @@ def get_directory_data(
     options: Options,
     root_info: RootInfo,
     covdata: CoverageContainer,
-    recurse_files: bool = False,
+    *,
+    recurse_files: bool,
 ) -> dict[str, Any]:
-    """Get the data for a directory to generate the HTML"""
+    """Get the data for a directory to generate the HTML."""
     if covdata.parent is None:
         relative_path = ""
     else:
@@ -949,9 +962,9 @@ def get_directory_data(
             )
         )
 
-        files = []
-        for cdata in covdata_list:
-            files.append(get_coverage_data(root_info, cdata, relative_path))
+        files = [
+            get_coverage_data(root_info, cdata, relative_path) for cdata in covdata_list
+        ]
 
         directory_data["entries"] = files
 
@@ -963,7 +976,7 @@ def get_file_data(
     root_info: RootInfo,
     filecov: FileCoverage,
 ) -> tuple[dict[str, Any], dict[tuple[str, str, int], dict[str, Any]], bool]:
-    """Get the data for a file to generate the HTML"""
+    """Get the data for a file to generate the HTML."""
     formatter = get_formatter(options)
 
     file_data = dict[str, Any](
@@ -1024,7 +1037,6 @@ def get_file_data(
         try:
             with open(
                 filecov.filename,
-                "r",
                 encoding=options.source_encoding,
                 errors="replace",
             ) as source_file:
@@ -1039,7 +1051,7 @@ def get_file_data(
                             lineno,
                             line,
                             get_linecovs(lineno),
-                            options.html_block_ids,
+                            html_block_ids=options.html_block_ids,
                         )
                     )
                 if lineno < max_line_from_cdata:
@@ -1064,7 +1076,7 @@ def get_file_data(
                         lineno,
                         file_info if lineno == 1 else "",
                         get_linecovs(lineno),
-                        options.html_block_ids,
+                        html_block_ids=options.html_block_ids,
                     )
                 )
 
@@ -1097,7 +1109,7 @@ def dict_from_stat(
     """Get a dictionary from the stats."""
     coverage_default = "-" if default is None else default
     data = {
-        "total": stat.total if isinstance(stat, CoverageStat) else stat.total,
+        "total": stat.total,
         "exec": stat.covered,
         "excluded": stat.excluded if isinstance(stat, CoverageStat) else "-",
         "coverage": stat.percent_or(coverage_default),
@@ -1114,9 +1126,10 @@ def source_row(
     lineno: int,
     source: str,
     linecov_list: list[LineCoverage] | None,
+    *,
     html_block_ids: bool,
 ) -> dict[str, Any]:
-    """Get information for a row"""
+    """Get information for a row."""
     line_branches = []
     line_conditions = []
     line_decisions = []
@@ -1183,7 +1196,7 @@ def source_row(
 def source_row_branch(
     linecov: LineCoverage,
 ) -> dict[str, Any]:
-    """Get branch information for a row"""
+    """Get branch information for a row."""
     items = list[dict[str, Any]]()
     for branchcov in [
         branchcov
@@ -1218,26 +1231,25 @@ def source_row_condition(
     linecov: LineCoverage,
 ) -> dict[str, Any]:
     """Get condition information for a row."""
-
     items = []
 
-    conditioncov_list = list(
+    conditioncov_list = [
         conditioncov
         for conditioncov in linecov.conditions(sort=True)
         if conditioncov.is_reportable
-    )
+    ]
     for conditioncov in conditioncov_list:
         condition_prefix = (
             f"Condition {conditioncov.conditionno}"
             if len(conditioncov_list) > 1
-            else ("" if conditioncov.count == 2 else "Condition ")
+            else ("" if conditioncov.count == 2 else "Condition ")  # noqa: PLR2004
         )
         condition_separator = "." if len(conditioncov_list) > 1 else ""
-        for index in range(0, conditioncov.count // 2):
+        for index in range(conditioncov.count // 2):
             items.append(
                 {
                     "prefix": f"{condition_prefix}{condition_separator}{index}: "
-                    if conditioncov.count > 2
+                    if conditioncov.count > 2  # noqa: PLR2004
                     else (f"{condition_prefix}: " if condition_prefix else ""),
                     "not_covered_true": index in conditioncov.not_covered_true,
                     "not_covered_false": index in conditioncov.not_covered_false,
@@ -1258,8 +1270,7 @@ def source_row_condition(
 def source_row_decision(
     linecov: LineCoverage,
 ) -> dict[str, Any]:
-    """Get decision information for a row"""
-
+    """Get decision information for a row."""
     items: list[dict[str, Any]] = []
 
     if isinstance(linecov.decision, DecisionCoverageUncheckable):
@@ -1295,7 +1306,8 @@ def source_row_decision(
             }
         )
     else:
-        raise RuntimeError(f"Unknown decision type {linecov.decision!r}")
+        msg = f"Unknown decision type {linecov.decision!r}"
+        raise TypeError(msg)
 
     return {
         "function_name": linecov.report_function_name,
@@ -1342,16 +1354,17 @@ def _get_prefix_and_suffix(output_file: str) -> tuple[str, str]:
 
 
 def _make_short_source_filename(output_file: str, filename: str) -> str:
-    r"""Make a short-ish file path for --html-detail output.
+    r"""
+    Make a short-ish file path for --html-detail output.
 
     Args:
         output_file (str): The output path.
         filename (str): Path from root to source code.
-    """
 
+    """
     (output_prefix, output_suffix) = _get_prefix_and_suffix(output_file)
     filename = filename.replace(os.sep, "/").replace("<stdin>", "stdin")
-    source_filename = (
+    return (
         ".".join(
             (
                 output_prefix,
@@ -1361,4 +1374,3 @@ def _make_short_source_filename(output_file: str, filename: str) -> str:
         )
         + output_suffix
     )
-    return source_filename

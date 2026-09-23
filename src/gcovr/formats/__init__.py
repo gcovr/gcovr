@@ -1,5 +1,3 @@
-# -*- coding:utf-8 -*-
-
 #  ************************** Copyrights and license ***************************
 #
 # This file is part of gcovr 8.6+main, a parsing and reporting tool for gcov.
@@ -16,6 +14,8 @@
 # For more information, see the README.rst file.
 #
 # ****************************************************************************
+
+"""GCOVR report formats."""
 
 from typing import Callable
 
@@ -105,14 +105,15 @@ def read_reports(options: Options) -> CoverageContainer:
     # Otherwise, the report generation is not possible.
     if (
         len(
-            set(
+            {
                 filecov.is_compare_info_available()
                 for filecov in covdata.filecov(recurse=True)
-            )
+            }
         )
-        == 2
+        == 2  # noqa: PLR2004
     ):
-        raise SanityCheckError("Some files have diff information, while others do not.")
+        msg = "Some files have diff information, while others do not."
+        raise SanityCheckError(msg)
 
     if options.include_search_filter:
         for search_path in options.search_paths or [options.root]:
@@ -367,6 +368,5 @@ def write_reports(covdata: CoverageContainer, options: Options) -> None:
 
     if writer_errors:
         errors_as_string = "\n".join(writer_errors)
-        raise RuntimeError(
-            f"Not all output files were written successfully:\n{errors_as_string}"
-        )
+        msg = f"Not all output files were written successfully:\n{errors_as_string}"
+        raise RuntimeError(msg)

@@ -1,5 +1,3 @@
-# -*- coding:utf-8 -*-
-
 #  ************************** Copyrights and license ***************************
 #
 # This file is part of gcovr 8.6+main, a parsing and reporting tool for gcov.
@@ -98,7 +96,7 @@ def test_fail_under(
         "--fail-under-condition-or-decision=100",
         use_main=True,
     )
-    assert process.returncode == 8
+    assert process.returncode == 8  # noqa: PLR2004
     messages = caplog.record_tuples
     assert len(messages) == 1
     assert messages[0][1] == logging.ERROR
@@ -111,7 +109,7 @@ def test_fail_under(
         "--fail-under-condition-or-decision=100",
         use_main=True,
     )
-    assert process.returncode == 8
+    assert process.returncode == 8  # noqa: PLR2004
     messages = caplog.record_tuples
     assert len(messages) == 1
     assert messages[0][1] == logging.ERROR
@@ -126,7 +124,7 @@ def test_fail_under(
             f"{option}=100",
             use_main=True,
         )
-        assert process.returncode == 8
+        assert process.returncode == 8  # noqa: PLR2004
         messages = caplog.record_tuples
         assert len(messages) == 1
         assert messages[0][1] == logging.ERROR

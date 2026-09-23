@@ -1,5 +1,3 @@
-# -*- coding:utf-8 -*-
-
 #  ************************** Copyrights and license ***************************
 #
 # This file is part of gcovr 8.6+main, a parsing and reporting tool for gcov.
@@ -17,8 +15,9 @@
 #
 # ****************************************************************************
 
+"""Tests for arguments processing."""
+
 import logging
-import os
 import platform
 import re
 import sys
@@ -33,34 +32,36 @@ from gcovr.version import __version__
 from tests.conftest import GCOVR_ISOLATED_TEST
 
 
-# The CaptureObject class holds the capture method result
 class CaptureObject:
+    """The CaptureObject class holds the capture method result."""
+
     def __init__(self, out: str, err: str, exitcode: int) -> None:
+        """Initialize the capture object."""
         self.out = out
         self.err = err
         self.exitcode = exitcode
 
 
 def capture(capsys: pytest.CaptureFixture[str], args: list[str]) -> CaptureObject:
-    """The capture method calls the main method and captures its output/error
-    streams and exit code."""
+    """Call the main method and captures its output/error streams and exit code."""
     e = main(args)
     out, err = capsys.readouterr()
     return CaptureObject(out, err, e)
 
 
-# The LogCaptureObject class holds the capture method result
 class LogCaptureObject:
+    r"""The LogCaptureObject class holds the capture method result."""
+
     def __init__(
         self, record_tuples: list[tuple[str, int, str]], exitcode: int
     ) -> None:
+        """Initialize log capture object."""
         self.record_tuples = record_tuples
         self.exitcode = exitcode
 
 
 def log_capture(caplog: pytest.LogCaptureFixture, args: list[str]) -> LogCaptureObject:
-    """The capture method calls the main method and captures its output/error
-    streams and exit code."""
+    """Execute the main method and captures its output/error streams and exit code."""
     e = main(args)
     return LogCaptureObject(caplog.record_tuples, e)
 
@@ -609,9 +610,9 @@ def test_no_self_contained_without_file(caplog: pytest.LogCaptureFixture) -> Non
 def test_html_injection_via_json(
     capsys: pytest.CaptureFixture[str], tmp_path: Path
 ) -> None:
-    import json
+    import json  # noqa: PLC0415
 
-    import markupsafe
+    import markupsafe  # noqa: PLC0415
 
     script = '<script>alert("pwned")</script>'
     json_data = {
@@ -635,13 +636,22 @@ def test_html_injection_via_json(
 
 
 def test_import_valid_cobertura_file(tmp_path: Path) -> None:
-    from gcovr.configuration import merge_options_and_set_defaults
-    from gcovr.formats import read_reports
+    from gcovr.configuration import merge_options_and_set_defaults  # noqa: PLC0415
+    from gcovr.formats import read_reports  # noqa: PLC0415
 
     testfile = "code.cpp"
     xml_data = f"""<?xml version='1.0' encoding='UTF-8'?>
 <!DOCTYPE coverage SYSTEM 'http://cobertura.sourceforge.net/xml/coverage-04.dtd'>
-<coverage line-rate="0.9" branch-rate="0.75" lines-covered="9" lines-valid="10" branches-covered="3" branches-valid="4" complexity="0.0" timestamp="" version="gcovr 7.1">
+<coverage
+    line-rate="0.9"
+    branch-rate="0.75"
+    lines-covered="9"
+    lines-valid="10"
+    branches-covered="3"
+    branches-valid="4"
+    complexity="0.0"
+    timestamp=""
+    version="gcovr 7.1">
   <sources>
     <source>{tmp_path}</source>
   </sources>
@@ -693,11 +703,11 @@ def test_import_valid_cobertura_file(tmp_path: Path) -> None:
     opts.include_filter = tuple(opts.include_filter)
     covdata = read_reports(opts)
     assert covdata is not None
-    testfile = os.path.join(tmp_path, testfile)
+    testfile = str(Path(tmp_path, testfile))
     assert testfile in covdata
     cov = covdata[testfile]
     assert isinstance(cov, FileCoverage)
-    assert len(list(cov.lines())) == 10
+    assert len(list(cov.lines())) == 10  # noqa: PLR2004
     for line, count, branches in [
         (7, 1, None),
         (9, 3, None),
@@ -753,7 +763,16 @@ def test_import_cobertura_file_with_invalid_line(
 ) -> None:
     xml_data = """<?xml version='1.0' encoding='UTF-8'?>
 <!DOCTYPE coverage SYSTEM 'http://cobertura.sourceforge.net/xml/coverage-04.dtd'>
-<coverage line-rate="0.9" branch-rate="0.75" lines-covered="9" lines-valid="10" branches-covered="3" branches-valid="4" complexity="0.0" timestamp="" version="gcovr 7.1">
+<coverage
+    line-rate="0.9"
+    branch-rate="0.75"
+    lines-covered="9"
+    lines-valid="10"
+    branches-covered="3"
+    branches-valid="4"
+    complexity="0.0"
+    timestamp=""
+    version="gcovr 7.1">
   <sources>
     <source>.</source>
   </sources>

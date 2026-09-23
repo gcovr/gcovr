@@ -1,5 +1,3 @@
-# -*- coding:utf-8 -*-
-
 #  ************************** Copyrights and license ***************************
 #
 # This file is part of gcovr 8.6+main, a parsing and reporting tool for gcov.
@@ -16,6 +14,8 @@
 # For more information, see the README.rst file.
 #
 # ****************************************************************************
+
+"""GCOVR LCOV report interface."""
 
 from ...data_model.container import CoverageContainer
 from ...formats.base import BaseHandler
@@ -39,6 +39,7 @@ class LcovHandler(BaseHandler):
 
     @classmethod
     def get_options(cls) -> list[GcovrConfigOption | str]:
+        """Get the report options."""
         return [
             # JSON option use for validation
             "json_compare",
@@ -94,20 +95,22 @@ class LcovHandler(BaseHandler):
         ]
 
     def validate_options(self) -> None:
-        """Validate options specific to this format."""
+        """Validate options."""
         if self.options.lcov and self.options.json_compare:
-            raise ValueError("A lcov report is not possible with --json-compare.")
+            msg = "A lcov report is not possible with --json-compare."
+            raise ValueError(msg)
 
         if (
             self.options.lcov_test_name is not None
             and " " in self.options.lcov_test_name
         ):
-            raise RuntimeError(
-                f"The LCOV test name must not contain spaces, got {self.options.lcov_test_name!r}."
-            )
+            msg = f"The LCOV test name must not contain spaces, got {self.options.lcov_test_name!r}."
+            raise RuntimeError(msg)
 
     def write_report(self, covdata: CoverageContainer, output_file: str) -> None:
-        from .write import (  # pylint: disable=import-outside-toplevel # Lazy loading is intended here
+        """Write report."""
+        # Lazy loading is intended here
+        from .write import (  # pylint: disable=import-outside-toplevel  # noqa: PLC0415
             write_report,
         )
 
