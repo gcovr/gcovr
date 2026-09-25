@@ -48,6 +48,7 @@ PARAMETERS = [
 )
 def test(
     gcovr_test_exec: "GcovrTestExec",
+    caplog: pytest.LogCaptureFixture,
     _test_id: str,
     runs: int,
     run_options: list[str],
@@ -82,6 +83,19 @@ def test(
         "--json-pretty",
         "--json=coverage_2.json",
     )
+    with pytest.raises(ValueError) as exception:
+        process = gcovr_test_exec.gcovr(
+            "--json-add-tracefile=coverage_1.json",
+            "--json-add-tracefile=coverage_2.json",
+            "--json-compare",
+            "--txt-metric=line",
+            "--txt-metric=branch",
+            use_main=True,
+        )
+    assert str(exception.value) == (
+        "A txt report with several metrics is not possible with --json-compare."
+    )
+
     gcovr_test_exec.gcovr(
         "--json-add-tracefile=coverage_1.json",
         "--json-add-tracefile=coverage_2.json",
@@ -89,6 +103,7 @@ def test(
         "--json-pretty",
         "--json=coverage_compare.json",
     )
+
     gcovr_test_exec.gcovr(
         "--json-add-tracefile=coverage_compare.json",
         "--json-pretty",

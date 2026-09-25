@@ -348,7 +348,9 @@ def test_gcov_8(capsys: pytest.CaptureFixture[str], source_filename: str) -> Non
         linecov.lineno for linecov in filecov.linecov() if linecov.is_uncovered
     ]
     uncovered_branches = [
-        linecov.lineno for linecov in filecov.linecov() if linecov.has_uncovered_branch
+        linecov.lineno
+        for linecov in filecov.linecov()
+        if linecov.has_uncovered_branches
     ]
     assert uncovered_lines == expected_uncovered_lines
     assert uncovered_branches == expected_uncovered_branches
@@ -382,7 +384,7 @@ def test_unknown_tags(caplog: pytest.LogCaptureFixture, ignore_errors: bool) -> 
         uncovered_branches = [
             linecov.lineno
             for linecov in filecov.linecov()
-            if linecov.has_uncovered_branch
+            if linecov.has_uncovered_branches
         ]
         assert uncovered_lines == []
         assert uncovered_branches == []

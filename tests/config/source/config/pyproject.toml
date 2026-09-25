@@ -7,3 +7,9 @@ filter=[
 
 json = "coverage.json"
 json-pretty = true
+
+txt = "coverage.txt"
+txt-metrics = [
+    "branch",
+    "line"
+]

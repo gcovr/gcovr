@@ -52,7 +52,8 @@ def test(gcovr_test_exec: "GcovrTestExec") -> None:
     gcovr_test_exec.compare_html()
 
     gcovr_test_exec.gcovr(
-        "--branch",
+        "--txt-metric",
+        "branch",
         "--fail-under-branch=100.0",
         "--json-add-tracefile=coverage.json",
         "--txt=coverage.txt",

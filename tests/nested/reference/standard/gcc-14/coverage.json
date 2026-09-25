@@ -168,95 +168,6 @@
             ]
         },
         {
-            "file": "A/File2.cpp",
-            "lines": [
-                {
-                    "line_number": 1,
-                    "function_name": "_Z3barv",
-                    "block_ids": [],
-                    "count": 1,
-                    "branches": [],
-                    "gcovr/md5": "4beba7179d45a57456569f6941093571"
-                },
-                {
-                    "line_number": 3,
-                    "function_name": "_Z3barv",
-                    "block_ids": [],
-                    "count": 1,
-                    "branches": [],
-                    "gcovr/md5": "13847171c9ac9ee50c67f6c9b494b03c"
-                },
-                {
-                    "line_number": 4,
-                    "function_name": "_Z3barv",
-                    "block_ids": [],
-                    "count": 1,
-                    "branches": [],
-                    "gcovr/md5": "524766693a21dc700232729ac36807d7"
-                },
-                {
-                    "line_number": 5,
-                    "function_name": "_Z3barv",
-                    "block_ids": [
-                        2
-                    ],
-                    "count": 1,
-                    "branches": [],
-                    "gcovr/md5": "c745797c27df531f2e2d3d23f80088c9"
-                },
-                {
-                    "line_number": 8,
-                    "function_name": "_Z4bar_v",
-                    "block_ids": [],
-                    "count": 0,
-                    "branches": [],
-                    "gcovr/md5": "99fb4f6f9391300edd09b8f8a586e881"
-                },
-                {
-                    "line_number": 10,
-                    "function_name": "_Z4bar_v",
-                    "block_ids": [],
-                    "count": 0,
-                    "branches": [],
-                    "gcovr/md5": "13847171c9ac9ee50c67f6c9b494b03c"
-                },
-                {
-                    "line_number": 11,
-                    "function_name": "_Z4bar_v",
-                    "block_ids": [
-                        2
-                    ],
-                    "count": 0,
-                    "branches": [],
-                    "gcovr/md5": "e4b0e3a6768bef118c4318103f20b805"
-                }
-            ],
-            "functions": [
-                {
-                    "name": "_Z3barv",
-                    "demangled_name": "bar()",
-                    "lineno": 1,
-                    "execution_count": 1,
-                    "blocks_percent": 100.0,
-                    "pos": [
-                        "1:5",
-                        "6:1"
-                    ]
-                },
-                {
-                    "name": "_Z4bar_v",
-                    "demangled_name": "bar_()",
-                    "lineno": 8,
-                    "execution_count": 0,
-                    "blocks_percent": 0.0,
-                    "pos": [
-                        "8:5",
-                        "12:1"
-                    ]
-                }
-            ]
-        },
-        {
             "file": "A/File4.cpp",
             "lines": [
                 {
@@ -589,6 +500,95 @@
                     "pos": [
                         "1:5",
                         "4:1"
+                    ]
+                }
+            ]
+        },
+        {
+            "file": "A/subdir_0/subdir_1/subdir_2/subdir_3/subdir_4/subdir_5/subdir_6/subdir_7/subdir_8/subdir_9/File2.cpp",
+            "lines": [
+                {
+                    "line_number": 1,
+                    "function_name": "_Z3barv",
+                    "block_ids": [],
+                    "count": 1,
+                    "branches": [],
+                    "gcovr/md5": "4beba7179d45a57456569f6941093571"
+                },
+                {
+                    "line_number": 3,
+                    "function_name": "_Z3barv",
+                    "block_ids": [],
+                    "count": 1,
+                    "branches": [],
+                    "gcovr/md5": "13847171c9ac9ee50c67f6c9b494b03c"
+                },
+                {
+                    "line_number": 4,
+                    "function_name": "_Z3barv",
+                    "block_ids": [],
+                    "count": 1,
+                    "branches": [],
+                    "gcovr/md5": "524766693a21dc700232729ac36807d7"
+                },
+                {
+                    "line_number": 5,
+                    "function_name": "_Z3barv",
+                    "block_ids": [
+                        2
+                    ],
+                    "count": 1,
+                    "branches": [],
+                    "gcovr/md5": "c745797c27df531f2e2d3d23f80088c9"
+                },
+                {
+                    "line_number": 8,
+                    "function_name": "_Z4bar_v",
+                    "block_ids": [],
+                    "count": 0,
+                    "branches": [],
+                    "gcovr/md5": "99fb4f6f9391300edd09b8f8a586e881"
+                },
+                {
+                    "line_number": 10,
+                    "function_name": "_Z4bar_v",
+                    "block_ids": [],
+                    "count": 0,
+                    "branches": [],
+                    "gcovr/md5": "13847171c9ac9ee50c67f6c9b494b03c"
+                },
+                {
+                    "line_number": 11,
+                    "function_name": "_Z4bar_v",
+                    "block_ids": [
+                        2
+                    ],
+                    "count": 0,
+                    "branches": [],
+                    "gcovr/md5": "e4b0e3a6768bef118c4318103f20b805"
+                }
+            ],
+            "functions": [
+                {
+                    "name": "_Z3barv",
+                    "demangled_name": "bar()",
+                    "lineno": 1,
+                    "execution_count": 1,
+                    "blocks_percent": 100.0,
+                    "pos": [
+                        "1:5",
+                        "6:1"
+                    ]
+                },
+                {
+                    "name": "_Z4bar_v",
+                    "demangled_name": "bar_()",
+                    "lineno": 8,
+                    "execution_count": 0,
+                    "blocks_percent": 0.0,
+                    "pos": [
+                        "8:5",
+                        "12:1"
                     ]
                 }
             ]

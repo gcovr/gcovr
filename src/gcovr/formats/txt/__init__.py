@@ -21,17 +21,8 @@ from ...data_model.container import CoverageContainer
 from ...formats.base import BaseHandler
 from ...options import (
     GcovrConfigOption,
-    GcovrDeprecatedConfigOptionAction,
     OutputOrDefault,
 )
-
-
-class UseBranchMetricAction(GcovrDeprecatedConfigOptionAction):
-    """Argparse action for mapping deprecated option to new option."""
-
-    option = "--txt-metric"
-    config = "txt-metric"
-    value = "branch"
 
 
 class TxtHandler(BaseHandler):
@@ -43,27 +34,19 @@ class TxtHandler(BaseHandler):
             # Global options needed for report
             "show_calls",
             "show_decision",  # Only for summary report
+            "json_compare",  # Only for validation of options
             # Local options
             GcovrConfigOption(
-                "txt_metric",
+                "txt_metrics",
                 ["--txt-metric"],
-                config="txt-metric",
-                group="output_options",
-                help=("The metric type to report. Default is '{default!s}'."),
-                choices=("line", "branch", "decision"),
-                default="line",
-            ),
-            GcovrConfigOption(
-                "txt_metric",
-                ["-b", "--txt-branches", "--branches"],
-                config="txt-branch",
+                config="txt-metrics",
                 group="output_options",
                 help=(
-                    "Deprecated, please use '--txt-metric branch' instead."
-                    "Report the branch coverage instead of the line coverage in text report."
+                    "The metric type to report. If option is given multiple times the "
+                    "reports are printed in the given order. Default is 'line'."
                 ),
-                nargs=0,
-                action=UseBranchMetricAction,
+                choices=("line", "branch", "condition", "decision"),
+                action="append",
             ),
             GcovrConfigOption(
                 "txt_report_covered",
@@ -96,6 +79,14 @@ class TxtHandler(BaseHandler):
                 action="store_true",
             ),
         ]
+
+    def validate_options(self) -> None:
+        """Validation of command line options"""
+        if self.options.txt_metrics is not None:
+            if len(self.options.txt_metrics) > 1 and self.options.json_compare:
+                raise ValueError(
+                    "A txt report with several metrics is not possible with --json-compare."
+                )
 
     def write_report(self, covdata: CoverageContainer, output_file: str) -> None:
         from .write import (  # pylint: disable=import-outside-toplevel # Lazy loading is intended here

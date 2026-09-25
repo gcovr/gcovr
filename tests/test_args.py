@@ -857,9 +857,6 @@ def test_sort_branch_and_not_uncovered_or_percent(
 @pytest.mark.parametrize(
     "option",
     [
-        ("-b", "--txt-metric branch"),
-        ("--txt-branches", "--txt-metric branch"),
-        ("--branches", "--txt-metric branch"),
         ("--sort-uncovered", "--sort uncovered-number"),
         ("--sort-percentage", "--sort uncovered-percent"),
     ],

@@ -1631,7 +1631,7 @@ class LineCoverage(CoverageBase):
         return any(branchcov.is_reportable for branchcov in self.branches())
 
     @property
-    def has_uncovered_branch(self) -> bool:
+    def has_uncovered_branches(self) -> bool:
         """Test if the line has uncovered branches."""
         return not all(
             branchcov.is_covered or branchcov.is_excluded
@@ -1667,7 +1667,7 @@ class LineCoverage(CoverageBase):
             yield from self._conditions.values()
 
     @property
-    def has_uncovered_decision(self) -> bool:
+    def has_uncovered_decisions(self) -> bool:
         """Test if the line has an uncovered decision."""
         if self.decision is None:
             return False

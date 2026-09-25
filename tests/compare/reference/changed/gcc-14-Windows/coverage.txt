@@ -12,4 +12,3 @@ subdir/A/File4.cpp                       Approximately equal   1,3-4
 subdir/A/file7.cpp                            Strictly equal   
 subdir/B/main.cpp                                    Changed   19
                                          Approximately equal   13-18,21
-------------------------------------------------------------------------------
