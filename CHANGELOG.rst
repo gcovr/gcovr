@@ -45,6 +45,7 @@ Bug fixes and small improvements:
 - Fix link to lines in HTML single page report. (:issue:`1285`)
 - Preserve coverage for procedures declared in Fortran modules. (:issue:`1288`)
 - Fix missing branches and conditions for uncovered lines in HTML report. (:issue:`1290`)
+- Fix absolute file names in reports on Windows if ``gcov`` reports a source with forward slashes. (:issue:`NNNN`)
 
 Documentation:
 

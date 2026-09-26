@@ -100,7 +100,21 @@ _T = TypeVar("_T")
 
 
 def _presentable_filename(filename: str, root_filter: re.Pattern[str]) -> str:
-    """Mangle a filename so that it is suitable for a report."""
+    """Mangle a filename so that it is suitable for a report.
+
+    # The root filter is built from ``os.sep`` (see ``gcovr.__main__``), but a filename
+    # can reach gcovr spelled with the separator of the build system instead: CMake hands
+    # ``C:/dir/file.cpp`` to the compiler and ``gcov`` reports it back unchanged. Such a
+    # name is matched against a copy using the native separator, the way
+    # ``CoverageContainer.populate_directories`` already does, so that the prefix is
+    # stripped for both spellings.
+    """
+
+    if os.sep != "/":
+        # only in this direction: a forward slash cannot be part of a filename on a
+        # system whose separator is something else, while a backslash is a valid
+        # filename character on POSIX and must not be touched there.
+        filename = filename.replace("/", os.sep)
 
     normalized = root_filter.sub("", filename)
     if filename.endswith(normalized):
