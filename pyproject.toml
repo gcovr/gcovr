@@ -47,7 +47,8 @@ dependencies = [
     "lxml",
     "colorlog",
     "pygments>=2.13.0",
-    "tomli >= 1.1.0 ; python_version < '3.11'",
+    "tomli>=1.1.0 ; python_version < '3.11'",
+    "typing_extensions ; python_version < '3.11'",  # Need to be installed manually
 ]
 
 [project.optional-dependencies]
