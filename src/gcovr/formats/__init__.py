@@ -24,15 +24,16 @@ from ..data_model.coverage import FileCoverage
 from ..data_model.merging import get_merge_mode_from_options
 from ..exceptions import SanityCheckError
 from ..filter import is_file_excluded
+from ..formats.base import BaseHandler
 from ..logging import LOGGER
 from ..options import GcovrConfigOption, Options, OutputOrDefault
 from ..utils import search_file
+
+# the handler
 from .clover import CloverHandler
 from .cobertura import CoberturaHandler
 from .coveralls import CoverallsHandler
 from .csv import CsvHandler
-
-# the handler
 from .gcov import GcovHandler
 from .html import HtmlHandler
 from .jacoco import JaCoCoHandler
@@ -43,47 +44,43 @@ from .markdown import MarkdownHandler
 from .sonarqube import SonarqubeHandler
 from .txt import TxtHandler
 
+ALL_HANDLERS = list[type[BaseHandler]](
+    [
+        GcovHandler,
+        LlvmHandler,
+        TxtHandler,
+        HtmlHandler,
+        CsvHandler,
+        JsonHandler,
+        MarkdownHandler,
+        CloverHandler,
+        CoberturaHandler,
+        CoverallsHandler,
+        JaCoCoHandler,
+        LcovHandler,
+        SonarqubeHandler,
+    ]
+)
+
+
+def get_option_groups() -> list[dict[str, str]]:
+    """Validate the command line options of the format handlers."""
+    return [handler.get_option_group() for handler in ALL_HANDLERS]
+
 
 def get_options() -> list[GcovrConfigOption]:
     """Get the list of all options from the format handlers."""
     return [
-        o
-        for o in [
-            *GcovHandler.get_options(),
-            *CloverHandler.get_options(),
-            *CoberturaHandler.get_options(),
-            *CoverallsHandler.get_options(),
-            *CsvHandler.get_options(),
-            *HtmlHandler.get_options(),
-            *JaCoCoHandler.get_options(),
-            *JsonHandler.get_options(),
-            *LcovHandler.get_options(),
-            *LlvmHandler.get_options(),
-            *MarkdownHandler.get_options(),
-            *SonarqubeHandler.get_options(),
-            *TxtHandler.get_options(),
-        ]
-        if isinstance(o, GcovrConfigOption)
+        option
+        for options in [handler.get_options() for handler in ALL_HANDLERS]
+        for option in options
+        if isinstance(option, GcovrConfigOption)
     ]
 
 
 def validate_options(options: Options) -> None:
     """Validate the command line options of the format handlers."""
-    for handler in [
-        GcovHandler,
-        CloverHandler,
-        CoberturaHandler,
-        CoverallsHandler,
-        CsvHandler,
-        HtmlHandler,
-        JaCoCoHandler,
-        JsonHandler,
-        LcovHandler,
-        LlvmHandler,
-        MarkdownHandler,
-        SonarqubeHandler,
-        TxtHandler,
-    ]:
+    for handler in ALL_HANDLERS:
         handler(options).validate_options()
 
 

@@ -17,6 +17,8 @@
 
 """GCOVR report definition base class."""
 
+from abc import abstractmethod
+
 from ..data_model.container import CoverageContainer
 from ..options import GcovrConfigOption, Options
 
@@ -25,10 +27,14 @@ class BaseHandler:
     """Base class for a format handler."""
 
     @classmethod
+    @abstractmethod
+    def get_option_group(cls) -> dict[str, str]:
+        """Get the report options."""
+
+    @classmethod
+    @abstractmethod
     def get_options(cls) -> list[GcovrConfigOption | str]:
         """Get the report options."""
-        msg = "Function 'get_options' not implemented."
-        raise AssertionError(msg)
 
     def __init__(self, options: Options) -> None:
         """Initialize base class for report definition."""

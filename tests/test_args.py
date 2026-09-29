@@ -641,7 +641,7 @@ def test_import_valid_cobertura_file(tmp_path: Path) -> None:
 
     testfile = "code.cpp"
     xml_data = f"""<?xml version='1.0' encoding='UTF-8'?>
-<!DOCTYPE coverage SYSTEM 'http://cobertura.sourceforge.net/xml/coverage-04.dtd'>
+<!DOCTYPE coverage SYSTEM 'https://github.com/cobertura/cobertura/blob/e5eea8679ebce047ec6ccdfdbf6cf2c14b376875/cobertura/src/site/htdocs/xml/coverage-04.dtd'>
 <coverage
     line-rate="0.9"
     branch-rate="0.75"
@@ -762,7 +762,7 @@ def test_import_cobertura_file_with_invalid_line(
     caplog: pytest.LogCaptureFixture, tmp_path: Path
 ) -> None:
     xml_data = """<?xml version='1.0' encoding='UTF-8'?>
-<!DOCTYPE coverage SYSTEM 'http://cobertura.sourceforge.net/xml/coverage-04.dtd'>
+<!DOCTYPE coverage SYSTEM 'https://github.com/cobertura/cobertura/blob/e5eea8679ebce047ec6ccdfdbf6cf2c14b376875/cobertura/src/site/htdocs/xml/coverage-04.dtd'>
 <coverage
     line-rate="0.9"
     branch-rate="0.75"

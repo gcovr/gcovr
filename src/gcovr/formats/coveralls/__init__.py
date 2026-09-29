@@ -21,9 +21,24 @@ from ...data_model.container import CoverageContainer
 from ...formats.base import BaseHandler
 from ...options import GcovrConfigOption, OutputOrDefault
 
+OPTION_GROUP_NAME = "Coveralls JSON options"
+OPTION_GROUP = OPTION_GROUP_NAME.casefold().replace(" ", "_")
+
 
 class CoverallsHandler(BaseHandler):
     """Class to handle Coveralls format."""
+
+    @classmethod
+    def get_option_group(cls) -> dict[str, str]:
+        """Get the description of the option group."""
+        return {
+            "key": OPTION_GROUP,
+            "name": OPTION_GROUP_NAME,
+            "description": (
+                "Options for report generation in Coveralls format, "
+                "see <https://docs.coveralls.io/api-jobs-endpoint#the-coverage-report-json-objects>."
+            ),
+        }
 
     @classmethod
     def get_options(cls) -> list[GcovrConfigOption | str]:
@@ -34,7 +49,7 @@ class CoverallsHandler(BaseHandler):
             GcovrConfigOption(
                 "coveralls",
                 ["--coveralls"],
-                group="output_options",
+                group=OPTION_GROUP,
                 metavar="OUTPUT",
                 help=(
                     "Generate Coveralls API coverage report in this file name. "
@@ -48,7 +63,7 @@ class CoverallsHandler(BaseHandler):
             GcovrConfigOption(
                 "coveralls_pretty",
                 ["--coveralls-pretty"],
-                group="output_options",
+                group=OPTION_GROUP,
                 help=("Pretty-print the coveralls report. Implies --coveralls."),
                 action="store_true",
             ),

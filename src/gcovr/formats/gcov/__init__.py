@@ -27,9 +27,24 @@ from ...options import (
     relative_path,
 )
 
+OPTION_GROUP_NAME = "GCOV options"
+OPTION_GROUP = OPTION_GROUP_NAME.casefold().replace(" ", "_")
+
 
 class GcovHandler(BaseHandler):
     """Class to handle GCOV intermediate format."""
+
+    @classmethod
+    def get_option_group(cls) -> dict[str, str]:
+        """Get the description of the option group."""
+        return {
+            "key": OPTION_GROUP,
+            "name": OPTION_GROUP_NAME,
+            "description": (
+                "Options for reading GCOV text and JSON reports. "
+                "JSON reports are the default for gcc-14 and newer (JSON format 2, see gcc --version)."
+            ),
+        }
 
     @classmethod
     def get_options(cls) -> list[GcovrConfigOption | str]:
@@ -62,14 +77,14 @@ class GcovHandler(BaseHandler):
             GcovrConfigOption(
                 "gcov_use_existing_files",
                 ["-g", "--gcov-use-existing-files", "--use-gcov-files"],
-                group="gcov_options",
+                group=OPTION_GROUP,
                 help="Use existing gcov files for analysis.",
                 action="store_true",
             ),
             GcovrConfigOption(
                 "gcov_ignore_errors",
                 ["--gcov-ignore-errors"],
-                group="gcov_options",
+                group=OPTION_GROUP,
                 choices=(
                     "all",
                     "source_not_found",
@@ -91,7 +106,7 @@ class GcovHandler(BaseHandler):
             GcovrConfigOption(
                 "gcov_ignore_parse_errors",
                 ["--gcov-ignore-parse-errors"],
-                group="gcov_options",
+                group=OPTION_GROUP,
                 choices=(
                     "all",
                     "negative_hits.warn",
@@ -115,7 +130,7 @@ class GcovHandler(BaseHandler):
                 "gcov_suspicious_hits_threshold",
                 ["--gcov-suspicious-hits-threshold"],
                 config="gcov-suspicious-hits-threshold",
-                group="gcov_options",
+                group=OPTION_GROUP,
                 help=(
                     "Set the threshold for detecting suspicious hits "
                     "in gcov output files. "
@@ -151,7 +166,7 @@ class GcovHandler(BaseHandler):
             GcovrConfigOption(
                 "gcov_cmd",
                 ["--gcov-executable"],
-                group="gcov_options",
+                group=OPTION_GROUP,
                 help=(
                     "Use a particular gcov executable. "
                     "Must match the compiler you are using, "
@@ -165,7 +180,7 @@ class GcovHandler(BaseHandler):
             GcovrConfigOption(
                 "gcov_objdir",
                 ["--gcov-object-directory", "--object-directory"],
-                group="gcov_options",
+                group=OPTION_GROUP,
                 help=(
                     "Override normal working directory detection. "
                     "Gcovr needs to identify the path between gcda files "
@@ -181,7 +196,7 @@ class GcovHandler(BaseHandler):
                 "gcov_parallel",
                 ["-j"],
                 config="gcov-parallel",
-                group="gcov_options",
+                group=OPTION_GROUP,
                 help=(
                     "Set the number of threads to use in parallel. "
                     "0=Number of CPUs, negative number='all but N CPUs'."

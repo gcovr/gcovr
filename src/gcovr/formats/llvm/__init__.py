@@ -23,9 +23,24 @@ from ...data_model.container import CoverageContainer
 from ...formats.base import BaseHandler
 from ...options import GcovrConfigOption
 
+OPTION_GROUP_NAME = "LLVM options"
+OPTION_GROUP = OPTION_GROUP_NAME.casefold().replace(" ", "_")
+
 
 class LlvmHandler(BaseHandler):
     """Class to handle LLVM JSON tracefile format."""
+
+    @classmethod
+    def get_option_group(cls) -> dict[str, str]:
+        """Get the description of the option group."""
+        return {
+            "key": OPTION_GROUP,
+            "name": OPTION_GROUP_NAME,
+            "description": (
+                "Options for reading LLVM source based code coverage reports, "
+                "<https://clang.llvm.org/docs/SourceBasedCodeCoverage.html#creating-coverage-reports>."
+            ),
+        }
 
     @classmethod
     def get_options(cls) -> list[GcovrConfigOption | str]:
@@ -56,7 +71,7 @@ class LlvmHandler(BaseHandler):
             GcovrConfigOption(
                 "llvm_profdata_cmd",
                 ["--llvm-profdata-executable"],
-                group="llvm_options",
+                group=OPTION_GROUP,
                 help=(
                     "Use a particular llvm-profdata executable to convert LLVM profraw files. "
                     "This switches from searching gcno/gcda files and using gcov to searching "
@@ -69,7 +84,7 @@ class LlvmHandler(BaseHandler):
             GcovrConfigOption(
                 "llvm_cov_binaries",
                 ["--llvm-cov-binary"],
-                group="llvm_options",
+                group=OPTION_GROUP,
                 help=(
                     "The binary to export the coverage data for. See help of 'llvm-cov export' command. "
                     "The option can be used multiple times."

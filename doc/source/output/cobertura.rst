@@ -20,7 +20,7 @@ This generates an XML summary of the lines executed:
     :language: xml
 
 This XML format is described in the
-`Cobertura XML DTD <https://github.com/gcovr/gcovr/blob/main/tests/cobertura.coverage-04.dtd>`__
+`Cobertura XML DTD <https://github.com/cobertura/cobertura/blob/e5eea8679ebce047ec6ccdfdbf6cf2c14b376875/cobertura/src/site/htdocs/xml/coverage-04.dtd>`__
 suitable for import and display within the
 `Jenkins <https://www.jenkins.io/>`__ and `Hudson <https://projects.eclipse.org/projects/technology.hudson>`__
 continuous integration servers using the
