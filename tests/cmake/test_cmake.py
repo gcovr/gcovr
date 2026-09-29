@@ -1,5 +1,3 @@
-# -*- coding:utf-8 -*-
-
 #  ************************** Copyrights and license ***************************
 #
 # This file is part of gcovr 8.6+main, a parsing and reporting tool for gcov.
@@ -17,14 +15,17 @@
 #
 # ****************************************************************************
 
+import logging
 import re
 import shutil
-from sys import stderr
 from unittest import mock
 
 import pytest
+from pytest_check import check
 
 from tests.conftest import GCOVR_ISOLATED_TEST, GcovrTestExec
+
+LOGGER = logging.getLogger(__name__)
 
 
 @pytest.mark.skipif(
@@ -100,13 +101,13 @@ def test_oos_makefile(gcovr_test_exec: "GcovrTestExec") -> None:
     reason="Only available in isolated docker test.",
 )
 @pytest.mark.json
-def test_oos_makefile_ccache(gcovr_test_exec: "GcovrTestExec", check) -> None:  # type: ignore[no-untyped-def]
+def test_oos_makefile_ccache(gcovr_test_exec: "GcovrTestExec") -> None:
     """Test CMake out of source build with makefile."""
     for file in (gcovr_test_exec.output_dir / "simple_main").glob("*"):
         file.rename(gcovr_test_exec.output_dir / file.name)
     build_dir = gcovr_test_exec.output_dir / "build"
     for run in range(2):
-        print(f"***** Build with ccache ({run}) *****", file=stderr)
+        LOGGER.info("***** Build with ccache (%s) *****", run)
         with mock.patch.dict(
             "os.environ",
             {"CCACHE_DIR": str(gcovr_test_exec.output_dir / "ccache")},
@@ -188,13 +189,13 @@ def test_oos_ninja(gcovr_test_exec: "GcovrTestExec") -> None:
     reason="Only available in isolated docker test.",
 )
 @pytest.mark.json
-def test_oos_ninja_ccache(gcovr_test_exec: "GcovrTestExec", check) -> None:  # type: ignore[no-untyped-def]
+def test_oos_ninja_ccache(gcovr_test_exec: "GcovrTestExec") -> None:
     """Test CMake out of source build with ninja."""
     for file in (gcovr_test_exec.output_dir / "simple_main").glob("*"):
         file.rename(gcovr_test_exec.output_dir / file.name)
     build_dir = gcovr_test_exec.output_dir / "build"
     for run in range(2):
-        print(f"***** Build with ccache ({run}) *****", file=stderr)
+        LOGGER.info("***** Build with ccache (%s) *****", run)
         with mock.patch.dict(
             "os.environ",
             {"CCACHE_DIR": str(gcovr_test_exec.output_dir / "ccache")},

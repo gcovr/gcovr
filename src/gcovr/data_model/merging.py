@@ -1,5 +1,3 @@
-# -*- coding:utf-8 -*-
-
 #  ************************** Copyrights and license ***************************
 #
 # This file is part of gcovr 8.6+main, a parsing and reporting tool for gcov.
@@ -16,6 +14,8 @@
 # For more information, see the README.rst file.
 #
 # ****************************************************************************
+
+"""GCOVR data merging."""
 
 from dataclasses import dataclass, field
 
@@ -64,12 +64,15 @@ DEFAULT_MERGE_OPTIONS = MergeOptions()
 
 
 def get_merge_mode_from_options(
-    options: Options, respect_json_compare: bool = False
+    options: Options,
+    *,
+    respect_json_compare: bool = False,
 ) -> MergeOptions:
     """Get the function merge mode."""
     merge_opts = MergeOptions()
     if respect_json_compare and options.json_compare:
         merge_opts.json_compare = True
+
     if options.merge_mode_functions == "strict":
         merge_opts.func_opts = FUNCTION_STRICT_MERGE_OPTIONS
     elif options.merge_mode_functions == "merge-use-line-0":
@@ -81,6 +84,7 @@ def get_merge_mode_from_options(
     elif options.merge_mode_functions == "separate":
         merge_opts.func_opts = SEPARATE_FUNCTION_MERGE_OPTIONS
     else:
-        raise AssertionError("Unknown functions merge mode.")
+        msg = "Unknown functions merge mode."
+        raise AssertionError(msg)
 
     return merge_opts

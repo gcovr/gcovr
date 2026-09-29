@@ -1,5 +1,3 @@
-# -*- coding:utf-8 -*-
-
 #  ************************** Copyrights and license ***************************
 #
 # This file is part of gcovr 8.6+main, a parsing and reporting tool for gcov.
@@ -16,6 +14,8 @@
 # For more information, see the README.rst file.
 #
 # ****************************************************************************
+
+"""GCOVR JSON report input."""
 
 import gzip
 import json
@@ -36,7 +36,6 @@ from ...utils import GZIP_SUFFIX
 #
 def read_report(options: Options) -> CoverageContainer:
     """Read trace files into internal data model."""
-
     covdata = CoverageContainer(options.root)
     if len(options.json_tracefile) != 0:
         datafiles = list[str]()
@@ -44,21 +43,25 @@ def read_report(options: Options) -> CoverageContainer:
         for trace_file_pattern in options.json_tracefile:
             trace_files = glob(trace_file_pattern, recursive=True)
             if not trace_files:
-                raise RuntimeError(
+                msg = (
                     f"Bad --json-add-tracefile={trace_file_pattern} option.\n"
                     "\tThe specified file does not exist."
                 )
+                raise RuntimeError(msg)
 
-            for trace_file in trace_files:
-                trace_file = os.path.normpath(trace_file)
+            for trace_file in [
+                os.path.normpath(trace_file) for trace_file in trace_files
+            ]:
                 if trace_file not in datafiles:
                     datafiles.append(trace_file)
 
-        if options.json_compare and len(datafiles) != 2:
-            raise ValueError(
+        # Here we need to validate the options again because it's possible that one file doesn't exist.
+        if options.json_compare and len(datafiles) != 2:  # noqa: PLR2004
+            msg = (
                 "--json-compare requires exactly two input trace files "
                 f"but {len(datafiles)} were given."
             )
+            raise ValueError(msg)
 
         merge_options = get_merge_mode_from_options(options)
         for data_source in datafiles:
@@ -80,9 +83,8 @@ def read_report(options: Options) -> CoverageContainer:
 
             format_version = str(gcovr_json_data["gcovr/format_version"])
             if format_version != version.FORMAT_VERSION:
-                raise AssertionError(
-                    f"Wrong format version, got {format_version} expected {version.FORMAT_VERSION}."
-                )
+                msg = f"Wrong format version, got {format_version} expected {version.FORMAT_VERSION}."
+                raise AssertionError(msg)
 
             covdata.merge(
                 CoverageContainer.deserialize(

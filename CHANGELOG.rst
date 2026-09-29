@@ -59,6 +59,7 @@ Internal changes:
 - Activate sorting of includes for ruff. (:issue:`1294`)
 - Add ``gcc-16``, ``clang-21`` and ``clang-22`` to the test suite. (:issue:`1300`)
 - Use different python versions for testing in docker depending on Ubuntu version. (:issue:`1301`)
+- Activate most checks of ``ruff``. (:issue:`1303`)
 
 .. _release_8_6:
 

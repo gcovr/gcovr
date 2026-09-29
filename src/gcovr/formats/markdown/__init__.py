@@ -1,5 +1,3 @@
-# -*- coding:utf-8 -*-
-
 #  ************************** Copyrights and license ***************************
 #
 # This file is part of gcovr 8.6+main, a parsing and reporting tool for gcov.
@@ -17,6 +15,8 @@
 #
 # ****************************************************************************
 
+"""GCOVR markdown report interface."""
+
 from ...data_model.container import CoverageContainer
 from ...formats.base import BaseHandler
 from ...options import GcovrConfigOption, OutputOrDefault
@@ -32,6 +32,7 @@ class MarkdownHandler(BaseHandler):
 
     @classmethod
     def get_options(cls) -> list[GcovrConfigOption | str]:
+        """Get the report options."""
         return [
             # JSON option use for validation
             "json_compare",
@@ -120,15 +121,19 @@ class MarkdownHandler(BaseHandler):
         ]
 
     def validate_options(self) -> None:
-        """Validate options specific to this format."""
+        """Validate options."""
         if self.options.markdown and self.options.json_compare:
-            raise ValueError("A Markdown report is not possible with --json-compare.")
+            msg = "A Markdown report is not possible with --json-compare."
+            raise ValueError(msg)
 
         if self.options.markdown_heading_level < 1:
-            raise RuntimeError("The markdown heading level must not be less than 0.")
+            msg = "The markdown heading level must not be less than 0."
+            raise RuntimeError(msg)
 
     def write_report(self, covdata: CoverageContainer, output_file: str) -> None:
-        from .write import (  # pylint: disable=import-outside-toplevel # Lazy loading is intended here
+        """Write report."""
+        # Lazy loading is intended here
+        from .write import (  # pylint: disable=import-outside-toplevel  # noqa: PLC0415
             write_report,
         )
 
@@ -137,7 +142,9 @@ class MarkdownHandler(BaseHandler):
     def write_summary_report(
         self, covdata: CoverageContainer, output_file: str
     ) -> None:
-        from .write import (  # pylint: disable=import-outside-toplevel # Lazy loading is intended here
+        """Write summary report."""
+        # Lazy loading is intended here
+        from .write import (  # pylint: disable=import-outside-toplevel  # noqa: PLC0415
             write_summary_report,
         )
 

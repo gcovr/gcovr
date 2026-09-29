@@ -1,5 +1,3 @@
-# -*- coding:utf-8 -*-
-
 #  ************************** Copyrights and license ***************************
 #
 # This file is part of gcovr 8.6+main, a parsing and reporting tool for gcov.
@@ -288,7 +286,7 @@ def test_fail_under(
         "--print-summary",
         use_main=True,
     )
-    assert process.returncode == 2
+    assert process.returncode == 2  # noqa: PLR2004
     messages = caplog.record_tuples
     assert len(messages) == 1
     assert messages[0][1] == logging.ERROR
@@ -300,7 +298,7 @@ def test_fail_under(
         "--print-summary",
         use_main=True,
     )
-    assert process.returncode == 4
+    assert process.returncode == 4  # noqa: PLR2004
     messages = caplog.record_tuples
     assert len(messages) == 1
     assert messages[0][1] == logging.ERROR
@@ -313,7 +311,7 @@ def test_fail_under(
         "--print-summary",
         use_main=True,
     )
-    assert process.returncode == 8
+    assert process.returncode == 8  # noqa: PLR2004
     # The condition coverage is only reported if the compiler supports it.
     expected_messages = [
         *(
@@ -335,7 +333,7 @@ def test_fail_under(
         "--print-summary",
         use_main=True,
     )
-    assert process.returncode == 16
+    assert process.returncode == 16  # noqa: PLR2004
     messages = caplog.record_tuples
     assert len(messages) == 1
     assert messages[0][1] == logging.ERROR
@@ -351,7 +349,7 @@ def test_fail_under(
         "--print-summary",
         use_main=True,
     )
-    assert process.returncode == 30
+    assert process.returncode == 30  # noqa: PLR2004
     expected_messages = [
         "Failed minimum line coverage ",
         "Failed minimum branch coverage ",

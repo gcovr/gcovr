@@ -1,5 +1,3 @@
-# -*- coding:utf-8 -*-
-
 #  ************************** Copyrights and license ***************************
 #
 # This file is part of gcovr 8.6+main, a parsing and reporting tool for gcov.
@@ -17,12 +15,20 @@
 #
 # ****************************************************************************
 
+"""GCOVR data statistics."""
+
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import TypeVar
+from typing import TYPE_CHECKING, TypeVar
 
-from ..options import Options
+try:
+    from typing import Self
+except ImportError:
+    from typing_extensions import Self
+
+if TYPE_CHECKING:
+    from ..options import Options
 
 _T = TypeVar("_T")
 
@@ -50,7 +56,8 @@ class SummarizedStats:
             call=CoverageStat.new_empty(),
         )
 
-    def __iadd__(self, other: SummarizedStats) -> SummarizedStats:
+    def __iadd__(self, other: SummarizedStats) -> Self:
+        """Add another summarized stat."""
         self.line += other.line
         self.branch += other.branch
         self.condition += other.condition
@@ -117,11 +124,12 @@ class CoverageStat:
 
     @property
     def percent(self) -> float | None:
-        """Percentage of covered elements, equivalent to ``self.percent_or(None)``"""
+        """Percentage of covered elements, equivalent to `self.percent_or(None)`."""
         return self.percent_or(None)
 
     def percent_or(self, default: _T) -> float | _T:
-        """Percentage of covered elements.
+        """
+        Percentage of covered elements.
 
         Coverage is truncated to one decimal:
         >>> CoverageStat(total=10000, covered=1234, excluded=0).percent_or("default")
@@ -149,7 +157,8 @@ class CoverageStat:
         ratio = self.covered / self.total
         return min(99.9, round(ratio * 100.0, 1))
 
-    def __iadd__(self, other: CoverageStat) -> CoverageStat:
+    def __iadd__(self, other: CoverageStat) -> Self:
+        """Add another stat object."""
         self.total += other.total
         self.covered += other.covered
         self.excluded += other.excluded
@@ -188,7 +197,8 @@ class DecisionCoverageStat:
         """Return the percent value of the coverage or the given default if no coverage is present."""
         return self.to_coverage_stat.percent_or(default)
 
-    def __iadd__(self, other: DecisionCoverageStat) -> DecisionCoverageStat:
+    def __iadd__(self, other: DecisionCoverageStat) -> Self:
+        """Add another decision coverage object."""
         self.covered += other.covered
         self.total += other.total
         self.uncheckable += other.uncheckable

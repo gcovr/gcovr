@@ -1,5 +1,3 @@
-# -*- coding:utf-8 -*-
-
 #  ************************** Copyrights and license ***************************
 #
 # This file is part of gcovr 8.6+main, a parsing and reporting tool for gcov.
@@ -17,6 +15,8 @@
 #
 # ****************************************************************************
 
+"""GCOVR coveralls report."""
+
 import os
 from dataclasses import dataclass
 
@@ -32,8 +32,7 @@ from ...utils import force_unix_separator, get_version_for_report, write_xml_out
 def write_report(
     covdata: CoverageContainer, output_file: str, options: Options
 ) -> None:
-    """produce an XML report in the Cobertura format"""
-
+    """Produce an XML report in the Cobertura format."""
     root_elem = etree.Element("coverage")
     root_elem.set("line-rate", _rate(covdata.line_coverage()))
     root_elem.set("branch-rate", _rate(covdata.branch_coverage()))
@@ -132,14 +131,14 @@ def write_report(
 
 @dataclass
 class PackageData:
-    """Data class holding the package data"""
+    """Data class holding the package data."""
 
     classes_xml: dict[str, etree._Element]
     stats: SummarizedStats
 
 
 def _rate(stat: CoverageStat) -> str:
-    """format a CoverageStat as a string in range 0.0 to 1.0 inclusive"""
+    """Format a CoverageStat as a string in range 0.0 to 1.0 inclusive."""
     if not stat.total:
         return "1.0"
     return str(stat.covered / stat.total)
@@ -155,7 +154,8 @@ def _line_element(linecov: LineCoverage) -> etree._Element:
     if not stat.total:
         elem.set("branch", "false")
     elif stat.percent is None:
-        raise AssertionError("Percent coverage must not be 'None'.")
+        msg = "Percent coverage must not be 'None'."
+        raise AssertionError(msg)
     else:
         elem.set("branch", "true")
         elem.set(
@@ -176,7 +176,8 @@ def _conditions_element(branch: CoverageStat) -> etree._Element:
 def _condition_element(branch: CoverageStat) -> etree._Element:
     coverage = branch.percent
     if coverage is None:
-        raise AssertionError("Percent coverage must not be 'None'.")
+        msg = "Percent coverage must not be 'None'."
+        raise AssertionError(msg)
 
     elem = etree.Element("condition")
     elem.set("number", "0")

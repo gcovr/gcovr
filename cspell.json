@@ -142,6 +142,7 @@
         "profdata",
         "profraw",
         "pycache",
+        "pycodestyle",
         "pycoverage",
         "PYENV",
         "Pygments",

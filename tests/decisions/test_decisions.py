@@ -1,5 +1,3 @@
-# -*- coding:utf-8 -*-
-
 #  ************************** Copyrights and license ***************************
 #
 # This file is part of gcovr 8.6+main, a parsing and reporting tool for gcov.
@@ -20,6 +18,7 @@
 from pathlib import Path
 
 import pytest
+from pytest_check import check
 
 from tests.conftest import (
     CONDITION_COVERAGE_POSSIBLE,
@@ -113,7 +112,7 @@ def test_decisions(gcovr_test_exec: "GcovrTestExec") -> None:
     reason="LLVM profdata is needed.",
 )
 @pytest.mark.json
-def test_decisions_llvm_profdata(gcovr_test_exec: "GcovrTestExec", check) -> None:  # type: ignore[no-untyped-def]
+def test_decisions_llvm_profdata(gcovr_test_exec: "GcovrTestExec") -> None:
     """Test of decision parsing."""
     gcovr_test_exec.use_llvm_profdata = True
     gcovr_test_exec.copy_source(Path("source", "decisions"))
@@ -175,7 +174,10 @@ def test_decisions_llvm_profdata(gcovr_test_exec: "GcovrTestExec", check) -> Non
 @pytest.mark.json
 @pytest.mark.txt
 def test_decisions_neg_delta(gcovr_test_exec: "GcovrTestExec") -> None:
-    """This test case causes a negative delta value during the multiline decision analysis, which results in a:
+    """
+    Test case causes a negative delta value during the multiline decision analysis.
+
+    This results in a:
     DecisionCoverageUncheckable: decision and a debug log
     AssertionError: assert count_false >= 0
     """

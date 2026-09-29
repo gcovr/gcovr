@@ -1,5 +1,3 @@
-# -*- coding:utf-8 -*-
-
 #  ************************** Copyrights and license ***************************
 #
 # This file is part of gcovr 8.6+main, a parsing and reporting tool for gcov.
@@ -70,7 +68,7 @@ import os
 import re
 from abc import abstractmethod
 from enum import Enum
-from typing import Any, Callable, Iterable, NoReturn, TypeVar, cast
+from typing import TYPE_CHECKING, Any, Callable, Iterable, NoReturn, TypeVar, cast
 
 from ..exceptions import (
     GcovrDataAssertionError,
@@ -79,7 +77,6 @@ from ..exceptions import (
 )
 from ..filter import is_file_excluded
 from ..logging import LOGGER
-from ..options import Options
 from ..utils import force_unix_separator
 from .coverage_dict import (
     BranchcovKeyType,
@@ -93,6 +90,9 @@ from .coverage_dict import (
 from .merging import DEFAULT_MERGE_OPTIONS, MergeOptions
 from .stats import CoverageStat, DecisionCoverageStat, SummarizedStats
 
+if TYPE_CHECKING:
+    from ..options import Options
+
 GCOVR_DATA_SOURCES = "gcovr/data_sources"
 GCOVR_EXCLUDED = "gcovr/excluded"
 
@@ -101,7 +101,6 @@ _T = TypeVar("_T")
 
 def _presentable_filename(filename: str, root_filter: re.Pattern[str]) -> str:
     """Mangle a filename so that it is suitable for a report."""
-
     normalized = root_filter.sub("", filename)
     if filename.endswith(normalized):
         # remove any slashes between the removed prefix and the normalized name
@@ -150,9 +149,10 @@ def summarize_coverage_diff(
 class CoverageBase:
     """Base class for coverage information."""
 
-    __slots__ = "data_sources", "diff_details", "diff"
+    __slots__ = "data_sources", "diff", "diff_details"
 
     def __init__(self, data_sources: str | set[tuple[str, ...]]) -> None:
+        """Initialize the base class for a coverage object."""
         if isinstance(data_sources, str):
             self.data_sources = set[tuple[str, ...]]([(data_sources,)])
         else:
@@ -198,7 +198,6 @@ class CoverageBase:
 
     def aggregate_diff_from_children(self, other: CoverageBase) -> None:
         """Aggregate the coverage difference value from child elements."""
-
         # This is the case if the data is removed
         if self.is_compare_info_available():
             return
@@ -217,7 +216,7 @@ class CoverageBase:
 
         def _compare(left: Any, right: Any) -> CoverageDiff:  # pylint: disable=too-many-return-statements
             if issubclass(type(left), CoverageBase):
-                return cast(CoverageBase, left).diff
+                return cast("CoverageBase", left).diff
             if isinstance(left, dict):
                 if left.keys() != right.keys():
                     return CoverageDiff.CHANGED
@@ -225,7 +224,7 @@ class CoverageBase:
                     return CoverageDiff.STRICTLY_EQUAL
 
                 return summarize_coverage_diff(
-                    set(_compare(left[k], right[k]) for k in left.keys())
+                    {_compare(left[k], right[k]) for k in left}
                 )
             if isinstance(left, list):
                 if len(left) != len(right):
@@ -234,7 +233,7 @@ class CoverageBase:
                     return CoverageDiff.STRICTLY_EQUAL
 
                 return summarize_coverage_diff(
-                    set(_compare(left[k], right[k]) for k in range(len(left)))
+                    {_compare(left[k], right[k]) for k in range(len(left))}
                 )
             return _compare_data(left, right)
 
@@ -308,15 +307,13 @@ class CoverageBase:
         getter: Callable[[CoverageBase], _T],
     ) -> _T:
         """Assert that the property given by name is defined the same if defined twice. Return the value of the property."""
-
         left = getter(self)
         right = getter(other)
-        if left is not None and right is not None:
-            if left != right:
-                self.raise_merge_error(
-                    f"{msg} must be equal, got {left} and {right}.",
-                    other,
-                )
+        if (left is not None) and (right is not None) and (left != right):
+            self.raise_merge_error(
+                f"{msg} must be equal, got {left} and {right}.",
+                other,
+            )
 
         return left or right
 
@@ -332,24 +329,10 @@ class CoverageBase:
 
 
 class BranchCoverage(CoverageBase):
-    r"""Represent coverage information about a branch.
+    r"""
+    Represent coverage information about a branch.
 
-    Args:
-        branchno (int):
-            The branch number.
-        count (int):
-            Number of times this branch was followed.
-        fallthrough (bool, optional):
-            Whether this is a fallthrough branch. False if unknown.
-        throw (bool, optional):
-            Whether this is an exception-handling branch. False if unknown.
-        source_block_id (int, optional):
-            The block number.
-        destination_block_id (int, optional):
-            The destination block of the branch. None if unknown.
-        excluded (bool, optional):
-            Whether the branch is excluded.
-
+    Examples:
         >>> filecov = FileCoverage("file.c", filename="file.c")
         >>> linecov_list = LineCoverageCollection(filecov, "not_used.gcov", lineno=11)
         >>> linecov = LineCoverage(linecov_list, "line.gcov", count=0, function_name="function")
@@ -371,19 +354,20 @@ class BranchCoverage(CoverageBase):
         gcovr.exceptions.GcovrDataAssertionError: file.c:11 (source block 1, destination block 2) count must not be a negative value.
         GCOV data file is:
            call.gcov
+
     """
 
     first_undefined_source_block_id: bool = True
 
     __slots__ = (
-        "parent",
         "branchno",
         "count",
-        "fallthrough",
-        "throw",
-        "source_block_id",
         "destination_block_id",
         "excluded",
+        "fallthrough",
+        "parent",
+        "source_block_id",
+        "throw",
     )
 
     def __init__(
@@ -399,6 +383,28 @@ class BranchCoverage(CoverageBase):
         destination_block_id: int | None = None,
         excluded: bool = False,
     ) -> None:
+        """
+        Initialize a branch coverage object.
+
+        Arguments:
+            parent (FileCoverage): The parent container.
+            data_sources (str | set[tuple[str, ...]]): The source of the data.
+            branchno (int):
+                The branch number.
+            count (int):
+                Number of times this branch was followed.
+            fallthrough (bool, optional):
+                Whether this is a fallthrough branch. False if unknown.
+            throw (bool, optional):
+                Whether this is an exception-handling branch. False if unknown.
+            source_block_id (int, optional):
+                The block number.
+            destination_block_id (int, optional):
+                The destination block of the branch. None if unknown.
+            excluded (bool, optional):
+                Whether the branch is excluded.
+
+        """
         super().__init__(data_sources)
         self.parent = parent
         self.branchno = branchno
@@ -468,7 +474,7 @@ class BranchCoverage(CoverageBase):
 
         Do not use 'other' objects afterwards!
 
-            Examples:
+        Examples:
         >>> filecov = FileCoverage("file.gcov", filename="file.cpp")
         >>> linecov_list = LineCoverageCollection(filecov, "not_used.gcov", lineno=100)
         >>> linecov = LineCoverage(linecov_list, "line.gcov", count=2, function_name="function")
@@ -496,8 +502,8 @@ class BranchCoverage(CoverageBase):
         True
         >>> left.excluded
         True
-        """
 
+        """
         if options.json_compare:
             self.aggregate_diff_from_children(other)
         else:
@@ -567,22 +573,10 @@ class BranchCoverage(CoverageBase):
 
 
 class ConditionCoverage(CoverageBase):
-    r"""Represent coverage information about a condition.
+    r"""
+    Represent coverage information about a condition.
 
-    Args:
-        conditionno (int):
-            The number of the condition.
-        count (int):
-            Number of condition outcomes in this expression.
-        covered (int):
-            Number of covered condition outcomes in this expression.
-        not_covered_true list[int]:
-            The conditions which were not true.
-        not_covered_false list[int]:
-            The conditions which were not false.
-        excluded (bool, optional):
-            Whether the condition is excluded.
-
+    Examples:
         >>> filecov = FileCoverage("file.c", filename="file.c")
         >>> linecov_list = LineCoverageCollection(filecov, "not_used.gcov", lineno=11)
         >>> linecov = LineCoverage(linecov_list, "line.gcov", count=0, function_name="function")
@@ -605,16 +599,17 @@ class ConditionCoverage(CoverageBase):
         gcovr.exceptions.GcovrDataAssertionError: file.c:11 (condition 1) The sum of the covered conditions (2), the uncovered true conditions (1) and the uncovered false conditions (2) must be equal to the count of conditions (4).
         GCOV data file is:
            call.gcov
-    """
+
+    """  # noqa: E501
 
     __slots__ = (
-        "parent",
         "conditionno",
         "count",
         "covered",
-        "not_covered_true",
-        "not_covered_false",
         "excluded",
+        "not_covered_false",
+        "not_covered_true",
+        "parent",
     )
 
     def __init__(
@@ -629,6 +624,26 @@ class ConditionCoverage(CoverageBase):
         not_covered_false: list[int],
         excluded: bool = False,
     ) -> None:
+        """
+        Initialize a condition coverage object.
+
+        Arguments:
+            parent (FileCoverage): The parent container.
+            data_sources (str | set[tuple[str, ...]]): The source of the data.
+            conditionno (int):
+                The number of the condition.
+            count (int):
+                Number of condition outcomes in this expression.
+            covered (int):
+                Number of covered condition outcomes in this expression.
+            not_covered_true (list[int]):
+                The conditions which were not true.
+            not_covered_false (list[int]):
+                The conditions which were not false.
+            excluded (bool, optional):
+                Whether the condition is excluded.
+
+        """
         super().__init__(data_sources)
         self.parent = parent
         self.conditionno = conditionno
@@ -725,7 +740,8 @@ class ConditionCoverage(CoverageBase):
         []
         >>> left.excluded
         True
-        """
+
+        """  # noqa: E501
         if options.json_compare:
             self.aggregate_diff_from_children(other)
         else:
@@ -741,10 +757,10 @@ class ConditionCoverage(CoverageBase):
                 )
 
             self.not_covered_false = sorted(
-                list(set(self.not_covered_false) & set(other.not_covered_false))
+                set(self.not_covered_false) & set(other.not_covered_false)
             )
             self.not_covered_true = sorted(
-                list(set(self.not_covered_true) & set(other.not_covered_true))
+                set(self.not_covered_true) & set(other.not_covered_true)
             )
             self.covered = (
                 self.count - len(self.not_covered_false) - len(self.not_covered_true)
@@ -784,7 +800,7 @@ class ConditionCoverage(CoverageBase):
 
 
 class DecisionCoverageUncheckable(CoverageBase):
-    r"""Represent coverage information about a decision."""
+    r"""Represent an uncheckable decision."""
 
     __slots__ = ("parent",)
 
@@ -793,6 +809,14 @@ class DecisionCoverageUncheckable(CoverageBase):
         parent: LineCoverage | None,
         data_sources: str | set[tuple[str, ...]],
     ) -> None:
+        """
+        Initialize a uncheckable decision coverage.
+
+        Arguments:
+            parent (FileCoverage): The parent container.
+            data_sources (str | set[tuple[str, ...]]): The source of the data.
+
+        """
         super().__init__(data_sources)
         self.parent = parent
 
@@ -825,7 +849,8 @@ class DecisionCoverageUncheckable(CoverageBase):
     @property
     def key(self) -> NoReturn:
         """Get the key used for the dictionary to unique identify the coverage object."""
-        raise NotImplementedError("Function not implemented for decision objects.")
+        msg = "Function not implemented for decision objects."
+        raise NotImplementedError(msg)
 
     @property
     def location(self) -> str | None:
@@ -841,22 +866,13 @@ class DecisionCoverageUncheckable(CoverageBase):
         """Get the coverage stat."""
         return DecisionCoverageStat(
             total=2, covered=0, uncheckable=1
-        )  # TODO should it be uncheckable=2?
+        )  # TODO: should it be uncheckable=2?
 
 
 class DecisionCoverageConditional(CoverageBase):
-    r"""Represent coverage information about a decision.
+    r"""Represent coverage information about a decision."""
 
-    Args:
-        count_true (int):
-            Number of times this decision was made.
-
-        count_false (int):
-            Number of times this decision was made.
-
-    """
-
-    __slots__ = "parent", "count_true", "count_false"
+    __slots__ = "count_false", "count_true", "parent"
 
     def __init__(
         self,
@@ -866,6 +882,18 @@ class DecisionCoverageConditional(CoverageBase):
         count_true: int,
         count_false: int,
     ) -> None:
+        """
+        Initialize a decision coverage condition.
+
+        Arguments:
+            parent (FileCoverage): The parent container.
+            data_sources (str | set[tuple[str, ...]]): The source of the data.
+            count_true (int):
+                Number of times this decision was made.
+            count_false (int):
+                Number of times this decision was made.
+
+        """
         super().__init__(data_sources)
         self.parent = parent
         if count_true < 0:
@@ -917,7 +945,8 @@ class DecisionCoverageConditional(CoverageBase):
     @property
     def key(self) -> NoReturn:
         """Get the key used for the dictionary to unique identify the coverage object."""
-        raise NotImplementedError("Function not implemented for decision objects.")
+        msg = "Function not implemented for decision objects."
+        raise NotImplementedError(msg)
 
     @property
     def location(self) -> str | None:
@@ -940,14 +969,9 @@ class DecisionCoverageConditional(CoverageBase):
 
 
 class DecisionCoverageSwitch(CoverageBase):
-    r"""Represent coverage information about a decision.
+    r"""Represent coverage information about a decision."""
 
-    Args:
-        count (int):
-            Number of times this decision was made.
-    """
-
-    __slots__ = "parent", "count"
+    __slots__ = "count", "parent"
 
     def __init__(
         self,
@@ -956,6 +980,16 @@ class DecisionCoverageSwitch(CoverageBase):
         *,
         count: int,
     ) -> None:
+        """
+        Decision coverage object.
+
+        Arguments:
+            parent (FileCoverage): The parent container.
+            data_sources (str | set[tuple[str, ...]]): The source of the data.
+            count (int):
+                Number of times this decision was made.
+
+        """
         super().__init__(data_sources)
         self.parent = parent
         if count < 0:
@@ -1001,7 +1035,8 @@ class DecisionCoverageSwitch(CoverageBase):
     @property
     def key(self) -> NoReturn:
         """Get the key used for the dictionary to unique identify the coverage object."""
-        raise NotImplementedError("Function not implemented for decision objects.")
+        msg = "Function not implemented for decision objects."
+        raise NotImplementedError(msg)
 
     @property
     def location(self) -> str | None:
@@ -1027,20 +1062,10 @@ DecisionCoverage = (
 
 
 class CallCoverage(CoverageBase):
-    r"""Represent coverage information about a call.
+    r"""
+    Represent coverage information about a call.
 
-    Args:
-        callno (int, optional):
-            The number of the call, only used if destination_block_id is None.
-        source_block_id (int):
-            The block number.
-        destination_block_id (int, optional):
-            The destination block of the branch. None if unknown.
-        returned (int):
-            How often the function call returned.
-        excluded (bool, optional):
-            Whether the call is excluded.
-
+    Examples:
         >>> filecov = FileCoverage("file.c", filename="file.c")
         >>> linecov_list = LineCoverageCollection(filecov, "not_used.gcov", lineno=11)
         >>> linecov = LineCoverage(linecov_list, "line.gcov", count=0, function_name="function")
@@ -1057,15 +1082,16 @@ class CallCoverage(CoverageBase):
         GCOV data files are:
            call_1.gcov
            call_2.gcov
+
     """
 
     __slots__ = (
-        "parent",
         "callno",
-        "source_block_id",
         "destination_block_id",
-        "returned",
         "excluded",
+        "parent",
+        "returned",
+        "source_block_id",
     )
 
     def __init__(
@@ -1079,6 +1105,24 @@ class CallCoverage(CoverageBase):
         returned: int,
         excluded: bool = False,
     ) -> None:
+        """
+        Call coverage object.
+
+        Arguments:
+            parent (FileCoverage): The parent container.
+            data_sources (str | set[tuple[str, ...]]): The source of the data.
+            callno (int, optional):
+                The number of the call, only used if destination_block_id is None.
+            source_block_id (int):
+                The block number.
+            destination_block_id (int, optional):
+                The destination block of the branch. None if unknown.
+            returned (int):
+                How often the function call returned.
+            excluded (bool, optional):
+                Whether the call is excluded.
+
+        """
         super().__init__(data_sources)
         self.parent = parent
         self.callno = callno
@@ -1238,7 +1282,8 @@ class CallCoverage(CoverageBase):
 
 
 class LineCoverage(CoverageBase):
-    r"""Represent coverage information about a line.
+    r"""
+    Represent coverage information about a line.
 
     Each line is either *excluded* or *reportable*.
 
@@ -1246,37 +1291,27 @@ class LineCoverage(CoverageBase):
 
     The default state of a line is *coverable*/*reportable*/*uncovered*.
 
-    Args:
-        count (int):
-            How often this line was executed at least partially.
-        function_name (str):
-            Mangled name of the function the line belongs to.
-        block_ids (*int, optional):
-            List of block ids in this line
-        excluded (bool, optional):
-            Whether this line is excluded by a marker.
-
     >>> filecov = FileCoverage("file.gcov", filename="file.c")
     >>> linecov_list = LineCoverageCollection(filecov, "not_used.gcov", lineno=1)
     >>> linecov = LineCoverage(linecov_list, "line.gcov", count=-1, function_name=None)
     Traceback (most recent call last):
-        ...
+      ...
     gcovr.exceptions.GcovrDataAssertionError: file.c:1 count must not be a negative value.
     GCOV data file is:
        line.gcov
     """
 
     __slots__ = (
-        "parent",
-        "count",
-        "function_name",
-        "demangled_function_name",
-        "block_ids",
-        "excluded",
         "_branches",
-        "_conditions",
-        "decision",
         "_calls",
+        "_conditions",
+        "block_ids",
+        "count",
+        "decision",
+        "demangled_function_name",
+        "excluded",
+        "function_name",
+        "parent",
     )
 
     def __init__(
@@ -1289,6 +1324,22 @@ class LineCoverage(CoverageBase):
         block_ids: list[int] | None = None,
         excluded: bool = False,
     ) -> None:
+        """
+        Coverage container for a single line.
+
+        Arguments:
+            parent (FileCoverage): The parent container.
+            data_sources (str | set[tuple[str, ...]]): The source of the data.
+            count (int):
+                How often this line was executed at least partially.
+            function_name (str):
+                Mangled name of the function the line belongs to.
+            block_ids (*int, optional):
+                List of block ids in this line
+            excluded (bool, optional):
+                Whether this line is excluded by a marker.
+
+        """
         super().__init__(data_sources)
         self.parent = parent
         self.count = count
@@ -1390,7 +1441,8 @@ class LineCoverage(CoverageBase):
                     linecov, get_data_sources, data_dict_decision
                 )
             else:  # pragma: no cover
-                raise AssertionError(f"Unknown decision type: {decision_type!r}")
+                msg = f"Unknown decision type: {decision_type!r}"
+                raise AssertionError(msg)
 
         if (calls := data_dict.get("calls")) is not None:
             for data_dict_call in calls:
@@ -1438,7 +1490,8 @@ class LineCoverage(CoverageBase):
         decisioncov: DecisionCoverage | None,
         options: MergeOptions,
     ) -> None:
-        """Merge DecisionCoverage information.
+        """
+        Merge DecisionCoverage information.
 
         The DecisionCoverage has different states:
 
@@ -1452,9 +1505,8 @@ class LineCoverage(CoverageBase):
         if options.json_compare and (
             self.decision is not None or (decisioncov and decisioncov is not None)
         ):
-            raise SanityCheckError(
-                "Decision coverage in json compare mode is not supported."
-            )
+            msg = "Decision coverage in json compare mode is not supported."
+            raise SanityCheckError(msg)
 
         if self.decision is not None and decisioncov is not None:
             # If the type is different the result is Uncheckable.
@@ -1772,7 +1824,8 @@ class LineCoverage(CoverageBase):
 
 
 class LineCoverageCollection(CoverageBase):
-    r"""Represent coverage information about a line.
+    r"""
+    Represent coverage information about a line.
 
     Each line is either *excluded* or *reportable*.
 
@@ -1780,22 +1833,18 @@ class LineCoverageCollection(CoverageBase):
 
     The default state of a line is *coverable*/*reportable*/*uncovered*.
 
-    Args:
-        lineno (int):
-            The line number.
-        md5 (str, optional):
-            The md5 checksum of the source code line.
-
+    Examples:
     >>> filecov = FileCoverage("file.gcov", filename="file.c")
     >>> linecov_list = LineCoverageCollection(filecov, "line.gcov", lineno=0)
     Traceback (most recent call last):
-        ...
+      ...
     gcovr.exceptions.GcovrDataAssertionError: file.c:0 lineno must be a positive value.
     GCOV data file is:
        line.gcov
+
     """
 
-    __slots__ = ("parent", "lineno", "md5", "_linecov", "_raw_linecov")
+    __slots__ = ("_linecov", "_raw_linecov", "lineno", "md5", "parent")
 
     def __init__(
         self,
@@ -1805,6 +1854,18 @@ class LineCoverageCollection(CoverageBase):
         lineno: int,
         md5: str | None = None,
     ) -> None:
+        """
+        Container for different line coverage objects for the same line.
+
+        Arguments:
+            parent (FileCoverage): The parent container.
+            data_sources (str | set[tuple[str, ...]]): The source of the data.
+            lineno (int):
+                The line number.
+            md5 (str, optional):
+                The md5 checksum of the source code line.
+
+        """
         super().__init__(data_sources)
         self.parent = parent
         self.lineno = lineno
@@ -1816,12 +1877,15 @@ class LineCoverageCollection(CoverageBase):
             self.raise_data_error("lineno must be a positive value.")
 
     def __setitem__(self, key: LinecovKeyType, item: LineCoverage) -> None:
+        """Set a single linecov object."""
         self._linecov[key] = item
 
     def __getitem__(self, key: LinecovKeyType) -> LineCoverage:
+        """Get a single linecov object."""
         return self._linecov[key]
 
     def __len__(self) -> int:
+        """Get the number of linecov object."""
         return len(self._linecov)
 
     def linecov(self, *, sort: bool = False) -> Iterable[LineCoverage]:
@@ -1865,7 +1929,7 @@ class LineCoverageCollection(CoverageBase):
                 linecov.count for linecov in self.linecov() if linecov.is_reportable
             ),
             function_name=None,
-            block_ids=list(sorted(block_ids)) if block_ids else None,
+            block_ids=sorted(block_ids) if block_ids else None,
             excluded=all(linecov.is_excluded for linecov in self.linecov()),
         )
         # ...and add the child objects
@@ -1912,7 +1976,8 @@ class LineCoverageCollection(CoverageBase):
                         count=decisioncov.count,
                     )
                 else:  # pragma: no cover
-                    raise AssertionError("Unknown decision type.")
+                    msg = "Unknown decision type."
+                    raise AssertionError(msg)
                 merged_linecov.insert_decision_coverage(decisioncov)
             for callcov in linecov.calls():
                 merged_linecov.insert_call_coverage(
@@ -2037,33 +2102,13 @@ class LineCoverageCollection(CoverageBase):
 
 
 class FunctionCoverage(CoverageBase):
-    r"""Represent coverage information about a function.
+    r"""
+    Represent coverage information about a function.
 
     The counter is stored as dictionary with the line as key to be able
-    to merge function coverage in different ways
+    to merge function coverage in different ways.
 
-    Args:
-        mangled_name (str):
-            The mangled name of the function. If demangled_name is None and
-            the name contains a brace it's used as demangled_name. This is needed
-            to support existing GCOV text output where we do not know if the
-            option --demanglednames was used for generation. If it contains a brace
-            the demangled name must be None.
-        demangled_name (str):
-            The demangled name of the functions.
-        lineno (int):
-            The line number.
-        execution_count (int):
-            How often this function was executed.
-        blocks_percent (float):
-            Block coverage of function.
-        start ((int, int)), optional):
-            Tuple with function start line and column.
-        end ((int, int)), optional):
-            Tuple with function end line and column.
-        excluded (bool, optional):
-            Whether this line is excluded by a marker.
-
+    Examples:
         >>> filecov = FileCoverage("file.c", filename="file.c")
         >>> FunctionCoverage(filecov, "func.gcov", mangled_name="foo()", demangled_name="bar()", lineno=5, execution_count=3, blocks_percent=0.5)
         Traceback (most recent call last):
@@ -2083,17 +2128,18 @@ class FunctionCoverage(CoverageBase):
         gcovr.exceptions.GcovrDataAssertionError: file.c:1 execution_count must not be a negative value.
         GCOV data file is:
            func.gcov
+
     """
 
     __slots__ = (
-        "parent",
-        "mangled_name",
-        "demangled_name",
-        "execution_count",
         "blocks_percent",
-        "start",
+        "demangled_name",
         "end",
         "excluded",
+        "execution_count",
+        "mangled_name",
+        "parent",
+        "start",
     )
 
     def __init__(
@@ -2110,6 +2156,34 @@ class FunctionCoverage(CoverageBase):
         end: tuple[int, int] | None = None,
         excluded: bool = False,
     ) -> None:
+        """
+        Initialize a function coverage object.
+
+        Arguments:
+            parent (FileCoverage): The parent container.
+            data_sources (str | set[tuple[str, ...]]): The source of the data.
+            mangled_name (str):
+                The mangled name of the function. If demangled_name is None and
+                the name contains a brace it's used as demangled_name. This is needed
+                to support existing GCOV text output where we do not know if the
+                option --demanglednames was used for generation. If it contains a brace
+                the demangled name must be None.
+            demangled_name (str):
+                The demangled name of the functions.
+            lineno (int):
+                The line number.
+            execution_count (int):
+                How often this function was executed.
+            blocks_percent (float):
+                Block coverage of function.
+            start ((int, int)), optional):
+                Tuple with function start line and column.
+            end ((int, int)), optional):
+                Tuple with function end line and column.
+            excluded (bool, optional):
+                Whether this line is excluded by a marker.
+
+        """
         super().__init__(data_sources)
         self.parent = parent
         self.execution_count = CoverageDict[int, int | None]({lineno: execution_count})
@@ -2124,17 +2198,16 @@ class FunctionCoverage(CoverageBase):
             None if end is None else CoverageDict[int, tuple[int, int]]({lineno: end})
         )
 
-        if mangled_name is not None:
-            # We have a demangled name as name -> demangled_name must be None and we need to change the values
-            if "(" in mangled_name:
-                # Set the value to have the correct error message.
-                self.demangled_name = demangled_name
-                if demangled_name is not None:
-                    self.raise_data_error(
-                        f"Got {mangled_name} as 'mangled_name', in this case 'demangled_name' must be None."
-                    )
-                # Change the attribute values
-                mangled_name, demangled_name = (None, mangled_name)
+        # We have a demangled name as name -> demangled_name must be None and we need to change the values
+        if (mangled_name is not None) and ("(" in mangled_name):
+            # Set the value to have the correct error message.
+            self.demangled_name = demangled_name
+            if demangled_name is not None:
+                self.raise_data_error(
+                    f"Got {mangled_name} as 'mangled_name', in this case 'demangled_name' must be None."
+                )
+            # Change the attribute values
+            mangled_name, demangled_name = (None, mangled_name)
         self.mangled_name = mangled_name
         self.demangled_name = demangled_name
 
@@ -2242,9 +2315,7 @@ class FunctionCoverage(CoverageBase):
             #                  ::= D1                     # complete object destructor
             #                  ::= D2                     # base object destructor
             if self.demangled_name is not None:
-                if self.mangled_name is None:
-                    self.mangled_name = other.mangled_name
-                elif (
+                if (self.mangled_name is None) or (
                     other.mangled_name is not None
                     and other.mangled_name < self.mangled_name
                 ):
@@ -2255,50 +2326,44 @@ class FunctionCoverage(CoverageBase):
                     other, "Function mangled name", lambda x: x.mangled_name
                 )
 
-            if not options.func_opts.ignore_function_lineno:
-                if self.execution_count.keys() != other.execution_count.keys():
-                    lines = sorted(
-                        set(
-                            [
-                                *self.execution_count.keys(),
-                                *other.execution_count.keys(),
-                            ]
-                        )
-                    )
-                    self.raise_merge_error(
-                        f"Got function {self.name} on multiple lines: {', '.join([str(line) for line in lines])}.\n"
-                        "\tYou can run gcovr with --merge-mode-functions=MERGE_MODE.\n"
-                        "\tThe available values for MERGE_MODE are described in the documentation.",
-                        other,
-                    )
+            if not options.func_opts.ignore_function_lineno and (
+                self.execution_count.keys() != other.execution_count.keys()
+            ):
+                lines = sorted(
+                    {
+                        *self.execution_count.keys(),
+                        *other.execution_count.keys(),
+                    }
+                )
+                self.raise_merge_error(
+                    f"Got function {self.name} on multiple lines: {', '.join([str(line) for line in lines])}.\n"
+                    "\tYou can run gcovr with --merge-mode-functions=MERGE_MODE.\n"
+                    "\tThe available values for MERGE_MODE are described in the documentation.",
+                    other,
+                )
 
             # Keep distinct counts for each line number
             if options.func_opts.separate_function:
                 for lineno, count in other.execution_count.items():
-                    try:
-                        if self.execution_count[lineno] is None:
-                            self.execution_count[lineno] = count
-                        elif count is not None:
-                            self.execution_count[lineno] += count  # type: ignore [operator]
-                    except KeyError:
+                    if (lineno not in self.execution_count) or (
+                        self.execution_count[lineno] is None
+                    ):
                         self.execution_count[lineno] = count
+                    elif count is not None:
+                        self.execution_count[lineno] += count  # type: ignore [operator]
                 for lineno, blocks_percent in other.blocks_percent.items():
-                    try:
+                    if lineno in self.blocks_percent:
                         # Take the maximum value for this line
-                        if self.blocks_percent[lineno] is None:
-                            self.blocks_percent[lineno] = blocks_percent
-                        elif (
-                            blocks_percent is not None
+                        if (self.blocks_percent[lineno] is None) or (
+                            self.blocks_percent[lineno] is not None
+                            and blocks_percent is not None
                             and self.blocks_percent[lineno] < blocks_percent  # type: ignore [operator]
                         ):
                             self.blocks_percent[lineno] = blocks_percent
-                    except KeyError:
+                    else:
                         self.blocks_percent[lineno] = blocks_percent
                 for lineno, excluded in other.excluded.items():
-                    try:
-                        self.excluded[lineno] |= excluded
-                    except KeyError:
-                        self.excluded[lineno] = excluded
+                    self.excluded[lineno] = excluded or self.excluded.get(lineno, False)
                 if other.start is not None:
                     if self.start is None:
                         self.start = CoverageDict[int, tuple[int, int]]()
@@ -2311,7 +2376,7 @@ class FunctionCoverage(CoverageBase):
                         self.end[lineno] = end
             # Merge the counters into a single line number
             else:
-                right_lineno = list(other.execution_count.keys())[0]
+                right_lineno = next(iter(other.execution_count.keys()))
                 # merge all counts into an entry for a single line number
                 if right_lineno in self.execution_count:
                     lineno = right_lineno
@@ -2326,7 +2391,8 @@ class FunctionCoverage(CoverageBase):
                         *self.execution_count.keys(), *other.execution_count.keys()
                     )
                 else:  # pragma: no cover
-                    raise AssertionError("Unknown merge mode")
+                    msg = "Unknown merge mode"
+                    raise AssertionError(msg)
 
                 # Overwrite data with the sum at the desired line
                 self.execution_count = CoverageDict[int, int | None](
@@ -2396,19 +2462,20 @@ class FunctionCoverage(CoverageBase):
     def exclude(self, lineno: int) -> None:
         """Exclude line from coverage statistic."""
         if lineno not in self.excluded:  # pragma: no cover
-            raise SanityCheckError("Unknown lineno to exclude.")
+            msg = "Unknown lineno to exclude."
+            raise SanityCheckError(msg)
         self.excluded[lineno] = True
 
     @property
     def linenos(self) -> list[int]:
         """Get the list of line numbers for this function which are not excluded."""
-        return list(sorted(self.excluded.keys()))
+        return sorted(self.excluded.keys())
 
     @property
     def reportable_linenos(self) -> list[int]:
         """Get the list of line numbers for this function which are not excluded."""
-        return list(
-            sorted(lineno for lineno, excluded in self.excluded.items() if not excluded)
+        return sorted(
+            lineno for lineno, excluded in self.excluded.items() if not excluded
         )
 
     @property
@@ -2429,11 +2496,12 @@ class FunctionCoverage(CoverageBase):
         if "(" not in self.demangled_name:
             return (str(self.demangled_name), "")
 
-        open_brackets, close_brackets = (0, 0)
+        close_brackets = 0
         signature = ""
-        for part in reversed(self.demangled_name.split("(")):
+        for open_brackets, part in enumerate(
+            reversed(self.demangled_name.split("(")), 1
+        ):
             signature = f"({part}{signature}"
-            open_brackets += 1
             close_brackets += len(re.findall(r"(\))", part))
             if open_brackets == close_brackets:
                 break
@@ -2449,11 +2517,11 @@ class FileCoverage(CoverageBase):
     """Represent coverage information about a file."""
 
     __slots__ = (
-        "filename",
+        "__linecov_by_function",
+        "__properties",
         "_functions",
         "_lines",
-        "__properties",
-        "__linecov_by_function",
+        "filename",
     )
 
     def __init__(
@@ -2462,6 +2530,7 @@ class FileCoverage(CoverageBase):
         *,
         filename: str,
     ) -> None:
+        """Initialize a file coverage object."""
         super().__init__(data_sources)
         self.filename: str = filename
         self._functions = CoverageDict[FunctioncovKeyType, FunctionCoverage]()
@@ -2492,13 +2561,13 @@ class FileCoverage(CoverageBase):
                 }
         else:
 
-            def get_data_sources(cov: CoverageBase) -> dict[str, Any]:  # pylint: disable=unused-argument
+            def get_data_sources(cov: CoverageBase) -> dict[str, Any]:  # pylint: disable=unused-argument  # noqa: ARG001
                 """Stub if not running in verbose mode."""
                 return {}
 
         filename = self.presentable_filename(options.root_filter)
         if options.json_base:
-            filename = "/".join([options.json_base, filename])
+            filename = f"{options.json_base}/{filename}"
         data_dict = {
             "file": filename,
             "lines": [
@@ -2535,9 +2604,7 @@ class FileCoverage(CoverageBase):
 
         def get_data_sources(data_dict: dict[str, Any]) -> set[tuple[str, ...]]:
             """Return the set for data sources."""
-            return set(
-                (*e,) for e in data_dict.get(GCOVR_DATA_SOURCES, [[data_sources]])
-            )
+            return {(*e,) for e in data_dict.get(GCOVR_DATA_SOURCES, [[data_sources]])}
 
         filecov = FileCoverage(
             get_data_sources(data_dict),
@@ -2564,7 +2631,6 @@ class FileCoverage(CoverageBase):
 
         Precondition: both objects have same filename.
         """
-
         if self.filename != other.filename:
             self.raise_data_error("Filename must be equal")
 
@@ -2578,9 +2644,8 @@ class FileCoverage(CoverageBase):
     @property
     def key(self) -> NoReturn:
         """Get the key used for the dictionary to unique identify the coverage object."""
-        raise NotImplementedError(
-            "Function not implemented for file coverage object, use property 'filename' instead."
-        )
+        msg = "Function not implemented for file coverage object, use property 'filename' instead."
+        raise NotImplementedError(msg)
 
     @property
     def location(self) -> str | None:
@@ -2639,10 +2704,11 @@ class FileCoverage(CoverageBase):
     def remove_line(self, lineno: int) -> None:
         """Remove the line coverage collection for the given line."""
         if lineno not in self._lines:  # pragma: no cover
-            raise SanityCheckError("Unknown line to remove.")
+            msg = "Unknown line to remove."
+            raise SanityCheckError(msg)
         del self._lines[lineno]
 
-    def merge_lines(self, activate_trace_logging: bool) -> None:
+    def merge_lines(self, *, activate_trace_logging: bool) -> None:
         """Merge line coverage if there are several items for same line."""
         merged_lines = []
         for linecov_collection in self.lines(sort=True):
@@ -2797,7 +2863,7 @@ class FileCoverage(CoverageBase):
             self.remove_line_coverage(linecov)
 
     def filter_for_function(self, functioncov: FunctionCoverage) -> FileCoverage:
-        """Get a file coverage object reduced to a single function"""
+        """Get a file coverage object reduced to a single function."""
         if functioncov.key not in self._functions:
             self.raise_data_error(
                 f"Function {functioncov.key} must be in filtered file coverage object."

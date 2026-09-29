@@ -1,5 +1,3 @@
-# -*- coding:utf-8 -*-
-
 #  ************************** Copyrights and license ***************************
 #
 # This file is part of gcovr 8.6+main, a parsing and reporting tool for gcov.
@@ -42,13 +40,12 @@ PARAMETERS = [
 @pytest.mark.txt
 @pytest.mark.html
 @pytest.mark.parametrize(
-    "_test_id,runs,run_options",
+    ("_test_id", "runs", "run_options"),
     PARAMETERS,
     ids=[p[0] for p in PARAMETERS],
 )
 def test(
     gcovr_test_exec: "GcovrTestExec",
-    caplog: pytest.LogCaptureFixture,
     _test_id: str,
     runs: int,
     run_options: list[str],
@@ -74,7 +71,7 @@ def test(
         "--json-pretty",
         "--json=coverage_1.json",
     )
-    for _ in range(0, runs):
+    for _ in range(runs):
         gcovr_test_exec.run("./subdir/testcase", *run_options)
     gcovr_options = ["--exclude", ".*/file3.cpp"] if run_options else []
     gcovr_test_exec.gcovr(
@@ -83,7 +80,10 @@ def test(
         "--json-pretty",
         "--json=coverage_2.json",
     )
-    with pytest.raises(ValueError) as exception:
+    with pytest.raises(
+        ValueError,
+        match=r"A txt report with several metrics is not possible with --json-compare.",
+    ):
         process = gcovr_test_exec.gcovr(
             "--json-add-tracefile=coverage_1.json",
             "--json-add-tracefile=coverage_2.json",
@@ -92,9 +92,6 @@ def test(
             "--txt-metric=branch",
             use_main=True,
         )
-    assert str(exception.value) == (
-        "A txt report with several metrics is not possible with --json-compare."
-    )
 
     gcovr_test_exec.gcovr(
         "--json-add-tracefile=coverage_1.json",

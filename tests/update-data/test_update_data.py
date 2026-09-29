@@ -1,5 +1,3 @@
-# -*- coding:utf-8 -*-
-
 #  ************************** Copyrights and license ***************************
 #
 # This file is part of gcovr 8.6+main, a parsing and reporting tool for gcov.
@@ -28,7 +26,8 @@ from tests.conftest import IS_LINUX, GcovrTestExec
 )
 @pytest.mark.json
 def test(gcovr_test_exec: "GcovrTestExec") -> None:
-    """A test that verifies CoverageData.update function.
+    """
+    A test that verifies CoverageData.update function.
 
     The same header will be included by 2 source files and
     shall report 100% coverage.

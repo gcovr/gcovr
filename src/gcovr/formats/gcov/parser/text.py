@@ -1,5 +1,3 @@
-# -*- coding:utf-8 -*-
-
 #  ************************** Copyrights and license ***************************
 #
 # This file is part of gcovr 8.6+main, a parsing and reporting tool for gcov.
@@ -98,7 +96,7 @@ class _ExtraInfo(enum.Flag):
 
 
 class _SourceLine(NamedTuple):
-    """A gcov line with source code: ``HITS: LINENO:CODE``"""
+    """A gcov line with source code: `HITS: LINENO:CODE`."""
 
     hits: int
     lineno: int
@@ -107,14 +105,14 @@ class _SourceLine(NamedTuple):
 
 
 class _MetadataLine(NamedTuple):
-    """A gcov line with metadata: ``-: 0:KEY:VALUE``"""
+    """A gcov line with metadata: `-: 0:KEY:VALUE`."""
 
     key: str
     value: str | None
 
 
 class _BlockLine(NamedTuple):
-    """A gcov line with block data: ``HITS: LINENO-block BLOCKNO``"""
+    """A gcov line with block data: `HITS: LINENO-block BLOCKNO`."""
 
     hits: int
     lineno: int
@@ -123,14 +121,14 @@ class _BlockLine(NamedTuple):
 
 
 class _CallLine(NamedTuple):
-    """A gcov line with call data: ``call CALLNO returned RETURNED``"""
+    """A gcov line with call data: `call CALLNO returned RETURNED`."""
 
     callno: int
     returned: int
 
 
 class _BranchLine(NamedTuple):
-    """A gcov line with branch data: ``branch BRANCHNO taken HITS (ANNOTATION)``"""
+    """A gcov line with branch data: `branch BRANCHNO taken HITS (ANNOTATION)`."""
 
     branchno: int
     hits: int
@@ -138,9 +136,7 @@ class _BranchLine(NamedTuple):
 
 
 class _UnconditionalLine(NamedTuple):
-    """
-    A gcov line with unconditional branch data: ``unconditional BRANCHNO taken HITS``
-    """
+    """A gcov line with unconditional branch data: `unconditional BRANCHNO taken HITS`."""
 
     branchno: int
     hits: int
@@ -150,7 +146,7 @@ class _FunctionLine(NamedTuple):
     """
     A gcov line with function coverage data for the next line.
 
-    ``function NAME called COUNT returned RETURNED blocks executed BLOCKS``
+    `function NAME called COUNT returned RETURNED blocks executed BLOCKS`
     """
 
     name: str
@@ -159,13 +155,13 @@ class _FunctionLine(NamedTuple):
 
 
 class _FunctionSpecializationNameLine(NamedTuple):
-    """A gcov line with the name of a specialization section: ``NAME:``"""
+    """A gcov line with the name of a specialization section: `NAME:`."""
 
     name: str
 
 
 class _FunctionSpecializationSeparatorLine(NamedTuple):
-    """A gcov line that delimits function specializations (no fields)"""
+    """A gcov line that delimits function specializations (no fields)."""
 
 
 # NamedTuples can't inherit from a common base,
@@ -185,10 +181,11 @@ _Line = (
 )
 
 
-class UnknownLineType(Exception):
+class UnknownLineTypeError(Exception):
     """Used by `_parse_line()` to signal that no known line type matched."""
 
     def __init__(self, line: str) -> None:
+        """Initialize unknown line type error."""
         super().__init__(line)
         self.line = line
 
@@ -203,7 +200,7 @@ def parse_metadata(
     r"""
     Collect the header/metadata lines from a gcov file.
 
-    Example:
+    Examples:
     >>> parse_metadata("file", '''
     ...   -: 0:Foo:bar
     ...   -: 0:Key:123
@@ -221,6 +218,7 @@ def parse_metadata(
     ...   -: 0:Key
     ... '''.splitlines())
     {'Source': 'file', 'Foo': 'bar', 'Key': None}
+
     """
     collected = {}
     for line in lines:
@@ -240,9 +238,8 @@ def parse_metadata(
 
     if "Source" not in collected:
         data = "\n".join(lines)
-        raise RuntimeError(
-            f"Missing key 'Source' in metadata. GCOV data was >>{data}<< End of GCOV data"
-        )
+        msg = f"Missing key 'Source' in metadata. GCOV data was >>{data}<< End of GCOV data"
+        raise RuntimeError(msg)
 
     return collected
 
@@ -268,17 +265,22 @@ def parse_coverage(
     Coverage exclusion decisions are reported as verbose messages.
 
     Arguments:
+        data_filename: The data file(s) for the coverage data.
         lines: the lines of the file to be parsed (excluding newlines)
         filename: for error reports
         ignore_parse_errors: which errors should be converted to warnings
+        suspicious_hits_threshold: Threshold for detecting suspicious hits.
+        activate_trace_logging: Activate trace commands.
+        use_existing_files: Use existing gcov files.
+
 
     Returns:
         tuple of the coverage data and the source code lines
 
     Raises:
         Any exceptions during parsing, unless ignore_parse_errors is set.
-    """
 
+    """
     lines_with_errors = list[_LineWithError]()
     tokenized_lines = list[tuple[_Line, str]]()
     persistent_states = dict[str, Any]()
@@ -296,7 +298,7 @@ def parse_coverage(
                 persistent_states,
             )
             tokenized_lines.append((parsed_line, raw_line))
-        except Exception as ex:  # pylint: disable=broad-except
+        except Exception as ex:  # pylint: disable=broad-except  # noqa: BLE001
             lines_with_errors.append((raw_line, ex))
 
     missing_function_lines = not any(
@@ -355,7 +357,7 @@ def parse_coverage(
                 filecov=filecov,
                 activate_trace_logging=activate_trace_logging,
             )
-        except Exception as ex:  # pylint: disable=broad-except
+        except Exception as ex:  # pylint: disable=broad-except  # noqa: BLE001, PERF203
             lines_with_errors.append((raw_line, ex))
             state = _ParserState.new(is_recovering=True)
 
@@ -407,7 +409,8 @@ def _reconstruct_source_code(tokens: Iterable[_Line]) -> list[str]:
 
 
 class _ParserState(NamedTuple):
-    """State information while parsing gcov lines.
+    """
+    State information while parsing gcov lines.
 
     >>> state = _ParserState.new()
     >>> state.previous_state is None
@@ -438,11 +441,11 @@ class _ParserState(NamedTuple):
     gcovr.exceptions.SanityCheckError: Previous_state of _ParserState is None.
     """
 
-    deferred_functions: list[_FunctionLine] = []
+    deferred_functions: list[_FunctionLine] = []  # noqa: RUF012
     function_name: str | None = None
     function_specialization: bool = False
     last_linecov: LineCoverage | None = None
-    linecov_list: list[LineCoverage] = []
+    linecov_list: list[LineCoverage] = []  # noqa: RUF012
     block_id: int | None = None
     is_recovering: bool = False
     previous_state: "_ParserState | None" = None
@@ -473,7 +476,8 @@ class _ParserState(NamedTuple):
     def restore_state(self) -> "_ParserState":
         """Restore the previous parser state with the current line coverage list."""
         if self.previous_state is None:
-            raise SanityCheckError(f"Previous_state of {type(self).__name__} is None.")
+            msg = f"Previous_state of {type(self).__name__} is None."
+            raise SanityCheckError(msg)
         return self.previous_state._replace(
             linecov_list=self.linecov_list,
             unknown_function=self.unknown_function,
@@ -567,10 +571,10 @@ def _gather_coverage_from_line(
 
         return state
 
-    elif state.is_recovering:
+    if state.is_recovering:
         return state  # skip until the next _SourceLine
 
-    elif isinstance(line, _FunctionLine):
+    if isinstance(line, _FunctionLine):
         # Defer handling of the function tag until the next source line.
         # This is important to get correct line number information.
         if state.deferred_functions and activate_trace_logging:
@@ -583,20 +587,20 @@ def _gather_coverage_from_line(
             function_name=line.name,
         )
 
-    elif isinstance(line, _FunctionSpecializationNameLine):
+    if isinstance(line, _FunctionSpecializationNameLine):
         # Now we know that we are in a specialization and not at the end of it.
         return state.save_state()._replace(
             function_specialization=True,
         )
 
-    elif isinstance(line, _FunctionSpecializationSeparatorLine):
+    if isinstance(line, _FunctionSpecializationSeparatorLine):
         # If there was a specialization active we need to restore the previous state, else we do nothing.
         if state.function_specialization:
             state = state.restore_state()
 
         return state
 
-    elif isinstance(line, _BranchLine):
+    if isinstance(line, _BranchLine):
         branchno, hits, annotation = line
 
         if state.last_linecov is not None:
@@ -612,7 +616,7 @@ def _gather_coverage_from_line(
         return state
 
     # ignore unused line types, such as specialization sections
-    elif isinstance(line, _CallLine):
+    if isinstance(line, _CallLine):
         callno, returned = line
 
         # linecov won't exist if it was considered noncode
@@ -627,17 +631,21 @@ def _gather_coverage_from_line(
 
         return state
 
-    elif isinstance(line, _BlockLine):
+    if isinstance(line, _BlockLine):
         return state._replace(block_id=line.block_id)
 
     # ignore metadata in this phase
-    elif isinstance(line, _MetadataLine):
+    if isinstance(
+        line,
+        (
+            _MetadataLine,
+            _UnconditionalLine,
+        ),
+    ):
         return state
 
-    elif isinstance(line, (_UnconditionalLine,)):
-        return state
-
-    raise AssertionError(f"Unexpected line type: {line!r}")
+    msg = f"Unexpected line type: {line!r}"
+    raise AssertionError(msg)
 
 
 def _report_lines_with_errors(
@@ -646,8 +654,7 @@ def _report_lines_with_errors(
     filename: str,
     ignore_parse_errors: set[str] | None,
 ) -> None:
-    """Log warnings and potentially re-throw exceptions"""
-
+    """Log warnings and potentially re-throw exceptions."""
     if not lines_with_errors:
         return
 
@@ -690,7 +697,7 @@ def _parse_line(
     """
     Categorize/parse individual lines without further processing.
 
-    Example: can parse code line:
+    Examples, can parse code line:
     >>> _parse_line("file", '     -: 13:struct Foo{};')
     _SourceLine(hits=0, lineno=13, source_code='struct Foo{};', extra_info=NONCODE)
     >>> _parse_line("file", '    12: 13:foo += 1;  ')
@@ -706,13 +713,13 @@ def _parse_line(
     >>> _parse_line("file", ' 1.7k*: 13:foo();')
     _SourceLine(hits=1700, lineno=13, source_code='foo();', extra_info=PARTIAL)
 
-    Example: can parse metadata line:
+    Examples, can parse metadata line:
     >>> _parse_line("file", '  -: 0:Foo:bar baz')
     _MetadataLine(key='Foo', value='bar baz')
     >>> _parse_line("file", '  -: 0:Some key:2')  # coerce numbers
     _MetadataLine(key='Some key', value='2')
 
-    Example: can parse branch tags:
+    Examples, can parse branch tags:
     >>> _parse_line("file", 'branch 3 taken 15%')
     _BranchLine(branchno=3, hits=1, annotation=None)
     >>> _parse_line("file", 'branch 3 taken 0%')
@@ -733,9 +740,9 @@ def _parse_line(
     _BranchLine(branchno=0, hits=0, annotation='fallthrough')
     >>> _parse_line("file", 'branch 2 with some unknown format')
     Traceback (most recent call last):
-    gcovr.formats.gcov.parser.text.UnknownLineType: branch 2 with some unknown format
+    gcovr.formats.gcov.parser.text.UnknownLineTypeError: branch 2 with some unknown format
 
-    Example: can parse call tags:
+    Examples, can parse call tags:
     >>> _parse_line("file", 'call  0 never executed')
     _CallLine(callno=0, returned=0)
     >>> _parse_line("file", 'call  17 returned 50%')
@@ -744,9 +751,9 @@ def _parse_line(
     _CallLine(callno=17, returned=9)
     >>> _parse_line("file", 'call 2 with some unknown format')
     Traceback (most recent call last):
-    gcovr.formats.gcov.parser.text.UnknownLineType: call 2 with some unknown format
+    gcovr.formats.gcov.parser.text.UnknownLineTypeError: call 2 with some unknown format
 
-    Example: can parse unconditional branches
+    Examples, can parse unconditional branches
     >>> _parse_line("file", 'unconditional 1 taken 17')
     _UnconditionalLine(branchno=1, hits=17)
     >>> _parse_line("file", 'unconditional 2 taken -1', ignore_parse_errors=set(['negative_hits.warn']))
@@ -757,9 +764,9 @@ def _parse_line(
     _UnconditionalLine(branchno=3, hits=0)
     >>> _parse_line("file", 'unconditional with some unknown format')
     Traceback (most recent call last):
-    gcovr.formats.gcov.parser.text.UnknownLineType: unconditional with some unknown format
+    gcovr.formats.gcov.parser.text.UnknownLineTypeError: unconditional with some unknown format
 
-    Example: can parse function tags:
+    Examples, can parse function tags:
     >>> _parse_line("file", 'function foo called 2 returned 1 blocks executed 85%')
     _FunctionLine(name='foo', call_count=2, blocks_covered=85.0)
     >>> _parse_line("file", 'function foo called 2 returned 50% blocks executed 85%')
@@ -768,23 +775,23 @@ def _parse_line(
     _FunctionLine(name='foo', call_count=2, blocks_covered=85.0)
     >>> _parse_line("file", 'function foo with some unknown format')
     Traceback (most recent call last):
-    gcovr.formats.gcov.parser.text.UnknownLineType: function foo with some unknown format
+    gcovr.formats.gcov.parser.text.UnknownLineTypeError: function foo with some unknown format
 
-    Example: can parse template specialization markers:
+    Examples, can parse template specialization markers:
     >>> _parse_line("file", '------------------')
     _FunctionSpecializationSeparatorLine()
 
-    Example: can parse template specialization names:
+    Examples, can parse template specialization names:
     >>> _parse_line("file", 'Foo<bar>::baz():')
     _FunctionSpecializationNameLine(name='Foo<bar>::baz()')
     >>> _parse_line("file", ' foo:')
     Traceback (most recent call last):
-    gcovr.formats.gcov.parser.text.UnknownLineType:  foo:
+    gcovr.formats.gcov.parser.text.UnknownLineTypeError:  foo:
     >>> _parse_line("file", ':')
     Traceback (most recent call last):
-    gcovr.formats.gcov.parser.text.UnknownLineType: :
+    gcovr.formats.gcov.parser.text.UnknownLineTypeError: :
 
-    Example: can parse block line:
+    Examples, can parse block line:
     >>> _parse_line("file", '     1: 32-block  0')
     _BlockLine(hits=1, lineno=32, block_id=0, extra_info=NONE)
     >>> _parse_line("file", ' %%%%%: 33-block  1')
@@ -799,12 +806,12 @@ def _parse_line(
     _BlockLine(hits=0, lineno=32, block_id=0, extra_info=NONE)
     >>> _parse_line("file", '     1: 9-block with some unknown format')
     Traceback (most recent call last):
-    gcovr.formats.gcov.parser.text.UnknownLineType:      1: 9-block with some unknown format
+    gcovr.formats.gcov.parser.text.UnknownLineTypeError:      1: 9-block with some unknown format
 
-    Example: will reject garbage:
+    Examples, will reject garbage:
     >>> _parse_line("file", 'nonexistent_tag foo bar')
     Traceback (most recent call last):
-    gcovr.formats.gcov.parser.text.UnknownLineType: nonexistent_tag foo bar
+    gcovr.formats.gcov.parser.text.UnknownLineTypeError: nonexistent_tag foo bar
     """
     # pylint: disable=too-many-branches
     if ignore_parse_errors is None:
@@ -826,7 +833,7 @@ def _parse_line(
 
     # CODE
     #
-    # Structure: "COUNT: LINENO:CODE"
+    # Structure: "COUNT: LINENO:CODE"  # noqa: ERA001
     #
     # Examples:
     #     -: 13:struct Foo{};
@@ -839,7 +846,7 @@ def _parse_line(
         hits_str, lineno, source_code = match.groups()
         persistent_states.update(location=(filename, int(lineno)))
 
-        # METADATA (key, value)
+        # METADATA (key, value)  # noqa: ERA001
         if hits_str == "-" and lineno == "0":
             if ":" in source_code:
                 key, value = source_code.split(":", 1)
@@ -876,7 +883,7 @@ def _parse_line(
 
     # BLOCK
     #
-    # Structure: "COUNT: LINENO-block BLOCKNO"
+    # Structure: "COUNT: LINENO-block BLOCKNO"  # noqa: ERA001
     if "-block " in line:
         match = _RE_BLOCK_LINE.match(line)
         if match is not None:
@@ -912,10 +919,10 @@ def _parse_line(
     # This line type is therefore checked LAST! The old parser might have been
     # more robust because it would only consider specialization names on the
     # line following a specialization marker.
-    if len(line) > 2 and not line[0].isspace() and line.endswith(":"):
+    if len(line) > 2 and not line[0].isspace() and line.endswith(":"):  # noqa: PLR2004
         return _FunctionSpecializationNameLine(line[:-1])
 
-    raise UnknownLineType(line)
+    raise UnknownLineTypeError(line)
 
 
 def _parse_tag_line(  # pylint: disable=too-many-return-statements
@@ -924,8 +931,11 @@ def _parse_tag_line(  # pylint: disable=too-many-return-statements
     ignore_parse_errors: set[str],
     persistent_states: dict[str, Any],
 ) -> _Line | None:
-    """A tag line is any gcov line that starts in the first column."""
+    """
+    Parse a tag line.
 
+    A tag line is any gcov line that starts in the first column.
+    """
     # Tag lines never start with whitespace.
     #
     # In principle, specialization names are also like tag lines.
@@ -1041,9 +1051,10 @@ def _int_from_gcov_unit(formatted: str) -> int:
     [0, 1, 0]
     >>> [_int_from_gcov_unit(value) for value in ('1.7k', '0.5G')]
     [1700, 500000000]
+
     """
     if formatted.endswith("%"):
-        return 1 if float(formatted[:-1]) > 0 else 0
+        return 1 if float(formatted.removesuffix("%")) > 0 else 0
 
     units = "kMGTPEZY"
     for exponent, unit in enumerate(units, 1):
@@ -1055,14 +1066,15 @@ def _int_from_gcov_unit(formatted: str) -> int:
 
 def _float_from_gcov_percent(formatted: str) -> float:
     """
-    Transform percentage to float value
+    Transform percentage to float value.
 
     Examples:
     >>> [_float_from_gcov_percent(value) for value in ('NAN %', '17.2%', '0%')]
     [nan, 17.2, 0.0]
-    """
 
+    """
     if not formatted.endswith("%"):
-        raise AssertionError(f"Number must end with %, got {formatted}")
+        msg = f"Number must end with %, got {formatted}"
+        raise AssertionError(msg)
 
     return float(formatted[:-1])

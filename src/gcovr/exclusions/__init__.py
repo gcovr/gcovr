@@ -1,5 +1,3 @@
-# -*- coding:utf-8 -*-
-
 #  ************************** Copyrights and license ***************************
 #
 # This file is part of gcovr 8.6+main, a parsing and reporting tool for gcov.
@@ -63,11 +61,9 @@ class ExclusionOptions:
 
     respect_exclusion_markers: bool = True
     warn_excluded_lines_with_hits: bool = False
-    exclude_function: list[re.Pattern[str]] = field(default_factory=lambda: [])
-    exclude_lines_by_pattern: list[re.Pattern[str]] = field(default_factory=lambda: [])
-    exclude_branches_by_pattern: list[re.Pattern[str]] = field(
-        default_factory=lambda: []
-    )
+    exclude_function: list[re.Pattern[str]] = field(default_factory=list)
+    exclude_lines_by_pattern: list[re.Pattern[str]] = field(default_factory=list)
+    exclude_branches_by_pattern: list[re.Pattern[str]] = field(default_factory=list)
     exclude_pattern_prefix: str = "PREFIX"
     exclude_throw_branches: bool = False
     exclude_unreachable_branches: bool = False
@@ -78,7 +74,6 @@ class ExclusionOptions:
 
 def get_exclusion_options_from_options(options: Options) -> ExclusionOptions:
     """Get the exclusion options."""
-
     return ExclusionOptions(
         respect_exclusion_markers=options.respect_exclusion_markers,
         warn_excluded_lines_with_hits=options.warn_excluded_lines_with_hits,
@@ -106,7 +101,6 @@ def apply_all_exclusions(
 
     Modifies the FileCoverage in place.
     """
-
     if options.exclude_internal_functions:
         remove_internal_functions(
             filecov, activate_trace_logging=activate_trace_logging
@@ -150,15 +144,15 @@ def apply_all_exclusions(
 
 
 def exclude_function_definition_lines(
-    filecov: FileCoverage, activate_trace_logging: bool
+    filecov: FileCoverage, *, activate_trace_logging: bool
 ) -> None:
     """Remove coverage for lines that contain a function definition."""
     # iterate over a shallow copy
-    known_function_lines = set(
+    known_function_lines = {
         (lineno, functioncov.name)
         for functioncov in filecov.functioncov()
         for lineno in functioncov.linenos
-    )
+    }
     for linecov in list(filecov.linecov()):
         if (linecov.lineno, linecov.function_name) in known_function_lines or (
             linecov.lineno,
@@ -174,9 +168,12 @@ def exclude_function_definition_lines(
 
 
 def exclude_functions(
-    filecov: FileCoverage, patterns: list[re.Pattern[str]], activate_trace_logging: bool
+    filecov: FileCoverage,
+    patterns: list[re.Pattern[str]],
+    *,
+    activate_trace_logging: bool,
 ) -> None:
-    """Remove matching functions"""
+    """Remove matching functions."""
     if filecov.functioncov():
         functions_by_line: FunctionListByLine = get_functions_by_line(filecov)
 
@@ -224,10 +221,9 @@ def exclude_functions(
 
 
 def remove_internal_functions(
-    filecov: FileCoverage, activate_trace_logging: bool
+    filecov: FileCoverage, *, activate_trace_logging: bool
 ) -> None:
     """Remove compiler-generated functions, e.g. for static initialization."""
-
     # Get all the functions first because we want to remove some of them which will else result in an error.
     for functioncov in list(filecov.functioncov()):
         if _function_can_be_excluded(
@@ -243,7 +239,7 @@ def remove_internal_functions(
 
 
 def _function_can_be_excluded(filename: str, *names: str | None) -> bool:
-    """Special names for construction/destruction of static objects will be ignored"""
+    """Ignore special names for construction/destruction of static objects."""
     is_fortran_source = (
         os.path.splitext(filename)[1].casefold() in _FORTRAN_SOURCE_SUFFIXES
     )
@@ -260,7 +256,9 @@ def _function_can_be_excluded(filename: str, *names: str | None) -> bool:
     )
 
 
-def remove_throw_branches(filecov: FileCoverage, activate_trace_logging: bool) -> None:
+def remove_throw_branches(
+    filecov: FileCoverage, *, activate_trace_logging: bool
+) -> None:
     """Remove branches annotated as "throw"."""
     for linecov in filecov.linecov():
         # iterate over shallow copy

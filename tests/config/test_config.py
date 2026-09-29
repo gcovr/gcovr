@@ -1,5 +1,3 @@
-# -*- coding:utf-8 -*-
-
 #  ************************** Copyrights and license ***************************
 #
 # This file is part of gcovr 8.6+main, a parsing and reporting tool for gcov.
@@ -31,15 +29,16 @@ if typing.TYPE_CHECKING:
 def test_config_error(gcovr_test_exec: "GcovrTestExec") -> None:
     """Test config with wrong value."""
     gcovr_config = Path("config", "gcovr.error.config")
-    with pytest.raises(ValueError) as exception:
+    with pytest.raises(
+        ValueError,
+        check=lambda e: str(e).startswith(
+            f"{gcovr_config}: 1: gcov-ignore-parse-errors: must be one of"
+        ),
+    ):
         gcovr_test_exec.gcovr(
             f"--config={gcovr_config}",
             use_main=True,
         )
-
-    assert str(exception.value).startswith(
-        f"{gcovr_config}: 1: gcov-ignore-parse-errors: must be one of"
-    )
 
 
 def test_config_deprecated(

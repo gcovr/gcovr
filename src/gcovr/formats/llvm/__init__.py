@@ -1,5 +1,3 @@
-# -*- coding:utf-8 -*-
-
 #  ************************** Copyrights and license ***************************
 #
 # This file is part of gcovr 8.6+main, a parsing and reporting tool for gcov.
@@ -17,14 +15,13 @@
 #
 # ****************************************************************************
 
-import logging
+"""GCOVR LLVM coverage report input handler."""
+
 import os
 
 from ...data_model.container import CoverageContainer
 from ...formats.base import BaseHandler
 from ...options import GcovrConfigOption
-
-LOGGER = logging.getLogger("gcovr")
 
 
 class LlvmHandler(BaseHandler):
@@ -32,6 +29,7 @@ class LlvmHandler(BaseHandler):
 
     @classmethod
     def get_options(cls) -> list[GcovrConfigOption | str]:
+        """Get the report options."""
         return [
             # JSON option use for validation
             "json_compare",
@@ -82,20 +80,22 @@ class LlvmHandler(BaseHandler):
         ]
 
     def validate_options(self) -> None:
-        """Validate options specific to this format."""
+        """Validate options."""
         if self.options.llvm_profdata_cmd and self.options.json_compare:
-            raise ValueError("A LLVM report is not possible with --json-compare.")
+            msg = "A LLVM report is not possible with --json-compare."
+            raise ValueError(msg)
 
     def read_report(self) -> CoverageContainer:
-        from .read import (  # pylint: disable=import-outside-toplevel # Lazy loading is intended here
+        """Read report."""
+        # Lazy loading is intended here
+        from .read import (  # pylint: disable=import-outside-toplevel  # noqa: PLC0415
             read_report,
         )
 
         # This can't be checked during validation of arguments because it's not needed together with the
         # tracefiles
         if not self.options.llvm_cov_binaries:
-            raise RuntimeError(
-                "Missing --llvm-cov-binary, needed for llvm-cov execution."
-            )
+            msg = "Missing --llvm-cov-binary, needed for llvm-cov execution."
+            raise RuntimeError(msg)
 
         return read_report(self.options)

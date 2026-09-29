@@ -1,5 +1,3 @@
-# -*- coding:utf-8 -*-
-
 #  ************************** Copyrights and license ***************************
 #
 # This file is part of gcovr 8.6+main, a parsing and reporting tool for gcov.
@@ -17,30 +15,31 @@
 #
 # ****************************************************************************
 
+import logging
 import platform
 import sys
-import typing
 from contextlib import contextmanager
 from pathlib import Path
+from typing import TYPE_CHECKING, Generator
 
 import pytest
 
-if typing.TYPE_CHECKING:
+if TYPE_CHECKING:
     from tests.conftest import GcovrTestExec
+
+LOGGER = logging.getLogger(__name__)
 
 
 @contextmanager
-def subst(gcovr_test_exec: "GcovrTestExec") -> typing.Iterator[Path]:
+def subst(gcovr_test_exec: "GcovrTestExec") -> Generator[Path, None, None]:
     """Subst the path to a drive and return it."""
-    import string
+    import string  # noqa: PLC0415
 
-    import win32api
+    import win32api  # noqa: PLC0415
 
     used_drives = [e[:-1] for e in win32api.GetLogicalDriveStrings().split("\0")]
     sys.stdout.write(f"Used drives: {', '.join(used_drives)}")
-    free_drives = sorted(
-        set(f"{e}:" for e in string.ascii_uppercase) - set(used_drives)
-    )
+    free_drives = sorted({f"{e}:" for e in string.ascii_uppercase} - set(used_drives))
     sys.stdout.write(f"Free drives: {', '.join(free_drives)}")
     assert free_drives, "Must have at least one free drive letter"
     drive = None
@@ -48,11 +47,11 @@ def subst(gcovr_test_exec: "GcovrTestExec") -> typing.Iterator[Path]:
         path = gcovr_test_exec.output_dir
         drive = free_drives[-1]
         gcovr_test_exec.run("cmd", "/C", f"subst {drive} {path.parent}")
-        print(f"Substituted path {path.parent} to {drive}.", file=sys.stderr)
+        LOGGER.info("Substituted path %s to %s.", path.parent, drive)
         yield Path(drive, path.name)
     finally:
         if drive is not None:
-            print(f"Remove substitution {drive}.", file=sys.stderr)
+            LOGGER.info("Remove substitution %s.", drive)
             gcovr_test_exec.run("cmd", "/C", f"subst {drive} /d")
 
 
@@ -68,7 +67,6 @@ def subst(gcovr_test_exec: "GcovrTestExec") -> typing.Iterator[Path]:
 @pytest.mark.txt
 def test_drive_subst(gcovr_test_exec: "GcovrTestExec") -> None:
     """Test with drive substitution on Windows."""
-
     with subst(gcovr_test_exec) as subst_drive:
         gcovr_test_exec.cxx_link("testcase", "main.cpp", cwd=subst_drive)
 

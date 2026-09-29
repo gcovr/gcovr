@@ -1,5 +1,3 @@
-# -*- coding:utf-8 -*-
-
 #  ************************** Copyrights and license ***************************
 #
 # This file is part of gcovr 8.6+main, a parsing and reporting tool for gcov.
@@ -17,31 +15,36 @@
 #
 # ****************************************************************************
 
+"""GCOVR worker controller for GCOV format."""
+
 from contextlib import contextmanager
 from multiprocessing import cpu_count
 from queue import Empty, Queue
 from sys import exc_info
 from threading import Condition, RLock, Thread
 from traceback import format_exception
+from types import TracebackType
 from typing import Any, Callable, Iterator
+
+try:
+    from typing import Self
+except ImportError:
+    from typing_extensions import Self
 
 from ...exceptions import SanityCheckError
 from ...logging import LOGGER
 
 
 class LockedDirectories:
-    """
-    Class that keeps a list of locked directories
-    """
+    """Class that keeps a list of locked directories."""
 
     def __init__(self) -> None:
+        """Initialize locked directories."""
         self.dirs = set[str]()
         self.cv = Condition()
 
     def run_in(self, directory: str) -> None:
-        """
-        Start running in the directory and lock it
-        """
+        """Start running in the directory and lock it."""
         self.cv.acquire()
         while directory in self.dirs:
             self.cv.wait()
@@ -49,9 +52,7 @@ class LockedDirectories:
         self.cv.release()
 
     def done(self, directory: str) -> None:
-        """
-        Finished with the directory, unlock it
-        """
+        """Finished with the directory, unlock it."""
         self.cv.acquire()
         self.dirs.remove(directory)
         self.cv.notify_all()
@@ -63,9 +64,7 @@ locked_directory_global_object = LockedDirectories()
 
 @contextmanager
 def locked_directory(directory: str) -> Iterator[None]:
-    """
-    Context for doing something in a locked directory
-    """
+    """Context for doing something in a locked directory."""
     locked_directory_global_object.run_in(directory)
     try:
         yield
@@ -79,10 +78,7 @@ QueueContent = tuple[Callable[[str], None], tuple[Any], dict[str, Any]] | None
 def worker(
     queue: "Queue[QueueContent]", context: dict[str, Any], pool: "Workers"
 ) -> None:
-    """
-    Run work items from the queue until the sentinel
-    None value is hit
-    """
+    """Run work items from the queue until the sentinel None value is hit."""
     while True:
         entry: QueueContent = queue.get(True)
         if entry is None:
@@ -94,15 +90,14 @@ def worker(
         kwargs.update(context)
         try:
             work(*args, **kwargs)
-        except:  # noqa: E722 # pylint: disable=bare-except
+        except:  # pylint: disable=bare-except  # noqa: E722
             pool.stop_with_exception()
             break
 
 
 class Workers:
     """
-    Create a thread-pool which can be given work via an
-    add method and will run until work is complete
+    Create a thread-pool which can be given work via an add method and will run until work is complete.
 
     >>> monkeypatch = getfixture("monkeypatch")
     >>> monkeypatch.setattr("gcovr.formats.gcov.workers.cpu_count", lambda: 4)
@@ -129,18 +124,19 @@ class Workers:
     1
     """
 
-    class WorkerThreadException(RuntimeError):
+    class WorkerThreadError(RuntimeError):
         """Exception raised when a worker thread fails."""
 
     def __init__(self, number: int, context: Callable[[], dict[str, Any]]) -> None:
+        """Init the worker handler."""
         if number <= 0:
             number = max(1, cpu_count() + number)
         LOGGER.debug("Using %d workers.", number)
 
-        self.q: "Queue[QueueContent]" = Queue()
+        self.q: Queue[QueueContent] = Queue()
         self.lock = RLock()
         self.exceptions = list[str]()
-        self.contexts = [context() for _ in range(0, number)]
+        self.contexts = [context() for _ in range(number)]
         self.workers = list[Thread](
             [Thread(target=worker, args=(self.q, c, self)) for c in self.contexts]
         )
@@ -148,10 +144,7 @@ class Workers:
             w.start()
 
     def add(self, work: Any, *args: Any, **kwargs: Any) -> None:
-        """
-        Add in a method and the arguments to be used
-        when running it
-        """
+        """Add in a method and the arguments to be used when running it."""
         with self.lock:
             # Do not push additional items if there is already an exception
             if self.exceptions:  # pragma: no cover
@@ -159,44 +152,33 @@ class Workers:
             self.q.put((work, args, kwargs))
 
     def add_sentinels(self) -> None:
-        """
-        Add the sentinels to the end of the queue so
-        the threads know to stop
-        """
+        """Add the sentinels to the end of the queue so the threads know to stop."""
         with self.lock:
             for _ in self.workers:
                 self.q.put(None)
 
     def drain(self) -> None:
-        """
-        Drain the queue
-        """
+        """Drain the queue."""
         with self.lock:
-            while True:
-                try:
+            try:
+                while True:
                     self.q.get(False)
-                except Empty:
-                    break
+            except Empty:
+                pass
             self.add_sentinels()
 
     def stop_with_exception(self) -> None:
-        """
-        A thread has failed and needs to raise an exception.
-        """
+        """Stop the workers and store the exception."""
         with self.lock:
             self.drain()
             self.exceptions.append("".join(format_exception(*exc_info())))
 
     def size(self) -> int:
-        """
-        Run the size of the thread pool
-        """
+        """Run the size of the thread pool."""
         return len(self.workers)
 
     def wait(self) -> list[dict[str, Any]]:
-        """
-        Wait until all work is complete
-        """
+        """Wait until all work is complete."""
         self.add_sentinels()
         for w in self.workers:
             # Allow interrupts in Thread.join
@@ -207,16 +189,21 @@ class Workers:
         if self.exceptions:
             for traceback in self.exceptions:
                 LOGGER.error(traceback)
-            raise self.WorkerThreadException(
-                "Worker thread raised exception, workers canceled."
-            ) from None
+            msg = "Worker thread raised exception, workers canceled."
+            raise self.WorkerThreadError(msg) from None
         return self.contexts
 
-    def __enter__(self) -> "Workers":
+    def __enter__(self) -> Self:
+        """Enter the worker context."""
         return self
 
-    def __exit__(self, exc_type: Any, exc_val: Any, exc_tb: Any) -> None:
+    def __exit__(
+        self,
+        exc_type: type[BaseException] | None,
+        exc_val: BaseException | None,
+        exc_tb: TracebackType | None,
+    ) -> None:
+        """Exit the worker context."""
         if self.size() != 0:
-            raise SanityCheckError(
-                "You must call wait on the contextmanager to get the context of the workers."
-            )
+            msg = "You must call wait on the contextmanager to get the context of the workers."
+            raise SanityCheckError(msg)

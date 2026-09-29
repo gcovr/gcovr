@@ -1,5 +1,3 @@
-# -*- coding:utf-8 -*-
-
 #  ************************** Copyrights and license ***************************
 #
 # This file is part of gcovr 8.6+main, a parsing and reporting tool for gcov.
@@ -17,6 +15,8 @@
 #
 # ****************************************************************************
 
+"""GCOVR classic text report interface."""
+
 from ...data_model.container import CoverageContainer
 from ...formats.base import BaseHandler
 from ...options import (
@@ -30,6 +30,7 @@ class TxtHandler(BaseHandler):
 
     @classmethod
     def get_options(cls) -> list[GcovrConfigOption | str]:
+        """Get the report options."""
         return [
             # Global options needed for report
             "show_calls",
@@ -81,15 +82,19 @@ class TxtHandler(BaseHandler):
         ]
 
     def validate_options(self) -> None:
-        """Validation of command line options"""
-        if self.options.txt_metrics is not None:
-            if len(self.options.txt_metrics) > 1 and self.options.json_compare:
-                raise ValueError(
-                    "A txt report with several metrics is not possible with --json-compare."
-                )
+        """Validate options."""
+        if (self.options.txt_metrics is not None) and (
+            len(self.options.txt_metrics) > 1 and self.options.json_compare
+        ):
+            msg = (
+                "A txt report with several metrics is not possible with --json-compare."
+            )
+            raise ValueError(msg)
 
     def write_report(self, covdata: CoverageContainer, output_file: str) -> None:
-        from .write import (  # pylint: disable=import-outside-toplevel # Lazy loading is intended here
+        """Write report."""
+        # Lazy loading is intended here
+        from .write import (  # pylint: disable=import-outside-toplevel  # noqa: PLC0415
             write_report,
         )
 
@@ -98,7 +103,9 @@ class TxtHandler(BaseHandler):
     def write_summary_report(
         self, covdata: CoverageContainer, output_file: str
     ) -> None:
-        from .write import (  # pylint: disable=import-outside-toplevel # Lazy loading is intended here
+        """Write summary report."""
+        # Lazy loading is intended here
+        from .write import (  # pylint: disable=import-outside-toplevel  # noqa: PLC0415
             write_summary_report,
         )
 
