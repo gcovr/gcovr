@@ -21,9 +21,27 @@ from ...data_model.container import CoverageContainer
 from ...formats.base import BaseHandler
 from ...options import GcovrConfigOption, OutputOrDefault
 
+OPTION_GROUP_NAME = "Cobertura XML options"
+OPTION_GROUP = OPTION_GROUP_NAME.casefold().replace(" ", "_")
+
 
 class CoberturaHandler(BaseHandler):
     """Class to handle Cobertura format."""
+
+    @classmethod
+    def get_option_group(cls) -> dict[str, str]:
+        """Get the description of the option group."""
+        return {
+            "key": OPTION_GROUP,
+            "name": OPTION_GROUP_NAME,
+            "description": (
+                "Options for report generation in Cobertura format, "
+                "see <https://github.com/cobertura/cobertura>. "
+                "The XML file follows the schema "
+                "<https://github.com/cobertura/cobertura/blob/e5eea8679ebce047ec6ccdfdbf6cf2c14b376875/cobertura/src/site/htdocs/xml/coverage-04.dtd>."
+                "Reports in Cobertura format can also be used as input for GCOVR."
+            ),
+        }
 
     @classmethod
     def get_options(cls) -> list[GcovrConfigOption | str]:
@@ -37,7 +55,7 @@ class CoberturaHandler(BaseHandler):
             GcovrConfigOption(
                 "cobertura",
                 ["--cobertura", "-x", "--xml"],
-                group="output_options",
+                group=OPTION_GROUP,
                 metavar="OUTPUT",
                 help=(
                     "Generate a Cobertura XML report. "
@@ -51,7 +69,7 @@ class CoberturaHandler(BaseHandler):
             GcovrConfigOption(
                 "cobertura_pretty",
                 ["--cobertura-pretty", "--xml-pretty"],
-                group="output_options",
+                group=OPTION_GROUP,
                 help=("Pretty-print the Cobertura XML report. Implies --cobertura."),
                 action="store_true",
             ),
@@ -59,6 +77,7 @@ class CoberturaHandler(BaseHandler):
                 "cobertura_tracefile",
                 ["--cobertura-add-tracefile"],
                 config="cobertura-add-tracefile",
+                group=OPTION_GROUP,
                 help=(
                     "Combine the coverage data from Cobertura XML files. "
                     "When this option is used gcov is not run to collect "

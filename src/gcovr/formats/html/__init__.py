@@ -35,10 +35,21 @@ THEMES = (
     "github.dark-green",
     "github.dark-blue",
 )
+OPTION_GROUP_NAME = "GCOVR HTML options"
+OPTION_GROUP = OPTION_GROUP_NAME.casefold().replace(" ", "_")
 
 
 class HtmlHandler(BaseHandler):
     """Class to handle HTML format."""
+
+    @classmethod
+    def get_option_group(cls) -> dict[str, str]:
+        """Get the description of the option group."""
+        return {
+            "key": OPTION_GROUP,
+            "name": OPTION_GROUP_NAME,
+            "description": "Options for GCOVR HTML reports with different themes.",
+        }
 
     @classmethod
     def get_options(cls) -> list[GcovrConfigOption | str]:
@@ -59,7 +70,7 @@ class HtmlHandler(BaseHandler):
             GcovrConfigOption(
                 "html",
                 ["--html"],
-                group="output_options",
+                group=OPTION_GROUP,
                 metavar="OUTPUT",
                 help="Generate a HTML report. OUTPUT is optional and defaults to --output.",
                 nargs="?",
@@ -70,7 +81,7 @@ class HtmlHandler(BaseHandler):
             GcovrConfigOption(
                 "html_details",
                 ["--html-details"],
-                group="output_options",
+                group=OPTION_GROUP,
                 metavar="OUTPUT",
                 help=(
                     "Add annotated source code reports to the HTML report. "
@@ -85,7 +96,7 @@ class HtmlHandler(BaseHandler):
             GcovrConfigOption(
                 "html_nested",
                 ["--html-nested"],
-                group="output_options",
+                group=OPTION_GROUP,
                 metavar="OUTPUT",
                 help=(
                     "Add annotated source code reports to the HTML report. "
@@ -102,7 +113,7 @@ class HtmlHandler(BaseHandler):
             GcovrConfigOption(
                 "html_single_page",
                 ["--html-single-page"],
-                group="output_options",
+                group=OPTION_GROUP,
                 help=(
                     "Use one single html output file containing all data in the "
                     "specified mode. If mode is 'js-enabled' (default) and javascript "
@@ -114,14 +125,14 @@ class HtmlHandler(BaseHandler):
             GcovrConfigOption(
                 "html_static_report",
                 ["--html-static-report"],
-                group="output_options",
+                group=OPTION_GROUP,
                 help="Create a static report without javascript.",
                 action="store_true",
             ),
             GcovrConfigOption(
                 "html_self_contained",
                 ["--html-self-contained"],
-                group="output_options",
+                group=OPTION_GROUP,
                 help=(
                     "Control whether the HTML report bundles resources like CSS styles. "
                     "Self-contained reports can be sent via email, "
@@ -137,7 +148,7 @@ class HtmlHandler(BaseHandler):
             GcovrConfigOption(
                 "html_block_ids",
                 ["--html-block-ids"],
-                group="output_options",
+                group=OPTION_GROUP,
                 help=(
                     "Add the block ids to the HTML report for debugging the branch coverage."
                 ),
@@ -146,7 +157,7 @@ class HtmlHandler(BaseHandler):
             GcovrConfigOption(
                 "html_template_dir",
                 ["--html-template-dir"],
-                group="output_options",
+                group=OPTION_GROUP,
                 metavar="OUTPUT",
                 help=(
                     "Override the default Jinja2 template directory for the HTML report."
@@ -155,7 +166,7 @@ class HtmlHandler(BaseHandler):
             GcovrConfigOption(
                 "html_syntax_highlighting",
                 ["--html-syntax-highlighting", "--html-details-syntax-highlighting"],
-                group="output_options",
+                group=OPTION_GROUP,
                 help="Use syntax highlighting in HTML source page. Enabled by default.",
                 action="store_const",
                 default=True,
@@ -165,7 +176,7 @@ class HtmlHandler(BaseHandler):
             GcovrConfigOption(
                 "html_theme",
                 ["--html-theme"],
-                group="output_options",
+                group=OPTION_GROUP,
                 type=str,
                 choices=THEMES,
                 metavar="THEME",
@@ -178,7 +189,7 @@ class HtmlHandler(BaseHandler):
             GcovrConfigOption(
                 "html_css",
                 ["--html-css"],
-                group="output_options",
+                group=OPTION_GROUP,
                 type=check_input_file,
                 metavar="CSS",
                 help="Override the default style sheet for the HTML report.",
@@ -187,7 +198,7 @@ class HtmlHandler(BaseHandler):
             GcovrConfigOption(
                 "html_title",
                 ["--html-title"],
-                group="output_options",
+                group=OPTION_GROUP,
                 metavar="TITLE",
                 help="Use TITLE as title for the HTML report. Default is '{default!s}'.",
                 default="GCC Code Coverage Report",
@@ -195,7 +206,7 @@ class HtmlHandler(BaseHandler):
             GcovrConfigOption(
                 "html_tab_size",
                 ["--html-tab-size"],
-                group="output_options",
+                group=OPTION_GROUP,
                 help="Used spaces for a tab in a source file. Default is {default!s}",
                 type=int,
                 default=4,
@@ -203,7 +214,7 @@ class HtmlHandler(BaseHandler):
             GcovrConfigOption(
                 "html_relative_anchors",
                 ["--html-absolute-paths"],
-                group="output_options",
+                group=OPTION_GROUP,
                 help=(
                     "Use absolute paths to link the --html-details reports. "
                     "Defaults to relative links."
@@ -213,7 +224,7 @@ class HtmlHandler(BaseHandler):
             GcovrConfigOption(
                 "html_encoding",
                 ["--html-encoding"],
-                group="output_options",
+                group=OPTION_GROUP,
                 help=(
                     "Override the declared HTML report encoding. "
                     "Defaults to {default!s}. "

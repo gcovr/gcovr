@@ -25,10 +25,21 @@ THEMES = (
     "green",
     "blue",
 )
+OPTION_GROUP_NAME = "GCOVR markdown options"
+OPTION_GROUP = OPTION_GROUP_NAME.casefold().replace(" ", "_")
 
 
 class MarkdownHandler(BaseHandler):
     """Class to handle markdown format."""
+
+    @classmethod
+    def get_option_group(cls) -> dict[str, str]:
+        """Get the description of the option group."""
+        return {
+            "key": OPTION_GROUP,
+            "name": OPTION_GROUP_NAME,
+            "description": "Options for GCOVR markdown reports.",
+        }
 
     @classmethod
     def get_options(cls) -> list[GcovrConfigOption | str]:
@@ -47,7 +58,7 @@ class MarkdownHandler(BaseHandler):
             GcovrConfigOption(
                 "markdown",
                 ["--markdown"],
-                group="output_options",
+                group=OPTION_GROUP,
                 metavar="OUTPUT",
                 help="Generate a markdown report. OUTPUT is optional and defaults to --output.",
                 nargs="?",
@@ -58,7 +69,7 @@ class MarkdownHandler(BaseHandler):
             GcovrConfigOption(
                 "markdown_summary",
                 ["--markdown-summary"],
-                group="output_options",
+                group=OPTION_GROUP,
                 metavar="OUTPUT",
                 help=(
                     "Generate a markdown summary report. "
@@ -72,7 +83,7 @@ class MarkdownHandler(BaseHandler):
             GcovrConfigOption(
                 "markdown_theme",
                 ["--markdown-theme"],
-                group="output_options",
+                group=OPTION_GROUP,
                 type=str,
                 choices=THEMES,
                 metavar="THEME",
@@ -85,7 +96,7 @@ class MarkdownHandler(BaseHandler):
             GcovrConfigOption(
                 "markdown_title",
                 ["--markdown-title"],
-                group="output_options",
+                group=OPTION_GROUP,
                 type=str,
                 metavar="TEXT",
                 help=(
@@ -97,7 +108,7 @@ class MarkdownHandler(BaseHandler):
             GcovrConfigOption(
                 "markdown_heading_level",
                 ["--markdown-heading-level"],
-                group="output_options",
+                group=OPTION_GROUP,
                 type=int,
                 metavar="INT",
                 help=(
@@ -110,7 +121,7 @@ class MarkdownHandler(BaseHandler):
             GcovrConfigOption(
                 "markdown_file_link",
                 ["--markdown-file-link"],
-                group="output_options",
+                group=OPTION_GROUP,
                 type=str,
                 metavar="TEXT",
                 help=(

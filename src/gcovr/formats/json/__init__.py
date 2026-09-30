@@ -24,9 +24,25 @@ from ...formats.base import BaseHandler
 from ...options import GcovrConfigOption, OutputOrDefault
 from ...utils import force_unix_separator
 
+OPTION_GROUP_NAME = "GCOVR JSON options"
+OPTION_GROUP = OPTION_GROUP_NAME.casefold().replace(" ", "_")
+
 
 class JsonHandler(BaseHandler):
     """Class to handle own JSON tracefile format."""
+
+    @classmethod
+    def get_option_group(cls) -> dict[str, str]:
+        """Get the description of the option group."""
+        return {
+            "key": OPTION_GROUP,
+            "name": OPTION_GROUP_NAME,
+            "description": (
+                "Options for report generation in GCOVR JSON intermediate format. "
+                "This file format contains a dump of the internal data model and "
+                "can be used as input file to write other reports."
+            ),
+        }
 
     @classmethod
     def get_options(cls) -> list[GcovrConfigOption | str]:
@@ -41,7 +57,7 @@ class JsonHandler(BaseHandler):
             GcovrConfigOption(
                 "json",
                 ["--json"],
-                group="output_options",
+                group=OPTION_GROUP,
                 metavar="OUTPUT",
                 help="Generate a JSON report. OUTPUT is optional and defaults to --output.",
                 nargs="?",
@@ -52,14 +68,14 @@ class JsonHandler(BaseHandler):
             GcovrConfigOption(
                 "json_pretty",
                 ["--json-pretty"],
-                group="output_options",
+                group=OPTION_GROUP,
                 help="Pretty-print the JSON report. Implies --json.",
                 action="store_true",
             ),
             GcovrConfigOption(
                 "json_summary",
                 ["--json-summary"],
-                group="output_options",
+                group=OPTION_GROUP,
                 metavar="OUTPUT",
                 help=(
                     "Generate a JSON summary report. "
@@ -73,14 +89,14 @@ class JsonHandler(BaseHandler):
             GcovrConfigOption(
                 "json_summary_pretty",
                 ["--json-summary-pretty"],
-                group="output_options",
+                group=OPTION_GROUP,
                 help="Pretty-print the JSON SUMMARY report. Implies --json-summary.",
                 action="store_true",
             ),
             GcovrConfigOption(
                 "json_base",
                 ["--json-base"],
-                group="output_options",
+                group=OPTION_GROUP,
                 metavar="PATH",
                 help="Prepend the given path to all file paths in JSON report.",
                 type=lambda p: force_unix_separator(os.path.normpath(p)),
@@ -89,6 +105,7 @@ class JsonHandler(BaseHandler):
             GcovrConfigOption(
                 "json_tracefile",
                 ["-a", "--json-add-tracefile", "--add-tracefile"],
+                group=OPTION_GROUP,
                 config="add-tracefile",
                 help=(
                     "Combine the coverage data from JSON files. "
@@ -108,14 +125,14 @@ class JsonHandler(BaseHandler):
             GcovrConfigOption(
                 "json_trace_data_source",
                 ["--json-trace-data-source"],
-                group="output_options",
+                group=OPTION_GROUP,
                 help="Write the data source to the tracefile.",
                 action="store_true",
             ),
             GcovrConfigOption(
                 "json_compare",
                 ["--json-compare"],
-                group="output_options",
+                group=OPTION_GROUP,
                 help=(
                     "Compare exactly two JSON files given with --json-add-tracefile. "
                     "The comparison result is available for text, JSON and HTML report."

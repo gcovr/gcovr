@@ -43,7 +43,7 @@ def write_report(
     options: options object
 
     """
-    # Create object to collect coverage data (https://docs.coveralls.io/api-jobs-endpoint#json-object-job)
+    # Create object to collect coverage data (https://docs.coveralls.io/api-jobs-endpoint#the-coverage-report-json-objects)
     json_dict = dict[str, Any]()
 
     # Capture timestamp

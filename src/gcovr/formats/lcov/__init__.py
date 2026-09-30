@@ -25,6 +25,9 @@ from ...options import (
     OutputOrDefault,
 )
 
+OPTION_GROUP_NAME = "LCOV info options"
+OPTION_GROUP = OPTION_GROUP_NAME.casefold().replace(" ", "_")
+
 
 class UseLcovFormatVersion(GcovrDeprecatedConfigOptionAction):
     """Argparse action to map old option --lcov-format-v1 to new option --lcov-format-version=1.x."""
@@ -38,6 +41,15 @@ class LcovHandler(BaseHandler):
     """Class to handle LCOV format."""
 
     @classmethod
+    def get_option_group(cls) -> dict[str, str]:
+        """Get the description of the option group."""
+        return {
+            "key": OPTION_GROUP,
+            "name": OPTION_GROUP_NAME,
+            "description": "Options for report generation in LCOV format v1.x and v2.0.",
+        }
+
+    @classmethod
     def get_options(cls) -> list[GcovrConfigOption | str]:
         """Get the report options."""
         return [
@@ -46,7 +58,7 @@ class LcovHandler(BaseHandler):
             GcovrConfigOption(
                 "lcov",
                 ["--lcov"],
-                group="output_options",
+                group=OPTION_GROUP,
                 metavar="OUTPUT",
                 help=(
                     "Generate a LCOV info file. "
@@ -61,7 +73,7 @@ class LcovHandler(BaseHandler):
                 "lcov_format_version",
                 ["--lcov-format-version"],
                 config="lcov_format_version",
-                group="output_options",
+                group=OPTION_GROUP,
                 help="The format version to write.",
                 choices=("1.x", "2.0"),
                 default="2.0",
@@ -69,7 +81,7 @@ class LcovHandler(BaseHandler):
             GcovrConfigOption(
                 "lcov_format_version",
                 ["--lcov-format-1.x"],
-                group="output_options",
+                group=OPTION_GROUP,
                 help="Deprecated, please use --lcov-format-version=1.x instead.",
                 nargs=0,
                 action=UseLcovFormatVersion,
@@ -77,14 +89,14 @@ class LcovHandler(BaseHandler):
             GcovrConfigOption(
                 "lcov_comment",
                 ["--lcov-comment"],
-                group="output_options",
+                group=OPTION_GROUP,
                 metavar="COMMENT",
                 help="The comment used in LCOV file.",
             ),
             GcovrConfigOption(
                 "lcov_test_name",
                 ["--lcov-test-name"],
-                group="output_options",
+                group=OPTION_GROUP,
                 metavar="NAME",
                 help=(
                     "The name used for TN in LCOV file, must not contain spaces. "

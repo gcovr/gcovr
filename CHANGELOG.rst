@@ -49,6 +49,7 @@ Bug fixes and small improvements:
 Documentation:
 
 - Add section about ``gcov`` options which should not be used to FAQ. (:issue:`1237`)
+- Add separate option groups for each format. (:issue:`1304`)
 
 Internal changes:
 

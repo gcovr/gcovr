@@ -21,9 +21,26 @@ from ...data_model.container import CoverageContainer
 from ...formats.base import BaseHandler
 from ...options import GcovrConfigOption, OutputOrDefault
 
+OPTION_GROUP_NAME = "Clover XML options"
+OPTION_GROUP = OPTION_GROUP_NAME.casefold().replace(" ", "_")
+
 
 class CloverHandler(BaseHandler):
     """Class to handle Clover format."""
+
+    @classmethod
+    def get_option_group(cls) -> dict[str, str]:
+        """Get the description of the option group."""
+        return {
+            "key": OPTION_GROUP,
+            "name": OPTION_GROUP_NAME,
+            "description": (
+                "Options for report generation in Clover format, "
+                "see <https://bitbucket.org/atlassian/clover/src/master>. "
+                "The XML file follows the schema "
+                "<https://bitbucket.org/atlassian/clover/raw/a688248db8ae15eb7158947b7ba275c9ffbaf008/etc/schema/clover.xsd>."
+            ),
+        }
 
     @classmethod
     def get_options(cls) -> list[GcovrConfigOption | str]:
@@ -37,7 +54,7 @@ class CloverHandler(BaseHandler):
             GcovrConfigOption(
                 "clover",
                 ["--clover"],
-                group="output_options",
+                group=OPTION_GROUP,
                 metavar="OUTPUT",
                 help=(
                     "Generate a Clover XML report. "
@@ -51,14 +68,14 @@ class CloverHandler(BaseHandler):
             GcovrConfigOption(
                 "clover_pretty",
                 ["--clover-pretty"],
-                group="output_options",
+                group=OPTION_GROUP,
                 help=("Pretty-print the Clover XML report. Implies --clover."),
                 action="store_true",
             ),
             GcovrConfigOption(
                 "clover_project",
                 ["--clover-project"],
-                group="output_options",
+                group=OPTION_GROUP,
                 type=str,
                 help=("The project name for the Clover XML report."),
             ),

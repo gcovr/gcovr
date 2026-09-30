@@ -21,9 +21,24 @@ from ...data_model.container import CoverageContainer
 from ...formats.base import BaseHandler
 from ...options import GcovrConfigOption, OutputOrDefault
 
+OPTION_GROUP_NAME = "SonarQube XML options"
+OPTION_GROUP = OPTION_GROUP_NAME.casefold().replace(" ", "_")
+
 
 class SonarqubeHandler(BaseHandler):
     """Class to handle Sonarqube format."""
+
+    @classmethod
+    def get_option_group(cls) -> dict[str, str]:
+        """Get the description of the option group."""
+        return {
+            "key": OPTION_GROUP,
+            "name": OPTION_GROUP_NAME,
+            "description": (
+                "Options for report generation in SonarQube generic format, see "
+                "<https://docs.sonarsource.com/sonarqube-server/analyzing-source-code/test-coverage/generic-test-data>."
+            ),
+        }
 
     @classmethod
     def get_options(cls) -> list[GcovrConfigOption | str]:
@@ -36,7 +51,7 @@ class SonarqubeHandler(BaseHandler):
             GcovrConfigOption(
                 "sonarqube",
                 ["--sonarqube"],
-                group="output_options",
+                group=OPTION_GROUP,
                 metavar="OUTPUT",
                 help=(
                     "Generate Sonarqube generic coverage report in this file name. "
@@ -50,7 +65,7 @@ class SonarqubeHandler(BaseHandler):
             GcovrConfigOption(
                 "sonarqube_pretty",
                 ["--sonarqube-pretty"],
-                group="output_options",
+                group=OPTION_GROUP,
                 help=("Pretty-print the Sonarqube XML report. Implies --sonarqube."),
                 action="store_true",
             ),
@@ -58,7 +73,7 @@ class SonarqubeHandler(BaseHandler):
                 "sonarqube_metric",
                 ["--sonarqube-metric"],
                 config="sonarqube-metric",
-                group="output_options",
+                group=OPTION_GROUP,
                 help=("The metric type to report. Default is '{default!s}'."),
                 choices=("line", "branch", "condition", "decision"),
                 default="branch",

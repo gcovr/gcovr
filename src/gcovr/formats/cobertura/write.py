@@ -125,7 +125,7 @@ def write_report(
         pretty=options.cobertura_pretty,
         filename=output_file,
         default_filename="cobertura.xml",
-        doctype="<!DOCTYPE coverage SYSTEM 'http://cobertura.sourceforge.net/xml/coverage-04.dtd'>",
+        doctype="<!DOCTYPE coverage SYSTEM 'https://github.com/cobertura/cobertura/blob/e5eea8679ebce047ec6ccdfdbf6cf2c14b376875/cobertura/src/site/htdocs/xml/coverage-04.dtd'>",
     )
 
 
