@@ -61,13 +61,13 @@ apt-get install -y \
 
 # Install bazel
 if [ "$TARGETARCH" = "arm64" ] ; then
-  echo "4e815a3f92a0285e76f306c5179a4c639e019cb9 -" > /tmp/bazel.sha1sum
+  echo "e20e8b0f4f240091b7a55bf17b9398bd4f40ee70ae0208dff95dd4c445fb4010 -" > /tmp/bazel.sha256sum
 else
-  echo "627291b8ef18762dd98b1535fe5c84b1792ac2d0 -" > /tmp/bazel.sha1sum
+  echo "5a408715e932c0250d28bd84555f12edbf70117de42f9181691c736eacc4a992 -" > /tmp/bazel.sha256sum
 fi
-curl -fsSL https://github.com/bazelbuild/bazelisk/releases/download/v1.21.0/bazelisk-linux-$TARGETARCH \
+curl -fsSL https://github.com/bazelbuild/bazelisk/releases/download/v1.29.0/bazelisk-linux-$TARGETARCH \
   | tee /usr/local/bin/bazel \
-  | sha1sum -c /tmp/bazel.sha1sum
+  | sha256sum -c /tmp/bazel.sha256sum
 chmod 0755 /usr/local/bin/bazel
 
 # Create new user "docker" and set password to "docker"
