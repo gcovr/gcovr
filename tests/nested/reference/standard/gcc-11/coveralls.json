@@ -54,24 +54,6 @@
             ]
         },
         {
-            "name": "A/File2.cpp",
-            "source_digest": "44683de2597fa27a9410e0f65f71fde0",
-            "coverage": [
-                1,
-                null,
-                1,
-                1,
-                1,
-                null,
-                null,
-                0,
-                null,
-                0,
-                0,
-                null
-            ]
-        },
-        {
             "name": "A/File4.cpp",
             "source_digest": "7451828cfb58f0fefc6e5fbf44d9a6f4",
             "coverage": [
@@ -156,6 +138,24 @@
             "coverage": [
                 0,
                 null,
+                0,
+                null
+            ]
+        },
+        {
+            "name": "A/subdir_0/subdir_1/subdir_2/subdir_3/subdir_4/subdir_5/subdir_6/subdir_7/subdir_8/subdir_9/File2.cpp",
+            "source_digest": "44683de2597fa27a9410e0f65f71fde0",
+            "coverage": [
+                1,
+                null,
+                1,
+                1,
+                1,
+                null,
+                null,
+                0,
+                null,
+                0,
                 0,
                 null
             ]

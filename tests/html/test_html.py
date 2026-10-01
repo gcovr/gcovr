@@ -1,5 +1,3 @@
-# -*- coding:utf-8 -*-
-
 #  ************************** Copyrights and license ***************************
 #
 # This file is part of gcovr 8.6+main, a parsing and reporting tool for gcov.
@@ -20,16 +18,18 @@
 import logging
 import os
 import subprocess  # nosec
-import typing
 
 import pytest
+from pytest_check import check
 
 from gcovr.formats.html.write import _make_short_source_filename
 from tests.conftest import IS_LINUX, IS_WINDOWS, GcovrTestExec
 
+LOGGER = logging.getLogger(__name__)
+
 
 @pytest.mark.parametrize(
-    "outfile,source_filename",
+    ("outfile", "source_filename"),
     [
         ("../gcovr", "C:\\other_dir\\project\\source.c"),
         ("../gcovr/", "C:\\other_dir\\project\\source.c"),
@@ -60,23 +60,20 @@ from tests.conftest import IS_LINUX, IS_WINDOWS, GcovrTestExec
 )
 @pytest.mark.skipif(not IS_WINDOWS, reason="Only for Windows")
 def test_windows_make_short_source_filename(outfile: str, source_filename: str) -> None:
-    CurrentDrive = os.getcwd()[0:1]
-    outfile = outfile.replace("C:", CurrentDrive)
-    source_filename = source_filename.replace("C:", CurrentDrive)
+    current_drive = os.getcwd()[0:1]
+    outfile = outfile.replace("C:", current_drive)
+    source_filename = source_filename.replace("C:", current_drive)
 
     result = _make_short_source_filename(outfile, source_filename)
-    logging.info("=" * 100)
-    logging.info(outfile)
-    logging.info(source_filename)
-    logging.info(result)
-    assert (
-        ":" not in result
-        or (  # nosec
-            result.startswith(CurrentDrive) and ":" not in result[2:]
-        )
+    LOGGER.info("=" * 100)
+    LOGGER.info(outfile)
+    LOGGER.info(source_filename)
+    LOGGER.info(result)
+    assert ":" not in result or (
+        result.startswith(current_drive) and ":" not in result[2:]
     )
 
-    assert len(result) < 256  # nosec
+    assert len(result) < 256  # noqa: PLR2004
 
 
 PARAMETERS = [
@@ -194,14 +191,12 @@ PARAMETERS = [
 
 
 @pytest.mark.parametrize(
-    "_test_id,options",
+    ("_test_id", "options"),
     PARAMETERS,
     ids=[p[0] for p in PARAMETERS],
 )
 @pytest.mark.html
-def test(
-    gcovr_test_exec: "GcovrTestExec", _test_id: str, options: typing.List[str]
-) -> None:
+def test(gcovr_test_exec: "GcovrTestExec", _test_id: str, options: list[str]) -> None:
     """Test HTML single page output variants."""
     gcovr_test_exec.cxx_link(
         "testcase",
@@ -220,10 +215,7 @@ def test(
     reason="Newer versions stub the missing lines",
 )
 @pytest.mark.html
-def test_less_lines(  # type: ignore[no-untyped-def]
-    gcovr_test_exec: "GcovrTestExec",
-    check,
-) -> None:
+def test_less_lines(gcovr_test_exec: "GcovrTestExec") -> None:
     """Test HTML single page output variants."""
     main_cpp = gcovr_test_exec.output_dir / "main.cpp"
     content = main_cpp.read_text(encoding="utf-8")
@@ -272,7 +264,7 @@ PARAMETERS_ENCODING = [
 
 
 @pytest.mark.parametrize(
-    "_test_id,source_encoding,html_encoding",
+    ("_test_id", "source_encoding", "html_encoding"),
     PARAMETERS_ENCODING,
     ids=[p[0] for p in PARAMETERS_ENCODING],
 )
@@ -324,7 +316,7 @@ def test_file_not_found(gcovr_test_exec: "GcovrTestExec") -> None:
             "--json-add-tracefile=file_not_found.json",
             "--html-details=coverage.html",
         )
-    assert exc.value.returncode == 128
+    assert exc.value.returncode == 128  # noqa: PLR2004
     gcovr_test_exec.compare_html()
 
 
@@ -447,16 +439,16 @@ PARAMETERS_NESTED = [
     reason="The nested report generation is independent of OS and we do not want to have separate data for Windows and Darwin.",
 )
 @pytest.mark.parametrize(
-    "test_id,options",
+    ("test_id", "options"),
     PARAMETERS_NESTED,
     ids=[p[0] for p in PARAMETERS_NESTED],
 )
 @pytest.mark.html
 def test_details(
-    gcovr_test_exec: "GcovrTestExec", test_id: str, options: typing.List[str]
+    gcovr_test_exec: "GcovrTestExec", test_id: str, options: list[str]
 ) -> None:
-    """This test case tests the output of cascaded html coverage
-    reports.
+    """
+    Test the output of cascaded html coverage reports.
 
     It will test that a directory with items in it properly
     aggregates the statistics within it, all the sorting works for
@@ -465,10 +457,9 @@ def test_details(
 
     In this case, the directory listings should be unsorted.
     """
-
     file2_cpp = gcovr_test_exec.output_dir / "subdir" / "A" / "File2.cpp"
     if test_id.startswith("theme-"):
-        deep_dir = file2_cpp.parent.joinpath(*[f"subdir_{i}" for i in range(0, 10)])
+        deep_dir = file2_cpp.parent.joinpath(*[f"subdir_{i}" for i in range(10)])
         deep_dir.mkdir(parents=True, exist_ok=True)
         file2_cpp = file2_cpp.rename(deep_dir / file2_cpp.name)
     gcovr_test_exec.cxx_link(
@@ -586,16 +577,16 @@ PARAMETERS_NESTED = [
     reason="The nested report generation is independent of OS and we do not want to have separate data for Windows and Darwin.",
 )
 @pytest.mark.parametrize(
-    "test_id,options",
+    ("test_id", "options"),
     PARAMETERS_NESTED,
     ids=[p[0] for p in PARAMETERS_NESTED],
 )
 @pytest.mark.html
 def test_nested(
-    gcovr_test_exec: "GcovrTestExec", test_id: str, options: typing.List[str]
+    gcovr_test_exec: "GcovrTestExec", test_id: str, options: list[str]
 ) -> None:
-    """This test case tests the output of cascaded html coverage
-    reports.
+    """
+    Test the output of cascaded html coverage reports.
 
     It will test that a directory with items in it properly
     aggregates the statistics within it, all the sorting works for
@@ -604,10 +595,9 @@ def test_nested(
 
     In this case, the directory listings should be unsorted.
     """
-
     file2_cpp = gcovr_test_exec.output_dir / "subdir" / "A" / "File2.cpp"
     if test_id.startswith("theme-"):
-        deep_dir = file2_cpp.parent.joinpath(*[f"subdir_{i}" for i in range(0, 10)])
+        deep_dir = file2_cpp.parent.joinpath(*[f"subdir_{i}" for i in range(10)])
         deep_dir.mkdir(parents=True, exist_ok=True)
         file2_cpp = file2_cpp.rename(deep_dir / file2_cpp.name)
     gcovr_test_exec.cxx_link(

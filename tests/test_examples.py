@@ -1,5 +1,3 @@
-# -*- coding:utf-8 -*-
-
 #  ************************** Copyrights and license ***************************
 #
 # This file is part of gcovr 8.6+main, a parsing and reporting tool for gcov.
@@ -18,10 +16,10 @@
 # ****************************************************************************
 
 from pathlib import Path
+
 import pytest
 
 from tests.conftest import GCOVR_ISOLATED_TEST, IS_GCC, GcovrTestExec
-
 
 EXAMPLES_DIRECTORY = Path(__file__).parent.parent / "doc" / "examples"
 SHELL_SCRIPTS = [
@@ -58,7 +56,7 @@ def test_examples(gcovr_test_exec: "GcovrTestExec", shell_script: Path) -> None:
     if (
         output_format == "json"
         and gcovr_test_exec.is_gcc()
-        and gcovr_test_exec.cc_version() >= 14
+        and gcovr_test_exec.cc_version() >= 14  # noqa: PLR2004
     ):
         gcovr_test_exec.skip(
             f"GCC {gcovr_test_exec.cc_version()} has broken JSON output."
@@ -71,7 +69,7 @@ def test_examples(gcovr_test_exec: "GcovrTestExec", shell_script: Path) -> None:
     output_file = gcovr_test_exec.output_dir / baseline_file.name
 
     scrub_function = getattr(
-        gcovr_test_exec._compare,  # pylint: disable=protected-access
+        gcovr_test_exec.compare,  # pylint: disable=protected-access
         f"scrub_{output_format}",
         lambda x: x,
     )
@@ -90,7 +88,7 @@ def test_examples(gcovr_test_exec: "GcovrTestExec", shell_script: Path) -> None:
         current = output_file.read_bytes().decode(encoding="utf-8")
         current_scrubbed = scrub_function(current)
 
-        gcovr_test_exec._compare.assert_equals(  # pylint: disable=protected-access
+        gcovr_test_exec.compare.assert_equals(  # pylint: disable=protected-access
             baseline_file,
             baseline_scrubbed,
             output_file,
@@ -98,7 +96,7 @@ def test_examples(gcovr_test_exec: "GcovrTestExec", shell_script: Path) -> None:
             encoding="utf8",
         )
     finally:
-        if current is not None and gcovr_test_exec._compare.update_reference:  # pylint: disable=protected-access
+        if current is not None and gcovr_test_exec.compare.update_reference:  # pylint: disable=protected-access
             if output_format == "html":
                 for file in [
                     gcovr_test_exec.output_dir / "example_html.html",

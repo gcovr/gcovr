@@ -1,5 +1,3 @@
-# -*- coding:utf-8 -*-
-
 #  ************************** Copyrights and license ***************************
 #
 # This file is part of gcovr 8.6+main, a parsing and reporting tool for gcov.
@@ -20,14 +18,14 @@
 import pytest
 
 from tests.conftest import (
-    GcovrTestExec,
-    IS_LINUX,
+    CC_VERSION,
     IS_DARWIN,
     IS_GCC,
-    CC_VERSION,
+    IS_LINUX,
+    GcovrTestExec,
 )
 
-SKIP_TEST = not IS_LINUX and not (IS_DARWIN and not IS_GCC and CC_VERSION == 17)
+SKIP_TEST = not IS_LINUX and not (IS_DARWIN and not IS_GCC and CC_VERSION == 17)  # noqa: PLR2004
 
 
 @pytest.mark.skipif(

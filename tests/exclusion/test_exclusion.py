@@ -1,5 +1,3 @@
-# -*- coding:utf-8 -*-
-
 #  ************************** Copyrights and license ***************************
 #
 # This file is part of gcovr 8.6+main, a parsing and reporting tool for gcov.
@@ -18,7 +16,9 @@
 # ****************************************************************************
 
 import re
+
 import pytest
+from pytest_check import check
 
 from tests.conftest import IS_DARWIN, IS_GCC, IS_LINUX, GcovrTestExec
 
@@ -35,10 +35,7 @@ from tests.conftest import IS_DARWIN, IS_GCC, IS_LINUX, GcovrTestExec
 @pytest.mark.lcov
 @pytest.mark.sonarqube
 @pytest.mark.txt
-def test_exclude_line(  # type: ignore[no-untyped-def]
-    gcovr_test_exec: "GcovrTestExec",
-    check,
-) -> None:
+def test_exclude_line(gcovr_test_exec: "GcovrTestExec") -> None:
     """Test excluding of functions."""
     gcovr_test_exec.cxx_link(
         "testcase",
@@ -112,8 +109,11 @@ def test_exclude_line(  # type: ignore[no-untyped-def]
 @pytest.mark.sonarqube
 @pytest.mark.txt
 def test_exclude_line_custom(gcovr_test_exec: "GcovrTestExec") -> None:
-    """This test case verifies that custom tagged lines (LINE/START/STOP) are excluded per run options.
-    It uses exclude_pattern_prefix to pass a custom prefix."""
+    """
+    Test case verifies that custom tagged lines (LINE/START/STOP) are excluded per run options.
+
+    It uses exclude_pattern_prefix to pass a custom prefix.
+    """
     gcovr_test_exec.cxx_link("testcase", "main.cpp")
 
     gcovr_test_exec.run("./testcase")
@@ -191,7 +191,8 @@ def test_exclude_line_custom(gcovr_test_exec: "GcovrTestExec") -> None:
 @pytest.mark.sonarqube
 @pytest.mark.txt
 def test_exclude_line_branch(gcovr_test_exec: "GcovrTestExec") -> None:
-    """Test for --exclude-unreachable-branches option.
+    """
+    Test for --exclude-unreachable-branches option.
 
     The test attempts to test both GCOV/LCOV exclusion markers
     and auto-detection of compiler-generated code.
@@ -225,13 +226,16 @@ def test_exclude_line_branch(gcovr_test_exec: "GcovrTestExec") -> None:
     )
     gcovr_test_exec.compare_json()
 
-    gcovr_test_exec.gcovr(
-        "--json-add-tracefile",
-        gcovr_test_exec.output_dir / "coverage.json",
-        "--html-details",
-        gcovr_test_exec.output_dir / "coverage.html",
-        cwd=cwd,
-    )
+    for theme in ["default", "github", "boost"]:
+        gcovr_test_exec.gcovr(
+            "--json-add-tracefile",
+            gcovr_test_exec.output_dir / "coverage.json",
+            "--html-theme",
+            f"{'' if theme == 'default' else theme + '.'}green",
+            "--html-nested",
+            gcovr_test_exec.output_dir / f"coverage.{theme}.html",
+            cwd=cwd,
+        )
     gcovr_test_exec.compare_html()
 
     gcovr_test_exec.gcovr(
@@ -309,8 +313,11 @@ def test_exclude_line_branch(gcovr_test_exec: "GcovrTestExec") -> None:
 @pytest.mark.sonarqube
 @pytest.mark.txt
 def test_exclude_lines_by_pattern(gcovr_test_exec: "GcovrTestExec") -> None:
-    """This test case verifies that custom tagged lines (LINE/START/STOP) are excluded per run options.
-    It uses exclude_pattern_prefix to pass a custom prefix."""
+    """
+    Test case verifies that custom tagged lines (LINE/START/STOP) are excluded per run options.
+
+    It uses exclude_pattern_prefix to pass a custom prefix.
+    """
     gcovr_test_exec.cxx_link("testcase", "main.cpp")
 
     gcovr_test_exec.run("./testcase")
@@ -385,7 +392,7 @@ def test_exclude_lines_by_pattern(gcovr_test_exec: "GcovrTestExec") -> None:
 @pytest.mark.sonarqube
 @pytest.mark.txt
 def test_exclude_branch(gcovr_test_exec: "GcovrTestExec") -> None:
-    """This test case verifies that tagged lines (BR_LINE/BR_START/BR_STOP) are excluded per run options."""
+    """Test case verifies that tagged lines (BR_LINE/BR_START/BR_STOP) are excluded per run options."""
     gcovr_test_exec.cxx_link(
         "testcase",
         "main.cpp",
@@ -460,10 +467,7 @@ def test_exclude_branch(gcovr_test_exec: "GcovrTestExec") -> None:
 @pytest.mark.lcov
 @pytest.mark.sonarqube
 @pytest.mark.txt
-def test_exclude_branch_source(  # type: ignore[no-untyped-def]
-    gcovr_test_exec: "GcovrTestExec",
-    check,
-) -> None:
+def test_exclude_branch_source(gcovr_test_exec: "GcovrTestExec") -> None:
     """Test exclusion of source branches, following the output order from exclude-line-custom."""
     gcovr_test_exec.cxx_link(
         "testcase",
@@ -567,10 +571,7 @@ def test_exclude_branch_source(  # type: ignore[no-untyped-def]
 @pytest.mark.lcov
 @pytest.mark.sonarqube
 @pytest.mark.txt
-def test_exclude_branch_without_hit(  # type: ignore[no-untyped-def]
-    gcovr_test_exec: "GcovrTestExec",
-    check,
-) -> None:
+def test_exclude_branch_without_hit(gcovr_test_exec: "GcovrTestExec") -> None:
     """Test exclusion of source branches, following the output order from exclude-line-custom."""
     gcovr_test_exec.cxx_link(
         "testcase",
@@ -666,7 +667,7 @@ def test_exclude_branch_without_hit(  # type: ignore[no-untyped-def]
 @pytest.mark.lcov
 @pytest.mark.sonarqube
 @pytest.mark.txt
-def test_exclude_throw_branches(gcovr_test_exec: "GcovrTestExec", check) -> None:  # type: ignore[no-untyped-def]
+def test_exclude_throw_branches(gcovr_test_exec: "GcovrTestExec") -> None:
     """Test exclude-throw-branches option."""
     gcovr_test_exec.cxx_link(
         "testcase",
@@ -857,10 +858,7 @@ def test_exclude_file_relative(gcovr_test_exec: "GcovrTestExec") -> None:
     reason="Exclusion markers are independent of OS and we do not want to have separate data for Windows and Darwin.",
 )
 @pytest.mark.json
-def test_exclude_function(  # type: ignore[no-untyped-def]
-    gcovr_test_exec: "GcovrTestExec",
-    check,
-) -> None:
+def test_exclude_function(gcovr_test_exec: "GcovrTestExec") -> None:
     """Test excluding of functions."""
     gcovr_test_exec.cxx_link(
         "testcase",

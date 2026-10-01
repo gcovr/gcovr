@@ -1,5 +1,3 @@
-# -*- coding:utf-8 -*-
-
 #  ************************** Copyrights and license ***************************
 #
 # This file is part of gcovr 8.6+main, a parsing and reporting tool for gcov.
@@ -20,10 +18,10 @@
 # pylint: disable=missing-function-docstring,missing-module-docstring
 # cspell:ignore getpreferredencoding
 
-from locale import getpreferredencoding
 import logging
 import re
 import textwrap
+from locale import getpreferredencoding
 from threading import Event
 from unittest import mock
 
@@ -37,8 +35,8 @@ from gcovr.formats.gcov.parser import (
     text,
 )
 from gcovr.formats.gcov.parser.common import (
-    NegativeHits,
-    SuspiciousHits,
+    NegativeHitsError,
+    SuspiciousHitsError,
 )
 from gcovr.formats.gcov.workers import Workers
 from gcovr.logging import configure_logging
@@ -282,42 +280,42 @@ branch  2 taken 0% (throw)
         1:   36:  return 0;
         -:   37:}"""
 
-GCOV_8_SOURCES = dict(
-    gcov_8_example=GCOV_8_EXAMPLE,
-    gcov_8_exclude_throw=GCOV_8_EXAMPLE,
-    nautilus_example=GCOV_8_NAUTILUS,
-    gcov_8_example_2=GCOV_8_EXAMPLE_2,
-)
+GCOV_8_SOURCES = {
+    "gcov_8_example": GCOV_8_EXAMPLE,
+    "gcov_8_exclude_throw": GCOV_8_EXAMPLE,
+    "nautilus_example": GCOV_8_NAUTILUS,
+    "gcov_8_example_2": GCOV_8_EXAMPLE_2,
+}
 
-GCOV_8_EXPECTED_UNCOVERED_LINES = dict(
-    gcov_8_example=[7, 8, 33],
-    gcov_8_exclude_throw=[7, 8, 33],
-    nautilus_example=[51, 51, 52, 54],
-    gcov_8_example_2=[7, 8, 33],
-)
+GCOV_8_EXPECTED_UNCOVERED_LINES = {
+    "gcov_8_example": [7, 8, 33],
+    "gcov_8_exclude_throw": [7, 8, 33],
+    "nautilus_example": [51, 51, 52, 54],
+    "gcov_8_example_2": [7, 8, 33],
+}
 
-GCOV_8_EXPECTED_UNCOVERED_BRANCHES = dict(
-    gcov_8_example=[21, 23, 24, 30, 32, 33, 35],
-    gcov_8_exclude_throw=[30, 32, 33],
-    nautilus_example=[51, 51],
-    gcov_8_example_2=[21, 23, 24, 30, 32, 33, 35],
-)
+GCOV_8_EXPECTED_UNCOVERED_BRANCHES = {
+    "gcov_8_example": [21, 23, 24, 30, 32, 33, 35],
+    "gcov_8_exclude_throw": [30, 32, 33],
+    "nautilus_example": [51, 51],
+    "gcov_8_example_2": [21, 23, 24, 30, 32, 33, 35],
+}
 
-GCOV_8_EXCLUDE_THROW_BRANCHES = dict(
-    gcov_8_exclude_throw=True,
-)
+GCOV_8_EXCLUDE_THROW_BRANCHES = {
+    "gcov_8_exclude_throw": True,
+}
 
 
 @pytest.mark.parametrize("source_filename", sorted(GCOV_8_SOURCES))
 def test_gcov_8(capsys: pytest.CaptureFixture[str], source_filename: str) -> None:
-    """Verify support for GCC 8 .gcov files.
+    """
+    Verify support for GCC 8 .gcov files.
 
     GCC 8 introduces two changes:
     -   for partial lines, the execution count is followed by an asterisk.
     -   instantiations for templates and macros
         are show broken down for each specialization
     """
-
     source = GCOV_8_SOURCES[source_filename]
     lines = source.splitlines()
     expected_uncovered_lines = GCOV_8_EXPECTED_UNCOVERED_LINES[source_filename]
@@ -348,7 +346,9 @@ def test_gcov_8(capsys: pytest.CaptureFixture[str], source_filename: str) -> Non
         linecov.lineno for linecov in filecov.linecov() if linecov.is_uncovered
     ]
     uncovered_branches = [
-        linecov.lineno for linecov in filecov.linecov() if linecov.has_uncovered_branch
+        linecov.lineno
+        for linecov in filecov.linecov()
+        if linecov.has_uncovered_branches
     ]
     assert uncovered_lines == expected_uncovered_lines
     assert uncovered_branches == expected_uncovered_branches
@@ -360,7 +360,7 @@ def contains_phrases(string: str, *phrases: str) -> bool:
 
 
 @pytest.mark.parametrize("ignore_errors", [True, False])
-def test_unknown_tags(caplog: pytest.LogCaptureFixture, ignore_errors: bool) -> None:
+def test_unknown_tags(caplog: pytest.LogCaptureFixture, *, ignore_errors: bool) -> None:
     source = r"bananas 7 times 3"
     lines = source.splitlines()
 
@@ -369,7 +369,7 @@ def test_unknown_tags(caplog: pytest.LogCaptureFixture, ignore_errors: bool) -> 
             "",
             filename="foo.c",
             lines=lines,
-            ignore_parse_errors=set(["all"]) if ignore_errors else None,
+            ignore_parse_errors={"all"} if ignore_errors else None,
         )
         return coverage
 
@@ -382,12 +382,12 @@ def test_unknown_tags(caplog: pytest.LogCaptureFixture, ignore_errors: bool) -> 
         uncovered_branches = [
             linecov.lineno
             for linecov in filecov.linecov()
-            if linecov.has_uncovered_branch
+            if linecov.has_uncovered_branches
         ]
         assert uncovered_lines == []
         assert uncovered_branches == []
     else:
-        with pytest.raises(text.UnknownLineType):
+        with pytest.raises(text.UnknownLineTypeError):
             filecov = run_the_parser()
 
     messages = caplog.record_tuples
@@ -409,7 +409,7 @@ def test_pathologic_codeline(caplog: pytest.LogCaptureFixture) -> None:
     source = r": 7:xxx"
     lines = source.splitlines()
 
-    with pytest.raises(text.UnknownLineType):
+    with pytest.raises(text.UnknownLineTypeError):
         text.parse_coverage(
             "",
             filename="foo.c",
@@ -430,7 +430,7 @@ def test_pathologic_codeline(caplog: pytest.LogCaptureFixture) -> None:
     assert message[1] == logging.WARNING
     warning_phrases2 = [
         "Exception during parsing",
-        "UnknownLineType",
+        "UnknownLineTypeError",
     ]
     assert contains_phrases(message[2], *warning_phrases2)
 
@@ -445,12 +445,13 @@ def test_pathologic_codeline(caplog: pytest.LogCaptureFixture) -> None:
 
 def test_exception_during_coverage_processing(caplog: pytest.LogCaptureFixture) -> None:
     """
+    Test an exception during coverage processing.
+
     This cannot happen during normal processing, but as a defense against
     unexpected changes to the format the ``--gcov-ignore-parse-errors`` option
     will try to catch as many errors as possible. In order to inject a testable
     fault, merging of coverage data will be mocked.
     """
-
     source = textwrap.dedent(
         """\
         function __compiler-internal called 5 returned 6 blocks executed 7%
@@ -503,16 +504,14 @@ def test_exception_during_coverage_processing(caplog: pytest.LogCaptureFixture) 
 
 
 def test_trailing_function_tag() -> None:
-    """
-    This cannot occur in real gcov, but the parser should be robust enough to
-    handle it.
-    """
-
+    """Error cannot occur in real gcov, but the parser should be robust enough to handle it."""
+    line_number = 2
+    execution_count = 17
     source = textwrap.dedent(
-        """\
+        f"""\
         function foo() called 1 returned 100% blocks executed 100%
-          #####: 2:example line
-        function example called 17 returned 16 blocks executed 3%
+          #####: {line_number}:example line
+        function example called {execution_count} returned 16 blocks executed 3%
         """
     )
 
@@ -528,11 +527,15 @@ def test_trailing_function_tag() -> None:
         "example",
     ]
     functioncov = coverage.get_functioncov("example")
-    assert list(functioncov.execution_count.keys()) == [3]  # previous lineno + 1
+    assert list(functioncov.execution_count.keys()) == [
+        line_number + 1  # previous lineno + 1
+    ]
     assert functioncov.mangled_name == "example"
     assert functioncov.demangled_name is None
     assert functioncov.name == "example"
-    assert functioncov.execution_count[3] == 17  # number of calls
+    assert (
+        functioncov.execution_count[line_number + 1] == execution_count
+    )  # number of calls
 
 
 @pytest.mark.parametrize(
@@ -545,10 +548,7 @@ def test_trailing_function_tag() -> None:
     ],
 )
 def test_branch_exclusion(flags: str) -> None:
-    """
-    On some lines, branch coverage may be discarded.
-    """
-
+    """On some lines, branch coverage may be discarded."""
     source = textwrap.dedent(
         """\
         function foo() called 1 returned 100% blocks executed 100%
@@ -600,10 +600,7 @@ def test_branch_exclusion(flags: str) -> None:
 
 
 def test_negative_branch_count() -> None:
-    """
-    A exception shall be raised.
-    """
-
+    """A exception shall be raised."""
     source = textwrap.dedent(
         """\
         function foo() called 1 returned 100% blocks executed 100%
@@ -616,7 +613,7 @@ def test_negative_branch_count() -> None:
         """
     )
 
-    with pytest.raises(NegativeHits):
+    with pytest.raises(NegativeHitsError):
         text.parse_coverage(
             "",
             source.splitlines(),
@@ -626,10 +623,7 @@ def test_negative_branch_count() -> None:
 
 
 def test_negative_branch_count_json() -> None:
-    """
-    A exception shall be raised.
-    """
-
+    """A exception shall be raised."""
     source = {
         "format_version": "2",
         "current_working_directory": "",
@@ -665,14 +659,14 @@ def test_negative_branch_count_json() -> None:
         ],
     }
 
-    with pytest.raises(NegativeHits):
+    with pytest.raises(NegativeHitsError):
         list(
             json.parse_coverage(
                 "example.gcov.json.gz",
                 source,
                 source_encoding=DEFAULT_SOURCE_ENCODING,
-                include_filter=tuple([AlwaysMatchFilter()]),
-                exclude_filter=tuple(),
+                include_filter=(AlwaysMatchFilter(),),
+                exclude_filter=(),
                 ignore_parse_errors=set(),
             )
         )
@@ -688,10 +682,7 @@ def test_negative_branch_count_json() -> None:
 def test_negative_branch_count_ignored_json(
     caplog: pytest.LogCaptureFixture, flag: str
 ) -> None:
-    """
-    A exception shall be raised.
-    """
-
+    """A exception shall be raised."""
     source = {
         "format_version": "2",
         "current_working_directory": "",
@@ -770,15 +761,15 @@ def test_negative_branch_count_ignored_json(
             "example.gcov.json.gz",
             source,
             source_encoding=DEFAULT_SOURCE_ENCODING,
-            include_filter=tuple([AlwaysMatchFilter()]),
-            exclude_filter=tuple(),
-            ignore_parse_errors=set([flag]),
+            include_filter=(AlwaysMatchFilter(),),
+            exclude_filter=(),
+            ignore_parse_errors={flag},
         )
     )
 
     number_of_warnings = 2 if flag == "negative_hits.warn" else 1
     messages = caplog.record_tuples
-    for index in range(0, number_of_warnings):
+    for index in range(number_of_warnings):
         message = messages[index]
         assert message[1] == logging.WARNING
         assert message[2].startswith(
@@ -803,10 +794,7 @@ def test_negative_branch_count_ignored_json(
 def test_negative_line_count_ignored(
     caplog: pytest.LogCaptureFixture, flag: str
 ) -> None:
-    """
-    A exception shall be raised.
-    """
-
+    """A exception shall be raised."""
     source = textwrap.dedent(
         """\
         function foo() called 1 returned 100% blocks executed 100%
@@ -821,7 +809,7 @@ def test_negative_line_count_ignored(
         "",
         source.splitlines(),
         filename="example.cpp",
-        ignore_parse_errors=set([flag]),
+        ignore_parse_errors={flag},
     )
 
     covered_lines = {
@@ -832,7 +820,7 @@ def test_negative_line_count_ignored(
 
     number_of_warnings = 2 if flag == "negative_hits.warn" else 1
     messages = caplog.record_tuples
-    for index in range(0, number_of_warnings):
+    for index in range(number_of_warnings):
         message = messages[index]
         assert message[1] == logging.WARNING
         assert message[2].startswith(
@@ -848,10 +836,7 @@ def test_negative_line_count_ignored(
 
 
 def test_negative_branch_count_ignored() -> None:
-    """
-    A exception shall be raised.
-    """
-
+    """A exception shall be raised."""
     source = textwrap.dedent(
         """\
         function foo() called 1 returned 100% blocks executed 100%
@@ -864,7 +849,7 @@ def test_negative_branch_count_ignored() -> None:
         """
     )
 
-    with pytest.raises(NegativeHits):
+    with pytest.raises(NegativeHitsError):
         coverage, _ = text.parse_coverage(
             "",
             source.splitlines(),
@@ -876,7 +861,7 @@ def test_negative_branch_count_ignored() -> None:
         "",
         source.splitlines(),
         filename="example.cpp",
-        ignore_parse_errors=set(["negative_hits.warn_once_per_file"]),
+        ignore_parse_errors={"negative_hits.warn_once_per_file"},
     )
 
     covered_branches = {
@@ -890,10 +875,7 @@ def test_negative_branch_count_ignored() -> None:
 
 
 def test_suspicious_branch_count() -> None:
-    """
-    A exception shall be raised.
-    """
-
+    """A exception shall be raised."""
     source = textwrap.dedent(
         """\
              1: 1:foo += 1;
@@ -902,7 +884,7 @@ def test_suspicious_branch_count() -> None:
         """
     )
 
-    with pytest.raises(SuspiciousHits):
+    with pytest.raises(SuspiciousHitsError):
         text.parse_coverage(
             "",
             source.splitlines(),
@@ -921,10 +903,7 @@ def test_suspicious_branch_count() -> None:
 def test_suspicious_line_count_ignored(
     caplog: pytest.LogCaptureFixture, flag: str
 ) -> None:
-    """
-    A exception shall be raised.
-    """
-
+    """A exception shall be raised."""
     source = textwrap.dedent(
         """\
         function foo() called 1 returned 100% blocks executed 100%
@@ -939,7 +918,7 @@ def test_suspicious_line_count_ignored(
         "",
         source.splitlines(),
         filename="example.cpp",
-        ignore_parse_errors=set([flag]),
+        ignore_parse_errors={flag},
     )
 
     covered_lines = {
@@ -950,7 +929,7 @@ def test_suspicious_line_count_ignored(
 
     number_of_warnings = 2 if flag == "suspicious_hits.warn" else 1
     messages = caplog.record_tuples
-    for index in range(0, number_of_warnings):
+    for index in range(number_of_warnings):
         message = messages[index]
         assert message[1] == logging.WARNING
         assert message[2].startswith(
@@ -966,10 +945,7 @@ def test_suspicious_line_count_ignored(
 
 
 def test_suspicious_branch_count_ignored() -> None:
-    """
-    A exception shall be raised.
-    """
-
+    """A exception shall be raised."""
     source = textwrap.dedent(
         """\
         function foo() called 1 returned 100% blocks executed 100%
@@ -982,7 +958,7 @@ def test_suspicious_branch_count_ignored() -> None:
         """
     )
 
-    with pytest.raises(SuspiciousHits):
+    with pytest.raises(SuspiciousHitsError):
         coverage, _ = text.parse_coverage(
             "",
             source.splitlines(),
@@ -994,7 +970,7 @@ def test_suspicious_branch_count_ignored() -> None:
         "",
         source.splitlines(),
         filename="example.cpp",
-        ignore_parse_errors=set(["suspicious_hits.warn_once_per_file"]),
+        ignore_parse_errors={"suspicious_hits.warn_once_per_file"},
     )
 
     covered_branches = {
@@ -1009,10 +985,7 @@ def test_suspicious_branch_count_ignored() -> None:
 
 @pytest.mark.parametrize("flags", ["none", "exclude_internal_functions"])
 def test_function_exclusion(flags: str) -> None:
-    """
-    Compiler-generated function names can be excluded.
-    """
-
+    """Compiler-generated function names can be excluded."""
     source = textwrap.dedent(
         """\
         function __foo called 5 returned 50% blocks executed 70%
@@ -1020,10 +993,7 @@ def test_function_exclusion(flags: str) -> None:
         """
     )
 
-    if "exclude_internal_functions" in flags:
-        expected_functions = []
-    else:
-        expected_functions = ["__foo"]
+    expected_functions = [] if "exclude_internal_functions" in flags else ["__foo"]
 
     coverage, lines = text.parse_coverage(
         "",
@@ -1131,7 +1101,8 @@ def check_and_raise(
 ) -> None:
     queue_full.wait()
     if number == 0:
-        raise AssertionError("Number == 0")
+        msg = "Number == 0, raising exception."
+        raise AssertionError(msg)
     exc_raised.wait()
     mutable.append(None)
 
@@ -1141,31 +1112,33 @@ def test_pathologic_threads(threads: int) -> None:
     mutable = list[None]()
     queue_full = Event()
     exc_raised = Event()
-    with pytest.raises(RuntimeError) as exc_info:
-        with Workers(
+    with (  # noqa: PT012
+        pytest.raises(RuntimeError) as exc_info,
+        Workers(
             threads,
             lambda: {
                 "mutable": mutable,
                 "exc_raised": exc_raised,
                 "queue_full": queue_full,
             },
-        ) as pool:
-            for extra in range(0, 10000):
-                pool.add(check_and_raise, extra)
+        ) as pool,
+    ):
+        for extra in range(10000):
+            pool.add(check_and_raise, extra)
 
-            # Queue is filled
-            queue_full.set()
+        # Queue is filled
+        queue_full.set()
 
-            # Wait until the exception has been completed
-            while not pool.exceptions:
-                # Yield to the worker threads
-                pass
+        # Wait until the exception has been completed
+        while not pool.exceptions:
+            # Yield to the worker threads
+            pass
 
-            # Queue should be drained and exception raised
-            exc_raised.set()
-            pool.wait()
-            assert pool.size() == 0, "Workers are removed."
-            assert len(pool.exceptions) == 1, "One traceback available."
+        # Queue should be drained and exception raised
+        exc_raised.set()
+        pool.wait()
+        assert pool.size() == 0, "Workers are removed."
+        assert len(pool.exceptions) == 1, "One traceback available."
 
     # Outer level catches correct exception
     assert exc_info.value.args[0] == "Worker thread raised exception, workers canceled."

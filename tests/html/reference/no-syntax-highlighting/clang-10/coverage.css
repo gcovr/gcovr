@@ -2,13 +2,15 @@
 
 :root {
   font-family: sans-serif;
-  --tab_size: 4;
+  --tab-size: 4;
+  --base-size-8: 4px;
+  --stack-padding-normal: 8px;
 }
 
 .theme-green, .theme-blue {
   --unknown_color: lightgray;
-  --low_color: #FF6666;
-  --medium_color: #F9FD63;
+  --low_color: #cf222e;
+  --medium_color: #9a6700;
   --partial_covered_color: var(--medium_color);
   --uncovered_color: #FF8C8C;
   --warning_color: orangered;
@@ -33,10 +35,12 @@
   --changed_color: #dbab09;
   --approximately_equal_color: #0a84ff;
   --strictly_equal_color: #777777;
+  /* text colors */
+  --text-muted: #8c959f;
 }
 
 .theme-green {
-  --high_color: #85E485;
+  --high_color: #1a7f37;
   --covered_color: #85E485;
   --takenBranch_color: green;
   --takenCondition_color: green;
@@ -45,7 +49,7 @@
 }
 
 .theme-blue {
-  --high_color: #66B4FF;
+  --high_color: #58a6ff;
   --covered_color: #66B4Ff;
   --takenBranch_color: blue;
   --takenCondition_color: blue;
@@ -317,6 +321,7 @@ table.legend
   flex-flow: row wrap;
   justify-content: flex-start;
   margin-left: 16px;
+  font-size: var(--body-font-size, 14px);
 }
 
 table.legend th[scope=row]
@@ -337,7 +342,6 @@ table.legend td
 table.legend td.legend
 {
   color: black;
-  font-size: 80%;
 }
 
 table.legend td.warning_text
@@ -349,78 +353,65 @@ table.coverage
 {
   border-collapse: collapse;
   margin-right: 16px;
+  font-size: var(--body-font-size, 14px);
 }
 
 table.coverage td,
 table.coverage th
 {
-  text-align: right;
-  color: black;
   font-weight: normal;
   white-space: nowrap;
   padding-top: 3px;
   padding-bottom: 3px;
-  padding-left: 5px;
-  padding-right: 4px;
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+table.coverage th
+{
+  text-align: left;
 }
 
 table.coverage td
 {
-  background-color: LightSteelBlue;
+  text-align: right;
 }
 
-table.coverage th[scope=row]
+span.summary-coverage.coverage-unknown,
+span.summary-coverage.coverage-none,
+span.summary-coverage.coverage-low,
+span.summary-coverage.coverage-medium,
+span.summary-coverage.coverage-high
 {
-  color: black;
-  font-weight: normal;
-  white-space: nowrap;
-}
-
-table.coverage th[scope=col]
-{
-  color: blue;
-  font-weight: normal;
-  white-space: nowrap;
-}
-
-table.legend span
-{
-  margin-right: 4px;
   padding: 2px;
-}
-
-table.legend span.coverage-unknown,
-table.legend span.coverage-none,
-table.legend span.coverage-low,
-table.legend span.coverage-medium,
-table.legend span.coverage-high
-{
   padding-left: 0.5em;
   padding-right: 0.5em;
+  border-radius: 1em;
+  border: 1px solid;
+  margin-right: 4px;
+  color: white;
+  min-width: 3.5em;
+  display: inline-block;
+  text-align: center;
 }
 
-table.legend span.coverage-unknown,
-table.coverage td.coverage-unknown
+span.summary-coverage.coverage-unknown
 {
   background-color: var(--unknown_color) !important;
 }
 
-table.legend span.coverage-none,
-table.legend span.coverage-low,
-table.coverage td.coverage-none,
-table.coverage td.coverage-low
+span.summary-coverage.coverage-none,
+span.summary-coverage.coverage-low
 {
   background-color: var(--low_color) !important;
 }
 
-table.legend span.coverage-medium,
-table.coverage td.coverage-medium
+span.summary-coverage.coverage-medium
 {
   background-color: var(--medium_color) !important;
 }
 
-table.legend span.coverage-high,
-table.coverage td.coverage-high
+span.summary-coverage.coverage-high
 {
   background-color: var(--high_color) !important;
 }
@@ -430,38 +421,53 @@ table.coverage td.coverage-high
 span.coverage-none,
 span.coverage-low
 {
-  background: var(--low_color);
+  color: var(--low_color);
 }
 
 span.coverage-medium
 {
-  background: var(--medium_color);
+  color: var(--medium_color);
 }
 
 span.coverage-high
 {
-  background: var(--high_color);
+  color: var(--high_color);
 }
 
-div.coverage-unknown
+span.coverage-none.Progress-item,
+span.coverage-low.Progress-item
 {
-  background-color: var(--unknown_color) !important;
+  background-color: var(--low_color);
 }
 
-div.coverage-none,
-div.coverage-low
+span.coverage-medium.Progress-item
 {
-  background-color: var(--low_color) !important;
+  background-color: var(--medium_color);
 }
 
-div.coverage-medium
+span.coverage-high.Progress-item
 {
-  background-color: var(--medium_color) !important;
+  background-color: var(--high_color);
 }
 
-div.coverage-high
-{
-  background-color: var(--high_color) !important;
+.coverage-percent {
+  font-weight: 600;
+  font-size: var(--font-size-sm);
+  min-width: 3.75em;
+  text-align: right;
+}
+
+.stat-value {
+  font-weight: 500;
+}
+
+.stat-separator {
+  color: var(--text-muted);
+  margin: 0 2px;
+}
+
+.stat-total {
+  color: var(--text-secondary);
 }
 
 div.percent,
@@ -474,14 +480,13 @@ div.percent
 {
   min-width: 4em;
   text-align: right;
-  padding-right: 0.5em !important;
+  padding-right: 0.25em !important;
 }
 
 div.counter
 {
-  min-width: 4em;
-  text-align: left;
-  padding-left: 0.5em !important;
+  text-align: right;
+  padding-left: 0.25em !important;
 }
 td.CoverValue
 {
@@ -639,8 +644,8 @@ details summary {
   font-family: monospace;
   white-space: pre;
 
-  tab-size: var(--tab_size);
-  -moz-tab-size: var(--tab_size);
+  tab-size: var(--tab-size);
+  -moz-tab-size: var(--tab-size);
 }
 
 span.takenBranch,
@@ -782,7 +787,7 @@ pre
   border-top-right-radius: 6px;
   border-width: 1px;
   margin: -1px -1px 0;
-  padding: 16px;
+  padding: 8px;
 }
 
 .Box-row {

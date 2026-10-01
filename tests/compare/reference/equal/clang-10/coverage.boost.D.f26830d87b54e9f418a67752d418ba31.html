@@ -118,46 +118,12 @@
           <span class="stat-value">28</span>
         </div>
         <div class="stat-row">
-          <span class="stat-label">Excl</span>
-          <span class="stat-value">0</span>
-        </div>
-        <div class="stat-row">
           <span class="stat-label">Total</span>
           <span class="stat-value">47</span>
         </div>
       </div>
     </div>
   </div>
-
-  <div class="summary-card">
-    <div class="summary-card-header">
-      <h3>Functions</h3>
-    </div>
-    <div class="summary-card-body">
-      <div class="coverage-ring coverage-low">
-        <svg viewBox="0 0 36 36">
-          <path class="ring-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
-          <path class="ring-fill" stroke-dasharray="60.0, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
-        </svg>
-        <span class="ring-text">60.0%</span>
-      </div>
-      <div class="summary-stats">
-        <div class="stat-row">
-          <span class="stat-label">Hit</span>
-          <span class="stat-value">6</span>
-        </div>
-        <div class="stat-row">
-          <span class="stat-label">Excl</span>
-          <span class="stat-value">0</span>
-        </div>
-        <div class="stat-row">
-          <span class="stat-label">Total</span>
-          <span class="stat-value">10</span>
-        </div>
-      </div>
-    </div>
-  </div>
-
   <div class="summary-card">
     <div class="summary-card-header">
       <h3>Branches</h3>
@@ -176,12 +142,32 @@
           <span class="stat-value">4</span>
         </div>
         <div class="stat-row">
-          <span class="stat-label">Excl</span>
-          <span class="stat-value">0</span>
+          <span class="stat-label">Total</span>
+          <span class="stat-value">14</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="summary-card">
+    <div class="summary-card-header">
+      <h3>Functions</h3>
+    </div>
+    <div class="summary-card-body">
+      <div class="coverage-ring coverage-low">
+        <svg viewBox="0 0 36 36">
+          <path class="ring-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
+          <path class="ring-fill" stroke-dasharray="60.0, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
+        </svg>
+        <span class="ring-text">60.0%</span>
+      </div>
+      <div class="summary-stats">
+        <div class="stat-row">
+          <span class="stat-label">Hit</span>
+          <span class="stat-value">6</span>
         </div>
         <div class="stat-row">
           <span class="stat-label">Total</span>
-          <span class="stat-value">14</span>
+          <span class="stat-value">10</span>
         </div>
       </div>
     </div>
@@ -205,17 +191,14 @@
     <div class="col-name sortable sorted-ascending" data-sort="filename">
       Name
     </div>
-    <div class="col-coverage sortable" data-sort="coverage">
-      Coverage
-    </div>
     <div class="col-lines sortable" data-sort="lines">
       Lines
     </div>
-    <div class="col-functions sortable" data-sort="functions">
-      Functions
-    </div>
     <div class="col-branches sortable" data-sort="branches">
       Branches
+    </div>
+    <div class="col-functions sortable" data-sort="functions">
+      Functions
     </div>
     <div class="col-diff sortable" data-sort="diff">
       Diff
@@ -225,8 +208,7 @@
   <div class="file-list-body" id="file-list">
     <div class="file-row file"
          data-filename="File6.cpp"
-         data-coverage="0.0"
-         data-lines="5"
+         data-lines="0.0"
          data-lines-exec="0"
          data-lines-coverage="0.0"
          data-lines-class="coverage-none"
@@ -252,26 +234,29 @@
         </span>
         <a href="coverage.boost.File6.cpp.d50a8531ab312aa3faac8eaedb567137.html" title="File6.cpp">File6.cpp</a>
       </div>
-
-      <div class="col-coverage">
+      <div class="col-lines">
+        <span class="stat-value">0</span>
+        <span class="stat-separator">/</span>
+        <span class="stat-total">5</span>
+        <span class="stat-separator"></span>
         <div class="coverage-bar-container">
           <div class="coverage-bar coverage-none" style="width: 0.0%"></div>
         </div>
         <span class="coverage-percent coverage-none">0.0%</span>
       </div>
-
-      <div class="col-lines">
+      <div class="col-branches">
         <span class="stat-value">0</span>
         <span class="stat-separator">/</span>
-        <span class="stat-value">0</span>
-        <span class="stat-separator">/</span>
-        <span class="stat-total">5</span>
+        <span class="stat-total">2</span>
+        <span class="stat-separator"></span>
+        <span class="coverage-percent coverage-none">0.0%</span>
       </div>
       <div class="col-functions">
-        <span class="stat-value coverage-none">0.0%</span>
-      </div>
-      <div class="col-branches">
-        <span class="stat-value coverage-none">0.0%</span>
+        <span class="stat-value">0</span>
+        <span class="stat-separator">/</span>
+        <span class="stat-total">1</span>
+        <span class="stat-separator"></span>
+        <span class="coverage-percent coverage-none">0.0%</span>
       </div>
       <div class="col-diff">
         <span class="stat-value">Strictly equal</span>

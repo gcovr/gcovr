@@ -1,5 +1,3 @@
-# -*- coding:utf-8 -*-
-
 #  ************************** Copyrights and license ***************************
 #
 # This file is part of gcovr 8.6+main, a parsing and reporting tool for gcov.
@@ -18,6 +16,7 @@
 # ****************************************************************************
 
 import pytest
+from pytest_check import check
 
 from tests.conftest import (
     IS_GCC,
@@ -27,7 +26,7 @@ from tests.conftest import (
 
 
 @pytest.mark.json
-def test_all(gcovr_test_exec: "GcovrTestExec", check) -> None:  # type: ignore[no-untyped-def]
+def test_all(gcovr_test_exec: "GcovrTestExec") -> None:
     """A test that verifies coverage when using existing *.gcov coverage files."""
     gcovr_test_exec.cxx_link(
         "testcase",
@@ -99,7 +98,7 @@ def test_exclude_existing(gcovr_test_exec: "GcovrTestExec") -> None:
 )
 @pytest.mark.json
 @pytest.mark.html
-def test_issue_1166(gcovr_test_exec: "GcovrTestExec", check) -> None:  # type: ignore[no-untyped-def]
+def test_issue_1166(gcovr_test_exec: "GcovrTestExec") -> None:
     """A test that verifies reading of text reports without a function line."""
     gcovr_test_exec.cxx_link(
         "testcase",
@@ -135,7 +134,7 @@ def test_issue_1166(gcovr_test_exec: "GcovrTestExec", check) -> None:  # type: i
     reason="We use an existing file and this is independent from compiler",
 )
 @pytest.mark.json
-def test_issue_1168(gcovr_test_exec: "GcovrTestExec", check) -> None:  # type: ignore[no-untyped-def]
+def test_issue_1168(gcovr_test_exec: "GcovrTestExec") -> None:
     """A test that verifies correct parsing of template functions (specializations)."""
     gcov_file = (
         gcovr_test_exec.output_dir

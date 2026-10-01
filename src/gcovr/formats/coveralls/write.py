@@ -1,5 +1,3 @@
-# -*- coding:utf-8 -*-
-
 #  ************************** Copyrights and license ***************************
 #
 # This file is part of gcovr 8.6+main, a parsing and reporting tool for gcov.
@@ -17,7 +15,7 @@
 #
 # ****************************************************************************
 
-from __future__ import absolute_import
+"""GCOVR coveralls report."""
 
 import datetime
 import os
@@ -37,13 +35,14 @@ def write_report(
     covdata: CoverageContainer, output_file: str, options: Options
 ) -> None:
     """
-    Outputs a JSON report in the Coveralls API coverage format
+    Write a JSON report in the Coveralls API coverage format.
 
-    @param covdata: is a dictionary of file coverage objects, keyed with an absolute filepath
-    @param output_file: is the name of the file to create
-    @param options: options object
+    Arguments:
+    covdata: is a dictionary of file coverage objects, keyed with an absolute filepath
+    output_file: is the name of the file to create
+    options: options object
+
     """
-
     # Create object to collect coverage data (https://docs.coveralls.io/api-jobs-endpoint#json-object-job)
     json_dict = dict[str, Any]()
 
@@ -122,9 +121,11 @@ def write_report(
 
     def run_git_cmd(*args: str) -> str:
         if git is None:
-            raise SanityCheckError("Function must only be executed if git is found.")
-        process = subprocess.run(  # nosec # We execute git
-            [git] + list(args),
+            msg = "Function must only be executed if git is found."
+            raise SanityCheckError(msg)
+        # We execute git
+        process = subprocess.run(  # nosec: B603  # noqa: S603
+            [git, *list(args)],
             stdout=subprocess.PIPE,
             cwd=options.root_dir,
             encoding="utf-8",
@@ -198,13 +199,12 @@ def _make_source_file(filecov: FileCoverage, options: Options) -> dict[str, Any]
     coverage = list[int | None]()
     branches = list[int | None]()
     source_file["coverage"] = coverage
-    # source_file['branches'] = []
     for linecov_collection in filecov.lines(sort=True):
         # Comment lines are not collected in `covdata`, but must
         # be reported to coveralls (fill missing lines)
         _extend_with_none(coverage, linecov_collection.lineno - 1)
-        linecov_collection = linecov_collection.merge_lines()
-        linecov = list(linecov_collection.linecov())[0]
+        linecov_collection = linecov_collection.merge_lines()  # noqa: PLW2901
+        linecov = next(iter(linecov_collection.linecov()))
         if linecov_collection.is_reportable:
             coverage.append(linecov.count)
         else:

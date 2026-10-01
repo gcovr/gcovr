@@ -1,5 +1,3 @@
-# -*- coding:utf-8 -*-
-
 #  ************************** Copyrights and license ***************************
 #
 # This file is part of gcovr 8.6+main, a parsing and reporting tool for gcov.
@@ -17,10 +15,13 @@
 #
 # ****************************************************************************
 
+"""GCOVR logging handling."""
+
 import logging
 import os
 import sys
-from typing import Any, cast, TYPE_CHECKING
+from typing import TYPE_CHECKING, Any, cast
+
 from colorlog import ColoredFormatter
 
 if TYPE_CHECKING:
@@ -39,7 +40,8 @@ TRACE = logging.INFO + 1
 class GcovrLogger(logging.getLoggerClass()):  # type: ignore[misc]
     """Custom logger class for gcovr with TRACE level."""
 
-    def __init__(self, name: str, level: int = logging.NOTSET):
+    def __init__(self, name: str, level: int = logging.NOTSET) -> None:
+        """Initialize the GcovrLogger with a custom TRACE level."""
         super().__init__(name, level)
         logging.addLevelName(TRACE, "TRACE")
 
@@ -105,7 +107,7 @@ def configure_logging() -> None:
     if ci_logging_prefixes is not None:
 
         class CiFormatter(logging.Formatter):
-            """Formatter to format messages to be captured in Azure"""
+            """Format messages to be captured in CI."""
 
             def __init__(self) -> None:
                 super().__init__(fmt=LOG_FORMAT)
@@ -128,7 +130,7 @@ def configure_logging() -> None:
         logging.getLogger().addHandler(handler)
 
     def exception_hook(exc_type: Any, exc_value: Any, exc_traceback: Any) -> None:
-        logging.exception(
+        LOGGER.exception(  # noqa: LOG004
             "Uncaught EXCEPTION", exc_info=(exc_type, exc_value, exc_traceback)
         )
 

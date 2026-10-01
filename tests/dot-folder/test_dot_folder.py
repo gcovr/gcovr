@@ -1,5 +1,3 @@
-# -*- coding:utf-8 -*-
-
 #  ************************** Copyrights and license ***************************
 #
 # This file is part of gcovr 8.6+main, a parsing and reporting tool for gcov.
@@ -18,7 +16,6 @@
 # ****************************************************************************
 
 import pytest
-
 
 from tests.conftest import IS_WINDOWS, GcovrTestExec
 

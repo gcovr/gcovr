@@ -1,5 +1,3 @@
-# -*- coding:utf-8 -*-
-
 #  ************************** Copyrights and license ***************************
 #
 # This file is part of gcovr 8.6+main, a parsing and reporting tool for gcov.
@@ -17,8 +15,9 @@
 #
 # ****************************************************************************
 
-from pathlib import Path
 import typing
+from pathlib import Path
+
 import pytest
 
 if typing.TYPE_CHECKING:
@@ -35,7 +34,6 @@ if typing.TYPE_CHECKING:
 @pytest.mark.txt
 def test(gcovr_test_exec: "GcovrTestExec") -> None:
     """Test workspace coverage."""
-
     gcovr_test_exec.cxx_link("testcase", "main.cpp", cwd=Path("src code"))
     gcovr_test_exec.run("./testcase", cwd=Path("src code"))
     gcovr_test_exec.gcovr(

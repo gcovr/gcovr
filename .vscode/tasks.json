@@ -18,6 +18,7 @@
                 "gcc-13",
                 "gcc-14",
                 "gcc-15",
+                "gcc-16",
                 "clang-10",
                 "clang-13",
                 "clang-14",
@@ -25,7 +26,10 @@
                 "clang-16",
                 "clang-17",
                 "clang-18",
-                "clang-19"
+                "clang-19",
+                "clang-20",
+                "clang-21",
+                "clang-22"
             ]
         }
     ],

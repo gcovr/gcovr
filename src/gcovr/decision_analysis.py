@@ -1,5 +1,3 @@
-# -*- coding:utf-8 -*-
-
 #  ************************** Copyrights and license ***************************
 #
 # This file is part of gcovr 8.6+main, a parsing and reporting tool for gcov.
@@ -17,14 +15,16 @@
 #
 # ****************************************************************************
 
+"""GCOVR decision parser."""
+
 # cspell:ignore ault
 
 import re
 
 from .data_model.coverage import (
-    DecisionCoverageUncheckable,
     DecisionCoverageConditional,
     DecisionCoverageSwitch,
+    DecisionCoverageUncheckable,
     FileCoverage,
     LineCoverage,
 )
@@ -42,10 +42,13 @@ _ONE_LINE_BRANCH = re.compile(r"^[^;]+{(?:[^;]+;)*.*}$")
 
 
 def _prepare_decision_string(code: str) -> str:
-    r"""Prepare the input to analyze, if it's a branch statement.
+    r"""
+    Prepare the input to analyze, if it's a branch statement.
+
     Remove comments, remove whitespace, add leading space to separate branch-keywords
     from possible collisions with variable names.
 
+    Examples:
     >>> _prepare_decision_string('   a++;if  (a > 5)  { // check for something ')
     ' a++ ; if ( a > 5 ) {'
     >>> _prepare_decision_string('case x: // check for something ')
@@ -60,8 +63,8 @@ def _prepare_decision_string(code: str) -> str:
     Check that removal of comment does not create tokens.
     >>> _prepare_decision_string('    def/* Comment */ault: /* xxx */ ')
     ' def ault :'
-    """
 
+    """
     # Add whitespaces around ":"
     code = _CHARACTERS_TO_ADD_SPACES.sub(r" \1 ", code)
     code = _CPP_STYLE_COMMENT_PATTERN.sub(" ", code)
@@ -77,7 +80,7 @@ def _get_delta_braces(code: str) -> int:
 
 
 def _is_a_branch_statement(code: str) -> bool:
-    r"""Checks, if the given line of code is a branch statement"""
+    r"""Check if the given line of code is a branch statement."""
     return any(
         s in _prepare_decision_string(code)
         for s in (
@@ -92,19 +95,23 @@ def _is_a_branch_statement(code: str) -> bool:
 
 
 def _is_a_oneline_branch(code: str) -> bool:
-    r"""Checks, if the given line of code is a branch and branch statement and code block is in one line
+    r"""
+    Check if the given line of code is a branch and branch statement and code block is in one line.
 
     >>> _is_a_oneline_branch('if(a>5){a = 0;}')
     True
     >>> _is_a_oneline_branch('if(a>5){')
     False
+
     """
     return _ONE_LINE_BRANCH.match(_prepare_decision_string(code)) is not None
 
 
 def _is_a_closed_branch(code: str) -> bool:
-    r"""Checks, if the given line of code is a branch which is closed on the same line
+    r"""
+    Check if the given line of code is a branch which is closed on the same line.
 
+    Examples:
     >>> _is_a_closed_branch('if(a>5){a = 0;}')
     False
     >>> _is_a_closed_branch('if(a>5){ // A comment')
@@ -115,6 +122,7 @@ def _is_a_closed_branch(code: str) -> bool:
     True
     >>> _is_a_closed_branch('   while (a>5')
     False
+
     """
     prepared_string = _prepare_decision_string(code)
     if (
@@ -126,10 +134,13 @@ def _is_a_closed_branch(code: str) -> bool:
 
 
 def _is_a_loop(code: str) -> bool:
-    r"""Checks, if the given line of code is a loop-statement (while,do-while,if)
+    r"""
+    Check if the given line of code is a loop-statement (while,do-while,if).
 
+    Examples:
     >>> _is_a_loop('while(5 < a) {')
     True
+
     """
     prepared_string = _prepare_decision_string(code)
     return any(
@@ -138,35 +149,41 @@ def _is_a_loop(code: str) -> bool:
 
 
 def _is_a_switch(code: str) -> bool:
-    r"""Check if the given line relates to a switch-case label (case,default)
+    r"""
+    Check if the given line relates to a switch-case label (case,default).
 
+    Examples:
     >>> _is_a_switch('case /* Comment */ 5 /* Comment */:')
     True
     >>> _is_a_switch('default /* Comment */ :')
     True
+
     """
     prepared_string = _prepare_decision_string(code)
     return any(s in prepared_string for s in (" case ", " default :"))
 
 
 class DecisionParser:
-    r"""Parses the decisions of a source file.
+    r"""
+    Parses the decisions of a source file.
 
-    Args:
+    Arguments:
         covdata:
             Reference to the active coverage data.
         lines:
             The encoding of the source files
+
     """
 
     def __init__(self, filecov: FileCoverage, lines: list[str]) -> None:
+        """Initialize the decision parser."""
         # If there are several line coverage definitions for the same line we ignore all of them
         self.linecov_by_line: dict[int, LineCoverage | None] = {}
         for linecov_collection in filecov.lines():
             if len(linecov_collection) == 1:
-                self.linecov_by_line[linecov_collection.lineno] = list(
-                    linecov_collection.linecov()
-                )[0]
+                self.linecov_by_line[linecov_collection.lineno] = next(
+                    iter(linecov_collection.linecov())
+                )
         self.lines = lines
 
         # status variables for decision analysis
@@ -187,7 +204,7 @@ class DecisionParser:
         LOGGER.debug("Decision Analysis finished!")
 
     def _parse_one_line(self, lineno: int, code: str) -> None:
-        """Parse a single line"""
+        """Parse a single line."""
         linecov = self.linecov_by_line.get(lineno)
 
         if linecov is None and not _is_a_switch(code):
@@ -210,9 +227,9 @@ class DecisionParser:
             if (
                 _is_a_loop(code)
                 or _is_a_oneline_branch(code)
-                or (_is_a_closed_branch(code) and (len(branchcov_list) == 2))
+                or (_is_a_closed_branch(code) and (len(branchcov_list) == 2))  # noqa: PLR2004
             ):
-                if len(branchcov_list) == 2:
+                if len(branchcov_list) == 2:  # noqa: PLR2004
                     # if it's a compact decision, we can only use the fallback to analyze
                     # simple decisions via branch calls
                     linecov.decision = DecisionCoverageConditional(
@@ -250,7 +267,7 @@ class DecisionParser:
                     break
 
     def _start_multiline_decision_analysis(self, lineno: int, code: str) -> None:
-        """Handler for start of a decision written over several lines."""
+        """Handle start of a decision written over several lines."""
         # normal (non-compact) branch, analyze execution of following lines
         self.decision_analysis_active = True
         self.last_decision_line = lineno
@@ -259,14 +276,13 @@ class DecisionParser:
         self.decision_analysis_open_brackets += _get_delta_braces(code)
 
     def _continue_multiline_decision_analysis(self, lineno: int, code: str) -> None:
-        """Handler for a decision which is continued on the current line."""
+        """Handle a decision which is continued on the current line."""
         linecov = self.linecov_by_line.get(lineno)
         exec_count = 0 if linecov is None else linecov.count
         last_decision_linecov = self.linecov_by_line.get(self.last_decision_line)
         if last_decision_linecov is None:
-            raise SanityCheckError(
-                "Last decision must be present for multi line analysis."
-            )
+            msg = "Last decision must be present for multi line analysis."
+            raise SanityCheckError(msg)
 
         # check, if the branch statement was finished in the last line
         if self.decision_analysis_open_brackets == 0:

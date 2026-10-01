@@ -1,0 +1,4 @@
+---
+paths-ignore:
+  - src/gcovr/formats/html/common/gcovr.js
+  - src/gcovr/formats/html/boost/gcovr.js

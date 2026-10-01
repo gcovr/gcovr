@@ -1,5 +1,3 @@
-# -*- coding:utf-8 -*-
-
 #  ************************** Copyrights and license ***************************
 #
 # This file is part of gcovr 8.6+main, a parsing and reporting tool for gcov.
@@ -17,21 +15,23 @@
 #
 # ****************************************************************************
 
-from contextlib import ExitStack
+"""Nox task definitions for GCOVR development."""
+
 import functools
 import io
 import os
-from pathlib import Path
 import platform
 import re
-from runpy import run_path
+import shutil
 import socket
+import subprocess  # nosec # Commands are trusted.
 import sys
 import textwrap
 import time
-import shutil
-import subprocess  # nosec # Commands are trusted.
 import zipfile
+from contextlib import ExitStack
+from pathlib import Path
+from runpy import run_path
 
 import nox
 
@@ -45,8 +45,8 @@ IS_DARWIN = platform.system() == "Darwin"
 IS_WINDOWS = platform.system() == "Windows"
 GCOVR_ISOLATED_TEST = os.getenv("GCOVR_ISOLATED_TEST") == "zkQEVaBpXF1i"
 ALL_COMPILER_VERSIONS = [
-    *[f"gcc-{v}" for v in range(5, 16)],
-    *[f"clang-{v}" for v in range(10, 21)],
+    *[f"gcc-{v}" for v in range(5, 17)],
+    *[f"clang-{v}" for v in range(10, 23)],
 ]
 DEFAULT_COMPILER_VERSION = ALL_COMPILER_VERSIONS[0]
 
@@ -63,9 +63,25 @@ ALL_GCC_VERSIONS = [v for v in ALL_COMPILER_VERSIONS if v.startswith("gcc-")]
 ALL_CLANG_VERSIONS = [v for v in ALL_COMPILER_VERSIONS if v.startswith("clang-")]
 
 CC_VERSIONS_BY_OS_VERSION = {
-    "18.04": ["gcc-5", "gcc-6"],
-    "20.04": ["gcc-7", "gcc-8", "gcc-9", "clang-10", "clang-11", "clang-12"],
-    "22.04": ["gcc-10", "gcc-11", "clang-13", "clang-14", "clang-15"],
+    "18.04": [
+        "gcc-5",
+        "gcc-6",
+    ],
+    "20.04": [
+        "gcc-7",
+        "gcc-8",
+        "gcc-9",
+        "clang-10",
+        "clang-11",
+        "clang-12",
+    ],
+    "22.04": [
+        "gcc-10",
+        "gcc-11",
+        "clang-13",
+        "clang-14",
+        "clang-15",
+    ],
     "24.04": [
         "gcc-12",
         "gcc-13",
@@ -75,15 +91,17 @@ CC_VERSIONS_BY_OS_VERSION = {
         "clang-18",
         "clang-19",
     ],
-    "25.04": ["gcc-15", "clang-20"],
+    "26.04": [
+        "gcc-15",
+        "gcc-16",
+        "clang-20",
+        "clang-21",
+        "clang-22",
+    ],
 }
 
 DEFAULT_TEST_DIRECTORIES = ["doc/examples", "src", "tests"]
-DEFAULT_LINT_ARGUMENTS = [
-    "noxfile.py",
-    "scripts",
-    "admin",
-] + DEFAULT_TEST_DIRECTORIES
+DEFAULT_LINT_ARGUMENTS = ["noxfile.py", "scripts", "admin", *DEFAULT_TEST_DIRECTORIES]
 
 OUTPUT_FORMATS = [
     "cobertura",
@@ -97,6 +115,7 @@ OUTPUT_FORMATS = [
 
 CI_RUN = "GITHUB_ACTION" in os.environ
 GCOVR_CHANGELOG_RST = Path(__file__).parent / "CHANGELOG.rst"
+MAX_RETRIES_FOR_JPEG_GENERATION = 20
 
 nox.options.sessions = ["qa"]
 
@@ -114,11 +133,11 @@ def get_gcovr_version() -> str:
 
 @nox.session()
 def prepare_release(session: nox.Session) -> None:
-    """Prepare the release"""
+    """Prepare the release."""
     session.install("-e", ".")
     version = get_gcovr_version()
     parts = version.split(".", maxsplit=2)
-    if len(parts) == 2:
+    if len(parts) == 2:  # noqa: PLR2004
         session.error("Session only allowed for development iteration")
     major, minor = parts[0:2]
     session.log("Is this a major release (1) or a minor release (2)?")
@@ -137,7 +156,7 @@ def prepare_release(session: nox.Session) -> None:
 
 @nox.session()
 def prepare_next_iteration(session: nox.Session) -> None:
-    """Prepare the next iteration"""
+    """Prepare the next iteration."""
     session.install("-e", ".")
     new_lines = []
     lines = iter(GCOVR_CHANGELOG_RST.read_text().splitlines())
@@ -219,10 +238,7 @@ def lint(session: nox.Session) -> None:
 def ruff_check(session: nox.Session) -> None:
     """Run ruff check command."""
     install_dev_requirements(session, "ruff")
-    if session.posargs:
-        args = session.posargs
-    else:
-        args = ["."]
+    args = session.posargs or ["."]
     session.run("ruff", "check", *args)
 
 
@@ -230,10 +246,7 @@ def ruff_check(session: nox.Session) -> None:
 def ruff_format(session: nox.Session) -> None:
     """Run ruff format command."""
     install_dev_requirements(session, "ruff")
-    if session.posargs:
-        args = session.posargs
-    else:
-        args = ["--diff", "."]
+    args = session.posargs or ["--diff", "."]
     session.run("ruff", "format", *args)
 
 
@@ -241,10 +254,7 @@ def ruff_format(session: nox.Session) -> None:
 def bandit(session: nox.Session) -> None:
     """Run bandit, a code formatter and format checker."""
     install_dev_requirements(session, "bandit[toml]")
-    if session.posargs:
-        args = session.posargs
-    else:
-        args = ["-r", *DEFAULT_LINT_ARGUMENTS]
+    args = session.posargs or ["-r", *DEFAULT_LINT_ARGUMENTS]
     session.run("bandit", "-c", "pyproject.toml", *args)
 
 
@@ -253,10 +263,7 @@ def pylint(session: nox.Session) -> None:
     """Run pylint command."""
     install_dev_requirements(session, "pylint", "nox", "requests", "pytest")
     session.install("-e", ".")
-    if session.posargs:
-        args = session.posargs
-    else:
-        args = DEFAULT_LINT_ARGUMENTS
+    args = session.posargs or DEFAULT_LINT_ARGUMENTS
     session.run("pylint", *args)
 
 
@@ -270,10 +277,7 @@ def mypy(session: nox.Session) -> None:
 
     install_dev_requirements(session, "mypy", "nox", "requests", "pytest", "yaxmldiff")
     session.install("-e", ".")
-    if session.posargs:
-        args = session.posargs
-    else:
-        args = ["."]
+    args = session.posargs or ["."]
     session.run("mypy", *args)
 
 
@@ -299,21 +303,27 @@ def doc(session: nox.Session) -> None:
     for line in iter_lines:
         if re.fullmatch(r"\d+\.\d+\s+\(.+\)", line.rstrip()):
             if (release_id := line.split(" ", maxsplit=1)[0]) != gcovr_version:
-                raise RuntimeError(
-                    f"Found release {release_id} but version is {gcovr_version}"
-                )
+                msg = f"Found release {release_id} but version is {gcovr_version}"
+                raise RuntimeError(msg)
         elif line.startswith("------------"):
             next(iter_lines)
             break
     else:
-        raise RuntimeError(f"Start of release changes not found in {changelog_rst}.")
+        msg = f"Start of release changes not found in {changelog_rst}."
+        raise RuntimeError(msg)
 
     for line in iter_lines:
         if re.fullmatch(r"\d+\.\d+\s+\(.+\)", line.rstrip()):
             break
-        line = re.sub(r"``", r"`", line)
-        line = re.sub(r":(?:option|ref):`(.+?)(?:\s*<[^>]+>)?`", r"`\1`", line)
-        line = re.sub(r":issue:`(\d+)`", r"#\1", line)
+        line = re.sub(  # noqa: PLW2901
+            r":issue:`(\d+)`",
+            r"#\1",
+            re.sub(
+                r":(?:option|ref):`(.+?)(?:\s*<[^>]+>)?`",
+                r"`\1`",
+                re.sub(r"``", r"`", line),
+            ),
+        )
         # Remove the empty lines around sub lists
         if (
             line.lstrip().startswith("- ")
@@ -326,7 +336,8 @@ def doc(session: nox.Session) -> None:
             continue
         out_lines.append(line)
     else:
-        raise RuntimeError(f"End of release changes not found in {changelog_rst}.")
+        msg = f"End of release changes not found in {changelog_rst}."
+        raise RuntimeError(msg)
 
     release_notes_md = Path() / "doc" / "build" / "release_notes.md"
     session.log(f"Write {release_notes_md}...")
@@ -350,7 +361,7 @@ def doc(session: nox.Session) -> None:
     ):
         docker_build_compiler(session, "gcc-8")
         # We need to inject the arguments
-        session._runner.posargs = ["-s", "tests", "--", "-k", "test_example"]  # pylint: disable=protected-access
+        session._runner.posargs = ["-s", "tests", "--", "-k", "test_example"]  # pylint: disable=protected-access  # noqa: SLF001
         docker_run_compiler(session, "gcc-8")
 
     # Build the Sphinx documentation
@@ -428,7 +439,7 @@ def tests(session: nox.Session) -> None:
         )
     args += session.posargs
     if "--" not in args:
-        args += ["--"] + DEFAULT_TEST_DIRECTORIES
+        args += ["--", *DEFAULT_TEST_DIRECTORIES]
 
     # Delay the session failure,
     # even if command fail we want to get the coverage report.
@@ -448,10 +459,7 @@ def tests(session: nox.Session) -> None:
 def combine_coverage(session: nox.Session) -> None:
     """Merge coverage reports to a single report."""
     install_dev_requirements(session, "coverage", "pytest-cov")
-    if session.posargs:
-        args = session.posargs
-    else:
-        args = [str(p) for p in Path().glob(".coverage_*")]
+    args = session.posargs or [str(p) for p in Path().glob(".coverage_*")]
     session.run("coverage", "combine", *args)
     session.run("coverage", "xml")
     session.run("coverage", "html")
@@ -466,7 +474,7 @@ def build_distribution(session: nox.Session) -> None:
     if dist_dir.exists():
         shutil.rmtree(dist_dir)
     session.run("python", "-m", "build")
-    session.notify(("check_distribution"))
+    session.notify("check_distribution")
 
 
 @nox.session
@@ -476,7 +484,7 @@ def check_distribution(session: nox.Session) -> None:
     with session.chdir("dist"):
         session.run("twine", "check", "*", external=True)
         session.run("pip", "uninstall", "--yes", "gcovr")
-        session.install(str(list(Path().glob("*.whl"))[0]))
+        session.install(str(next(iter(Path().glob("*.whl")))))
     session.run("python", "-m", "gcovr", "--help", external=True)
     session.run("gcovr", "--help", external=True)
     session.log("Run all transformations to check if all the modules are packed")
@@ -494,10 +502,7 @@ def check_distribution(session: nox.Session) -> None:
 @functools.lru_cache(maxsize=1)
 def get_executable_name() -> Path:
     """Get the executable name."""
-    if IS_WINDOWS:
-        suffix = ".exe"
-    else:
-        suffix = ""
+    suffix = ".exe" if IS_WINDOWS else ""
     if IS_WINDOWS:
         platform_suffix = "win"
     elif IS_DARWIN:
@@ -562,8 +567,8 @@ def check_bundled_app(session: nox.Session) -> None:
 
 @nox.session()
 def html2jpeg(session: nox.Session) -> None:
-    """Create JPEGs from HTML for documentation"""
-    import requests  # pylint: disable=import-outside-toplevel
+    """Create JPEGs from HTML for documentation."""
+    import requests  # pylint: disable=import-outside-toplevel  # noqa: PLC0415
 
     session.log("Build patched image of bedrockio/export-html...")
     with session.chdir(session.cache_dir):
@@ -613,8 +618,9 @@ def html2jpeg(session: nox.Session) -> None:
     sock.close()
 
     with ExitStack() as defer:
-        container_id = subprocess.check_output(  # nosec # We run on several system and do not know the full path
-            [
+        # We run on several system and do not know the full path
+        container_id = subprocess.check_output(  # nosec  # noqa: S603
+            [  # noqa: S607
                 "docker",
                 "run",
                 "--rm",
@@ -626,7 +632,8 @@ def html2jpeg(session: nox.Session) -> None:
         ).strip()
 
         def docker_stop() -> None:
-            subprocess.run(["docker", "stop", container_id], check=False)  # nosec # We run on several system and do not know the full path
+            # We run on several system and do not know the full path
+            subprocess.run(["docker", "stop", container_id], check=False)  # nosec: B603, B607  # noqa: S603, S607
 
         defer.callback(docker_stop)
         url = f"http://localhost:{port}/1/screenshot"
@@ -638,7 +645,9 @@ def html2jpeg(session: nox.Session) -> None:
 
             content = re.sub(
                 r'<link rel="stylesheet" href="([^"]+)"/>',
-                lambda match: f'<style type="text/css">{read_file(os.path.join(os.path.dirname(html), match[1]))}</style>',
+                lambda match: (
+                    f'<style type="text/css">{read_file(os.path.join(os.path.dirname(html), match[1]))}</style>'
+                ),
                 read_file(html),
             )
             payload: requests._types.JsonType = {
@@ -666,7 +675,7 @@ def html2jpeg(session: nox.Session) -> None:
                     break
                 except requests.exceptions.ConnectionError:
                     retries += 1
-                    if retries == 10:
+                    if retries == MAX_RETRIES_FOR_JPEG_GENERATION:
                         session.error("Giving up!")
                     session.log(f"Retry {retries} in 1 second")
                     time.sleep(  # nosemgrep # We need to wait here until server is started.
@@ -726,7 +735,8 @@ def docker_container_os_version(cc: str) -> str:
         if cc in cc_versions:
             return os_version
 
-    raise RuntimeError(f"No container image defined for {cc}")
+    msg = f"No container image defined for {cc}"
+    raise RuntimeError(msg)
 
 
 def docker_container_tag(cc: str) -> str:
@@ -864,7 +874,7 @@ def docker_run_compiler_clang(session: nox.Session) -> None:
 @nox.parametrize("cc", [nox.param(v, id=v) for v in ALL_COMPILER_VERSIONS])
 def docker_run_compiler(session: nox.Session, cc: str) -> None:
     """Run the docker container for a specific GCC version."""
-    nox_options = session.posargs if session.posargs else ["-s", "qa"]
+    nox_options = session.posargs or ["-s", "qa"]
     if not session.interactive:
         nox_options.insert(0, "--non-interactive")
 

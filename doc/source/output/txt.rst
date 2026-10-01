@@ -67,7 +67,7 @@ Branch Coverage
 ---------------
 
 The ``gcovr`` command can also summarize branch coverage using
-the :option:`-b/--branches <--branches>` option:
+the :option:`--txt-metric branch <--txt-metric>` option:
 
 .. literalinclude:: ../../examples/example_branches.sh
     :language: bash
@@ -83,6 +83,6 @@ branches taken and the branches that were not completely covered:
 The same result can be achieved when the :option:`--txt` option is
 explicitly set. For example::
 
-    gcovr --branches --txt
+    gcovr --txt-metric branch --txt
 
 prints the same tabular output.

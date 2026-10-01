@@ -2,7 +2,9 @@
 
 :root {
   font-family: sans-serif;
-  --tab_size: {{tab_size}};
+  --tab-size: {{tab_size}};
+  --base-size-8: 4px;
+  --stack-padding-normal: 8px;
 }
 
 {% include "style.colors.css" %}

@@ -2,16 +2,17 @@
                            GCC Code Coverage Report
 Directory: subdir
 ------------------------------------------------------------------------------
-File                                       Lines     Exec  Cover   Missing
+File                                         Lines     Exec  Cover   Missing
 ------------------------------------------------------------------------------
-A/C/D/File6.cpp                                4        0     0%   1,3-4,6
-A/C/file5.cpp                                  4        3    75%   4
-A/file1.cpp                                    4        3    75%   4
-A/File2.cpp                                    7        4    57%   8,10-11
-A/file3.cpp                                    9        4    44%   8,10-12,14
-A/File4.cpp                                    4        3    75%   6
-A/file7.cpp                                    2        0     0%   1,3
-B/main.cpp                                     8        8   100%
+A/C/D/File6.cpp                                  4        0     0%   1,3-4,6
+A/C/file5.cpp                                    4        3    75%   4
+A/file1.cpp                                      4        3    75%   4
+A/file3.cpp                                      9        4    44%   8,10-12,14
+A/File4.cpp                                      4        3    75%   6
+A/file7.cpp                                      2        0     0%   1,3
+A/subdir_0/subdir_1/subdir_2/subdir_3/subdir_4/subdir_5/subdir_6/subdir_7/subdir_8/subdir_9/File2.cpp
+                                                 7        4    57%   8,10-11
+B/main.cpp                                       8        8   100%
 ------------------------------------------------------------------------------
-TOTAL                                         42       25    59%
+TOTAL                                           42       25    59%
 ------------------------------------------------------------------------------

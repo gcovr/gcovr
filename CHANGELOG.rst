@@ -10,9 +10,13 @@ Next Release
 
 Breaking changes:
 
-- Jinja2 environment for HTML reports is now created with ``undefined=StrictUndefined`` to raise an
+- Jinja2 environment for HTML report is now created with ``undefined=StrictUndefined`` to raise an
   error if a variable is not defined in the template. (:issue:`1282`, :issue:`1283`)
 - Links to lines in HTML reports now use ``L<line>`` instead of a ``l<line>``. (:issue:`1285`)
+- Rename config key ``txt-metric`` (string) to ``txt-metrics`` (list of strings in TOML and multiple
+  entries in gcovr.config). Remove the deprecated aliases ``-b``, ``--txt-branches`` and
+  ``--branches``. (:issue:`1302`)
+- Adjust column width of total count in text reports. (:issue:`1302`)
 
 New features and notable changes:
 
@@ -22,10 +26,14 @@ New features and notable changes:
   - Replace meter with ``div`` elements in the default theme (like in GitHub themes). (:issue:`1236`)
   - Add jinja2 rendering for CSS files. (:issue:`1252`)
   - Add new HTML themes ``boost.green`` and ``boost.blue``. (:issue:`1248`, :issue:`1271`)
+  - Show excluded lines, branches, ... in the summary only if there are any. (:issue:`1287`)
 
 - Add compare mode for JSON, text and HTML reports. (:issue:`1240`, :issue:`1266`)
 - Stub missing line coverage for branches in LLVM source based code coverage format. (:issue:`1245`)
 - Add support for TOML files with :option:`--config` (:issue:`1258`)
+- Add :option:`--fail-under-condition-or-decision` with :option:`--fail-under-condition` and
+  :option:`--fail-under-decision` as synonyms, change the key for the configuration file. (:issue:`1293`)
+- Add support for multiple metrics in one text report and add support for condition coverage. (:issue:`1302`)
 
 Bug fixes and small improvements:
 
@@ -49,6 +57,10 @@ Internal changes:
 - Refactor internal data model from a flat list to a tree which matches the folder structure of the
   source files. Also add a properties element which is cleared after each report format to store meta
   data for the report generation and update the dicts in the HTML report to use it. (:issue:`1261`)
+- Activate sorting of includes for ruff. (:issue:`1294`)
+- Add ``gcc-16``, ``clang-21`` and ``clang-22`` to the test suite. (:issue:`1300`)
+- Use different python versions for testing in docker depending on Ubuntu version. (:issue:`1301`)
+- Activate most checks of ``ruff``. (:issue:`1303`)
 
 .. _release_8_6:
 
@@ -576,7 +588,7 @@ New features and notable changes:
     (see `str.casefold <https://docs.python.org/3.11/library/stdtypes.html?highlight=str%20casefold#str.casefold>`_)
     (``file_10.c`` comes after ``file_0.c``).
   - Always sort at the end by filename if line or branch coverage is identical for a file.
-  - Add :option:`--sort-branches` to sort by branches instead of lines, this is the default if :option:`--txt-branches` is used.
+  - Add :option:`--sort-branches` to sort by branches instead of lines, this is the default if ``--txt-branches`` is used.
   - Add :option:`--sort-reverse` to reverse the sort order.
 
 - Add option to report covered lines in txt report. (:issue:`836`)
@@ -588,7 +600,7 @@ New features and notable changes:
 - Ignore all negative hits if :option:`--gcov-ignore-parse-errors` is used. (:issue:`852`)
 - Use literal options for sorting and TXT metric. (:issue:`867`)
 
-  - The :option:`-b`, :option:`--txt-branches` and :option:`--branches` are deprecated, use :option:`--txt-metric` instead.
+  - The ``-b``, ``--txt-branches`` and ``--branches`` are deprecated, use :option:`--txt-metric` instead.
     The reason for this is that we have line, branch and decision coverage and handle this with flags is more complex than
     using an enumeration.
   - The :option:`--sort-uncovered` and :option:`--sort-percentage` are deprecated, use :option:`--sort` instead.

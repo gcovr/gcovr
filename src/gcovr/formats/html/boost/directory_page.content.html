@@ -1,28 +1,16 @@
 {# -*- engine: jinja -*- #}
 {# Check if we have any function or branch data #}
-{% set has_functions = entries | selectattr('functions.coverage', 'ne', '-') | list | length > 0 %}
-{% set has_branches = entries | selectattr('branches.coverage', 'ne', '-') | list | length > 0 %}
-<div class="file-list-container{% if not has_functions %} no-functions{% endif %}{% if not has_branches %} no-branches{% endif %}{% if not SHOW_CONDITION_COVERAGE %} no-conditions{% endif %}{% if not SHOW_DECISION %} no-decisions{% endif %}{% if not SHOW_CALLS %} no-calls{% endif %}">
+<div class="file-list-container{% if not SHOW_CONDITION_COVERAGE %} no-conditions{% endif %}{% if not SHOW_DECISION %} no-decisions{% endif %}{% if not SHOW_CALLS %} no-calls{% endif %}">
   <div class="file-list-header">
     <div class="col-name sortable{% if info.sort_by == 'filename' %} {{info.sorted}}{% endif %}" data-sort="filename">
       Name
     </div>
-    <div class="col-coverage sortable" data-sort="coverage">
-      Coverage
-    </div>
     <div class="col-lines sortable{% if info.sort_by == 'lines' %} {{info.sorted}}{% endif %}" data-sort="lines">
       Lines
     </div>
-    {% if has_functions %}
-    <div class="col-functions sortable" data-sort="functions">
-      Functions
-    </div>
-    {% endif %}
-    {% if has_branches %}
     <div class="col-branches sortable{% if info.sort_by == 'branches' %} {{info.sorted}}{% endif %}" data-sort="branches">
       Branches
     </div>
-    {% endif %}
     {% if SHOW_CONDITION_COVERAGE %}
     <div class="col-conditions sortable" data-sort="conditions">
       Conditions
@@ -33,6 +21,9 @@
       Decisions
     </div>
     {% endif %}
+    <div class="col-functions sortable" data-sort="functions">
+      Functions
+    </div>
     {% if SHOW_CALLS %}
     <div class="col-calls sortable" data-sort="calls">
       Calls
@@ -53,9 +44,8 @@
       {% set display_name = display_name if (display_name and info.html_nested) else row.filename %}
       {% set is_file = '.' in display_name and not display_name.endswith('...') %}
     <div class="file-row {% if is_file %}file{% else %}directory{% endif %}"
-         data-filename="{{row.filename}}"
-         data-coverage="{{row.lines.sort}}"
-         data-lines="{{row.lines.total}}"
+         data-filename="{{display_name}}"
+         data-lines="{{row.lines.sort}}"
          data-lines-exec="{{row.lines.exec}}"
          data-lines-coverage="{{row.lines.coverage}}"
          data-lines-class="{{row.lines.class}}"
@@ -91,44 +81,108 @@
         <span class="no-link" title="{{row.filename}}">{{display_name}}</span>
         {% endif %}
       </div>
-
-      <div class="col-coverage">
+      <div class="col-lines">
+        {% if row.lines.coverage == '-' %}
+        <span class="coverage-percent {{row.lines.class}}">-</span>
+        {% else %}
+        <span class="stat-value">{{row.lines.exec}}</span>
+        <span class="stat-separator">/</span>
+        <span class="stat-total">{{row.lines.total}}</span>
+        {%  if row.lines.excluded %}
+        <span class="stat-separator">,</span>
+        <span class="stat-value">{{row.lines.excluded}}</span>
+        <span class="stat-separator">excl</span>
+        {%  endif %}
+        <span class="stat-separator"></span>
         <div class="coverage-bar-container">
           <div class="coverage-bar {{row.lines.class}}" style="width: {% if row.lines.coverage != '-' %}{{row.lines.coverage}}%{% else %}0%{% endif %}"></div>
         </div>
         <span class="coverage-percent {{row.lines.class}}">{% if row.lines.coverage != '-' %}{{row.lines.coverage}}%{% else %}-{% endif %}</span>
+        {% endif %}
       </div>
-
-      <div class="col-lines">
-        <span class="stat-value">{{row.lines.exec}}</span>
-        <span class="stat-separator">/</span>
-        <span class="stat-value">{{row.lines.excluded}}</span>
-        <span class="stat-separator">/</span>
-        <span class="stat-total">{{row.lines.total}}</span>
-      </div>
-      {% if has_functions %}
-      <div class="col-functions">
-        <span class="stat-value {{row.functions.class}}">{% if row.functions.coverage != '-' %}{{row.functions.coverage}}%{% else %}-{% endif %}</span>
-      </div>
-      {% endif %}
-      {% if has_branches %}
       <div class="col-branches">
-        <span class="stat-value {{row.branches.class}}">{% if row.branches.coverage != '-' %}{{row.branches.coverage}}%{% else %}-{% endif %}</span>
+        {% if row.branches.coverage == '-' %}
+        <span class="coverage-percent {{row.branches.class}}">-</span>
+        {% else %}
+        <span class="stat-value">{{row.branches.exec}}</span>
+        <span class="stat-separator">/</span>
+        <span class="stat-total">{{row.branches.total}}</span>
+        {%  if row.branches.excluded %}
+        <span class="stat-separator">,</span>
+        <span class="stat-value">{{row.branches.excluded}}</span>
+        <span class="stat-separator">excl</span>
+        {%  else %}
+        <span class="stat-separator"></span>
+        {%  endif %}
+        <span class="coverage-percent {{row.branches.class}}">{{row.branches.coverage}}%</span>
+        {% endif %}
       </div>
-      {% endif %}
       {% if SHOW_CONDITION_COVERAGE %}
       <div class="col-conditions">
-        <span class="stat-value {{row.conditions.class}}">{% if row.conditions.coverage != '-' %}{{row.conditions.coverage}}%{% else %}-{% endif %}</span>
+        {% if row.conditions.coverage == '-' %}
+        <span class="coverage-percent {{row.conditions.class}}">-</span>
+        {% else %}
+        <span class="stat-value">{{row.conditions.exec}}</span>
+        <span class="stat-separator">/</span>
+        <span class="stat-total">{{row.conditions.total}}</span>
+        {%  if row.conditions.excluded %}
+        <span class="stat-separator">,</span>
+        <span class="stat-value">{{row.conditions.excluded}}</span>
+        <span class="stat-separator">excl</span>
+        {%  else %}
+        <span class="stat-separator"></span>
+        {%  endif %}
+        <span class="coverage-percent {{row.conditions.class}}">{{row.conditions.coverage}}%</span>
+        {% endif %}
       </div>
       {% endif %}
       {% if SHOW_DECISION %}
       <div class="col-decisions">
-        <span class="stat-value {{row.decisions.class}}">{% if row.decisions.coverage != '-' %}{{row.decisions.coverage}}%{% else %}-{% endif %}</span>
+        {% if row.decisions.coverage == '-' %}
+        <span class="coverage-percent {{row.decisions.class}}">-</span>
+        {% else %}
+        <span class="stat-value">{{row.decisions.exec}}</span>
+        <span class="stat-separator">/</span>
+        <span class="stat-total">{{row.decisions.total}}</span>
+        <span class="stat-separator"></span>
+        <span class="coverage-percent {{row.decisions.class}}">{{row.decisions.coverage}}%</span>
+        {% endif %}
       </div>
       {% endif %}
+      <div class="col-functions">
+        {% if row.functions.coverage == '-' %}
+        <span class="coverage-percent {{row.functions.class}}">-</span>
+        {% else %}
+        <span class="stat-value">{{row.functions.exec}}</span>
+        <span class="stat-separator">/</span>
+        <span class="stat-total">{{row.functions.total}}</span>
+        {%  if row.functions.excluded %}
+        <span class="stat-separator">,</span>
+        <span class="stat-value">{{row.functions.excluded}}</span>
+        <span class="stat-separator">excl</span>
+        {%  else %}
+        <span class="stat-separator"></span>
+        {%  endif %}
+        <span class="coverage-percent {{row.functions.class}}">{{row.functions.coverage}}%</span>
+        {% endif %}
+      </div>
       {% if SHOW_CALLS %}
       <div class="col-calls">
-        <span class="stat-value {{row.calls.class}}">{% if row.calls.coverage != '-' %}{{row.calls.coverage}}%{% else %}-{% endif %}</span>
+        {% if row.calls.coverage == '-' %}
+        <span class="coverage-percent {{row.calls.class}}">-</span>
+        {% else %}
+        <span class="stat-value">{{row.calls.exec}}</span>
+        <span class="stat-separator">/</span>
+        <span class="stat-total">{{row.calls.total}}</span>
+        {%  if row.calls.excluded %}
+        <span class="stat-separator">,</span>
+        <span class="stat-value">{{row.calls.excluded}}</span>
+        <span class="stat-separator">excl</span>
+        {%  else %}
+        <span class="stat-separator"></span>
+        {%  endif %}
+        <span class="coverage-percent {{row.calls.class}}">{{row.calls.coverage}}%</span>
+        {% endif %}
       </div>
       {% endif %}
       {% if info.diff_report %}

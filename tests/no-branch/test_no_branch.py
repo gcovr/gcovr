@@ -1,5 +1,3 @@
-# -*- coding:utf-8 -*-
-
 #  ************************** Copyrights and license ***************************
 #
 # This file is part of gcovr 8.6+main, a parsing and reporting tool for gcov.
@@ -18,6 +16,7 @@
 # ****************************************************************************
 
 import typing
+
 import pytest
 
 if typing.TYPE_CHECKING:
@@ -51,7 +50,8 @@ def test(gcovr_test_exec: "GcovrTestExec") -> None:
     gcovr_test_exec.compare_html()
 
     gcovr_test_exec.gcovr(
-        "--branch",
+        "--txt-metric",
+        "branch",
         "--fail-under-branch=100.0",
         "--json-add-tracefile=coverage.json",
         "--txt=coverage.txt",

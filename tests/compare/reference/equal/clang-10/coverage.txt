@@ -11,4 +11,3 @@ subdir/A/file3.cpp                            Strictly equal
 subdir/A/File4.cpp                            Strictly equal
 subdir/A/file7.cpp                            Strictly equal
 subdir/B/main.cpp                             Strictly equal
-------------------------------------------------------------------------------

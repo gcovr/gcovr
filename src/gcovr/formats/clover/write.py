@@ -1,5 +1,3 @@
-# -*- coding:utf-8 -*-
-
 #  ************************** Copyrights and license ***************************
 #
 # This file is part of gcovr 8.6+main, a parsing and reporting tool for gcov.
@@ -17,9 +15,12 @@
 #
 # ****************************************************************************
 
+"""GCOVR clover report."""
+
 # cspell:ignore coveredelements coveredconditionals coveredmethods
 
 from dataclasses import dataclass
+
 from lxml import etree  # nosec # We only write XML files
 
 from ...data_model.container import CoverageContainer
@@ -31,8 +32,7 @@ from ...utils import get_md5_hexdigest, write_xml_output
 def write_report(
     covdata: CoverageContainer, output_file: str, options: Options
 ) -> None:
-    """produce an XML report in the Cobertura format"""
-
+    """Write a XML report in the Cobertura format."""
     timestamp = str(int(options.timestamp.timestamp()))
 
     root_elem = etree.Element("coverage")
@@ -150,7 +150,6 @@ def write_report(
         pretty=options.clover_pretty,
         filename=output_file,
         default_filename="clover.xml",
-        # doctype="<!DOCTYPE coverage SYSTEM 'https://bitbucket.org/atlassian/clover/raw/a688248db8ae15eb7158947b7ba275c9ffbaf008/etc/schema/clover.xsd'>",
     )
 
 

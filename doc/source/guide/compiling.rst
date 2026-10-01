@@ -97,9 +97,10 @@ instead of the flags above. In addition you need to configure
 
 Following format versions of LLVM are supported:
 
-- `2.0.0`: This version identifier is used by ``clang-10``.
-- `2.0.1`: This version identifier is used by ``clang-11`` to ``clang-20`` but
+- ``2.0.0``: This version identifier is used by ``clang-10``.
+- ``2.0.1``: This version identifier is used by ``clang-11`` to ``clang-20`` but
   with different content in generated JSON files:
+- ``3.0.1``: This version identifier is used by ``clang-21`` and later.
 
   - ``clang-11``: Difference to version ``2.0.0`` is that the segments got an
     additional flag if a GAP region was entered.

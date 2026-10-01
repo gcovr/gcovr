@@ -1,6 +1,4 @@
-# -*- coding:utf-8 -*-
-
-#  ************************** Copyrights and license ***************************
+#  ************************** Copyrights and license ***************************  # noqa: INP001
 #
 # This file is part of gcovr 8.6+main, a parsing and reporting tool for gcov.
 # https://gcovr.com/en/main
@@ -17,30 +15,33 @@
 #
 # ****************************************************************************
 
-# Configuration file for the Sphinx documentation builder.
-#
-# This file does only contain a selection of the most common options. For a
-# full list see the documentation:
-# http://www.sphinx-doc.org/en/stable/config
+"""
+Configuration file for the Sphinx documentation builder.
+
+This file does only contain a selection of the most common options. For a
+full list see the documentation:
+http://www.sphinx-doc.org/en/stable/config
+"""
 
 # -- Path setup --------------------------------------------------------------
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 
-from datetime import datetime
+import datetime
 import os
 import sys
+from pathlib import Path
 
-sys.path.insert(0, os.path.abspath(os.path.join("..", "..", "src")))
-import gcovr.version  # noqa # pylint: disable=wrong-import-position
+sys.path.insert(0, Path("..", "..", "src").resolve().as_posix())
+import gcovr.version  # pylint: disable=wrong-import-position
 
 # -- Project information -----------------------------------------------------
 
 # pylint: disable=invalid-name
 
 project = "gcovr"
-copyright = f"{datetime.today().year}, the gcovr authors"  # pylint: disable=redefined-builtin
+copyright = f"{datetime.datetime.now(tz=datetime.timezone.utc).year}, the gcovr authors"  # pylint: disable=redefined-builtin  # noqa: A001
 author = "the gcovr authors"
 
 # The short X.Y version
@@ -52,10 +53,6 @@ release = version
 html_baseurl = os.environ.get("READTHEDOCS_CANONICAL_URL", "")
 
 # -- General configuration ---------------------------------------------------
-
-# If your documentation needs a minimal Sphinx version, state it here.
-#
-# needs_sphinx = '1.0'
 
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
@@ -71,8 +68,6 @@ templates_path = ["_templates"]
 
 # The suffix(es) of source filenames.
 # You can specify multiple suffix as a list of string:
-#
-# source_suffix = ['.rst', '.md']
 source_suffix = ".rst"
 
 # The master toctree document.
@@ -93,11 +88,11 @@ exclude_patterns = list[str]()
 # The name of the Pygments (syntax highlighting) style to use.
 pygments_style = "sphinx"
 
-# Disable smart dashes ("--" → "–"; "---" → "—")
+# Disable smart dashes
 # because this interferes with option names like "--foobar".
-# q – smartify quotes: ", '
-# D – smartify dashes --    (DISABLED)
-# e – smartify ellipsis ...
+# q - smartify quotes: ", '
+# D - smartify dashes --    (DISABLED)
+# e - smartify ellipsis ...
 smartquotes_action = "qe"
 
 # -- Options for HTML output -------------------------------------------------
@@ -106,27 +101,6 @@ smartquotes_action = "qe"
 # a list of builtin themes.
 #
 html_theme = "sphinx_rtd_theme"
-
-# Theme options are theme-specific and customize the look and feel of a theme
-# further.  For a list of options available for each theme, see the
-# documentation.
-#
-# html_theme_options = {}
-
-# Add any paths that contain custom static files (such as style sheets) here,
-# relative to this directory. They are copied after the builtin static files,
-# so a file named "default.css" will overwrite the builtin "default.css".
-# html_static_path = ['_static']
-
-# Custom sidebar templates, must be a dictionary that maps document names
-# to template names.
-#
-# The default sidebars (for documents that don't match any pattern) are
-# defined by theme itself.  Builtin themes are using these templates by
-# default: ``['localtoc.html', 'relations.html', 'sourcelink.html',
-# 'searchbox.html']``.
-#
-# html_sidebars = {}
 
 
 # -- Options for HTMLHelp output ---------------------------------------------
@@ -137,22 +111,7 @@ htmlhelp_basename = "gcovrdoc"
 
 # -- Options for LaTeX output ------------------------------------------------
 
-latex_elements = dict[str, str](
-    {
-        # The paper size ('letterpaper' or 'a4paper').
-        #
-        # 'papersize': 'letterpaper',
-        # The font size ('10pt', '11pt' or '12pt').
-        #
-        # 'pointsize': '10pt',
-        # Additional stuff for the LaTeX preamble.
-        #
-        # 'preamble': '',
-        # Latex figure (float) alignment
-        #
-        # 'figure_align': 'htbp',
-    }
-)
+latex_elements = dict[str, str]({})
 
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title,

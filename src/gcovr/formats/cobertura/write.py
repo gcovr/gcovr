@@ -1,5 +1,3 @@
-# -*- coding:utf-8 -*-
-
 #  ************************** Copyrights and license ***************************
 #
 # This file is part of gcovr 8.6+main, a parsing and reporting tool for gcov.
@@ -17,32 +15,31 @@
 #
 # ****************************************************************************
 
-from dataclasses import dataclass
+"""GCOVR coveralls report."""
+
 import os
+from dataclasses import dataclass
+
 from lxml import etree  # nosec # We only write XML files
 
-from ...options import Options
-
-from ...utils import force_unix_separator, get_version_for_report, write_xml_output
 from ...data_model.container import CoverageContainer
 from ...data_model.coverage import LineCoverage
 from ...data_model.stats import CoverageStat, SummarizedStats
+from ...options import Options
+from ...utils import force_unix_separator, get_version_for_report, write_xml_output
 
 
 def write_report(
     covdata: CoverageContainer, output_file: str, options: Options
 ) -> None:
-    """produce an XML report in the Cobertura format"""
-
-    stats = covdata.stats
-
+    """Produce an XML report in the Cobertura format."""
     root_elem = etree.Element("coverage")
-    root_elem.set("line-rate", _rate(stats.line))
-    root_elem.set("branch-rate", _rate(stats.branch))
-    root_elem.set("lines-covered", str(stats.line.covered))
-    root_elem.set("lines-valid", str(stats.line.total))
-    root_elem.set("branches-covered", str(stats.branch.covered))
-    root_elem.set("branches-valid", str(stats.branch.total))
+    root_elem.set("line-rate", _rate(covdata.line_coverage()))
+    root_elem.set("branch-rate", _rate(covdata.branch_coverage()))
+    root_elem.set("lines-covered", str(covdata.line_coverage().covered))
+    root_elem.set("lines-valid", str(covdata.line_coverage().total))
+    root_elem.set("branches-covered", str(covdata.branch_coverage().covered))
+    root_elem.set("branches-valid", str(covdata.branch_coverage().total))
     root_elem.set("complexity", "0.0")
     root_elem.set("timestamp", str(int(options.timestamp.timestamp())))
     root_elem.set("version", f"gcovr {get_version_for_report()}")
@@ -134,14 +131,14 @@ def write_report(
 
 @dataclass
 class PackageData:
-    """Data class holding the package data"""
+    """Data class holding the package data."""
 
     classes_xml: dict[str, etree._Element]
     stats: SummarizedStats
 
 
 def _rate(stat: CoverageStat) -> str:
-    """format a CoverageStat as a string in range 0.0 to 1.0 inclusive"""
+    """Format a CoverageStat as a string in range 0.0 to 1.0 inclusive."""
     if not stat.total:
         return "1.0"
     return str(stat.covered / stat.total)
@@ -157,7 +154,8 @@ def _line_element(linecov: LineCoverage) -> etree._Element:
     if not stat.total:
         elem.set("branch", "false")
     elif stat.percent is None:
-        raise AssertionError("Percent coverage must not be 'None'.")
+        msg = "Percent coverage must not be 'None'."
+        raise AssertionError(msg)
     else:
         elem.set("branch", "true")
         elem.set(
@@ -178,7 +176,8 @@ def _conditions_element(branch: CoverageStat) -> etree._Element:
 def _condition_element(branch: CoverageStat) -> etree._Element:
     coverage = branch.percent
     if coverage is None:
-        raise AssertionError("Percent coverage must not be 'None'.")
+        msg = "Percent coverage must not be 'None'."
+        raise AssertionError(msg)
 
     elem = etree.Element("condition")
     elem.set("number", "0")

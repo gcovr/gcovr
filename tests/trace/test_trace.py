@@ -1,5 +1,3 @@
-# -*- coding:utf-8 -*-
-
 #  ************************** Copyrights and license ***************************
 #
 # This file is part of gcovr 8.6+main, a parsing and reporting tool for gcov.
@@ -18,14 +16,17 @@
 # ****************************************************************************
 
 import re
+from typing import TYPE_CHECKING
 
 import pytest
+from pytest_check import check
 
-from tests.conftest import GcovrTestExec
+if TYPE_CHECKING:
+    from tests.conftest import GcovrTestExec
 
 
 @pytest.mark.parametrize("activate_trace", [True, False])
-def test(gcovr_test_exec: "GcovrTestExec", check, activate_trace: bool) -> None:  # type: ignore[no-untyped-def]
+def test(gcovr_test_exec: "GcovrTestExec", *, activate_trace: bool) -> None:
     """Test adding a tracefile output."""
     gcovr_test_exec.cxx_link(
         "subdir/testcase",

@@ -1,5 +1,3 @@
-# -*- coding:utf-8 -*-
-
 #  ************************** Copyrights and license ***************************
 #
 # This file is part of gcovr 8.6+main, a parsing and reporting tool for gcov.
@@ -17,13 +15,12 @@
 #
 # ****************************************************************************
 
-"""Utils for exclusion of lines and branches"""
+"""Utils for exclusion of lines and branches."""
 
 from typing import Callable, Iterable
 
 from ..data_model.coverage import FileCoverage, FunctionCoverage
 from ..logging import LOGGER
-
 
 ExclusionPredicate = Callable[[int], bool]
 FunctionListByLine = dict[int, list[FunctionCoverage]]
@@ -34,7 +31,7 @@ def function_exclude_not_supported(
     lineno: int | None = None,
     columnno: int | None = None,
 ) -> None:
-    """warn that a function exclude isn't supported"""
+    """Warn that a function exclude isn't supported."""
     if filename is None:
         LOGGER.warning("Function exclusion not supported for this compiler.")
     else:
@@ -49,7 +46,7 @@ def function_exclude_not_supported(
 def function_exclude_not_at_function_line(
     filename: str, lineno: int, columnno: int
 ) -> None:
-    """warn that a function exclude is found at a line where no function is defined"""
+    """Warn that a function exclude is found at a line where no function is defined."""
     LOGGER.warning(
         "Function exclude marker found on line %s:%s but no function definition found, when processing %s.",
         lineno,
@@ -64,7 +61,7 @@ def get_functions_by_line(filecov: FileCoverage) -> FunctionListByLine:
     if filecov is not None:
         for functioncov in filecov.functioncov():
             if functioncov.start is not None:
-                for lineno, _ in functioncov.start.items():
+                for lineno in functioncov.start:
                     if lineno not in functions_by_line:
                         functions_by_line[lineno] = []
                     functions_by_line[lineno].append(functioncov)
@@ -91,20 +88,21 @@ def get_function_exclude_ranges(
                 )
             ):
                 lineno_end = function.end[lineno][0]
-                included_ranges = []
                 # Now we need to check for nested functions which are included
-                for function in function_iter:
-                    if function.end is not None:
-                        included_ranges.append((lineno, function.end[lineno][0] + 1))
+                included_ranges = [
+                    (lineno, function.end[lineno][0] + 1)
+                    for function in function_iter
+                    if function.end is not None
+                ]
                 for function_lineno in range(lineno + 1, lineno_end):
-                    for function in functions_by_line.get(function_lineno, []):
-                        if function.start is not None and function.end is not None:
-                            included_ranges.append(
-                                (
-                                    function.start[function_lineno][0],
-                                    function.end[function_lineno][0],
-                                )
-                            )
+                    included_ranges.extend(
+                        (
+                            function.start[function_lineno][0],
+                            function.end[function_lineno][0],
+                        )
+                        for function in functions_by_line.get(function_lineno, [])
+                        if function.start is not None and function.end is not None
+                    )
                 if included_ranges:
                     last_include_end = lineno
                     for include_start, include_end in included_ranges:
@@ -132,17 +130,17 @@ def apply_exclusion_ranges(
     warn_excluded_lines_with_hits: bool,
 ) -> None:
     """
-    Remove any coverage information that is excluded by explicit markers such as
-    ``GCOVR_EXCL_LINE``.
+    Remove any coverage information that is excluded by explicit markers such as `GCOVR_EXCL_LINE`.
 
     Modifies the input FileCoverage in place.
 
     Arguments:
-        filecov: the coverage to filter
-        line_is_excluded: the function to check if a line is excluded
-        branch_is_excluded: the function to check if the branches are excluded
-    """
+        filecov: The coverage to filter.
+        line_is_excluded: The function to check if a line is excluded.
+        branch_is_excluded: The function to check if the branches are excluded.
+        warn_excluded_lines_with_hits: Warn about excluding lines with hits.
 
+    """
     for linecov_collection in filecov.lines():
         if line_is_excluded(linecov_collection.lineno):
             if warn_excluded_lines_with_hits and linecov_collection.count:
@@ -171,7 +169,7 @@ def make_is_in_any_range_inclusive(
     This function should provide reasonable performance
     if queries are mostly made in ascending order.
 
-    Example:
+    Examples:
     >>> select = make_is_in_any_range_inclusive([(3,3), (5,7)])
     >>> select(0)
     False
@@ -179,8 +177,8 @@ def make_is_in_any_range_inclusive(
     True
     >>> [x for x in range(10) if select(x)]
     [3, 5, 6, 7]
-    """
 
+    """
     # values are likely queried in ascending order,
     # allowing the search to start with the first possible range
     ranges = sorted(ranges)
@@ -216,7 +214,7 @@ def make_is_in_any_range_inclusive(
 
 def _lines_from_sparse(sparse: Iterable[tuple[int, str]]) -> list[str]:
     """
-    Convert lineno–source tuples to a flat list, useful for tests.
+    Convert lineno-source tuples to a flat list, useful for tests.
 
     >>> _lines_from_sparse([(3, 'foo'), (2, 'bar'), (3, 'foo2')])
     ['', 'bar', 'foo2']

@@ -1,5 +1,3 @@
-# -*- coding:utf-8 -*-
-
 #  ************************** Copyrights and license ***************************
 #
 # This file is part of gcovr 8.6+main, a parsing and reporting tool for gcov.
@@ -17,7 +15,10 @@
 #
 # ****************************************************************************
 
+"""GCOVR JSON report interface."""
+
 import os
+
 from ...data_model.container import CoverageContainer
 from ...formats.base import BaseHandler
 from ...options import GcovrConfigOption, OutputOrDefault
@@ -29,6 +30,7 @@ class JsonHandler(BaseHandler):
 
     @classmethod
     def get_options(cls) -> list[GcovrConfigOption | str]:
+        """Get the report options."""
         return [
             # Global options used for output
             "verbose",
@@ -123,26 +125,39 @@ class JsonHandler(BaseHandler):
         ]
 
     def validate_options(self) -> None:
-        """Validate options specific to JSON handler."""
-        if self.options.json_compare and len(self.options.json_tracefile) != 2:
-            raise ValueError(
+        """Validate options."""
+        if self.options.json_compare and len(self.options.json_tracefile) != 2:  # noqa: PLR2004
+            msg = (
                 "--json-compare requires exactly two input trace files "
                 f"but {len(self.options.json_tracefile)} were given."
             )
+            raise ValueError(msg)
 
     def read_report(self) -> CoverageContainer:
-        from .read import read_report  # pylint: disable=import-outside-toplevel # Lazy loading is intended here
+        """Read report."""
+        # Lazy loading is intended here
+        from .read import (  # pylint: disable=import-outside-toplevel  # noqa: PLC0415
+            read_report,
+        )
 
         return read_report(self.options)
 
     def write_report(self, covdata: CoverageContainer, output_file: str) -> None:
-        from .write import write_report  # pylint: disable=import-outside-toplevel # Lazy loading is intended here
+        """Write report."""
+        # Lazy loading is intended here
+        from .write import (  # pylint: disable=import-outside-toplevel  # noqa: PLC0415
+            write_report,
+        )
 
         write_report(covdata, output_file, self.options)
 
     def write_summary_report(
         self, covdata: CoverageContainer, output_file: str
     ) -> None:
-        from .write import write_summary_report  # pylint: disable=import-outside-toplevel # Lazy loading is intended here
+        """Write summary report."""
+        # Lazy loading is intended here
+        from .write import (  # pylint: disable=import-outside-toplevel  # noqa: PLC0415
+            write_summary_report,
+        )
 
         write_summary_report(covdata, output_file, self.options)

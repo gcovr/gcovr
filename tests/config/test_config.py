@@ -1,5 +1,3 @@
-# -*- coding:utf-8 -*-
-
 #  ************************** Copyrights and license ***************************
 #
 # This file is part of gcovr 8.6+main, a parsing and reporting tool for gcov.
@@ -18,12 +16,11 @@
 # ****************************************************************************
 
 import logging
-from pathlib import Path
 import shutil
 import typing
+from pathlib import Path
 
 import pytest
-
 
 if typing.TYPE_CHECKING:
     from tests.conftest import GcovrTestExec
@@ -32,15 +29,16 @@ if typing.TYPE_CHECKING:
 def test_config_error(gcovr_test_exec: "GcovrTestExec") -> None:
     """Test config with wrong value."""
     gcovr_config = Path("config", "gcovr.error.config")
-    with pytest.raises(ValueError) as exception:
+    with pytest.raises(
+        ValueError,
+        check=lambda e: str(e).startswith(
+            f"{gcovr_config}: 1: gcov-ignore-parse-errors: must be one of"
+        ),
+    ):
         gcovr_test_exec.gcovr(
             f"--config={gcovr_config}",
             use_main=True,
         )
-
-    assert str(exception.value).startswith(
-        f"{gcovr_config}: 1: gcov-ignore-parse-errors: must be one of"
-    )
 
 
 def test_config_deprecated(
@@ -63,11 +61,12 @@ def test_config_deprecated(
     assert messages[0][1] == logging.WARNING
     assert (
         messages[0][2]
-        == "Deprecated config key txt-branch used, please use 'txt-metric=branch' instead."
+        == "Deprecated config key sort-percentage used, please use 'sort=uncovered-percent' instead."
     )
 
 
 @pytest.mark.json
+@pytest.mark.txt
 def test_gcovr_config(gcovr_test_exec: "GcovrTestExec") -> None:
     """Test JSON output with gcovr.config."""
     gcovr_test_exec.cxx_link(
@@ -77,12 +76,14 @@ def test_gcovr_config(gcovr_test_exec: "GcovrTestExec") -> None:
 
     gcovr_test_exec.run("./testcase")
     gcovr_test_exec.gcovr(
-        "--config=config/gcovr.json.config",
+        "--config=config/gcovr.config",
     )
     gcovr_test_exec.compare_json()
+    gcovr_test_exec.compare_txt()
 
 
 @pytest.mark.json
+@pytest.mark.txt
 def test_pyproject_toml(gcovr_test_exec: "GcovrTestExec") -> None:
     """Test JSON output with pyproject.toml."""
     gcovr_test_exec.cxx_link(
@@ -97,9 +98,11 @@ def test_pyproject_toml(gcovr_test_exec: "GcovrTestExec") -> None:
     )
     gcovr_test_exec.gcovr()
     gcovr_test_exec.compare_json()
+    gcovr_test_exec.compare_txt()
 
 
 @pytest.mark.json
+@pytest.mark.txt
 def test_gcovr_toml(gcovr_test_exec: "GcovrTestExec") -> None:
     """Test JSON output with gcovr.toml."""
     gcovr_test_exec.cxx_link(
@@ -120,3 +123,4 @@ def test_gcovr_toml(gcovr_test_exec: "GcovrTestExec") -> None:
     )
     gcovr_test_exec.gcovr()
     gcovr_test_exec.compare_json()
+    gcovr_test_exec.compare_txt()

@@ -3,9 +3,7 @@
   <div class="Box-header py-2 d-flex sticky">
     {% set class_sortable = " sortable" if not info.static_report and entries | length > 1 else "" %}
     <div role="rowheader" class="color-fg-muted flex-auto min-width-0 col-md-2{{class_sortable}}{% if info.sort_by == 'filename' and class_sortable %} {{info.sorted}}{% endif %}">File</div>
-    <div role="rowheader" class="color-fg-muted d-flex flex-justify-end flex-auto min-width-0 flex-items-baseline"></div>
-    <div role="rowheader" class="color-fg-muted d-flex flex-justify-end col-2{{class_sortable}}{% if info.sort_by == 'lines' and class_sortable %} {{info.sorted}}{% endif %}">Lines</div>
-    <div role="rowheader" class="color-fg-muted d-flex flex-justify-end col-2{{class_sortable}}">Functions</div>
+    <div role="rowheader" class="color-fg-muted d-flex flex-justify-end flex-auto min-width-0 flex-items-baseline{{class_sortable}}{% if info.sort_by == 'lines' and class_sortable %} {{info.sorted}}{% endif %}">Lines</div>
     <div role="rowheader" class="color-fg-muted d-flex flex-justify-end col-2{{class_sortable}}{% if info.sort_by == 'branches' and class_sortable %} {{info.sorted}}{% endif %}">Branches</div>
     {% if SHOW_CONDITION_COVERAGE %}
     <div role="rowheader" class="color-fg-muted d-flex flex-justify-end col-2{{class_sortable}}">Conditions</div>
@@ -13,6 +11,7 @@
     {% if SHOW_DECISION %}
     <div role="rowheader" class="color-fg-muted d-flex flex-justify-end col-2{{class_sortable}}">Decisions</div>
     {% endif %}
+    <div role="rowheader" class="color-fg-muted d-flex flex-justify-end col-2{{class_sortable}}">Functions</div>
     {% if SHOW_CALLS %}
     <div role="rowheader" class="color-fg-muted d-flex flex-justify-end col-2{{class_sortable}}">Calls</div>
     {% endif %}
@@ -31,52 +30,116 @@
         {% endif %}
       </span>
     </div>
-    <div role="gridcell" class="color-fg-muted d-flex v-center">
-      {% if row.lines.coverage != "-" %}
+    <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap flex-items-baseline v-center" data-sort="{{row.lines.sort}}">
+      {% if row.lines.coverage == "-" %}
+      <span class="stat-value">-</span>
+      {% else %}
+      <span class="stat-value">{{row.lines.exec}}</span>
+      <span class="stat-separator">/</span>
+      <span class="stat-total">{{row.lines.total}}</span>
+      {%  if row.lines.excluded %}
+      <span class="stat-separator">,</span>
+      <span class="stat-value">{{row.lines.excluded}} excl</span>
+      {%  endif %}
+      <span class="stat-separator"></span>
       <span class="meter Progress Progress--large d-inline-flex " style="width: 200px;">
         <span class="Progress-item {{row.lines.class}}" style="width: {{row.lines.coverage}}%" title="{{row.lines.coverage}}%"></span>
       </span>
+      <span class="coverage-percent {{row.lines.class}}">{{row.lines.coverage}}%</span>
       {% endif %}
     </div>
-    <div role="gridcell" class="color-fg-muted d-flex col-2" data-sort="{{row.lines.sort}}">
-      <div class="d-flex flex-justify-between flex-wrap gcovr-m-l-5 {{row.lines.class}}" style="width: 100%;">
-        <div class="percent">{{row.lines.coverage}}%</div>
-        <div class="counter" title="Exec / Excl / Total">{{row.lines.exec}} / {{row.lines.excluded}} / {{row.lines.total}}</div>
-      </div>
-    </div>
-    <div role="gridcell" class="color-fg-muted d-flex col-2" data-sort="{{row.functions.sort}}">
-      <div class="d-flex flex-justify-between flex-wrap gcovr-m-l-5 {{row.functions.class}}" style="width: 100%;">
-        <div class="percent">{{row.functions.coverage}}%</div>
-        <div class="counter" title="Exec / Excl / Total">{{row.functions.exec}} / {{row.functions.excluded}} / {{row.functions.total}}</div>
-      </div>
-    </div>
     <div role="gridcell" class="color-fg-muted d-flex col-2" data-sort="{{row.branches.sort}}">
-      <div class="d-flex flex-justify-between flex-wrap gcovr-m-l-5 {{row.branches.class}}" style="width: 100%;">
-        <div class="percent">{{row.branches.coverage}}%</div>
-        <div class="counter" title="Exec / Excl / Total">{{row.branches.exec}} / {{row.branches.excluded}} / {{row.branches.total}}</div>
+      <div class="d-flex flex-justify-end flex-wrap gcovr-m-l-5 {{row.branches.class}}" style="width: 100%;">
+        {% if row.branches.coverage == '-' %}
+        <span class="coverage-percent {{row.branches.class}}">-</span>
+        {% else %}
+        <span class="stat-value">{{row.branches.exec}}</span>
+        <span class="stat-separator">/</span>
+        <span class="stat-value">{{row.branches.total}}</span>
+        {%  if row.branches.excluded %}
+        <span class="stat-separator">,</span>
+        <span class="stat-value">{{row.branches.excluded}}</span>
+        <span class="stat-separator">excl</span>
+        {%  else %}
+        <span class="stat-separator"></span>
+        {%  endif %}
+        <span class="coverage-percent {{row.branches.class}}">{{row.branches.coverage}}%</span>
+        {% endif %}
       </div>
     </div>
     {% if SHOW_CONDITION_COVERAGE %}
     <div role="gridcell" class="color-fg-muted d-flex col-2" data-sort="{{row.conditions.sort}}">
-      <div class="d-flex flex-justify-between flex-wrap gcovr-m-l-5 {{row.conditions.class}}" style="width: 100%;">
-        <div class="percent">{{row.conditions.coverage}}%</div>
-        <div class="counter" title="Exec / Excl / Total">{{row.conditions.exec}} / {{row.conditions.excluded}} / {{row.conditions.total}}</div>
+      <div class="d-flex flex-justify-end flex-wrap gcovr-m-l-5 {{row.conditions.class}}" style="width: 100%;">
+        {% if row.conditions.coverage == '-' %}
+        <span class="coverage-percent {{row.conditions.class}}">-</span>
+        {% else %}
+        <span class="stat-value">{{row.conditions.exec}}</span>
+        <span class="stat-separator">/</span>
+        <span class="stat-value">{{row.conditions.total}}</span>
+        {%  if row.conditions.excluded %}
+        <span class="stat-separator">,</span>
+        <span class="stat-value">{{row.conditions.excluded}}</span>
+        <span class="stat-separator">excl</span>
+        {%  else %}
+        <span class="stat-separator"></span>
+        {%  endif %}
+        <span class="coverage-percent {{row.conditions.class}}">{{row.conditions.coverage}}%</span>
+        {% endif %}
       </div>
     </div>
     {% endif %}
     {% if SHOW_DECISION %}
     <div role="gridcell" class="color-fg-muted d-flex col-2" data-sort="{{row.decisions.sort}}">
-      <div class="d-flex flex-justify-between flex-wrap gcovr-m-l-5 {{row.decisions.class}}" style="width: 100%;">
-        <div class="percent">{{row.decisions.coverage}}%</div>
-        <div class="counter" title="Exec / Excl / Total">{{row.decisions.exec}} / - / {{row.decisions.total}}</div>
+      <div class="d-flex flex-justify-end flex-wrap gcovr-m-l-5 {{row.decisions.class}}" style="width: 100%;">
+        {% if row.decisions.coverage == '-' %}
+        <span class="coverage-percent {{row.decisions.class}}">-</span>
+        {% else %}
+        <span class="stat-value">{{row.decisions.exec}}</span>
+        <span class="stat-separator">/</span>
+        <span class="stat-value">{{row.decisions.total}}</span>
+        <span class="stat-separator"></span>
+        <span class="coverage-percent {{row.decisions.class}}">{{row.decisions.coverage}}%</span>
+        {% endif %}
       </div>
     </div>
     {% endif %}
+    <div role="gridcell" class="color-fg-muted d-flex col-2" data-sort="{{row.functions.sort}}">
+      <div class="d-flex flex-justify-end flex-wrap gcovr-m-l-5 {{row.functions.class}}" style="width: 100%;">
+        {% if row.functions.coverage == '-' %}
+        <span class="coverage-percent {{row.functions.class}}">-</span>
+        {% else %}
+        <span class="stat-value">{{row.functions.exec}}</span>
+        <span class="stat-separator">/</span>
+        <span class="stat-value">{{row.functions.total}}</span>
+        {%  if row.functions.excluded %}
+        <span class="stat-separator">,</span>
+        <span class="stat-value">{{row.functions.excluded}}</span>
+        <span class="stat-separator">excl</span>
+        {%  else %}
+        <span class="stat-separator"></span>
+        {%  endif %}
+        <span class="coverage-percent {{row.functions.class}}">{{row.functions.coverage}}%</span>
+        {% endif %}
+      </div>
+    </div>
     {% if SHOW_CALLS %}
     <div role="gridcell" class="color-fg-muted d-flex col-2" data-sort="{{row.calls.sort}}">
-      <div class="d-flex flex-justify-between flex-wrap gcovr-m-l-5 {{row.calls.class}}" style="width: 100%;">
-        <div class="percent">{{row.calls.coverage}}%</div>
-        <div class="counter" title="Exec / Excl / Total">{{row.calls.exec}} / {{row.calls.excluded}} / {{row.calls.total}}</div>
+      <div class="d-flex flex-justify-end flex-wrap gcovr-m-l-5 {{row.calls.class}}" style="width: 100%;">
+        {% if row.calls.coverage == '-' %}
+        <span class="coverage-percent {{row.calls.class}}">-</span>
+        {% else %}
+        <span class="stat-value">{{row.calls.exec}}</span>
+        <span class="stat-separator">/</span>
+        <span class="stat-value">{{row.calls.total}}</span>
+        {%  if row.calls.excluded %}
+        <span class="stat-separator">,</span>
+        <span class="stat-value">{{row.calls.excluded}}</span>
+        <span class="stat-separator">excl</span>
+        {%  else %}
+        <span class="stat-separator"></span>
+        {%  endif %}
+        <span class="coverage-percent {{row.calls.class}}">{{row.calls.coverage}}%</span>
+        {% endif %}
       </div>
     </div>
     {% endif %}

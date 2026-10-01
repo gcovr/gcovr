@@ -1,5 +1,3 @@
-# -*- coding:utf-8 -*-
-
 #  ************************** Copyrights and license ***************************
 #
 # This file is part of gcovr 8.6+main, a parsing and reporting tool for gcov.
@@ -17,15 +15,12 @@
 #
 # ****************************************************************************
 
-"""
-Heuristics for ignoring data on lines that don't look like actual code.
-"""
+"""Heuristics for ignoring data on lines that don't look like actual code."""
 
 import re
 
 from ..data_model.coverage import FileCoverage
 from ..logging import LOGGER
-
 
 _C_STYLE_COMMENT_PATTERN = re.compile(r"/\*.*?\*/")
 _CPP_STYLE_COMMENT_PATTERN = re.compile(r"//.*?$")
@@ -52,8 +47,8 @@ def remove_unreachable_branches(
 
 
 def _line_can_contain_branches(code: str) -> bool:
-    """
-    False if the line looks empty except for braces.
+    r"""
+    Check if the line can contain branches.
 
     >>> _line_can_contain_branches('} // end something')
     False
@@ -62,7 +57,6 @@ def _line_can_contain_branches(code: str) -> bool:
     >>> _line_can_contain_branches('foo();')
     True
     """
-
     code = _CPP_STYLE_COMMENT_PATTERN.sub("", code)
     code = _C_STYLE_COMMENT_PATTERN.sub("", code)
     code = _WHITESPACE_PATTERN.sub("", code)
@@ -110,8 +104,8 @@ def _is_non_code(code: str) -> bool:
     True
     >>> _is_non_code('return {};')
     False
-    """
 
+    """
     code = _CPP_STYLE_COMMENT_PATTERN.sub("", code)
     code = _C_STYLE_COMMENT_PATTERN.sub("", code)
     code = _WHITESPACE_PATTERN.sub("", code)

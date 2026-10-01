@@ -89,8 +89,18 @@ set -e
 curl -fsSL https://pyenv.run | bash
 export PYENV_ROOT="$HOME/.pyenv"
 export PATH="$PYENV_ROOT/bin:$PYENV_ROOT/shims:$PATH"
-pyenv install 3.10
-pyenv global 3.10
+
+case "$UBUNTU_TAG" in
+  18.04) PYTHON_VERSION=3.10 ;;
+  20.04) PYTHON_VERSION=3.11 ;;
+  22.04) PYTHON_VERSION=3.12 ;;
+  24.04) PYTHON_VERSION=3.13 ;;
+  26.04) PYTHON_VERSION=3.14 ;;
+  *) echo "Python version for Ubuntu version $UBUNTU_TAG not specified" >&2; exit 1 ;;
+esac
+
+pyenv install "$PYTHON_VERSION"
+pyenv global "$PYTHON_VERSION"
 
 python3 --version
 pip --version

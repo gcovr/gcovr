@@ -1,5 +1,3 @@
-# -*- coding:utf-8 -*-
-
 #  ************************** Copyrights and license ***************************
 #
 # This file is part of gcovr 8.6+main, a parsing and reporting tool for gcov.
@@ -17,7 +15,10 @@
 #
 # ****************************************************************************
 
+"""GCOVR JaCoCo report."""
+
 from dataclasses import dataclass
+
 from lxml import etree  # nosec # We only write XML files
 
 from ...data_model.container import CoverageContainer
@@ -29,8 +30,7 @@ from ...utils import write_xml_output
 def write_report(
     covdata: CoverageContainer, output_file: str, options: Options
 ) -> None:
-    """produce an XML report in the JaCoCo format"""
-
+    """Write an XML report in the JaCoCo format."""
     root_elem = etree.Element("report")
     root_elem.set("name", options.jacoco_report_name)
 

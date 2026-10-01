@@ -1,5 +1,3 @@
-# -*- coding:utf-8 -*-
-
 #  ************************** Copyrights and license ***************************
 #
 # This file is part of gcovr 8.6+main, a parsing and reporting tool for gcov.
@@ -17,23 +15,19 @@
 #
 # ****************************************************************************
 
-"""
-Handle explicit exclusion markers in source code, e.g. ``GCOVR_EXCL_LINE``.
-"""
+"""Handle explicit exclusion markers in source code, e.g. ``GCOVR_EXCL_LINE``."""
 
-from typing import Callable
 import re
-
-from .utils import (
-    make_is_in_any_range_inclusive,
-    apply_exclusion_ranges,
-    get_function_exclude_ranges,
-    get_functions_by_line,
-)
+from typing import Callable
 
 from ..data_model.coverage import FileCoverage, FunctionCoverage
 from ..logging import LOGGER
-
+from .utils import (
+    apply_exclusion_ranges,
+    get_function_exclude_ranges,
+    get_functions_by_line,
+    make_is_in_any_range_inclusive,
+)
 
 _EXCLUDE_FLAG = "_EXCL_"
 _EXCLUDE_PATTERN_LINE = ""
@@ -80,8 +74,7 @@ def apply_exclusion_markers(
     activate_trace_logging: bool,
 ) -> None:
     """
-    Remove any coverage information that is excluded by explicit markers such as
-    ``GCOVR_EXCL_LINE``.
+    Remove any coverage information that is excluded by explicit markers such as `GCOVR_EXCL_LINE`.
 
     Modifies the input FileCoverage in place.
 
@@ -93,8 +86,10 @@ def apply_exclusion_markers(
         exclude_branches_by_pattern: list of regular expressions to exclude
             individual branches
         exclude_pattern_prefix: string with prefix for _LINE/_START/_STOP markers.
-    """
+        warn_excluded_lines_with_hits: Warn about excluding lines with hits.
+        activate_trace_logging: Activate trace commands.
 
+    """
     _process_exclude_branch_source(
         lines=lines,
         exclude_pattern_prefix=exclude_pattern_prefix,
@@ -135,7 +130,6 @@ def _process_exclude_branch_source(
     activate_trace_logging: bool,
 ) -> None:
     """Scan through all lines to find source branch exclusion markers."""
-
     excl_pattern = f"(.*?)({exclude_pattern_prefix}{_EXCLUDE_PATTERN_SUFFIX_SOURCE_BRANCH_EXCLUSION})"
     excl_pattern_compiled = re.compile(excl_pattern)
 
@@ -197,7 +191,6 @@ def _process_exclude_branch_with_no_hit(
     activate_trace_logging: bool,
 ) -> None:
     """Scan through all lines to find exclusion markers for branches without a hit."""
-
     excl_pattern = rf"(.*?)({exclude_pattern_prefix}{_EXCLUDE_PATTERN_SUFFIX_BRANCH_WITHOUT_HIT_EXCLUSION})"
     excl_pattern_compiled = re.compile(excl_pattern)
 
@@ -250,7 +243,7 @@ class _ExclusionRangeWarnings:
     r"""
     Log warnings related to exclusion marker processing.
 
-    Example:
+    Examples:
     >>> source = '''\
     ... some code
     ... foo // LCOV_EXCL_STOP
@@ -278,6 +271,7 @@ class _ExclusionRangeWarnings:
     30: The coverage exclusion region start flag GCOVR_EXCL_START
               on line 6 did not have corresponding GCOVR_EXCL_STOP flag
               in file example.cpp.
+
     """
 
     def __init__(self, filename: str) -> None:
@@ -286,7 +280,7 @@ class _ExclusionRangeWarnings:
     def mismatched_start_stop(
         self, start_lineno: int, start: str, stop_lineno: int, stop: str
     ) -> None:
-        """warn that start/stop region markers don't match"""
+        """Warn that start/stop region markers don't match."""
         LOGGER.warning(
             "%s found on line %d was terminated by %s on line %d, when processing %s.",
             start,
@@ -297,7 +291,7 @@ class _ExclusionRangeWarnings:
         )
 
     def stop_without_start(self, lineno: int, expected_start: str, stop: str) -> None:
-        """warn that a region was ended without corresponding start marker"""
+        """Warn that a region was ended without corresponding start marker."""
         LOGGER.warning(
             "mismatched coverage exclusion flags.\n"
             "          %s found on line %d without corresponding %s, when processing %s.",
@@ -308,7 +302,7 @@ class _ExclusionRangeWarnings:
         )
 
     def start_without_stop(self, lineno: int, start: str, expected_stop: str) -> None:
-        """warn that a region was started but not closed"""
+        """Warn that a region was started but not closed."""
         LOGGER.warning(
             "The coverage exclusion region start flag %s\n"
             "          on line %d did not have corresponding %s flag\n"
@@ -320,7 +314,7 @@ class _ExclusionRangeWarnings:
         )
 
     def line_after_start(self, lineno: int, start: str, start_lineno: int) -> None:
-        """warn that a region was started but an excluded line was found"""
+        """Warn that a region was started but an excluded line was found."""
         LOGGER.warning(
             "%s found on line %d in excluded region started on line %d, when processing %s.",
             start,
@@ -349,7 +343,6 @@ def _process_exclusion_marker(
     START flags are added to the exclusion stack
     STOP flags remove a marker from the exclusion stack
     """
-
     if flag == _EXCLUDE_PATTERN_SUFFIX_LINE:
         if exclusion_stack:
             warnings.line_after_start(
@@ -398,7 +391,7 @@ def _find_excluded_ranges(
     """
     Scan through all lines to find line ranges and branch ranges covered by exclusion markers.
 
-    Example:
+    Examples:
     >>> from .utils import _lines_from_sparse
     >>> import re
     >>> lines = [
@@ -436,8 +429,8 @@ def _find_excluded_ranges(
     7: code
     8: code
     9: code
-    """
 
+    """
     functions_by_line: FunctionListByLine = get_functions_by_line(filecov)
 
     def find_range_impl(

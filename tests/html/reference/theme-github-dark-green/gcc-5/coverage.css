@@ -1,5 +1,10 @@
 @charset "utf-8";
 
+:root {
+  --base-size-8: 4px;
+  --stack-padding-normal: 8px
+}
+
 /*!
  * Primer CSS
  * https://primer.style
@@ -269,6 +274,10 @@ span.diff {
   --partial_covered_color: var(--color-accent-subtle);
   --taken_color: var(--color-accent-fg);
 }
+.col-1-5 {
+  width: 12%
+}
+
 .transy-2 {
   transform: translateY(-2px);
 }
@@ -336,13 +345,13 @@ td.linenos .normal {
 }
 
 .Label--minw {
-  min-width: 61px;
+  min-width: 4.7em;
   text-align: right;
 }
 
 .Label--minw > span {
-  min-width: 57px;
-  width: 57px;
+  min-width: 5em;
+  width: 5em;
 }
 
 .Label--coverage-unknown {

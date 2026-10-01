@@ -1,5 +1,3 @@
-# -*- coding:utf-8 -*-
-
 #  ************************** Copyrights and license ***************************
 #
 # This file is part of gcovr 8.6+main, a parsing and reporting tool for gcov.
@@ -16,6 +14,8 @@
 # For more information, see the README.rst file.
 #
 # ****************************************************************************
+
+"""Helpers for parsing timestamps."""
 
 import datetime
 import re
@@ -67,7 +67,6 @@ def parse_timestamp(value: str) -> datetime.datetime:
       ...
     ValueError: unknown timestamp format
     """
-
     if value.startswith("@"):
         return _parse_epoch(value[1:])
 
@@ -80,16 +79,18 @@ def parse_timestamp(value: str) -> datetime.datetime:
             return _parse_epoch(value)
         if scheme == "rfc3339":
             return _parse_rfc3339(value)
-        raise ValueError("unknown timestamp format")
+        msg = "unknown timestamp format"
+        raise ValueError(msg)
 
     # guess the format
     for parser in [_parse_epoch, _parse_rfc3339]:
         try:
             return parser(value)
-        except ValueError:
+        except ValueError:  # noqa: PERF203
             pass
 
-    raise ValueError("unknown timestamp format")
+    msg = "unknown timestamp format"
+    raise ValueError(msg)
 
 
 def _parse_epoch(value: str) -> datetime.datetime:
@@ -107,8 +108,9 @@ def _parse_epoch(value: str) -> datetime.datetime:
     """
     try:
         return datetime.datetime.fromtimestamp(int(value), UTC)
-    except Exception:
-        raise ValueError("not a valid Unix epoch") from None
+    except Exception:  # noqa: BLE001
+        msg = "not a valid Unix epoch"
+        raise ValueError(msg) from None
 
 
 def _parse_rfc3339(value: str) -> datetime.datetime:
@@ -159,17 +161,17 @@ def _parse_rfc3339(value: str) -> datetime.datetime:
     >>> _parse_rfc3339("2021-12-27 13:05:27 UTC")
     Traceback (most recent call last):
       ...
-    ValueError: timezone offset must be 'Z' or +hh:mm
+    ValueError: timezone offset must be 'Z' or +/-hh:mm
 
     >>> _parse_rfc3339("test")
     Traceback (most recent call last):
       ...
     ValueError: timestamp must use RFC-3339 ...
     """
-
     err_must_use_rfc_3339 = "timestamp must use RFC-3339 (YYYY-MM-DD hh:mm:ss) format"
+    rfc3339_length_without_timezone = 19
 
-    if len(value) < 19:
+    if len(value) < rfc3339_length_without_timezone:
         raise ValueError(err_must_use_rfc_3339)
 
     date_value = value[:10]  # YYYY-MM-DD
@@ -178,10 +180,11 @@ def _parse_rfc3339(value: str) -> datetime.datetime:
     tz_value = value[19:]  # empty or Z or +hh:mm
 
     if sep.lower() not in ("t", " "):
-        raise ValueError("timestamp separator must be 'T' or space")
+        msg = "timestamp separator must be 'T' or space"
+        raise ValueError(msg)
 
     try:
-        naive_timestamp = datetime.datetime.strptime(
+        naive_timestamp = datetime.datetime.strptime(  # noqa: DTZ007
             date_value + " " + time_value,
             "%Y-%m-%d %H:%M:%S",
         )
@@ -197,18 +200,20 @@ def _parse_rfc3339(value: str) -> datetime.datetime:
 
 def _parse_timezone(value: str) -> datetime.timezone:
     r"""
+    Handle timezone offsets in RFC-3339 timestamps.
+
     Unfortunately, it is necessary to handle timezones manually.
     Python's supported strptime format specifiers are not sufficient.
     For example, "%z" does not match "Z" on all Python versions
     and might not support "+hh:mm" style timezone offsets.
     """
-
     if value.lower() == "z":
         value = "+00:00"
 
     tz_match = re.fullmatch(r"([+-])([0-9]{2}):([0-9]{2})", value)
     if tz_match is None:
-        raise ValueError("timezone offset must be 'Z' or +hh:mm")
+        msg = "timezone offset must be 'Z' or +/-hh:mm"
+        raise ValueError(msg)
     sign, hours, minutes = tz_match.groups()
     offset_sign = +1 if sign == "+" else -1
     offset_hours = int(hours)

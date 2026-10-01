@@ -1,22 +1,9 @@
 <?xml version='1.0' encoding='utf-8'?>
 <coverage clover="1768334355" generated="1768334355">
   <project name="Test project" timestamp="1768334355">
-    <metrics complexity="0" elements="47" coveredelements="28" conditionals="0" coveredconditionals="0" statements="47" coveredstatements="28" methods="0" coveredmethods="0" packages="4" classes="8" files="8"/>
+    <metrics complexity="0" elements="47" coveredelements="28" conditionals="0" coveredconditionals="0" statements="47" coveredstatements="28" methods="0" coveredmethods="0" packages="5" classes="8" files="8"/>
     <package name="A">
-      <metrics complexity="0" elements="29" coveredelements="16" conditionals="0" coveredconditionals="0" statements="29" coveredstatements="16" methods="0" coveredmethods="0" classes="5" files="5"/>
-      <file name="File2.cpp" path="A/File2.cpp">
-        <metrics complexity="0" elements="7" coveredelements="4" conditionals="0" coveredconditionals="0" statements="7" coveredstatements="4" methods="0" coveredmethods="0" classes="1"/>
-        <class name="id$79143a710ebe69deafa175a1453e33cd">
-          <metrics complexity="0" elements="7" coveredelements="4" conditionals="0" coveredconditionals="0" statements="7" coveredstatements="4" methods="0" coveredmethods="0"/>
-        </class>
-        <line num="1" type="stmt" count="1"/>
-        <line num="3" type="stmt" count="1"/>
-        <line num="4" type="stmt" count="1"/>
-        <line num="5" type="stmt" count="1"/>
-        <line num="8" type="stmt" count="0"/>
-        <line num="10" type="stmt" count="0"/>
-        <line num="11" type="stmt" count="0"/>
-      </file>
+      <metrics complexity="0" elements="22" coveredelements="12" conditionals="0" coveredconditionals="0" statements="22" coveredstatements="12" methods="0" coveredmethods="0" classes="4" files="4"/>
       <file name="File4.cpp" path="A/File4.cpp">
         <metrics complexity="0" elements="5" coveredelements="4" conditionals="0" coveredconditionals="0" statements="5" coveredstatements="4" methods="0" coveredmethods="0" classes="1"/>
         <class name="id$1d7a80554861eb8b5c21bc2e26ff8f70">
@@ -90,6 +77,22 @@
         <line num="4" type="stmt" count="0"/>
         <line num="6" type="stmt" count="0"/>
         <line num="8" type="stmt" count="0"/>
+      </file>
+    </package>
+    <package name="A.subdir_0.subdir_1.subdir_2.subdir_3.subdir_4.subdir_5.subdir_6.subdir_7.subdir_8.subdir_9">
+      <metrics complexity="0" elements="7" coveredelements="4" conditionals="0" coveredconditionals="0" statements="7" coveredstatements="4" methods="0" coveredmethods="0" classes="1" files="1"/>
+      <file name="File2.cpp" path="A/subdir_0/subdir_1/subdir_2/subdir_3/subdir_4/subdir_5/subdir_6/subdir_7/subdir_8/subdir_9/File2.cpp">
+        <metrics complexity="0" elements="7" coveredelements="4" conditionals="0" coveredconditionals="0" statements="7" coveredstatements="4" methods="0" coveredmethods="0" classes="1"/>
+        <class name="id$1aed42bd33fceec1188f2f95c6e8946c">
+          <metrics complexity="0" elements="7" coveredelements="4" conditionals="0" coveredconditionals="0" statements="7" coveredstatements="4" methods="0" coveredmethods="0"/>
+        </class>
+        <line num="1" type="stmt" count="1"/>
+        <line num="3" type="stmt" count="1"/>
+        <line num="4" type="stmt" count="1"/>
+        <line num="5" type="stmt" count="1"/>
+        <line num="8" type="stmt" count="0"/>
+        <line num="10" type="stmt" count="0"/>
+        <line num="11" type="stmt" count="0"/>
       </file>
     </package>
     <package name="B">

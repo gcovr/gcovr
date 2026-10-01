@@ -1,5 +1,3 @@
-# -*- coding:utf-8 -*-
-
 #  ************************** Copyrights and license ***************************
 #
 # This file is part of gcovr 8.6+main, a parsing and reporting tool for gcov.
@@ -17,6 +15,8 @@
 #
 # ****************************************************************************
 
+"""GCOVR report definition base class."""
+
 from ..data_model.container import CoverageContainer
 from ..options import GcovrConfigOption, Options
 
@@ -26,10 +26,12 @@ class BaseHandler:
 
     @classmethod
     def get_options(cls) -> list[GcovrConfigOption | str]:
-        """Get the options of the format handler"""
-        raise AssertionError("Function 'get_options' not implemented.")
+        """Get the report options."""
+        msg = "Function 'get_options' not implemented."
+        raise AssertionError(msg)
 
     def __init__(self, options: Options) -> None:
+        """Initialize base class for report definition."""
         global_options = [
             "output",
             "timestamp",
@@ -55,18 +57,27 @@ class BaseHandler:
         self.options = Options(**option_dict)
 
     def validate_options(self) -> None:
-        """Validation of command line options"""
+        """Validate options."""
 
     def read_report(self) -> CoverageContainer:
-        """Read a report in the format of the handler"""
-        raise AssertionError("Function 'read_report' not implemented.")
+        """Read report."""
+        msg = "Function 'read_report' not implemented."
+        raise AssertionError(msg)
 
-    def write_report(self, covdata: CoverageContainer, output_file: str) -> None:
-        """Write a report in the format of the handler"""
-        raise AssertionError("Function 'write_report' not implemented.")
+    def write_report(
+        self,
+        covdata: CoverageContainer,  # pylint: disable=unused-argument # noqa: ARG002
+        output_file: str,  # pylint: disable=unused-argument # noqa: ARG002
+    ) -> None:
+        """Write report."""
+        msg = "Function 'write_report' not implemented."
+        raise AssertionError(msg)
 
     def write_summary_report(
-        self, covdata: CoverageContainer, output_file: str
+        self,
+        covdata: CoverageContainer,  # pylint: disable=unused-argument # noqa: ARG002
+        output_file: str,  # pylint: disable=unused-argument # noqa: ARG002
     ) -> None:
-        """Write a summary report in the format of the handler"""
-        raise AssertionError("Function 'write_summary_report' not implemented.")
+        """Write summary report."""
+        msg = "Function 'write_summary_report' not implemented."
+        raise AssertionError(msg)

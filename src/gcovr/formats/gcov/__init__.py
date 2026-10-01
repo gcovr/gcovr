@@ -1,5 +1,3 @@
-# -*- coding:utf-8 -*-
-
 #  ************************** Copyrights and license ***************************
 #
 # This file is part of gcovr 8.6+main, a parsing and reporting tool for gcov.
@@ -17,7 +15,10 @@
 #
 # ****************************************************************************
 
+"""GCOVR GCOV report."""
+
 import os
+
 from ...data_model.container import CoverageContainer
 from ...formats.base import BaseHandler
 from ...options import (
@@ -32,6 +33,7 @@ class GcovHandler(BaseHandler):
 
     @classmethod
     def get_options(cls) -> list[GcovrConfigOption | str]:
+        """Get the report options."""
         return [
             # JSON option use for validation
             "json_compare",
@@ -192,18 +194,24 @@ class GcovHandler(BaseHandler):
         ]
 
     def validate_options(self) -> None:
-        """Validate options specific to this format."""
+        """Validate options."""
         if self.options.gcov_objdir is not None and not os.path.exists(
             self.options.gcov_objdir
         ):
-            raise RuntimeError(
+            msg = (
                 "Bad --gcov-object-directory option.\n"
                 "\tThe specified directory does not exist."
             )
+            raise RuntimeError(msg)
 
     def read_report(self) -> CoverageContainer:
-        from .read import read_report  # pylint: disable=import-outside-toplevel # Lazy loading is intended here
+        """Read report."""
+        # Lazy loading is intended here
+        from .read import (  # pylint: disable=import-outside-toplevel  # noqa: PLC0415
+            read_report,
+        )
 
         if self.options.json_compare:
-            raise ValueError("A gcov is not possible with --json-compare.")
+            msg = "A gcov is not possible with --json-compare."
+            raise ValueError(msg)
         return read_report(self.options)

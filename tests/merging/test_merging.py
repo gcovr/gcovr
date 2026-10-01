@@ -1,5 +1,3 @@
-# -*- coding:utf-8 -*-
-
 #  ************************** Copyrights and license ***************************
 #
 # This file is part of gcovr 8.6+main, a parsing and reporting tool for gcov.
@@ -18,13 +16,13 @@
 # ****************************************************************************
 
 import logging
-from pathlib import Path
 import re
 import subprocess  # nosec
 import typing
+from pathlib import Path
 
 import pytest
-
+from pytest_check import check
 
 from tests.conftest import IS_LINUX, GcovrTestExec
 
@@ -70,13 +68,11 @@ def test_different_branches(gcovr_test_exec: "GcovrTestExec") -> None:
     not IS_LINUX,
     reason="Merging of functions is independent of OS and we do not want to have separate data for Windows and Darwin.",
 )
-def test_different_functions_strict(  # type: ignore[no-untyped-def]
+def test_different_functions_strict(
     gcovr_test_exec: "GcovrTestExec",
     caplog: pytest.LogCaptureFixture,
-    check,
 ) -> None:
     """Test merging same function defined on different lines."""
-
     gcovr_test_exec.copy_source(Path("source", "different-functions"))
 
     def outputs() -> typing.Iterable[tuple[int, Path]]:
@@ -87,7 +83,7 @@ def test_different_functions_strict(  # type: ignore[no-untyped-def]
     for postfix, build_dir in outputs():
         build_dir.mkdir()
         additional_options = []
-        if postfix == 2:
+        if postfix == 2:  # noqa: PLR2004
             additional_options.append("-DFOO_OTHER_LINE")
         gcovr_test_exec.cxx_link(
             "testcase",
@@ -108,10 +104,10 @@ def test_different_functions_strict(  # type: ignore[no-untyped-def]
         use_main=True,
     )
     with check:
-        assert process.returncode == 64, "Read error."
+        assert process.returncode == 64, "Read error."  # noqa: PLR2004
     messages = caplog.record_tuples
     with check:
-        assert len(messages) == 2
+        assert len(messages) == 2  # noqa: PLR2004
         assert messages[0][1] == logging.ERROR
         for line in messages[0][2].splitlines():
             if re.match(
@@ -120,7 +116,8 @@ def test_different_functions_strict(  # type: ignore[no-untyped-def]
             ):
                 break
         else:
-            raise AssertionError("Missing expected output.")
+            msg = "Missing expected output."
+            raise AssertionError(msg)
 
 
 @pytest.mark.skipif(
@@ -157,7 +154,7 @@ def test_different_functions(
     for postfix, build_dir in outputs():
         build_dir.mkdir()
         additional_options = []
-        if postfix == 2:
+        if postfix == 2:  # noqa: PLR2004
             additional_options.append("-DFOO_OTHER_LINE")
         gcovr_test_exec.cxx_link(
             "testcase",
@@ -188,7 +185,7 @@ def test_different_functions(
                 "--json-pretty",
                 "--json=coverage.error.json",
             )
-        assert exception.value.returncode == 64, "Read error."
+        assert exception.value.returncode == 64, "Read error."  # noqa: PLR2004
     else:
         additional_options.clear()
 

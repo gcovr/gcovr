@@ -5,36 +5,8 @@
     <source>tests/nested/output/standard/subdir</source>
   </sources>
   <packages>
-    <package name="A" line-rate="0.55172" branch-rate="0.33333" complexity="0.0">
+    <package name="A" line-rate="0.54545" branch-rate="0.33333" complexity="0.0">
       <classes>
-        <class name="File2_cpp" filename="A/File2.cpp" line-rate="0.57143" branch-rate="1.0" complexity="0.0">
-          <methods>
-            <method name="bar" signature="()" line-rate="1.0" branch-rate="1.0" complexity="0.0">
-              <lines>
-                <line number="1" hits="1" branch="false"/>
-                <line number="3" hits="1" branch="false"/>
-                <line number="4" hits="1" branch="false"/>
-                <line number="5" hits="1" branch="false"/>
-              </lines>
-            </method>
-            <method name="bar_" signature="()" line-rate="0.0" branch-rate="1.0" complexity="0.0">
-              <lines>
-                <line number="8" hits="0" branch="false"/>
-                <line number="10" hits="0" branch="false"/>
-                <line number="11" hits="0" branch="false"/>
-              </lines>
-            </method>
-          </methods>
-          <lines>
-            <line number="1" hits="1" branch="false"/>
-            <line number="3" hits="1" branch="false"/>
-            <line number="4" hits="1" branch="false"/>
-            <line number="5" hits="1" branch="false"/>
-            <line number="8" hits="0" branch="false"/>
-            <line number="10" hits="0" branch="false"/>
-            <line number="11" hits="0" branch="false"/>
-          </lines>
-        </class>
         <class name="File4_cpp" filename="A/File4.cpp" line-rate="0.8" branch-rate="0.5" complexity="0.0">
           <methods>
             <method name="foobar" signature="(int)" line-rate="0.8" branch-rate="0.5" complexity="0.0">
@@ -209,6 +181,38 @@
             <line number="4" hits="0" branch="false"/>
             <line number="6" hits="0" branch="false"/>
             <line number="8" hits="0" branch="false"/>
+          </lines>
+        </class>
+      </classes>
+    </package>
+    <package name="A.subdir_0.subdir_1.subdir_2.subdir_3.subdir_4.subdir_5.subdir_6.subdir_7.subdir_8.subdir_9" line-rate="0.57143" branch-rate="1.0" complexity="0.0">
+      <classes>
+        <class name="File2_cpp" filename="A/subdir_0/subdir_1/subdir_2/subdir_3/subdir_4/subdir_5/subdir_6/subdir_7/subdir_8/subdir_9/File2.cpp" line-rate="0.57143" branch-rate="1.0" complexity="0.0">
+          <methods>
+            <method name="bar" signature="()" line-rate="1.0" branch-rate="1.0" complexity="0.0">
+              <lines>
+                <line number="1" hits="1" branch="false"/>
+                <line number="3" hits="1" branch="false"/>
+                <line number="4" hits="1" branch="false"/>
+                <line number="5" hits="1" branch="false"/>
+              </lines>
+            </method>
+            <method name="bar_" signature="()" line-rate="0.0" branch-rate="1.0" complexity="0.0">
+              <lines>
+                <line number="8" hits="0" branch="false"/>
+                <line number="10" hits="0" branch="false"/>
+                <line number="11" hits="0" branch="false"/>
+              </lines>
+            </method>
+          </methods>
+          <lines>
+            <line number="1" hits="1" branch="false"/>
+            <line number="3" hits="1" branch="false"/>
+            <line number="4" hits="1" branch="false"/>
+            <line number="5" hits="1" branch="false"/>
+            <line number="8" hits="0" branch="false"/>
+            <line number="10" hits="0" branch="false"/>
+            <line number="11" hits="0" branch="false"/>
           </lines>
         </class>
       </classes>

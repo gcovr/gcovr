@@ -3,19 +3,37 @@
   <div class="Box-header d-flex flex-space-between sticky">
     {{filename}}
     <div class="toggle-buttons">
+      {% if (lines.exec - lines.partial) > 0 %}
       <button type="button" class="button_toggle_coveredLine show_coveredLine" value="coveredLine" title="Toggle covered lines">{{lines.exec - lines.partial}} covered</button>
+      {% endif %}
+      {% if lines.uncovered > 0 %}
       <button type="button" class="button_toggle_uncoveredLine show_uncoveredLine" value="uncoveredLine" title="Toggle uncovered lines">{{lines.uncovered}} uncovered</button>
+      {% endif %}
+      {% if lines.partial > 0 %}
       <button type="button" class="button_toggle_partialCoveredLine show_partialCoveredLine" value="partialCoveredLine" title="Toggle partial covered lines">{{lines.partial}} partial covered</button>
-      <button type="button" class="button_toggle_excludedLine show_excludedLine" value="excludedLine" title="Toggle excluded lines">{{lines.excluded}} excluded</button>
+      {% endif %}
+      {% if lines.excluded > 0 %}
+      <button type="button" class="button_toggle_excludedLine show_excludedLine" value="excludedLine" title="Toggle excluded lines">{{lines.excluded}} excl</button>
+      {% endif %}
       {% if info.diff_report %}
       {%  if diff == 'ADDED' or diff == 'REMOVED' %}
       <button type="button" class="button_toggle_{{diff}} show_{{diff}}"value="{{diff}}" title="Toggle {{diff | lower}} lines">All {{diff | lower}}</button>
       {%  else %}
-      <button type="button" class="button_toggle_REMOVED show_REMOVED" value="REMOVED" title="Toggle removed lines">{{lines.diff.REMOVED}} removed</button>
+      {%   if lines.diff.ADDED > 0 %}
       <button type="button" class="button_toggle_ADDED show_ADDED" value="ADDED" title="Toggle added lines">{{lines.diff.ADDED}} added</button>
+      {%   endif %}
+      {%   if lines.diff.REMOVED > 0 %}
+      <button type="button" class="button_toggle_REMOVED show_REMOVED" value="REMOVED" title="Toggle removed lines">{{lines.diff.REMOVED}} removed</button>
+      {%   endif %}
+      {%   if lines.diff.CHANGED > 0 %}
       <button type="button" class="button_toggle_CHANGED show_CHANGED" value="CHANGED" title="Toggle changed lines">{{lines.diff.CHANGED}} changed</button>
+      {%   endif %}
+      {%   if lines.diff.APPROXIMATELY_EQUAL > 0 %}
       <button type="button" class="button_toggle_APPROXIMATELY_EQUAL show_APPROXIMATELY_EQUAL" value="APPROXIMATELY_EQUAL" title="Toggle approximately equal lines">{{lines.diff.APPROXIMATELY_EQUAL}} approximately equal</button>
+      {%   endif %}
+      {%   if lines.diff.STRICTLY_EQUAL > 0 %}
       <button type="button" class="button_toggle_STRICTLY_EQUAL show_STRICTLY_EQUAL" value="STRICTLY_EQUAL" title="Toggle strictly equal lines">{{lines.diff.STRICTLY_EQUAL}} strictly equal</button>
+      {%   endif %}
       {%  endif %}
       {% endif %}
     </div>
@@ -70,7 +88,7 @@
               {%  set branch_info = "%d &rightarrow; %d" | format(branch.source_block_id, branch.destination_block_id) | safe %}
               {% endif %}
               {% if branch.excluded %}
-              <div class="excludedBranch">&ndash; Branch {{branch_info}} excluded.</div>
+              <div class="excludedBranch">&ndash; Branch {{branch_info}} excl.</div>
               {% elif branch.taken %}
               <div class="takenBranch">&check; Branch {{branch_info}} taken {{branch.count}} time{% if branch.count > 1 %}s{% endif %}.</div>
               {% else %}
@@ -148,7 +166,7 @@
               {% endif %}
               {% for call in linecall.calls %}
               {% if call.excluded %}
-              <div class="excludedCall">&ndash; Call {{call.name}} excluded.</div>
+              <div class="excludedCall">&ndash; Call {{call.name}} excl.</div>
               {% elif call.invoked %}
               <div class="invokedCall">&check; Call {{call.name}} invoked.</div>
               {% else %}

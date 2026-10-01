@@ -1,5 +1,3 @@
-# -*- coding:utf-8 -*-
-
 #  ************************** Copyrights and license ***************************
 #
 # This file is part of gcovr 8.6+main, a parsing and reporting tool for gcov.
@@ -17,15 +15,18 @@
 #
 # ****************************************************************************
 
-from pathlib import Path
+import logging
 import re
 import shutil
-from sys import stderr
+from pathlib import Path
 from unittest import mock
 
 import pytest
+from pytest_check import check
 
 from tests.conftest import GCOVR_ISOLATED_TEST, USE_PROFDATA_POSSIBLE, GcovrTestExec
+
+LOGGER = logging.getLogger(__name__)
 
 
 @pytest.mark.clover
@@ -38,12 +39,18 @@ from tests.conftest import GCOVR_ISOLATED_TEST, USE_PROFDATA_POSSIBLE, GcovrTest
 @pytest.mark.markdown
 @pytest.mark.sonarqube
 @pytest.mark.txt
-def test_standard(gcovr_test_exec: "GcovrTestExec", check) -> None:  # type: ignore[no-untyped-def]
+def test_standard(gcovr_test_exec: "GcovrTestExec") -> None:
     """Test nested coverage report generation."""
+    file2_cpp = gcovr_test_exec.output_dir / "subdir" / "A" / "File2.cpp"
+    deep_dir = file2_cpp.parent.joinpath(*[f"subdir_{i}" for i in range(10)])
+    deep_dir.mkdir(parents=True, exist_ok=True)
+    file2_cpp = file2_cpp.rename(deep_dir / file2_cpp.name).relative_to(
+        gcovr_test_exec.output_dir
+    )
     gcovr_test_exec.cxx_link(
         "subdir/testcase",
         gcovr_test_exec.cxx_compile("subdir/A/file1.cpp"),
-        gcovr_test_exec.cxx_compile("subdir/A/File2.cpp"),
+        gcovr_test_exec.cxx_compile(file2_cpp),
         gcovr_test_exec.cxx_compile("subdir/A/file3.cpp"),
         gcovr_test_exec.cxx_compile("subdir/A/File4.cpp"),
         gcovr_test_exec.cxx_compile("subdir/A/file7.cpp"),
@@ -152,11 +159,11 @@ def test_standard(gcovr_test_exec: "GcovrTestExec", check) -> None:  # type: ign
     reason="Only available in isolated docker test.",
 )
 @pytest.mark.json
-def test_standard_ccache(gcovr_test_exec: "GcovrTestExec", check) -> None:  # type: ignore[no-untyped-def]
+def test_standard_ccache(gcovr_test_exec: "GcovrTestExec") -> None:
     """Test nested coverage report generation."""
     build_dir = gcovr_test_exec.output_dir / "build"
     for run in range(2):
-        print(f"***** Build with ccache ({run}) *****", file=stderr)
+        LOGGER.info("***** Build with ccache (%s) *****", run)
         with mock.patch.dict(
             "os.environ",
             {"CCACHE_DIR": str(gcovr_test_exec.output_dir / "ccache")},
@@ -273,14 +280,14 @@ def test_threaded(gcovr_test_exec: "GcovrTestExec") -> None:
 @pytest.mark.sonarqube
 @pytest.mark.txt
 def test_linked(gcovr_test_exec: "GcovrTestExec") -> None:
-    """This test case was inspired by the logic in gcovr
-    that traverses symbolic links:
+    """
+    Test case was inspired by the logic in gcovr that traverses symbolic links.
 
     UNIX resolves symbolic links by walking the
     entire directory structure.  What that means is that relative links
     are always relative to the actual directory inode, and not the
     "virtual" path that the user might have traversed (over symlinks) on
-    the way to that directory.  Here's the canonical example:
+    the way to that directory.  Here's the canonical Examples:
 
       a / b / c / testfile
       a / d / e --> ../../a/b
@@ -293,7 +300,6 @@ def test_linked(gcovr_test_exec: "GcovrTestExec") -> None:
           |-- e
               |-- c
                   |-- testfile
-
 
     """
     source_root = gcovr_test_exec.output_dir / "subdir"

@@ -1,6 +1,4 @@
-# -*- coding:utf-8 -*-
-
-#  ************************** Copyrights and license ***************************
+#  ************************** Copyrights and license ***************************  # noqa: INP001
 #
 # This file is part of gcovr 8.6+main, a parsing and reporting tool for gcov.
 # https://gcovr.com/en/main
@@ -17,8 +15,11 @@
 #
 # ****************************************************************************
 
+"""GCOVR entry point for pyinstaller."""
+
 import re
 import sys
+
 from gcovr.__main__ import main
 
 if __name__ == "__main__":

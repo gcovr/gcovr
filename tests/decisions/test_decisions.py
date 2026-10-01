@@ -1,5 +1,3 @@
-# -*- coding:utf-8 -*-
-
 #  ************************** Copyrights and license ***************************
 #
 # This file is part of gcovr 8.6+main, a parsing and reporting tool for gcov.
@@ -18,10 +16,16 @@
 # ****************************************************************************
 
 from pathlib import Path
+
 import pytest
+from pytest_check import check
 
-
-from tests.conftest import IS_LINUX, USE_PROFDATA_POSSIBLE, GcovrTestExec
+from tests.conftest import (
+    CONDITION_COVERAGE_POSSIBLE,
+    IS_LINUX,
+    USE_PROFDATA_POSSIBLE,
+    GcovrTestExec,
+)
 
 
 @pytest.mark.skipif(
@@ -70,10 +74,18 @@ def test_decisions(gcovr_test_exec: "GcovrTestExec") -> None:
     )
     gcovr_test_exec.compare_html()
 
+    gcovr_test_exec.gcovr(
+        "--verbose",
+        "--json-add-tracefile=coverage.json.gz",
+        "--txt-metric=decision",
+        "--txt-metric=line",
+        "--txt=coverage_multiple.txt",
+    )
     process = gcovr_test_exec.gcovr(
         "--verbose",
         "--json-add-tracefile=coverage.json.gz",
         "--txt-metric=decision",
+        *(["--txt-metric=condition"] if CONDITION_COVERAGE_POSSIBLE else []),
         "--txt-summary",
         "--txt=coverage.txt",
     )
@@ -97,10 +109,10 @@ def test_decisions(gcovr_test_exec: "GcovrTestExec") -> None:
 
 @pytest.mark.skipif(
     not USE_PROFDATA_POSSIBLE,
-    reason="Parsing of decision is independent of OS and we do not want to have separate data for Windows and Darwin and LLVM profdata is not compatible with GCC coverage data.",
+    reason="LLVM profdata is needed.",
 )
 @pytest.mark.json
-def test_decisions_llvm_profdata(gcovr_test_exec: "GcovrTestExec", check) -> None:  # type: ignore[no-untyped-def]
+def test_decisions_llvm_profdata(gcovr_test_exec: "GcovrTestExec") -> None:
     """Test of decision parsing."""
     gcovr_test_exec.use_llvm_profdata = True
     gcovr_test_exec.copy_source(Path("source", "decisions"))
@@ -123,6 +135,7 @@ def test_decisions_llvm_profdata(gcovr_test_exec: "GcovrTestExec", check) -> Non
         "--delete-input-files",
         "--decisions",
         "--llvm-cov-binary=./testcase",
+        "--keep-intermediate-files",
         "--json-pretty",
         "--json=coverage.json.gz",
         "default.profraw",
@@ -161,7 +174,10 @@ def test_decisions_llvm_profdata(gcovr_test_exec: "GcovrTestExec", check) -> Non
 @pytest.mark.json
 @pytest.mark.txt
 def test_decisions_neg_delta(gcovr_test_exec: "GcovrTestExec") -> None:
-    """This test case causes a negative delta value during the multiline decision analysis, which results in a:
+    """
+    Test case causes a negative delta value during the multiline decision analysis.
+
+    This results in a:
     DecisionCoverageUncheckable: decision and a debug log
     AssertionError: assert count_false >= 0
     """

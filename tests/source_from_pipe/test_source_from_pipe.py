@@ -1,5 +1,3 @@
-# -*- coding:utf-8 -*-
-
 #  ************************** Copyrights and license ***************************
 #
 # This file is part of gcovr 8.6+main, a parsing and reporting tool for gcov.
@@ -17,9 +15,9 @@
 #
 # ****************************************************************************
 
-import pytest
 import typing
 
+import pytest
 
 if typing.TYPE_CHECKING:
     from tests.conftest import GcovrTestExec
@@ -28,7 +26,6 @@ if typing.TYPE_CHECKING:
 @pytest.mark.json
 def test(gcovr_test_exec: "GcovrTestExec") -> None:
     """Test ignoring GCOV output errors."""
-
     gcovr_test_exec.run(
         "sh", "-c", "cat test.cpp | $CXX $CXXFLAGS -x c++ -c - -o test.o"
     )

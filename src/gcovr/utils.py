@@ -1,5 +1,3 @@
-# -*- coding:utf-8 -*-
-
 #  ************************** Copyrights and license ***************************
 #
 # This file is part of gcovr 8.6+main, a parsing and reporting tool for gcov.
@@ -17,16 +15,20 @@
 #
 # ****************************************************************************
 
+"""Utility functions for gcovr."""
+
+import functools
 import gzip
-from hashlib import md5
 import json
 import lzma
-from typing import Any, BinaryIO, Callable, Iterator, TextIO
 import os
-import functools
 import re
 import sys
 from contextlib import contextmanager
+from hashlib import md5
+from pathlib import Path
+from typing import Any, BinaryIO, Callable, Generator, Iterator, TextIO
+
 from lxml import etree  # nosec # We only write XML files
 
 from .logging import LOGGER
@@ -42,6 +44,7 @@ class LoopChecker:
     """Class for checking if a directory was already scanned."""
 
     def __init__(self) -> None:
+        """Initialize the loop checker."""
         self._seen = set[tuple[int, int]]()
 
     def already_visited(self, path: str) -> bool:
@@ -73,7 +76,7 @@ def is_fs_case_insensitive() -> bool:
     return ret
 
 
-@functools.lru_cache(maxsize=None)
+@functools.cache
 def fix_case_of_path(path: str) -> str:
     """Fix casing of filenames for cas insensitive file systems."""
     rest, cur = os.path.split(path)
@@ -87,9 +90,8 @@ def fix_case_of_path(path: str) -> str:
         cur_lower = cur.lower()
         matched_filename = [f for f in os.listdir(rest) if f.lower() == cur_lower]
         if len(matched_filename) > 1:
-            raise RuntimeError(
-                "Seems that we have a case sensitive filesystem, can't fix file case"
-            )
+            msg = "Seems that we have a case sensitive filesystem, can't fix file case"
+            raise RuntimeError(msg)
 
         if len(matched_filename) == 1:
             path = os.path.join(fix_case_of_path(rest), matched_filename[0])
@@ -112,14 +114,11 @@ def search_file(
     path: str,
     exclude_directory: list[re.Pattern[str]],
 ) -> Iterator[str]:
-    """
-    Given a search path, recursively descend to find files that satisfy a
-    predicate.
-    """
+    """Recursively descend path to find files that satisfy a predicate."""
     if path is None or path == ".":
         path = os.getcwd()
     elif not os.path.exists(path):
-        raise IOError("Unknown directory '" + path + "'")
+        raise OSError("Unknown directory '" + path + "'")
 
     loop_checker = LoopChecker()
     for root, dirs, files in os.walk(os.path.abspath(path), followlinks=True):
@@ -133,15 +132,16 @@ def search_file(
             for d in sorted(dirs)
             if not any(exc.match(os.path.join(root, d)) for exc in exclude_directory)
         ]
-        root = os.path.abspath(root)
+        abs_root = os.path.abspath(root)
 
         for name in sorted(files):
             if predicate(name):
-                yield os.path.abspath(os.path.join(root, name))
+                yield os.path.abspath(os.path.join(abs_root, name))
 
 
 def commonpath(files: list[str]) -> str:
-    r"""Find the common prefix of all files.
+    r"""
+    Find the common prefix of all files.
 
     This differs from the standard library os.path.commonpath():
      - We first normalize all paths to a realpath.
@@ -159,6 +159,7 @@ def commonpath(files: list[str]) -> str:
         The common prefix directory as a relative path.
         Always ends with a path separator.
         Returns the empty string if no common path exists.
+
     """
     if not files:
         return ""
@@ -198,16 +199,16 @@ def commonpath(files: list[str]) -> str:
 @contextmanager
 def open_text_for_writing(
     filename: str | None, default_filename: str | None = None, **kwargs: Any
-) -> Iterator[TextIO | Any]:
-    """Context manager to open and close a file for text writing.
+) -> Generator[TextIO | Any, None, None]:
+    """
+    Context manager to open and close a file for text writing.
 
     Stdout is used if `filename` is None or '-'.
     """
     if filename is not None and filename.endswith(os.sep):
         if default_filename is None:
-            raise AssertionError(
-                "If filename is a directory a default filename is mandatory."
-            )
+            msg = "If filename is a directory a default filename is mandatory."
+            raise AssertionError(msg)
         filename += default_filename
 
     if filename is not None and filename != "-":
@@ -218,7 +219,7 @@ def open_text_for_writing(
             with lzma.open(filename, "wt", **kwargs) as fh_out:
                 yield fh_out
         else:
-            with open(filename, "wt", **kwargs) as fh_out:  # pylint: disable=unspecified-encoding
+            with Path(filename).open("w", **kwargs) as fh_out:  # pylint: disable=unspecified-encoding
                 yield fh_out
     else:
         encoding = kwargs.get("encoding", "utf-8").lower()
@@ -237,8 +238,9 @@ def open_binary_for_writing(
     filename: str | None,
     default_filename: str,
     **kwargs: Any,
-) -> Iterator[BinaryIO | Any]:
-    """Context manager to open and close a file for binary writing.
+) -> Generator[BinaryIO | Any, None, None]:
+    """
+    Context manager to open and close a file for binary writing.
 
     Stdout is used if `filename` is None or '-'.
     """
@@ -254,7 +256,7 @@ def open_binary_for_writing(
                 yield fh_out
         else:
             # files in write binary mode for UTF-8
-            with open(filename, "wb", **kwargs) as fh_out:
+            with Path(filename).open("wb", **kwargs) as fh_out:
                 yield fh_out
     else:
         yield sys.stdout.buffer
@@ -268,7 +270,7 @@ def write_json_output(
     default_filename: str,
     **kwargs: Any,
 ) -> None:
-    """Helper function to output JSON dictionary to a file/STDOUT."""
+    """Write JSON dictionary to a file/STDOUT."""
     with open_text_for_writing(filename, default_filename, **kwargs) as fh:
         json.dump(
             json_dict,
@@ -286,7 +288,7 @@ def write_xml_output(
     default_filename: str,
     **kwargs: Any,
 ) -> None:
-    """Helper function to output XML format dictionary to a file/STDOUT"""
+    """Write XML format dictionary to a file/STDOUT."""
     with open_binary_for_writing(filename, default_filename, **kwargs) as fh:
         fh.write(
             etree.tostring(
@@ -300,14 +302,14 @@ def write_xml_output(
 
 
 @contextmanager
-def chdir(directory: str) -> Iterator[None]:
+def chdir(directory: str) -> Generator[None, None, None]:
     """Context for doing something in a locked directory."""
-    current_dir = os.getcwd()
+    current_dir = Path.cwd()
     os.chdir(directory)
     try:
         yield
     finally:
-        os.chdir(current_dir)
+        os.chdir(str(current_dir))
 
 
 def force_unix_separator(path: str) -> str:
@@ -326,7 +328,7 @@ def read_source_file(
     """Read in the source file and fill up lines if needed."""
     source_lines: list[bytes] = []
     try:
-        with open(filename, "rb") as fh_in:
+        with Path(filename).open("rb") as fh_in:
             source_lines = fh_in.read().splitlines()
         lines = len(source_lines)
         if lines < max_line_number:
@@ -336,7 +338,8 @@ def read_source_file(
                 lines,
                 max_line_number,
             )
-            # GCOV itself adds the /*EOF*/ in the text report if there is no data and we used the same.
+            # GCOV itself adds the /*EOF*/ in the text report if there is no data and we
+            # used the same.
             source_lines += [b"/*EOF*/"] * (max_line_number - lines)
     except OSError as e:
         if filename.endswith("<stdin>"):
@@ -354,8 +357,4 @@ def read_source_file(
         source_lines = [b""] * max_line_number
         source_lines[0] = f"/* {message} */".encode()
 
-    encoded_source_lines = [
-        line.decode(source_encoding, errors="replace") for line in source_lines
-    ]
-
-    return encoded_source_lines
+    return [line.decode(source_encoding, errors="replace") for line in source_lines]

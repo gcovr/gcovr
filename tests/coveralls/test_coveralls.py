@@ -1,5 +1,3 @@
-# -*- coding:utf-8 -*-
-
 #  ************************** Copyrights and license ***************************
 #
 # This file is part of gcovr 8.6+main, a parsing and reporting tool for gcov.
@@ -21,7 +19,6 @@ import os
 import typing
 
 import pytest
-
 
 if typing.TYPE_CHECKING:
     from tests.conftest import GcovrTestExec
@@ -91,7 +88,7 @@ PARAMETERS = [
 
 
 @pytest.mark.parametrize(
-    "_test_id,env",
+    ("_test_id", "env"),
     PARAMETERS,
     ids=[p[0] for p in PARAMETERS],
 )
@@ -108,7 +105,7 @@ def test_ci(
     new_env = os.environ.copy()
     del new_env["GCOVR_TEST_SUITE"]  # Disable own test suite stub by default
     # Clear all environment variables used for testing
-    for env_name in [env_name for p in PARAMETERS for env_name in p[1].keys()]:
+    for env_name in [env_name for p in PARAMETERS for env_name in p[1]]:
         if env_name in new_env:
             del new_env[env_name]
     new_env.update(env)

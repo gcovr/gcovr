@@ -21,7 +21,7 @@
       {#- #}
     </div>
     <div role="gridcell" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline" data-sort="{{'-' if entry['excluded'] else entry['execution_count']}}">
-      {%- if entry["excluded"] %}excluded
+      {%- if entry["excluded"] %}excl
       {%- else %}
       {%-  if entry["execution_count"] == 0 %}not called
       {%-  else %}called {{ entry["execution_count"] }} time{% if entry["execution_count"] > 1 %}s{% endif %}
