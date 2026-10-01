@@ -105,6 +105,17 @@ pyenv global "$PYTHON_VERSION"
 python3 --version
 pip --version
 pip --no-cache-dir install nox pre-commit
+
+# Add the mapped directory to the list of safe directories for git.
+# Without this, git will refuse to operate in this directory:
+# fatal: detected dubious ownership in repository at '/gcovr'
+# To add an exception for this directory, call:
+#
+#         git config --global --add safe.directory /gcovr
+# + gcovr --timestamp=
+# gcovr: error: argument --timestamp: unknown timestamp format: ''
+git config --global --add safe.directory /gcovr
+
 EOS
 
 # -------------------------------------------------------------------------------------------------
