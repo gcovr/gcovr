@@ -389,14 +389,22 @@ def write_report(
     root_info = RootInfo(options, diff_report=covdata.is_compare_info_available())
     data["info"] = root_info
 
-    data["SHOW_DECISION"] = show_decision
-    data["SHOW_CALLS"] = show_calls
+    data["SHOW_BRANCH_COVERAGE"] = any(
+        filter(
+            lambda filecov: (  # type: ignore [arg-type]
+                filecov.branch_coverage().total != 0
+            ),
+            covdata.filecov(recurse=True),
+        )
+    )
     data["SHOW_CONDITION_COVERAGE"] = any(
         filter(
             lambda filecov: filecov.condition_coverage().total > 0,  # type: ignore [arg-type]
             covdata.filecov(recurse=True),
         )
     )
+    data["SHOW_DECISION"] = show_decision
+    data["SHOW_CALLS"] = show_calls
 
     data["USE_BLOCK_IDS"] = options.html_block_ids
     data["COVERAGE_MED"] = medium_threshold
