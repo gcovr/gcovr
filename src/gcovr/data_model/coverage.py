@@ -2233,7 +2233,12 @@ class FunctionCoverage(CoverageBase):
                 data_dict["execution_count"] = execution_count
             if self.blocks_percent[lineno] is not None:
                 data_dict["blocks_percent"] = self.blocks_percent[lineno]
-            if self.start is not None and self.end is not None:
+            if (
+                self.start is not None
+                and self.end is not None
+                and lineno in self.start
+                and lineno in self.end
+            ):
                 data_dict["pos"] = (
                     ":".join([str(e) for e in self.start[lineno]]),
                     ":".join([str(e) for e in self.end[lineno]]),
@@ -2409,7 +2414,7 @@ class FunctionCoverage(CoverageBase):
                         )
                     }
                 )
-                # or the max value at the desired line
+                # Overwrite data with the max value at the desired line
                 self.blocks_percent = CoverageDict[int, float | None](
                     {
                         lineno: None
@@ -2424,7 +2429,7 @@ class FunctionCoverage(CoverageBase):
                         )
                     }
                 )
-                # or the logical or of all values
+                # Overwrite data with the logical or of all values
                 self.excluded = CoverageDict[int, bool](
                     {
                         lineno: any(self.excluded.values())
@@ -2432,16 +2437,28 @@ class FunctionCoverage(CoverageBase):
                     }
                 )
 
-                if self.start is not None and other.start is not None:
-                    # or the minimum start
-                    self.start = CoverageDict[int, tuple[int, int]](
-                        {lineno: min(*self.start.values(), *other.start.values())}
-                    )
-                if self.end is not None and other.end is not None:
-                    # or the maximum end
-                    self.end = CoverageDict[int, tuple[int, int]](
-                        {lineno: max(*self.end.values(), *other.end.values())}
-                    )
+                # Overwrite data with the minimum start
+                starts = list[tuple[int, int]]()
+                if self.start is not None:
+                    starts.extend(self.start.values())
+                if other.start is not None:
+                    starts.extend(other.start.values())
+                self.start = (
+                    CoverageDict[int, tuple[int, int]]({lineno: min(starts)})
+                    if starts
+                    else None
+                )
+                # Overwrite data with the maximum end
+                ends = list[tuple[int, int]]()
+                if self.end is not None:
+                    ends.extend(self.end.values())
+                if other.end is not None:
+                    ends.extend(other.end.values())
+                self.end = (
+                    CoverageDict[int, tuple[int, int]]({lineno: max(ends)})
+                    if ends
+                    else None
+                )
 
         self.merge_base_data(other)
 
