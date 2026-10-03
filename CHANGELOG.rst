@@ -27,6 +27,8 @@ New features and notable changes:
   - Add jinja2 rendering for CSS files. (:issue:`1252`)
   - Add new HTML themes ``boost.green`` and ``boost.blue``. (:issue:`1248`, :issue:`1271`)
   - Show excluded lines, branches, ... in the summary only if there are any. (:issue:`1287`)
+  - Remove the branches summary and columns if there are no branches in the report,
+    e.g all branches are excluded by patterns or comments. (:issue:`1305`)
 
 - Add compare mode for JSON, text and HTML reports. (:issue:`1240`, :issue:`1266`)
 - Stub missing line coverage for branches in LLVM source based code coverage format. (:issue:`1245`)
