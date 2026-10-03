@@ -177,9 +177,29 @@ def test_exclude_line_custom(gcovr_test_exec: "GcovrTestExec") -> None:
     gcovr_test_exec.compare_sonarqube()
 
 
+PARAMETERS = [
+    (
+        "",
+        [],
+    ),
+    (
+        "all",
+        [
+            "--exclude-branches-by-pattern",
+            ".*",
+        ],
+    ),
+]
+
+
 @pytest.mark.skipif(
     not IS_LINUX,
     reason="Exclusion markers are independent of OS and we do not want to have separate data for Windows and Darwin.",
+)
+@pytest.mark.parametrize(
+    ("_test_id", "options"),
+    PARAMETERS,
+    ids=[p[0] for p in PARAMETERS],
 )
 @pytest.mark.html
 @pytest.mark.clover
@@ -190,7 +210,9 @@ def test_exclude_line_custom(gcovr_test_exec: "GcovrTestExec") -> None:
 @pytest.mark.lcov
 @pytest.mark.sonarqube
 @pytest.mark.txt
-def test_exclude_line_branch(gcovr_test_exec: "GcovrTestExec") -> None:
+def test_exclude_line_branch(
+    gcovr_test_exec: "GcovrTestExec", _test_id: str, options: list[str]
+) -> None:
     """
     Test for --exclude-unreachable-branches option.
 
@@ -210,6 +232,7 @@ def test_exclude_line_branch(gcovr_test_exec: "GcovrTestExec") -> None:
     gcovr_test_exec.gcovr(
         "--exclude-unreachable-branches",
         "--keep-intermediate-files",
+        *options,
         "--json-pretty",
         "--json",
         gcovr_test_exec.output_dir / "coverage.json",

@@ -1,0 +1,61 @@
+<?xml version='1.0' encoding='utf-8'?>
+<coverage clover="1768334355" generated="1768334355">
+  <project timestamp="1768334355">
+    <metrics complexity="0" elements="22" coveredelements="17" conditionals="0" coveredconditionals="0" statements="22" coveredstatements="17" methods="0" coveredmethods="0" packages="1" classes="3" files="3"/>
+    <package name="exclude-line-branch-all">
+      <metrics complexity="0" elements="22" coveredelements="17" conditionals="0" coveredconditionals="0" statements="22" coveredstatements="17" methods="0" coveredmethods="0" classes="3" files="3"/>
+      <file name="bar.cpp" path="exclude-line-branch-all/bar.cpp">
+        <metrics complexity="0" elements="1" coveredelements="0" conditionals="0" coveredconditionals="0" statements="1" coveredstatements="0" methods="0" coveredmethods="0" classes="1"/>
+        <class name="id$e4b8ad7861d3f919a5db2e8a8703e8a1">
+          <metrics complexity="0" elements="1" coveredelements="0" conditionals="0" coveredconditionals="0" statements="1" coveredstatements="0" methods="0" coveredmethods="0"/>
+        </class>
+        <line num="19" type="stmt" count="0"/>
+      </file>
+      <file name="foo.cpp" path="exclude-line-branch-all/foo.cpp">
+        <metrics complexity="0" elements="10" coveredelements="8" conditionals="0" coveredconditionals="0" statements="10" coveredstatements="8" methods="0" coveredmethods="0" classes="1"/>
+        <class name="id$ad99a5459a5bafc89e56b262768f87be">
+          <metrics complexity="0" elements="10" coveredelements="8" conditionals="0" coveredconditionals="0" statements="10" coveredstatements="8" methods="0" coveredmethods="0"/>
+        </class>
+        <line num="2" type="stmt" count="5"/>
+        <line num="3" type="stmt" count="5"/>
+        <line num="4" type="stmt" count="2"/>
+        <line num="6" type="stmt" count="1"/>
+        <line num="7" type="stmt" count="2"/>
+        <line num="8" type="stmt" count="0"/>
+        <line num="9" type="stmt" count="2"/>
+        <line num="10" type="stmt" count="0"/>
+        <line num="21" type="stmt" count="1"/>
+        <line num="22" type="stmt" count="5"/>
+      </file>
+      <file name="main.cpp" path="exclude-line-branch-all/main.cpp">
+        <metrics complexity="0" elements="11" coveredelements="9" conditionals="0" coveredconditionals="0" statements="11" coveredstatements="9" methods="0" coveredmethods="0" classes="1"/>
+        <class name="id$eee7d6f1c58a7346a3c0b0ba9b022e13">
+          <metrics complexity="0" elements="11" coveredelements="9" conditionals="0" coveredconditionals="0" statements="11" coveredstatements="9" methods="0" coveredmethods="0"/>
+        </class>
+        <line num="10" type="stmt" count="1"/>
+        <line num="11" type="stmt" count="2"/>
+        <line num="12" type="stmt" count="1"/>
+        <line num="13" type="stmt" count="1"/>
+        <line num="19" type="stmt" count="1"/>
+        <line num="20" type="stmt" count="6"/>
+        <line num="21" type="stmt" count="5"/>
+        <line num="22" type="stmt" count="5"/>
+        <line num="30" type="stmt" count="0"/>
+        <line num="32" type="stmt" count="1"/>
+        <line num="33" type="stmt" count="0"/>
+      </file>
+    </package>
+  </project>
+  <testproject timestamp="1768334355">
+    <metrics complexity="0" elements="0" coveredelements="0" conditionals="0" coveredconditionals="0" statements="0" coveredstatements="0" methods="0" coveredmethods="0"/>
+    <package name="dummy">
+      <metrics complexity="0" elements="0" coveredelements="0" conditionals="0" coveredconditionals="0" statements="0" coveredstatements="0" methods="0" coveredmethods="0"/>
+      <file name="dummy" path="dummy">
+        <metrics complexity="0" elements="0" coveredelements="0" conditionals="0" coveredconditionals="0" statements="0" coveredstatements="0" methods="0" coveredmethods="0"/>
+        <class name="id$275876e34cf609db118f3d84b799a790">
+          <metrics complexity="0" elements="0" coveredelements="0" conditionals="0" coveredconditionals="0" statements="0" coveredstatements="0" methods="0" coveredmethods="0"/>
+        </class>
+      </file>
+    </package>
+  </testproject>
+</coverage>
