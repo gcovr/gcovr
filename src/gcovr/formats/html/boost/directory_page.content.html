@@ -1,6 +1,6 @@
 {# -*- engine: jinja -*- #}
 {# Check if we have any function or branch data #}
-<div class="file-list-container{% if not SHOW_CONDITION_COVERAGE %} no-conditions{% endif %}{% if not SHOW_DECISION %} no-decisions{% endif %}{% if not SHOW_CALLS %} no-calls{% endif %}">
+<div class="file-list-container{% if not SHOW_BRANCH_COVERAGE %} no-branches{% endif %}{% if not SHOW_CONDITION_COVERAGE %} no-conditions{% endif %}{% if not SHOW_DECISION %} no-decisions{% endif %}{% if not SHOW_CALLS %} no-calls{% endif %}">
   <div class="file-list-header">
     <div class="col-name sortable{% if info.sort_by == 'filename' %} {{info.sorted}}{% endif %}" data-sort="filename">
       Name
@@ -8,9 +8,11 @@
     <div class="col-lines sortable{% if info.sort_by == 'lines' %} {{info.sorted}}{% endif %}" data-sort="lines">
       Lines
     </div>
+    {% if SHOW_BRANCH_COVERAGE %}
     <div class="col-branches sortable{% if info.sort_by == 'branches' %} {{info.sorted}}{% endif %}" data-sort="branches">
       Branches
     </div>
+    {% endif %}
     {% if SHOW_CONDITION_COVERAGE %}
     <div class="col-conditions sortable" data-sort="conditions">
       Conditions
@@ -100,6 +102,7 @@
         <span class="coverage-percent {{row.lines.class}}">{% if row.lines.coverage != '-' %}{{row.lines.coverage}}%{% else %}-{% endif %}</span>
         {% endif %}
       </div>
+      {% if SHOW_BRANCH_COVERAGE %}
       <div class="col-branches">
         {% if row.branches.coverage == '-' %}
         <span class="coverage-percent {{row.branches.class}}">-</span>
@@ -117,6 +120,7 @@
         <span class="coverage-percent {{row.branches.class}}">{{row.branches.coverage}}%</span>
         {% endif %}
       </div>
+      {% endif %}
       {% if SHOW_CONDITION_COVERAGE %}
       <div class="col-conditions">
         {% if row.conditions.coverage == '-' %}

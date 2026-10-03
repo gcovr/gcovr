@@ -57,11 +57,13 @@
         <div class="mr-2" style="margin: auto;">{% if info.lines.coverage == '-' %}-{% else %}{{info.lines.exec}} / {{info.lines.total}}{% if info.lines.excluded %} - {{info.lines.excluded}} excl{% endif %}{% endif %}</div>
         <div class="Label--minw"><span class="{{info.lines.class}} IssueLabel color-fg-on-emphasis mr-1">{{info.lines.coverage}}%</span></div>
       </div>
+      {% if SHOW_BRANCH_COVERAGE %}
       <div class="d-flex">
         <div class="mr-2">Branches:</div>
         <div class="mr-2" style="margin: auto;">{% if info.branches.coverage == '-' %}-{% else %}{{info.branches.exec}} / {{info.branches.total}}{% if info.branches.excluded %} - {{info.branches.excluded}} excl{% endif %}{% endif %}</div>
         <div class="Label--minw"><span class="{{info.branches.class}} IssueLabel color-fg-on-emphasis mr-1">{{info.branches.coverage}}%</span></div>
       </div>
+      {% endif %}
       {% if SHOW_CONDITION_COVERAGE %}
       <div class="d-flex">
         <div class="mr-2">Conditions:</div>

@@ -1198,7 +1198,7 @@ body.sidebar-resizing .main-content {
 .file-list-header,
 .file-row {
   display: grid;
-  grid-template-columns: minmax(200px, 2fr) minmax(200px, 1fr) 116px{% if SHOW_CONDITION_COVERAGE %} 116px{% endif %}{% if SHOW_DECISION %} 116px{% endif %} 116px{% if SHOW_CALLS %} 116px{% endif %}{% if info is defined and info.diff_report %} 111px{% endif %};
+  grid-template-columns: minmax(200px, 2fr) minmax(200px, 1fr){% if SHOW_BRANCH_COVERAGE %} 116px{% endif %}{% if SHOW_CONDITION_COVERAGE %} 116px{% endif %}{% if SHOW_DECISION %} 116px{% endif %} 116px{% if SHOW_CALLS %} 116px{% endif %}{% if info is defined and info.diff_report %} 111px{% endif %};
   gap: 0;
   padding: 0 8px;
 }

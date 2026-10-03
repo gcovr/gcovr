@@ -77,6 +77,7 @@
           {% endif %}
         </td>
       </tr>
+      {% if SHOW_BRANCH_COVERAGE %}
       <tr>
         <th scope="row">Branches:</th>
         <td>
@@ -97,6 +98,7 @@
           {% endif %}
         </td>
       </tr>
+      {% endif %}
       {% if SHOW_CONDITION_COVERAGE %}
       <tr>
         <th scope="row">Conditions:</th>

@@ -4,7 +4,9 @@
     {% set class_sortable = " sortable" if not info.static_report and entries | length > 1 else "" %}
     <div role="rowheader" class="color-fg-muted flex-auto min-width-0 col-md-2{{class_sortable}}{% if info.sort_by == 'filename' and class_sortable %} {{info.sorted}}{% endif %}">File</div>
     <div role="rowheader" class="color-fg-muted d-flex flex-justify-end flex-auto min-width-0 flex-items-baseline{{class_sortable}}{% if info.sort_by == 'lines' and class_sortable %} {{info.sorted}}{% endif %}">Lines</div>
+    {% if SHOW_BRANCH_COVERAGE %}
     <div role="rowheader" class="color-fg-muted d-flex flex-justify-end col-2{{class_sortable}}{% if info.sort_by == 'branches' and class_sortable %} {{info.sorted}}{% endif %}">Branches</div>
+    {% endif %}
     {% if SHOW_CONDITION_COVERAGE %}
     <div role="rowheader" class="color-fg-muted d-flex flex-justify-end col-2{{class_sortable}}">Conditions</div>
     {% endif %}
@@ -48,6 +50,7 @@
       <span class="coverage-percent {{row.lines.class}}">{{row.lines.coverage}}%</span>
       {% endif %}
     </div>
+    {% if SHOW_BRANCH_COVERAGE %}
     <div role="gridcell" class="color-fg-muted d-flex col-2" data-sort="{{row.branches.sort}}">
       <div class="d-flex flex-justify-end flex-wrap gcovr-m-l-5 {{row.branches.class}}" style="width: 100%;">
         {% if row.branches.coverage == '-' %}
@@ -67,6 +70,7 @@
         {% endif %}
       </div>
     </div>
+    {% endif %}
     {% if SHOW_CONDITION_COVERAGE %}
     <div role="gridcell" class="color-fg-muted d-flex col-2" data-sort="{{row.conditions.sort}}">
       <div class="d-flex flex-justify-end flex-wrap gcovr-m-l-5 {{row.conditions.class}}" style="width: 100%;">

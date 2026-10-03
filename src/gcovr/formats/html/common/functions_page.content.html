@@ -5,7 +5,9 @@
     <div role="rowheader" class="color-fg-muted flex-auto min-width-0 col-md-2{{class_sortable}}{% if class_sortable %} sorted-ascending{% endif %}">Function (File:Line)</div>
     <div role="rowheader" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline{{class_sortable}}">Calls</div>
     <div role="rowheader" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2{{class_sortable}}">Lines</div>
+    {% if SHOW_BRANCH_COVERAGE %}
     <div role="rowheader" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2{{class_sortable}}">Branches</div>
+    {% endif %}
     {% if SHOW_CONDITION_COVERAGE %}
     <div role="rowheader" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2{{class_sortable}}">Conditions</div>
     {% endif %}
@@ -29,7 +31,9 @@
       {%- endif -%}
     </div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">{{ entry["line_coverage"] }}%</div>
+    {% if SHOW_BRANCH_COVERAGE %}
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">{{ entry["branch_coverage"] }}%</div>
+    {% endif %}
     {% if SHOW_CONDITION_COVERAGE %}
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2" >{{ entry["condition_coverage"] }}%</div>
     {% endif %}
