@@ -1,11 +1,11 @@
 <?xml version='1.0' encoding='utf-8'?>
 <!DOCTYPE coverage SYSTEM 'https://github.com/cobertura/cobertura/blob/e5eea8679ebce047ec6ccdfdbf6cf2c14b376875/cobertura/src/site/htdocs/xml/coverage-04.dtd'>
-<coverage line-rate="0.7727272727272727" branch-rate="1.0" lines-covered="17" lines-valid="22" branches-covered="0" branches-valid="0" complexity="0.0" timestamp="1768334355" version="gcovr 8.6+main">
+<coverage line-rate="0.77273" branch-rate="1.0" lines-covered="17" lines-valid="22" branches-covered="0" branches-valid="0" complexity="0.0" timestamp="1768334355" version="gcovr 8.6+main">
   <sources>
-    <source>/gcovr/tests/exclusion/output</source>
+    <source>tests/exclusion/output</source>
   </sources>
   <packages>
-    <package name="exclude-line-branch-all" line-rate="0.7727272727272727" branch-rate="1.0" complexity="0.0">
+    <package name="exclude-line-branch-all" line-rate="0.77273" branch-rate="1.0" complexity="0.0">
       <classes>
         <class name="bar_cpp" filename="exclude-line-branch-all/bar.cpp" line-rate="0.0" branch-rate="1.0" complexity="0.0">
           <methods>
@@ -49,7 +49,7 @@
             <line number="22" hits="5" branch="false"/>
           </lines>
         </class>
-        <class name="main_cpp" filename="exclude-line-branch-all/main.cpp" line-rate="0.8181818181818182" branch-rate="1.0" complexity="0.0">
+        <class name="main_cpp" filename="exclude-line-branch-all/main.cpp" line-rate="0.81818" branch-rate="1.0" complexity="0.0">
           <methods>
             <method name="_ZN3BarC2Ev" signature="" line-rate="1.0" branch-rate="1.0" complexity="0.0">
               <lines>
@@ -66,7 +66,7 @@
             <method name="_ZN3BarD2Ev" signature="" line-rate="1.0" branch-rate="1.0" complexity="0.0">
               <lines/>
             </method>
-            <method name="main" signature="" line-rate="0.7142857142857143" branch-rate="1.0" complexity="0.0">
+            <method name="main" signature="" line-rate="0.71429" branch-rate="1.0" complexity="0.0">
               <lines>
                 <line number="19" hits="1" branch="false"/>
                 <line number="20" hits="6" branch="false"/>

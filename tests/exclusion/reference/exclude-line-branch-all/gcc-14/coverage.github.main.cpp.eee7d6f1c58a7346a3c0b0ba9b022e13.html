@@ -42,11 +42,6 @@
         <div class="Label--minw"><span class="coverage-medium IssueLabel color-fg-on-emphasis mr-1">80.0%</span></div>
       </div>
       <div class="d-flex">
-        <div class="mr-2">Branches:</div>
-        <div class="mr-2" style="margin: auto;">-</div>
-        <div class="Label--minw"><span class="coverage-unknown IssueLabel color-fg-on-emphasis mr-1">-%</span></div>
-      </div>
-      <div class="d-flex">
         <div class="mr-2">Functions:</div>
         <div class="mr-2" style="margin: auto;">3 / 3</div>
         <div class="Label--minw"><span class="coverage-high IssueLabel color-fg-on-emphasis mr-1">100.0%</span></div>
@@ -65,28 +60,24 @@
     <div role="rowheader" class="color-fg-muted flex-auto min-width-0 col-md-2 sortable sorted-ascending">Function (File:Line)</div>
     <div role="rowheader" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline sortable">Calls</div>
     <div role="rowheader" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2 sortable">Lines</div>
-    <div role="rowheader" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2 sortable">Branches</div>
     <div role="rowheader" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2 sortable">Blocks</div>
   </div>
   <div class="Box-row Box-row--focus-gray py-2 d-flex">
     <div role="gridcell" class="color-fg-muted flex-auto min-width-0 col-md-2"><a href="#L10">Bar::Bar() (exclude-line-branch-all/main.cpp:10)</a>    </div>
     <div role="gridcell" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline" data-sort="1">called 1 time</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">100.0%</div>
-    <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">-%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">100.0%</div>
   </div>
   <div class="Box-row Box-row--focus-gray py-2 d-flex">
     <div role="gridcell" class="color-fg-muted flex-auto min-width-0 col-md-2"><a href="#L12">Bar::~Bar() (exclude-line-branch-all/main.cpp:12)</a>    </div>
     <div role="gridcell" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline" data-sort="1">called 1 time</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">0.0%</div>
-    <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">-%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">100.0%</div>
   </div>
   <div class="Box-row Box-row--focus-gray py-2 d-flex">
     <div role="gridcell" class="color-fg-muted flex-auto min-width-0 col-md-2"><a href="#L19">main (exclude-line-branch-all/main.cpp:19)</a>    </div>
     <div role="gridcell" class="color-fg-muted flex-auto min-width-0 d-flex flex-justify-end flex-wrap flex-items-baseline" data-sort="1">called 1 time</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">100.0%</div>
-    <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">-%</div>
     <div role="gridcell" class="color-fg-muted d-flex flex-justify-end flex-wrap col-2">100.0%</div>
   </div>
 </div>  </details>
@@ -111,266 +102,191 @@
     <table class="text-mono text-small" style="width:100%;">
       <tr>
         <th class="p-2">Line</th>
-        <th class="p-2">Branch</th>
         <th class="p-2">Exec</th>
         <th class="p-2 text-left" style="width: 100%;">Source</th>
       </tr>
       <tr>
         <td class="text-right src linenos"><a class="normal" id="L1" href="#L1">1</a></td>
-        <td class="text-right src linenos ws-unset">
-        </td>
         <td class="linecount pr-2 pl-2 color-fg-muted text-right"></td>
         <td class="src"><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;iostream&gt;</span></td>
       </tr>
       <tr>
         <td class="text-right src linenos"><a class="normal" id="L2" href="#L2">2</a></td>
-        <td class="text-right src linenos ws-unset">
-        </td>
         <td class="linecount pr-2 pl-2 color-fg-muted text-right"></td>
         <td class="src"><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;cstring&gt;</span></td>
       </tr>
       <tr>
         <td class="text-right src linenos"><a class="normal" id="L3" href="#L3">3</a></td>
-        <td class="text-right src linenos ws-unset">
-        </td>
         <td class="linecount pr-2 pl-2 color-fg-muted text-right"></td>
         <td class="src"></td>
       </tr>
       <tr>
         <td class="text-right src linenos"><a class="normal" id="L4" href="#L4">4</a></td>
-        <td class="text-right src linenos ws-unset">
-        </td>
         <td class="linecount pr-2 pl-2 color-fg-muted text-right"></td>
         <td class="src"><span class="k">extern</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="nf">foo</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">param</span><span class="p">);</span></td>
       </tr>
       <tr>
         <td class="text-right src linenos"><a class="normal" id="L5" href="#L5">5</a></td>
-        <td class="text-right src linenos ws-unset">
-        </td>
         <td class="linecount pr-2 pl-2 color-fg-muted text-right"></td>
         <td class="src"><span class="k">extern</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="nf">bar</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">param</span><span class="p">);</span></td>
       </tr>
       <tr>
         <td class="text-right src linenos"><a class="normal" id="L6" href="#L6">6</a></td>
-        <td class="text-right src linenos ws-unset">
-        </td>
         <td class="linecount pr-2 pl-2 color-fg-muted text-right"></td>
         <td class="src"></td>
       </tr>
       <tr>
         <td class="text-right src linenos"><a class="normal" id="L7" href="#L7">7</a></td>
-        <td class="text-right src linenos ws-unset">
-        </td>
         <td class="linecount pr-2 pl-2 color-fg-muted text-right"></td>
         <td class="src"><span class="k">class</span><span class="w"> </span><span class="nc">Bar</span></td>
       </tr>
       <tr>
         <td class="text-right src linenos"><a class="normal" id="L8" href="#L8">8</a></td>
-        <td class="text-right src linenos ws-unset">
-        </td>
         <td class="linecount pr-2 pl-2 color-fg-muted text-right"></td>
         <td class="src"><span class="p">{</span></td>
       </tr>
       <tr>
         <td class="text-right src linenos"><a class="normal" id="L9" href="#L9">9</a></td>
-        <td class="text-right src linenos ws-unset">
-        </td>
         <td class="linecount pr-2 pl-2 color-fg-muted text-right"></td>
         <td class="src"><span class="k">public</span><span class="o">:</span></td>
       </tr>
       <tr>
         <td class="text-right src linenos"><a class="normal" id="L10" href="#L10">10</a></td>
-        <td class="text-right src linenos ws-unset">
-        </td>
         <td class="linecount coveredLine show_coveredLine pr-2 pl-2 color-fg-muted text-right">1</td>
         <td class="src coveredLine show_coveredLine"><span class="w">    </span><span class="n">Bar</span><span class="p">()</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">m_param</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span></td>
       </tr>
       <tr>
         <td class="text-right src linenos"><a class="normal" id="L11" href="#L11">11</a></td>
-        <td class="text-right src linenos ws-unset">
-        </td>
         <td class="linecount coveredLine show_coveredLine pr-2 pl-2 color-fg-muted text-right">1</td>
         <td class="src coveredLine show_coveredLine"><span class="w">    </span><span class="p">{}</span></td>
       </tr>
       <tr>
         <td class="text-right src linenos"><a class="normal" id="L12" href="#L12">12</a></td>
-        <td class="text-right src linenos ws-unset">
-        </td>
         <td class="linecount coveredLine show_coveredLine pr-2 pl-2 color-fg-muted text-right">1</td>
         <td class="src coveredLine show_coveredLine"><span class="w">    </span><span class="k">virtual</span><span class="w"> </span><span class="o">~</span><span class="n">Bar</span><span class="p">()</span></td>
       </tr>
       <tr>
         <td class="text-right src linenos"><a class="normal" id="L13" href="#L13">13</a></td>
-        <td class="text-right src linenos ws-unset">
-        </td>
         <td class="linecount coveredLine show_coveredLine pr-2 pl-2 color-fg-muted text-right">1</td>
         <td class="src coveredLine show_coveredLine"><span class="w">    </span><span class="p">{}</span><span class="w"> </span><span class="c1">// possible compiler-generated destruction code - auto-detected and excluded</span></td>
       </tr>
       <tr>
         <td class="text-right src linenos"><a class="normal" id="L14" href="#L14">14</a></td>
-        <td class="text-right src linenos ws-unset">
-        </td>
         <td class="linecount pr-2 pl-2 color-fg-muted text-right"></td>
         <td class="src"></td>
       </tr>
       <tr>
         <td class="text-right src linenos"><a class="normal" id="L15" href="#L15">15</a></td>
-        <td class="text-right src linenos ws-unset">
-        </td>
         <td class="linecount pr-2 pl-2 color-fg-muted text-right"></td>
         <td class="src"><span class="k">private</span><span class="o">:</span></td>
       </tr>
       <tr>
         <td class="text-right src linenos"><a class="normal" id="L16" href="#L16">16</a></td>
-        <td class="text-right src linenos ws-unset">
-        </td>
         <td class="linecount pr-2 pl-2 color-fg-muted text-right"></td>
         <td class="src"><span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">m_param</span><span class="p">;</span></td>
       </tr>
       <tr>
         <td class="text-right src linenos"><a class="normal" id="L17" href="#L17">17</a></td>
-        <td class="text-right src linenos ws-unset">
-        </td>
         <td class="linecount pr-2 pl-2 color-fg-muted text-right"></td>
         <td class="src"><span class="p">};</span></td>
       </tr>
       <tr>
         <td class="text-right src linenos"><a class="normal" id="L18" href="#L18">18</a></td>
-        <td class="text-right src linenos ws-unset">
-        </td>
         <td class="linecount pr-2 pl-2 color-fg-muted text-right"></td>
         <td class="src"></td>
       </tr>
       <tr>
         <td class="text-right src linenos"><a class="normal" id="L19" href="#L19">19</a></td>
-        <td class="text-right src linenos ws-unset">
-        </td>
         <td class="linecount coveredLine show_coveredLine pr-2 pl-2 color-fg-muted text-right">1</td>
         <td class="src coveredLine show_coveredLine"><span class="kt">int</span><span class="w"> </span><span class="nf">main</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">argc</span><span class="p">,</span><span class="w"> </span><span class="kt">char</span><span class="o">*</span><span class="w"> </span><span class="n">argv</span><span class="p">[])</span><span class="w"> </span><span class="p">{</span></td>
       </tr>
       <tr>
         <td class="text-right src linenos"><a class="normal" id="L20" href="#L20">20</a></td>
-        <td class="text-right src linenos ws-unset">
-        </td>
         <td class="linecount coveredLine show_coveredLine pr-2 pl-2 color-fg-muted text-right">6</td>
         <td class="src coveredLine show_coveredLine"><span class="w">  </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">5</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="c1">// 2/2 branches</span></td>
       </tr>
       <tr>
         <td class="text-right src linenos"><a class="normal" id="L21" href="#L21">21</a></td>
-        <td class="text-right src linenos ws-unset">
-        </td>
         <td class="linecount coveredLine show_coveredLine pr-2 pl-2 color-fg-muted text-right">5</td>
         <td class="src coveredLine show_coveredLine"><span class="w">    </span><span class="n">foo</span><span class="p">(</span><span class="n">i</span><span class="p">);</span></td>
       </tr>
       <tr>
         <td class="text-right src linenos"><a class="normal" id="L22" href="#L22">22</a></td>
-        <td class="text-right src linenos ws-unset">
-        </td>
         <td class="linecount pr-2 pl-2 color-fg-muted text-right"></td>
         <td class="src"><span class="w">  </span><span class="p">}</span></td>
       </tr>
       <tr>
         <td class="text-right src linenos"><a class="normal" id="L23" href="#L23">23</a></td>
-        <td class="text-right src linenos ws-unset">
-        </td>
         <td class="linecount pr-2 pl-2 color-fg-muted text-right"></td>
         <td class="src"></td>
       </tr>
       <tr>
         <td class="text-right src linenos"><a class="normal" id="L24" href="#L24">24</a></td>
-        <td class="text-right src linenos ws-unset">
-        </td>
         <td class="linecount pr-2 pl-2 color-fg-muted text-right"></td>
         <td class="src"><span class="w">  </span><span class="k">try</span><span class="w"> </span><span class="p">{</span></td>
       </tr>
       <tr>
         <td class="text-right src linenos"><a class="normal" id="L25" href="#L25">25</a></td>
-        <td class="text-right src linenos ws-unset">
-        </td>
         <td class="linecount excludedLine show_excludedLine pr-2 pl-2 color-fg-muted text-right">&minus;</td>
         <td class="src excludedLine show_excludedLine"><span class="w">    </span><span class="n">Bar</span><span class="w"> </span><span class="n">bar</span><span class="p">;</span><span class="w"> </span><span class="c1">// </span><span class="cs">LCOV_EXCL_LINE</span></td>
       </tr>
       <tr>
         <td class="text-right src linenos"><a class="normal" id="L26" href="#L26">26</a></td>
-        <td class="text-right src linenos ws-unset">
-        </td>
         <td class="linecount excludedLine show_excludedLine pr-2 pl-2 color-fg-muted text-right">&minus;</td>
         <td class="src excludedLine show_excludedLine"><span class="w">  </span><span class="p">}</span><span class="w"> </span><span class="k">catch</span><span class="w"> </span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">exception</span><span class="w"> </span><span class="o">&amp;</span><span class="n">e</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="c1">// </span><span class="cs">LCOV_EXCL_START</span></td>
       </tr>
       <tr>
         <td class="text-right src linenos"><a class="normal" id="L27" href="#L27">27</a></td>
-        <td class="text-right src linenos ws-unset">
-        </td>
         <td class="linecount pr-2 pl-2 color-fg-muted text-right"></td>
         <td class="src"><span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">"caught exception"</span><span class="p">;</span></td>
       </tr>
       <tr>
         <td class="text-right src linenos"><a class="normal" id="L28" href="#L28">28</a></td>
-        <td class="text-right src linenos ws-unset">
-        </td>
         <td class="linecount pr-2 pl-2 color-fg-muted text-right"></td>
         <td class="src"><span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">": "</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">e</span><span class="p">.</span><span class="n">what</span><span class="p">();</span></td>
       </tr>
       <tr>
         <td class="text-right src linenos"><a class="normal" id="L29" href="#L29">29</a></td>
-        <td class="text-right src linenos ws-unset">
-        </td>
         <td class="linecount pr-2 pl-2 color-fg-muted text-right"></td>
         <td class="src"><span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span></td>
       </tr>
       <tr>
         <td class="text-right src linenos"><a class="normal" id="L30" href="#L30">30</a></td>
-        <td class="text-right src linenos ws-unset">
-        </td>
         <td class="linecount pr-2 pl-2 color-fg-muted text-right"></td>
         <td class="src"><span class="w">  </span><span class="p">}</span><span class="w"> </span><span class="c1">// </span><span class="cs">LCOV_EXCL_STOP</span></td>
       </tr>
       <tr>
         <td class="text-right src linenos"><a class="normal" id="L31" href="#L31">31</a></td>
-        <td class="text-right src linenos ws-unset">
-        </td>
         <td class="linecount pr-2 pl-2 color-fg-muted text-right"></td>
         <td class="src"></td>
       </tr>
       <tr>
         <td class="text-right src linenos"><a class="normal" id="L32" href="#L32">32</a></td>
-        <td class="text-right src linenos ws-unset">
-        </td>
         <td class="linecount coveredLine show_coveredLine pr-2 pl-2 color-fg-muted text-right">1</td>
         <td class="src coveredLine show_coveredLine"><span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span></td>
       </tr>
       <tr>
         <td class="text-right src linenos"><a class="normal" id="L33" href="#L33">33</a></td>
-        <td class="text-right src linenos ws-unset">
-        </td>
         <td class="linecount pr-2 pl-2 color-fg-muted text-right"></td>
         <td class="src"><span class="p">}</span><span class="w"> </span><span class="c1">// compiler-generated destruction code - auto-detected and excluded</span></td>
       </tr>
       <tr>
         <td class="text-right src linenos"><a class="normal" id="L34" href="#L34">34</a></td>
-        <td class="text-right src linenos ws-unset">
-        </td>
         <td class="linecount pr-2 pl-2 color-fg-muted text-right"></td>
         <td class="src"></td>
       </tr>
       <tr>
         <td class="text-right src linenos"><a class="normal" id="L35" href="#L35">35</a></td>
-        <td class="text-right src linenos ws-unset">
-        </td>
         <td class="linecount pr-2 pl-2 color-fg-muted text-right"></td>
         <td class="src"><span class="c1">// total: 8/10 branches reported</span></td>
       </tr>
       <tr>
         <td class="text-right src linenos"><a class="normal" id="L36" href="#L36">36</a></td>
-        <td class="text-right src linenos ws-unset">
-        </td>
         <td class="linecount pr-2 pl-2 color-fg-muted text-right"></td>
         <td class="src"></td>
       </tr>
       <tr>
         <td class="text-right src linenos"><a class="normal" id="L37" href="#L37">37</a></td>
-        <td class="text-right src linenos ws-unset">
-        </td>
         <td class="linecount pr-2 pl-2 color-fg-muted text-right"></td>
         <td class="src"></td>
       </tr>

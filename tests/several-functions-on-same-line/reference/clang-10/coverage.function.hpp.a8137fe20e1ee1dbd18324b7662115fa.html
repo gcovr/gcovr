@@ -27,9 +27,9 @@
       <tr>
         <th scope="row">Coverage:</th>
         <td class="legend">
-          <span class="coverage-low">low: &ge; 0%</span>
-          <span class="coverage-medium">medium: &ge; 75.0%</span>
-          <span class="coverage-high">high: &ge; 90.0%</span>
+          <span class="summary-coverage coverage-low">low: &ge; 0%</span>
+          <span class="summary-coverage coverage-medium">medium: &ge; 75.0%</span>
+          <span class="summary-coverage coverage-high">high: &ge; 90.0%</span>
         </td>
       </tr>
     </table>
@@ -176,7 +176,7 @@
         <td class="linebranch">
         </td>
         <td class="linecount coveredLine show_coveredLine">3</td>
-        <td class="src coveredLine show_coveredLine"><span class="w">      </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;Hello from if&quot;</span><span class="p">;</span></td>
+        <td class="src coveredLine show_coveredLine"><span class="w">      </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">"Hello from if"</span><span class="p">;</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="L5" href="#L5">5</a></td>
@@ -197,7 +197,7 @@
         <td class="linebranch">
         </td>
         <td class="linecount coveredLine show_coveredLine">2</td>
-        <td class="src coveredLine show_coveredLine"><span class="w">      </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;Hello from else&quot;</span><span class="p">;</span></td>
+        <td class="src coveredLine show_coveredLine"><span class="w">      </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">"Hello from else"</span><span class="p">;</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="L8" href="#L8">8</a></td>
@@ -211,7 +211,7 @@
         <td class="linebranch">
         </td>
         <td class="linecount coveredLine show_coveredLine">5</td>
-        <td class="src coveredLine show_coveredLine"><span class="w">   </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot; (&quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">TO_STR</span><span class="p">(</span><span class="n">FUNCTION_NAME</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;).&quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span></td>
+        <td class="src coveredLine show_coveredLine"><span class="w">   </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">" ("</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">TO_STR</span><span class="p">(</span><span class="n">FUNCTION_NAME</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">")."</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="L10" href="#L10">10</a></td>
@@ -246,7 +246,7 @@
         <td class="linebranch">
         </td>
         <td class="linecount coveredLine show_coveredLine">2</td>
-        <td class="src coveredLine show_coveredLine"><span class="w">      </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;Hello from ns::&quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">TO_STR</span><span class="p">(</span><span class="n">FUNCTION_NAME</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;.&quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span></td>
+        <td class="src coveredLine show_coveredLine"><span class="w">      </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">"Hello from ns::"</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">TO_STR</span><span class="p">(</span><span class="n">FUNCTION_NAME</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">"."</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span></td>
       </tr>
       <tr class="source-line">
         <td class="lineno"><a id="L15" href="#L15">15</a></td>

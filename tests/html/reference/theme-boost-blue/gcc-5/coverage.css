@@ -1198,7 +1198,7 @@ body.sidebar-resizing .main-content {
 .file-list-header,
 .file-row {
   display: grid;
-  grid-template-columns: minmax(200px, 2fr) minmax(200px, 1fr) 116px 116px;
+  grid-template-columns: minmax(200px, 2fr) minmax(200px, 1fr) 116px;
   gap: 0;
   padding: 0 8px;
 }

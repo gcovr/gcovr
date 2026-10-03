@@ -1,5 +1,5 @@
 TN:GCOVR_report
-SF:/gcovr/tests/exclusion/output/exclude-line-branch-all/bar.cpp
+SF:tests/exclusion/output/exclude-line-branch-all/bar.cpp
 VER:7c2adb8c2d04277ae316f0bc581968cc
 FNF:0
 FNH:0
@@ -9,7 +9,7 @@ DA:19,0,205490e389e7a37a48abc32a5303ab7f
 LH:0
 LF:1
 end_of_record
-SF:/gcovr/tests/exclusion/output/exclude-line-branch-all/foo.cpp
+SF:tests/exclusion/output/exclude-line-branch-all/foo.cpp
 VER:3d3327303c689440297b037f75ff9f29
 FN:2,_Z3fooi
 FNDA:5,_Z3fooi
@@ -30,7 +30,7 @@ DA:22,5,cbb184dd8e05c9709e5dcaedaa0495cf
 LH:8
 LF:10
 end_of_record
-SF:/gcovr/tests/exclusion/output/exclude-line-branch-all/main.cpp
+SF:tests/exclusion/output/exclude-line-branch-all/main.cpp
 VER:5f51924059b39181646c5b2d21604f3b
 FN:10,_ZN3BarC2Ev
 FNDA:1,_ZN3BarC2Ev
