@@ -47,7 +47,9 @@
     <table class="text-mono text-small">
       <tr>
         <th align="right">Line</th>
+        {% if SHOW_BRANCH_COVERAGE %}
         <th align="right">Branch</th>
+        {% endif %}
         {% if SHOW_CONDITION_COVERAGE %}
         <th align="right">Condition</th>
         {% endif %}
@@ -72,6 +74,7 @@
       {%  set line_anchor = "{}L{}".format(line_anchor_prefix, row.lineno) %}
       <tr class="source-line">
         <td class="lineno"><a id="{{ line_anchor }}" href="#{{ line_anchor }}">{{row.lineno}}</a></td>
+        {% if SHOW_BRANCH_COVERAGE %}
         <td class="linebranch">
           {% if row.line_branches %}
           <details class="linebranchDetails">
@@ -100,6 +103,7 @@
           </details>
           {% endif %}
         </td>
+        {% endif %}
         {% if SHOW_CONDITION_COVERAGE %}
         <td class="linecondition">
           {% if row.line_conditions %}

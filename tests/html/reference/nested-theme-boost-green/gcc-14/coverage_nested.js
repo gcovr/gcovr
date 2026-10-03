@@ -1393,19 +1393,22 @@
 
       // Check if container has the column
       var container = fileList.closest('.file-list-container');
+      var hasBranches = !container || !container.classList.contains('no-branches');
       var hasConditions = !container || !container.classList.contains('no-conditions');
       var hasDecision = !container || !container.classList.contains('no-decisions');
       var hasCalls = !container || !container.classList.contains('no-calls');
 
-      var colBr = document.createElement('div');
-      colBr.className = 'col-branches';
-      var brVal = document.createElement('span');
-      var brCov = file.branchesCoverage || '';
-      var brClass = file.branchesClass || '';
-      brVal.className = 'stat-value ' + brClass;
-      brVal.textContent = (brCov && brCov !== '-') ? brCov + '%' : '-';
-      colBr.appendChild(brVal);
-      row.appendChild(colBr);
+      if (hasBranches) {
+        var colBr = document.createElement('div');
+        colBr.className = 'col-branches';
+        var brVal = document.createElement('span');
+        var brCov = file.branchesCoverage || '';
+        var brClass = file.branchesClass || '';
+        brVal.className = 'stat-value ' + brClass;
+        brVal.textContent = (brCov && brCov !== '-') ? brCov + '%' : '-';
+        colBr.appendChild(brVal);
+        row.appendChild(colBr);
+      }
 
       if (hasConditions) {
         var colCond = document.createElement('div');

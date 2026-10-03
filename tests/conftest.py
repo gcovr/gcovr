@@ -1056,11 +1056,11 @@ def gcovr_test_exec(
     request: pytest.FixtureRequest, capsys: pytest.CaptureFixture[str]
 ) -> Generator[GcovrTestExec, None, None]:
     """Test fixture to build an object/executable and run gcovr tool with comparison of files."""
-    function_name = request.node.name
-    parameter = None
+    function_name: str = request.node.name
+    parameter: str | None = None
     if "[" in function_name:
         function_name, parameter = function_name.split("[", maxsplit=1)
-        parameter = parameter[:-1]
+        parameter = None if len(parameter) == 1 else parameter.removesuffix("]")
     test_id_parts = list[str]()
     if function_name != "test":
         test_id_parts.append(function_name[5:].replace("_", "-"))

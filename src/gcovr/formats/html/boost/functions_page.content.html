@@ -45,7 +45,7 @@ window.GCOVR_FUNCTION_DATA = [
 </script>
 <script>
   window.__functionsPageConfig = {
-    showBranches: {{ "true" if info.branches.total > info.branches.excluded else "false" }},
+    showBranches: {{ "true" if SHOW_BRANCH_COVERAGE else "false" }},
     showConditions: {{ "true" if SHOW_CONDITION_COVERAGE else "false" }},
     showDecisions: {{ "true" if SHOW_DECISION else "false" }},
     showCalls: {{ "true" if SHOW_CALLS else "false" }}

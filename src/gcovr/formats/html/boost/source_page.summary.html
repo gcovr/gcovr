@@ -8,7 +8,7 @@
       <span class="stat {{lines.class}}">
         <strong>{{lines.coverage}}%</strong> Lines ({{lines.exec}} / {{lines.total}}{% if lines.excluded %}, {{lines.excluded}} excl{% endif %})
       </span>
-      {% if info.branches.total > info.branches.excluded %}
+      {% if SHOW_BRANCH_COVERAGE %}
       <span class="stat {{branches.class}}">
         <strong>{{branches.coverage}}%</strong> Branches ({{branches.exec}} / {{branches.total}}{% if branches.excluded %}, {{branches.excluded}} excl{% endif %})
       </span>

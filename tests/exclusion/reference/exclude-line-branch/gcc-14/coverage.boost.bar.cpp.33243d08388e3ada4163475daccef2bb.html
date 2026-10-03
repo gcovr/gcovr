@@ -120,6 +120,9 @@
         <strong>100.0%</strong> Lines (0 / 0, 4 excl)
       </span>
       <span class="stat coverage-unknown">
+        <strong>-%</strong> Branches (0 / 0, 2 excl)
+      </span>
+      <span class="stat coverage-unknown">
         <strong>-%</strong> Conditions (0 / 0, 2 excl)
       </span>
       <span class="stat coverage-unknown">
@@ -148,6 +151,7 @@
       </button>
     </div>
     <div class="source-column-filters">
+      <button type="button" class="btn btn-sm col-toggle show-col" data-col="branch" title="Toggle Branch column">Branch</button>
       <button type="button" class="btn btn-sm col-toggle show-col" data-col="condition" title="Toggle Condition column">Condition</button>
       <button type="button" class="btn btn-sm col-toggle show-col" data-col="tla" title="Toggle TLA column">TLA</button>
       <button type="button" class="btn btn-sm col-toggle show-col" data-col="count" title="Toggle Hits column">Hits</button>
@@ -172,6 +176,7 @@
         <span class="source-function-col-name" data-sort="name">Function</span>
         <span class="source-function-col-stat" data-sort="calls">Calls</span>
         <span class="source-function-col-stat" data-sort="lines">Lines</span>
+        <span class="source-function-col-stat col-branches" data-sort="branches">Branches</span>
         <span class="source-function-col-stat" data-sort="blocks">Blocks</span>
       </div>
       <a href="#L14" class="source-function-item fn-excluded"
@@ -182,6 +187,7 @@
         </span>
         <span class="source-function-col-stat excluded">&ndash;</span>
         <span class="source-function-col-stat excluded">&ndash;</span>
+        <span class="source-function-col-stat col-branches excluded">&ndash;</span>
         <span class="source-function-col-stat excluded">&ndash;</span>
       </a>
     </div>
@@ -192,6 +198,7 @@
       <thead>
         <tr>
           <th class="col-lineno">Line</th>
+          <th class="col-branch">Branch</th>
           <th class="col-condition">Condition</th>
           <th class="col-tla">TLA</th>
           <th class="col-count">Hits</th>
@@ -202,6 +209,8 @@
         <tr class="source-line">
           <td class="col-lineno">
             <a id="L1" href="#L1">1</a>
+          </td>
+          <td class="col-branch">
           </td>
           <td class="col-condition">
           </td>
@@ -214,6 +223,8 @@
           <td class="col-lineno">
             <a id="L2" href="#L2">2</a>
           </td>
+          <td class="col-branch">
+          </td>
           <td class="col-condition">
           </td>
           <td class="col-tla"></td>
@@ -224,6 +235,8 @@
         <tr class="source-line">
           <td class="col-lineno">
             <a id="L3" href="#L3">3</a>
+          </td>
+          <td class="col-branch">
           </td>
           <td class="col-condition">
           </td>
@@ -236,6 +249,8 @@
           <td class="col-lineno">
             <a id="L4" href="#L4">4</a>
           </td>
+          <td class="col-branch">
+          </td>
           <td class="col-condition">
           </td>
           <td class="col-tla"></td>
@@ -246,6 +261,8 @@
         <tr class="source-line">
           <td class="col-lineno">
             <a id="L5" href="#L5">5</a>
+          </td>
+          <td class="col-branch">
           </td>
           <td class="col-condition">
           </td>
@@ -258,6 +275,8 @@
           <td class="col-lineno">
             <a id="L6" href="#L6">6</a>
           </td>
+          <td class="col-branch">
+          </td>
           <td class="col-condition">
           </td>
           <td class="col-tla"></td>
@@ -268,6 +287,8 @@
         <tr class="source-line">
           <td class="col-lineno">
             <a id="L7" href="#L7">7</a>
+          </td>
+          <td class="col-branch">
           </td>
           <td class="col-condition">
           </td>
@@ -280,6 +301,8 @@
           <td class="col-lineno">
             <a id="L8" href="#L8">8</a>
           </td>
+          <td class="col-branch">
+          </td>
           <td class="col-condition">
           </td>
           <td class="col-tla"></td>
@@ -290,6 +313,8 @@
         <tr class="source-line">
           <td class="col-lineno">
             <a id="L9" href="#L9">9</a>
+          </td>
+          <td class="col-branch">
           </td>
           <td class="col-condition">
           </td>
@@ -302,6 +327,8 @@
           <td class="col-lineno">
             <a id="L10" href="#L10">10</a>
           </td>
+          <td class="col-branch">
+          </td>
           <td class="col-condition">
           </td>
           <td class="col-tla"></td>
@@ -312,6 +339,8 @@
         <tr class="source-line">
           <td class="col-lineno">
             <a id="L11" href="#L11">11</a>
+          </td>
+          <td class="col-branch">
           </td>
           <td class="col-condition">
           </td>
@@ -324,6 +353,8 @@
           <td class="col-lineno">
             <a id="L12" href="#L12">12</a>
           </td>
+          <td class="col-branch">
+          </td>
           <td class="col-condition">
           </td>
           <td class="col-tla"></td>
@@ -334,6 +365,8 @@
         <tr class="source-line">
           <td class="col-lineno">
             <a id="L13" href="#L13">13</a>
+          </td>
+          <td class="col-branch">
           </td>
           <td class="col-condition">
           </td>
@@ -346,6 +379,8 @@
           <td class="col-lineno">
             <a id="L14" href="#L14">14</a>
           </td>
+          <td class="col-branch">
+          </td>
           <td class="col-condition">
           </td>
           <td class="col-tla"></td>
@@ -356,6 +391,8 @@
         <tr class="source-line excludedLine show_excludedLine">
           <td class="col-lineno">
             <a id="L15" href="#L15">15</a>
+          </td>
+          <td class="col-branch">
           </td>
           <td class="col-condition">
           </td>
@@ -368,6 +405,8 @@
           <td class="col-lineno">
             <a id="L16" href="#L16">16</a>
           </td>
+          <td class="col-branch">
+          </td>
           <td class="col-condition">
           </td>
           <td class="col-tla"></td>
@@ -378,6 +417,8 @@
         <tr class="source-line">
           <td class="col-lineno">
             <a id="L17" href="#L17">17</a>
+          </td>
+          <td class="col-branch">
           </td>
           <td class="col-condition">
           </td>
@@ -390,6 +431,8 @@
           <td class="col-lineno">
             <a id="L18" href="#L18">18</a>
           </td>
+          <td class="col-branch">
+          </td>
           <td class="col-condition">
           </td>
           <td class="col-tla"></td>
@@ -401,6 +444,8 @@
           <td class="col-lineno">
             <a id="L19" href="#L19">19</a>
           </td>
+          <td class="col-branch">
+          </td>
           <td class="col-condition">
           </td>
           <td class="col-tla"></td>
@@ -411,6 +456,8 @@
         <tr class="source-line">
           <td class="col-lineno">
             <a id="L20" href="#L20">20</a>
+          </td>
+          <td class="col-branch">
           </td>
           <td class="col-condition">
           </td>
