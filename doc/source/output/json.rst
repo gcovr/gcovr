@@ -14,13 +14,10 @@ options:
     :start-after: #BEGIN gcovr
     :end-before: #END gcovr
 
-This generates an indented JSON report:
+This generates an pretty indented JSON report for better readability:
 
 .. include:: ../../examples/example_json.json
     :literal:
-
-The :option:`--json-pretty` option generates an indented
-JSON output that is easier to read.
 
 If you just need a summary of the coverage information, similar to the tabulated
 text based output, you can use :option:`--json-summary`
@@ -33,6 +30,10 @@ See the :ref:`json_format` for a description of the file format.
 
 .. versionchanged:: 8.0
    Order of keys changed from alphabetical to logical.
+
+.. versionchanged:: NEXT
+   Order of keys changed changed back to alphabetical because
+   of linter rule where the slots should be sorted.
 
 .. _json_format:
 

@@ -14,7 +14,7 @@ and :option:`--cobertura-pretty` options:
     :start-after: #BEGIN gcovr
     :end-before: #END gcovr
 
-This generates an XML summary of the lines executed:
+This generates an pretty indented XML report for better readability:
 
 .. literalinclude:: ../../examples/example_cobertura.xml
     :language: xml

@@ -61,6 +61,7 @@ class BaseHandler:
         ]:
             option_dict[name] = options.get(name)
         self.options = Options(**option_dict)
+        self.all_options_for_validation = options
 
     def validate_options(self) -> None:
         """Validate options."""

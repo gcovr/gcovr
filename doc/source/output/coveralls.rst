@@ -11,7 +11,7 @@ in a suitable JSON format via the :option:`--coveralls` option::
     gcovr --coveralls coverage.json
 
 The :option:`--coveralls-pretty` option generates
-an indented JSON output that is easier to read.
+an indented JSON report for better readability.
 
 If the given name ends with the suffix ``.gz`` the report is compressed by gzip,
 if it ends with ``.xz`` it is compressed by LZMA.

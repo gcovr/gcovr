@@ -19,6 +19,8 @@
 
 import os
 
+from gcovr.logging import LOGGER
+
 from ...data_model.container import CoverageContainer
 from ...formats.base import BaseHandler
 from ...options import GcovrConfigOption, OutputOrDefault
@@ -116,8 +118,11 @@ class JsonHandler(BaseHandler):
                     "matching a specified pattern. In this case pattern "
                     "must be set in double quotation marks. "
                     "Option can be specified multiple times. "
-                    "When option is used gcov is not run to collect "
-                    "the new coverage data."
+                    "When option is used gcov is not executed to collect "
+                    "the new coverage data. "
+                    "ATTENTION: The option --merge-lines doesn't affect the "
+                    "JSON files and needs to be added when the JSON files are "
+                    "processed to generate the reports."
                 ),
                 action="append",
                 default=[],
@@ -149,6 +154,33 @@ class JsonHandler(BaseHandler):
                 f"but {len(self.options.json_tracefile)} were given."
             )
             raise ValueError(msg)
+
+        if self.options.json_tracefile:
+            for option, key in [
+                ("--exclude-directory", "exclude_directory"),
+                ("--exclude-noncode-lines", "exclude_noncode_lines"),
+                ("--exclude-throw-branches", "exclude_throw_branches"),
+                ("--exclude-unreachable-branches", "exclude_unreachable_branches"),
+                ("--exclude-function-lines", "exclude_function_lines"),
+                ("--exclude-function", "exclude_function"),
+                ("--exclude-lines-by-pattern", "exclude_lines_by_pattern"),
+                ("--exclude-branches-by-pattern", "exclude_branches_by_pattern"),
+                ("--warn-excluded-lines-with-hits", "warn_excluded_lines_with_hits"),
+            ]:
+                if self.all_options_for_validation.get(key):
+                    LOGGER.warning(
+                        "Option %s has no effect when generating reports from tracefiles.",
+                        option,
+                    )
+            for option, key in [
+                ("--include-internal-functions", "exclude_internal_functions"),
+                ("--no-markers", "respect_exclusion_markers"),
+            ]:
+                if not self.all_options_for_validation.get(key):
+                    LOGGER.warning(
+                        "Option %s has no effect when generating reports from tracefiles.",
+                        option,
+                    )
 
     def read_report(self) -> CoverageContainer:
         """Read report."""
