@@ -15,6 +15,7 @@
 #
 # ****************************************************************************
 
+import contextlib
 import os
 import shutil
 
@@ -41,7 +42,7 @@ def build_bazel_example(gcovr_test_exec: "GcovrTestExec") -> dict[str, str]:
     env = os.environ.copy()
     env.update(
         {
-            "USE_BAZEL_VERSION": "7.4.1",
+            "USE_BAZEL_VERSION": "7.7.0",
             "GCOV": gcovr_test_exec.gcov()[0],
         }
     )
@@ -57,7 +58,8 @@ def build_bazel_example(gcovr_test_exec: "GcovrTestExec") -> dict[str, str]:
     # Remove all existing gcda files
     for directory in (gcovr_test_exec.output_dir / "bazel-out").glob("*-fastbuild"):
         for file in directory.rglob("*.gcda"):
-            file.unlink()
+            with contextlib.suppress(OSError):
+                file.unlink()
 
     return env
 
