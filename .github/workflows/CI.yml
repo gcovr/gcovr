@@ -21,7 +21,7 @@ jobs:
 
   # -----------------------------------------------------------------------------------------------
   changelog:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     permissions:
       contents: read
     env:
@@ -75,7 +75,7 @@ jobs:
 
   # -----------------------------------------------------------------------------------------------
   spell-check:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     permissions:
       contents: read
 
@@ -101,7 +101,7 @@ jobs:
 
   # -----------------------------------------------------------------------------------------------
   upload-coverage:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     permissions:
       contents: read
 
@@ -124,7 +124,7 @@ jobs:
   # -----------------------------------------------------------------------------------------------
   build-package:
     needs: [changelog, spell-check]
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     permissions:
       contents: read
     env:
@@ -167,7 +167,7 @@ jobs:
       - name: Set up runner
         uses: "./.github/actions/setup-runner"
         with:
-          os: ubuntu-22.04
+          os: ubuntu-24.04
           python-version: 3.12
 
       - name: Lint files
@@ -201,7 +201,7 @@ jobs:
   # -----------------------------------------------------------------------------------------------
   documentation:
     needs: [build-package]
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     permissions:
       contents: read
     env:
@@ -225,7 +225,7 @@ jobs:
       - name: Set up runner
         uses: "./.github/actions/setup-runner"
         with:
-          os: ubuntu-22.04
+          os: ubuntu-24.04
           python-version: 3.12
 
       - name: Generate documentation
@@ -272,7 +272,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-22.04]
+        os: [ubuntu-24.04]
         gcc: [gcc-11]
         # FIXME: Temporary version pin to avoid PyPy 7.3.21
         python-version: ['3.10', '3.11', '3.12', '3.13', '3.14', 'pypy-3.11-v7.3.20']
@@ -281,7 +281,7 @@ jobs:
 
           # Test additional compilers with Linux.
           # Note that all compiler versions are also handled via Docker.
-          - os: ubuntu-22.04
+          - os: ubuntu-24.04
             gcc: gcc-11
             python-version: '3.14'
             upload-app: true
@@ -296,16 +296,12 @@ jobs:
             upload-app: true
 
           # Test minimum and maximum Python version on Mac OS.
-          - os: macos-14
-            gcc: gcc
-            python-version: '3.10'
-          - os: macos-14
-            gcc: gcc-13
-            python-version: '3.14'
           - os: macos-15
             gcc: gcc
+            python-version: '3.10'
+          - os: macos-26
+            gcc: gcc-15
             python-version: '3.14'
-            upload-app: true
 
 
   # -----------------------------------------------------------------------------------------------
@@ -329,7 +325,7 @@ jobs:
   publish-push-tag:
     needs: [build-package, documentation, host, docker]
     if: ${{ needs.build-package.outputs.publish_run_job == 'true' }}
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     permissions:
       contents: write
     env:
@@ -364,7 +360,7 @@ jobs:
   merge_coverage:
     needs: [host, docker]
     if: ${{ always() }}
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     permissions:
       contents: read
     env:
@@ -380,7 +376,7 @@ jobs:
       - name: Set up runner
         uses: "./.github/actions/setup-runner"
         with:
-          os: ubuntu-22.04
+          os: ubuntu-24.04
           python-version: 3.12
 
       - name: Download artifacts
@@ -405,7 +401,7 @@ jobs:
   publish-github-release:
     needs: [build-package, publish-push-tag]
     if: ${{ needs.build-package.outputs.publish_run_job == 'true' }}
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     permissions:
       contents: write
     env:
@@ -445,7 +441,7 @@ jobs:
   publish-pypi:
     needs: [build-package, documentation, host, docker]
     if: ${{ needs.build-package.outputs.publish_run_job == 'true' }}
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     permissions:
       id-token: write  # IMPORTANT: mandatory for trusted publishing
     environment:  # Environment for trusted publishing
