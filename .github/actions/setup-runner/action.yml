@@ -36,6 +36,9 @@ runs:
 
     # ------------------------------ MacOs ------------------------------
     - if: ${{ startsWith(inputs.os,'macos-') }}
+      run: brew analytics on
+      shell: bash
+    - if: ${{ startsWith(inputs.os,'macos-') }}
       run: HOMEBREW_NO_AUTO_UPDATE=1 brew update
       shell: bash
     - if: ${{ startsWith(inputs.os,'macos-') }}
