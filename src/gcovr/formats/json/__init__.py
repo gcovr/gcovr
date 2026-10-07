@@ -120,7 +120,7 @@ class JsonHandler(BaseHandler):
                     "Option can be specified multiple times. "
                     "When option is used gcov is not executed to collect "
                     "the new coverage data. "
-                    "ATTENTION: The option --merge-lines doesn't affect the "
+                    "WARNING: The option --merge-lines doesn't affect the "
                     "JSON files and needs to be added when the JSON files are "
                     "processed to generate the reports."
                 ),

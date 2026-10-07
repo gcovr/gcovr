@@ -14,7 +14,7 @@ and :option:`--clover-pretty` options:
     :start-after: #BEGIN gcovr
     :end-before: #END gcovr
 
-This generates an pretty indented XML report for better readability:
+This generates a pretty indented XML report for better readability:
 
 .. literalinclude:: ../../examples/example_clover.xml
     :language: xml

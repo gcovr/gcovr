@@ -14,7 +14,7 @@ options:
     :start-after: #BEGIN gcovr
     :end-before: #END gcovr
 
-This generates an pretty indented JSON report for better readability:
+This generates a pretty indented JSON report for better readability:
 
 .. include:: ../../examples/example_json.json
     :literal:
@@ -32,7 +32,7 @@ See the :ref:`json_format` for a description of the file format.
    Order of keys changed from alphabetical to logical.
 
 .. versionchanged:: NEXT
-   Order of keys changed changed back to alphabetical because
+   Order of keys changed back to alphabetical because
    of linter rule where the slots should be sorted.
 
 .. _json_format:
