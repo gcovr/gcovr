@@ -29,9 +29,10 @@ import sys
 import textwrap
 import time
 import zipfile
-from contextlib import ExitStack
+from contextlib import ExitStack, contextmanager
 from pathlib import Path
 from runpy import run_path
+from typing import Generator
 
 import nox
 
@@ -113,7 +114,7 @@ OUTPUT_FORMATS = [
     "txt",
 ]
 
-CI_RUN = "GITHUB_ACTION" in os.environ
+CI_RUN = "GITHUB_ACTIONS" in os.environ
 GCOVR_CHANGELOG_RST = Path(__file__).parent / "CHANGELOG.rst"
 MAX_RETRIES_FOR_JPEG_GENERATION = 20
 
@@ -129,6 +130,16 @@ def get_gcovr_version() -> str:
             "__version__"
         ],
     )
+
+
+@contextmanager
+def ci_log_group(text: str) -> Generator[None, None, None]:
+    """Wrap the output into a logging group."""
+    if CI_RUN:
+        print(f"::group::{text}", file=sys.stderr)  # noqa: T201
+    yield
+    if CI_RUN:
+        print("::endgroup::", file=sys.stderr)  # noqa: T201
 
 
 @nox.session()
@@ -481,21 +492,28 @@ def build_distribution(session: nox.Session) -> None:
 def check_distribution(session: nox.Session) -> None:
     """Check the wheel and do a smoke test, should not be used directly."""
     install_dev_requirements(session, "wheel", "twine")
-    with session.chdir("dist"):
+    with ci_log_group("Check and install"), session.chdir("dist"):
         session.run("twine", "check", "*", external=True)
         session.run("pip", "uninstall", "--yes", "gcovr")
         session.install(str(next(iter(Path().glob("*.whl")))))
-    session.run("python", "-m", "gcovr", "--help", external=True)
-    session.run("gcovr", "--help", external=True)
-    session.log("Run all transformations to check if all the modules are packed")
-    with session.chdir(session.create_tmp()):
-        for output_format in OUTPUT_FORMATS:
+    with ci_log_group("Test help output when used as module"):
+        session.run("python", "-m", "gcovr", "--help", external=True)
+    with ci_log_group("Test help output of entrypoint script"):
+        session.run("gcovr", "--help", external=True)
+    for output_format in OUTPUT_FORMATS:
+        with (
+            ci_log_group(f"Smoke test for {output_format}"),
+            session.chdir(session.create_tmp()),
+        ):
             session.run(
                 "gcovr",
                 f"--{output_format}",
                 f"out.{output_format}",
                 external=True,
-                silent=True,
+                silent=not CI_RUN,
+                env={
+                    "GITHUB_ACTIONS": None,  # To turn of pipeline logging
+                },
             )
 
 
@@ -510,59 +528,66 @@ def get_executable_name() -> Path:
     else:
         platform_suffix = "linux"
     return Path(
-        f"gcovr-{get_gcovr_version()}-{platform_suffix}-{platform.machine().lower()}{suffix}"
-    )
+        f"gcovr-{get_gcovr_version()}-{platform_suffix}-{platform.machine().lower()}{suffix}",
+    ).absolute()
 
 
 @nox.session
 def bundle_app(session: nox.Session) -> None:
     """Bundle a standalone executable."""
-    install_dev_requirements(session, "pyinstaller")
-    # This is needed if the virtual env is reused
-    session.run("pip", "uninstall", "--yes", "gcovr")
-    # Do not install interactive to get the module resolved
-    # with the needed data
-    session.install(".")
-    os.makedirs("build", exist_ok=True)
-    with session.chdir("build"):
-        session.run(
-            "pyinstaller",
-            "--distpath",
-            ".",
-            "--workpath",
-            "./pyinstaller",
-            "--specpath",
-            "./pyinstaller",
-            # Workaround for "UserWarning: pkg_resources is deprecated as an API"
-            "--exclude-module",
-            "pkg_resources",
-            "--onefile",
-            "--collect-all",
-            "gcovr",
-            "-n",
-            str(get_executable_name()),
-            *session.posargs,
-            "../scripts/pyinstaller_entrypoint.py",
-        )
-        session.notify("check_bundled_app")
+    with ci_log_group("Install requirements"):
+        install_dev_requirements(session, "pyinstaller")
+        # This is needed if the virtual env is reused
+        session.run("pip", "uninstall", "--yes", "gcovr")
+        # Do not install interactive to get the module resolved
+        # with the needed data
+        session.install(".")
+    with ci_log_group("Build application"):
+        os.makedirs("build", exist_ok=True)
+        with session.chdir("build"):
+            session.run(
+                "pyinstaller",
+                "--distpath",
+                ".",
+                "--workpath",
+                "./pyinstaller",
+                "--specpath",
+                "./pyinstaller",
+                # Workaround for "UserWarning: pkg_resources is deprecated as an API"
+                "--exclude-module",
+                "pkg_resources",
+                "--onefile",
+                "--collect-all",
+                "gcovr",
+                "-n",
+                get_executable_name().name,
+                *session.posargs,
+                "../scripts/pyinstaller_entrypoint.py",
+            )
+            session.notify("check_bundled_app")
 
 
 @nox.session(python=False)
 def check_bundled_app(session: nox.Session) -> None:
     """Run a smoke test with the bundled app, should not be used directly."""
-    with session.chdir("build"):
-        executable = get_executable_name().absolute()
+    with ci_log_group("Test help output"), session.chdir("build"):
+        executable = get_executable_name()
         session.run(str(executable), "--help", external=True)
-        session.log("Run all transformations to check if all the modules are packed")
-        with session.chdir(session.create_tmp()):
-            for output_format in OUTPUT_FORMATS:
-                session.run(
-                    str(executable),
-                    f"--{output_format}",
-                    f"out.{output_format}",
-                    external=True,
-                    silent=True,
-                )
+    for output_format in OUTPUT_FORMATS:
+        with (
+            ci_log_group(f"Smoke test for {output_format}"),
+            session.chdir(session.create_tmp()),
+        ):
+            session.run(
+                str(executable),
+                f"--{output_format}",
+                f"out.{output_format}",
+                external=True,
+                silent=not CI_RUN,
+                env={
+                    "GITHUB_ACTIONS": None,  # To turn of pipeline logging
+                },
+            )
 
 
 @nox.session()
@@ -886,7 +911,7 @@ def docker_run_compiler(session: nox.Session, cc: str) -> None:
         "-e",
         f"CC={cc}",
         "-e",
-        "GITHUB_ACTION",
+        "GITHUB_ACTIONS",
         "-e",
         "USE_COVERAGE",
         "-e",

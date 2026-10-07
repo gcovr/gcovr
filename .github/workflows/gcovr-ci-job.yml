@@ -12,7 +12,7 @@ on:
       os:
         type: string
         description: "The operating system of the runner"
-        default: 'ubuntu-22.04'  # Default used for container
+        default: 'ubuntu-24.04'  # Default used for container
       gcc:
         type: string
         description: "The GCC version to use"
@@ -40,7 +40,7 @@ defaults:
 
 jobs:
   gcovr-ci-job:
-    runs-on: ${{ inputs.container && 'ubuntu-22.04' || inputs.os }}
+    runs-on: ${{ inputs.container && 'ubuntu-24.04' || inputs.os }}
     permissions:
       contents: read
     env:
@@ -87,10 +87,10 @@ jobs:
             esac
           else
             case "${{ inputs.os }}/${{ inputs.gcc }}/${{ inputs.python-version }}" in
-              ubuntu-22.04/gcc-11/3.14) USE_COVERAGE=true ;;
+              ubuntu-24.04/gcc-11/3.14) USE_COVERAGE=true ;;
               windows-2025/gcc/3.14)    USE_COVERAGE=true ;;
-              macos-14/gcc-13/3.14)     USE_COVERAGE=true ;;
-              macos-15/gcc/3.14)        USE_COVERAGE=true ;;
+              macos-15/gcc/3.10)        USE_COVERAGE=true ;;
+              macos-26/gcc-15/3.14)     USE_COVERAGE=true ;;
               *)                        USE_COVERAGE=false ;;
             esac
           fi
