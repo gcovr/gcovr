@@ -24,7 +24,11 @@ from glob import glob
 
 from ...data_model import version
 from ...data_model.container import CoverageContainer
-from ...data_model.merging import get_merge_mode_from_options
+from ...data_model.merging import (
+    FUNCTION_SEPARATE_MERGE_OPTIONS,
+    FUNCTION_STRICT_MERGE_OPTIONS,
+    get_merge_mode_from_options,
+)
 from ...filter import is_file_excluded
 from ...logging import LOGGER
 from ...options import Options
@@ -64,6 +68,9 @@ def read_report(options: Options) -> CoverageContainer:
             raise ValueError(msg)
 
         merge_options = get_merge_mode_from_options(options)
+        if merge_options.func_opts == FUNCTION_STRICT_MERGE_OPTIONS:
+            LOGGER.debug("Override merge mode for functions for first tracefile.")
+            merge_options.func_opts = FUNCTION_SEPARATE_MERGE_OPTIONS
         for data_source in datafiles:
             activate_trace_logging = not is_file_excluded(
                 "trace",

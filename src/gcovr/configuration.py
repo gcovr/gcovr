@@ -814,9 +814,7 @@ GCOVR_CONFIG_OPTIONS = [
         default="strict",
         help=(
             "The merge mode for functions coverage from different gcov files for same sourcefile. "
-            "Default is '{default!s}'. "
-            "ATTENTION: This option has no effect when generating reports from JSON tracefile, "
-            "except the value 'separate'."
+            "Default is '{default!s}'."
         ),
     ),
     GcovrConfigOption(

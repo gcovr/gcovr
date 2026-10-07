@@ -178,10 +178,20 @@ def test_different_functions(
     gcovr_test_exec.compare_json()
 
     if merge_mode_function == "separate":
-        # Test exitcode for merging JSON with strict mode
+        # If we have only one file it must be readable in strict mode because it's overwritten.
+        gcovr_test_exec.gcovr(
+            "--json-add-tracefile=coverage.json",
+            "--json-pretty",
+            "--json=coverage_roundtrip.json",
+        )
+        gcovr_test_exec.run(
+            "diff", "-U", "1", "coverage.json", "coverage_roundtrip.json"
+        )
+        # For the second file a exception must be raised if the mode is strict
         with pytest.raises(subprocess.CalledProcessError) as exception:
             gcovr_test_exec.gcovr(
                 "--json-add-tracefile=coverage.json",
+                "--json-add-tracefile=coverage_roundtrip.json",
                 "--json-pretty",
                 "--json=coverage.error.json",
             )

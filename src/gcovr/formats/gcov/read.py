@@ -328,10 +328,10 @@ def process_gcov_text_data(
         decision_parser = DecisionParser(filecov, source_lines)
         decision_parser.parse_all_lines()
 
-    merge_mode = get_merge_mode_from_options(options)
+    merge_options = get_merge_mode_from_options(options)
     if activate_trace_logging:
-        LOGGER.trace("Merge coverage data for %s using %s.", fname, merge_mode)
-    covdata.insert_file_coverage(filecov, merge_mode)
+        LOGGER.trace("Merge coverage data for %s using %s.", fname, merge_options)
+    covdata.insert_file_coverage(filecov, merge_options)
 
 
 def guess_source_file_name(

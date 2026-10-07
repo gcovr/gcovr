@@ -46,7 +46,7 @@ FUNCTION_MAX_LINE_MERGE_OPTIONS = MergeFunctionOptions(
     ignore_function_lineno=True,
     merge_function_use_line_max=True,
 )
-SEPARATE_FUNCTION_MERGE_OPTIONS = MergeFunctionOptions(
+FUNCTION_SEPARATE_MERGE_OPTIONS = MergeFunctionOptions(
     ignore_function_lineno=True,
     separate_function=True,
 )
@@ -82,7 +82,7 @@ def get_merge_mode_from_options(
     elif options.merge_mode_functions == "merge-use-line-max":
         merge_opts.func_opts = FUNCTION_MAX_LINE_MERGE_OPTIONS
     elif options.merge_mode_functions == "separate":
-        merge_opts.func_opts = SEPARATE_FUNCTION_MERGE_OPTIONS
+        merge_opts.func_opts = FUNCTION_SEPARATE_MERGE_OPTIONS
     else:
         msg = "Unknown functions merge mode."
         raise AssertionError(msg)
