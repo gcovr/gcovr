@@ -15,7 +15,7 @@
 #
 # ****************************************************************************
 
-"""GCOVR coveralls report."""
+"""GCOVR Coveralls report."""
 
 import os
 from dataclasses import dataclass

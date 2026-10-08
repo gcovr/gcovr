@@ -109,8 +109,8 @@ class LcovHandler(BaseHandler):
     def validate_options(self) -> None:
         """Validate options."""
         if self.options.lcov and self.options.json_compare:
-            msg = "A lcov report is not possible with --json-compare."
-            raise ValueError(msg)
+            msg = "A LCOV report is not possible with --json-compare."
+            raise RuntimeError(msg)
 
         if (
             self.options.lcov_test_name is not None

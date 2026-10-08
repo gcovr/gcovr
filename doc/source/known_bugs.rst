@@ -400,7 +400,7 @@ ignored and there are still ``BRDA`` lines created in the ``LCOV`` report.
 
 .. _fix_1165:
 
-Multiple counters for same line are not merged in coveralls report
+Multiple counters for same line are not merged in Coveralls report
 ------------------------------------------------------------------
 
 .. list-table::
@@ -412,13 +412,13 @@ Multiple counters for same line are not merged in coveralls report
      - :ref:`release_8_5`, :issue:`1165`
 
 Since version 8.4 there can be several coverage elements for same line. This data
-isn't merged in coveralls report. The elements are added as several elements to the
-``coverage`` list in the coveralls report which result in wrong data for the
+isn't merged in Coveralls report. The elements are added as several elements to the
+``coverage`` list in the Coveralls report which result in wrong data for the
 following lines.
 
 .. _fix_1138:
 
-Wrong data used in clover report
+Wrong data used in Clover report
 --------------------------------
 
 .. list-table::

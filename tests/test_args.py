@@ -892,3 +892,83 @@ def test_deprecated_option(
         in message[2]
     )
     assert c.exitcode != 1
+
+
+@pytest.mark.parametrize(
+    ("msg", "option"),
+    [
+        (rf"A {msg} report is not possible with --json-compare.", f"--{msg.lower()}")
+        for msg in [
+            "Clover",
+            "Cobertura",
+            "Coveralls",
+            "CSV",
+            "JaCoCo",
+            "LCOV",
+            "Markdown",
+            "SonarQube",
+        ]
+    ],
+    ids=lambda args: args[1],
+)
+def test_json_compare_not_possible_option(
+    caplog: pytest.LogCaptureFixture, msg: str, option: str
+) -> None:
+    """Test if a report is not possible with --json-compare."""
+    c = log_capture(
+        caplog,
+        [
+            "--json-add-tracefile=coverage_1.json",
+            "--json-add-tracefile=coverage_2.json",
+            "--json-compare",
+            option,
+        ],
+    )
+    message = c.record_tuples[0]
+    assert message[1] == logging.ERROR
+    assert msg == message[2]
+    assert c.exitcode == 1
+
+
+def test_json_compare_with_several_text_metrics(
+    caplog: pytest.LogCaptureFixture,
+) -> None:
+    """Test if a report is not possible with --json-compare."""
+    c = log_capture(
+        caplog,
+        [
+            "--json-add-tracefile=coverage_1.json",
+            "--json-add-tracefile=coverage_2.json",
+            "--json-compare",
+            "--txt-metric=line",
+            "--txt-metric=branch",
+            "--txt",
+        ],
+    )
+    message = c.record_tuples[0]
+    assert message[1] == logging.ERROR
+    assert (
+        message[2]
+        == "A txt report with several metrics is not possible with --json-compare."
+    )
+    assert c.exitcode == 1
+
+
+def test_json_compare_with_several_cobertura_tracefile(
+    caplog: pytest.LogCaptureFixture,
+) -> None:
+    """Test if a report is not possible with --json-compare."""
+    c = log_capture(
+        caplog,
+        [
+            "--json-add-tracefile=coverage_1.json",
+            "--json-add-tracefile=coverage_2.json",
+            "--cobertura-add-tracefile=coverage_1.json",
+            "--json-compare",
+            "--txt",
+        ],
+    )
+    message = c.record_tuples[0]
+    assert message[1] == logging.ERROR
+    assert message[2] == "A Cobertura tracefile is not possible with --json-compare."
+    assert c.exitcode == 1

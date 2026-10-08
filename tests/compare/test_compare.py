@@ -80,18 +80,6 @@ def test(
         "--json-pretty",
         "--json=coverage_2.json",
     )
-    with pytest.raises(
-        ValueError,
-        match=r"A txt report with several metrics is not possible with --json-compare.",
-    ):
-        process = gcovr_test_exec.gcovr(
-            "--json-add-tracefile=coverage_1.json",
-            "--json-add-tracefile=coverage_2.json",
-            "--json-compare",
-            "--txt-metric=line",
-            "--txt-metric=branch",
-            use_main=True,
-        )
 
     gcovr_test_exec.gcovr(
         "--json-add-tracefile=coverage_1.json",

@@ -41,7 +41,7 @@ from .json import JsonHandler
 from .lcov import LcovHandler
 from .llvm import LlvmHandler
 from .markdown import MarkdownHandler
-from .sonarqube import SonarqubeHandler
+from .sonarqube import SonarQubeHandler
 from .txt import TxtHandler
 
 ALL_HANDLERS = list[type[BaseHandler]](
@@ -58,7 +58,7 @@ ALL_HANDLERS = list[type[BaseHandler]](
         CoverallsHandler,
         JaCoCoHandler,
         LcovHandler,
-        SonarqubeHandler,
+        SonarQubeHandler,
     ]
 )
 
@@ -83,16 +83,42 @@ def validate_options(options: Options) -> None:
     for handler in ALL_HANDLERS:
         handler(options).validate_options()
 
+    if options.json_tracefile or options.cobertura_tracefile:
+        for option, key in [
+            ("--exclude-directory", "exclude_directory"),
+            ("--exclude-noncode-lines", "exclude_noncode_lines"),
+            ("--exclude-throw-branches", "exclude_throw_branches"),
+            ("--exclude-unreachable-branches", "exclude_unreachable_branches"),
+            ("--exclude-function-lines", "exclude_function_lines"),
+            ("--exclude-function", "exclude_function"),
+            ("--exclude-lines-by-pattern", "exclude_lines_by_pattern"),
+            ("--exclude-branches-by-pattern", "exclude_branches_by_pattern"),
+            ("--warn-excluded-lines-with-hits", "warn_excluded_lines_with_hits"),
+        ]:
+            if options.get(key):
+                LOGGER.warning(
+                    "Option %s has no effect when generating reports from tracefiles.",
+                    option,
+                )
+        for option, key in [
+            ("--include-internal-functions", "exclude_internal_functions"),
+            ("--no-markers", "respect_exclusion_markers"),
+        ]:
+            if not options.get(key):
+                LOGGER.warning(
+                    "Option %s has no effect when generating reports from tracefiles.",
+                    option,
+                )
+
 
 def read_reports(options: Options) -> CoverageContainer:
     """Read the reports from the given locations."""
     if options.json_tracefile or options.cobertura_tracefile:
         covdata = JsonHandler(options).read_report()
-        if not options.json_compare:
-            covdata.merge(
-                CoberturaHandler(options).read_report(),
-                get_merge_mode_from_options(options),
-            )
+        covdata.merge(
+            CoberturaHandler(options).read_report(),
+            get_merge_mode_from_options(options),
+        )
     elif options.llvm_profdata_cmd:
         covdata = LlvmHandler(options).read_report()
     else:
@@ -297,7 +323,7 @@ def write_reports(covdata: CoverageContainer, options: Options) -> None:
         generators.append(
             (
                 [options.sonarqube],
-                SonarqubeHandler(options).write_report,
+                SonarQubeHandler(options).write_report,
                 lambda: LOGGER.warning(
                     "SonarQube output skipped - "
                     "consider providing an output file with `--sonarqube=OUTPUT`."

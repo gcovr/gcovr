@@ -65,7 +65,7 @@ def read_report(options: Options) -> CoverageContainer:
                 "--json-compare requires exactly two input trace files "
                 f"but {len(datafiles)} were given."
             )
-            raise ValueError(msg)
+            raise RuntimeError(msg)
 
         merge_options = get_merge_mode_from_options(options)
         if merge_options.func_opts == FUNCTION_STRICT_MERGE_OPTIONS:

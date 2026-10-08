@@ -1,7 +1,7 @@
 ---
 
 name: General question
-about: Ask a general question about GCOVR (not gcov or lcov)
+about: Ask a general question about GCOVR (not GCOV or LCOV)
 title: ''
 labels: 'Type: Question'
 assignees: ''

@@ -92,12 +92,12 @@ class CoberturaHandler(BaseHandler):
         """Validate options."""
         if self.options.json_compare:
             if self.options.cobertura:
-                msg = "A cobertura report is not possible with --json-compare."
-                raise ValueError(msg)
+                msg = "A Cobertura report is not possible with --json-compare."
+                raise RuntimeError(msg)
 
             if self.options.cobertura_tracefile:
-                msg = "A cobertura tracefile is not possible with --json-compare."
-                raise ValueError(msg)
+                msg = "A Cobertura tracefile is not possible with --json-compare."
+                raise RuntimeError(msg)
 
     def read_report(self) -> CoverageContainer:
         """Read report."""

@@ -15,7 +15,7 @@
 #
 # ****************************************************************************
 
-"""GCOVR clover report interface."""
+"""GCOVR Clover report interface."""
 
 from ...data_model.container import CoverageContainer
 from ...formats.base import BaseHandler
@@ -84,8 +84,8 @@ class CloverHandler(BaseHandler):
     def validate_options(self) -> None:
         """Validate options."""
         if self.options.clover and self.options.json_compare:
-            msg = "A clover report is not possible with --json-compare."
-            raise ValueError(msg)
+            msg = "A Clover report is not possible with --json-compare."
+            raise RuntimeError(msg)
 
     def write_report(self, covdata: CoverageContainer, output_file: str) -> None:
         """Write report."""

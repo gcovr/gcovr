@@ -15,7 +15,7 @@
 #
 # ****************************************************************************
 
-"""GCOVR markdown report interface."""
+"""GCOVR Markdown report interface."""
 
 from ...data_model.container import CoverageContainer
 from ...formats.base import BaseHandler
@@ -25,12 +25,12 @@ THEMES = (
     "green",
     "blue",
 )
-OPTION_GROUP_NAME = "GCOVR markdown options"
+OPTION_GROUP_NAME = "GCOVR Markdown options"
 OPTION_GROUP = OPTION_GROUP_NAME.casefold().replace(" ", "_")
 
 
 class MarkdownHandler(BaseHandler):
-    """Class to handle markdown format."""
+    """Class to handle Markdown format."""
 
     @classmethod
     def get_option_group(cls) -> dict[str, str]:
@@ -38,7 +38,7 @@ class MarkdownHandler(BaseHandler):
         return {
             "key": OPTION_GROUP,
             "name": OPTION_GROUP_NAME,
-            "description": "Options for GCOVR markdown reports.",
+            "description": "Options for GCOVR Markdown reports.",
         }
 
     @classmethod
@@ -60,7 +60,7 @@ class MarkdownHandler(BaseHandler):
                 ["--markdown"],
                 group=OPTION_GROUP,
                 metavar="OUTPUT",
-                help="Generate a markdown report. OUTPUT is optional and defaults to --output.",
+                help="Generate a Markdown report. OUTPUT is optional and defaults to --output.",
                 nargs="?",
                 type=OutputOrDefault,
                 default=None,
@@ -72,7 +72,7 @@ class MarkdownHandler(BaseHandler):
                 group=OPTION_GROUP,
                 metavar="OUTPUT",
                 help=(
-                    "Generate a markdown summary report. "
+                    "Generate a Markdown summary report. "
                     "OUTPUT is optional and defaults to --output."
                 ),
                 nargs="?",
@@ -113,7 +113,7 @@ class MarkdownHandler(BaseHandler):
                 metavar="INT",
                 help=(
                     "Override the default heading level of the Markdown report. "
-                    "This is useful if the report is embedded in another markdown file. "
+                    "This is useful if the report is embedded in another Markdown file. "
                     "Default is {default!s}."
                 ),
                 default=1,
@@ -135,10 +135,10 @@ class MarkdownHandler(BaseHandler):
         """Validate options."""
         if self.options.markdown and self.options.json_compare:
             msg = "A Markdown report is not possible with --json-compare."
-            raise ValueError(msg)
+            raise RuntimeError(msg)
 
         if self.options.markdown_heading_level < 1:
-            msg = "The markdown heading level must not be less than 0."
+            msg = "The Markdown heading level must not be less than 0."
             raise RuntimeError(msg)
 
     def write_report(self, covdata: CoverageContainer, output_file: str) -> None:

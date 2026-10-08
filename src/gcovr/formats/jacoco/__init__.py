@@ -82,8 +82,8 @@ class JaCoCoHandler(BaseHandler):
     def validate_options(self) -> None:
         """Validate options."""
         if self.options.jacoco and self.options.json_compare:
-            msg = "A jacoco report is not possible with --json-compare."
-            raise ValueError(msg)
+            msg = "A JaCoCo report is not possible with --json-compare."
+            raise RuntimeError(msg)
 
     def write_report(self, covdata: CoverageContainer, output_file: str) -> None:
         """Write report."""

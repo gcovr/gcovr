@@ -228,5 +228,5 @@ class GcovHandler(BaseHandler):
 
         if self.options.json_compare:
             msg = "A gcov is not possible with --json-compare."
-            raise ValueError(msg)
+            raise RuntimeError(msg)
         return read_report(self.options)

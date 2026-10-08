@@ -7,10 +7,10 @@ Frequently Asked Questions
 
 .. _lcov vs gcovr:
 
-What is the difference between lcov and gcovr?
+What is the difference between LCOV and gcovr?
 ----------------------------------------------
 
-Both lcov and gcovr are tools to create coverage reports.
+Both LCOV and gcovr are tools to create coverage reports.
 
 Gcovr was originally created as a simple script
 to provide a convenient command line interface to gcov
@@ -29,13 +29,13 @@ or integrates easier with your existing workflow.
 
 Lcov is a far older project that is part of the Linux Test Project.
 It provides some features that gcovr does not have:
-For example, lcov has explicit support for capturing Linux kernel coverage.
+For example, LCOV has explicit support for capturing Linux kernel coverage.
 Lcov also supports various trace file manipulation functions
 such as merging trace files from different test runs.
-You can learn more at the `lcov website`_ or the `lcov GitHub repository`_.
+You can learn more at the `LCOV website`_ or the `LCOV GitHub repository`_.
 
-.. _lcov website: https://github.com/linux-test-project/lcov
-.. _lcov GitHub repository: https://github.com/linux-test-project/lcov
+.. _LCOV website: https://github.com/linux-test-project/lcov
+.. _LCOV GitHub repository: https://github.com/linux-test-project/lcov
 
 
 .. _exception branches:

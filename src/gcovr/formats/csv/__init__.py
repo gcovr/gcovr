@@ -63,7 +63,7 @@ class CsvHandler(BaseHandler):
         """Validate options."""
         if self.options.csv and self.options.json_compare:
             msg = "A CSV report is not possible with --json-compare."
-            raise ValueError(msg)
+            raise RuntimeError(msg)
 
     def write_report(self, covdata: CoverageContainer, output_file: str) -> None:
         """Write report."""

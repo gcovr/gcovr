@@ -15,7 +15,7 @@
 #
 # ****************************************************************************
 
-"""GCOVR clover report."""
+"""GCOVR Clover report."""
 
 # cspell:ignore coveredelements coveredconditionals coveredmethods
 
