@@ -25,8 +25,8 @@ OPTION_GROUP_NAME = "SonarQube XML options"
 OPTION_GROUP = OPTION_GROUP_NAME.casefold().replace(" ", "_")
 
 
-class SonarqubeHandler(BaseHandler):
-    """Class to handle Sonarqube format."""
+class SonarQubeHandler(BaseHandler):
+    """Class to handle SonarQube format."""
 
     @classmethod
     def get_option_group(cls) -> dict[str, str]:
@@ -54,7 +54,7 @@ class SonarqubeHandler(BaseHandler):
                 group=OPTION_GROUP,
                 metavar="OUTPUT",
                 help=(
-                    "Generate Sonarqube generic coverage report in this file name. "
+                    "Generate SonarQube generic coverage report in this file name. "
                     "OUTPUT is optional and defaults to --output."
                 ),
                 nargs="?",
@@ -66,7 +66,7 @@ class SonarqubeHandler(BaseHandler):
                 "sonarqube_pretty",
                 ["--sonarqube-pretty"],
                 group=OPTION_GROUP,
-                help=("Pretty-print the Sonarqube XML report. Implies --sonarqube."),
+                help=("Pretty-print the SonarQube XML report. Implies --sonarqube."),
                 action="store_true",
             ),
             GcovrConfigOption(
@@ -83,8 +83,8 @@ class SonarqubeHandler(BaseHandler):
     def validate_options(self) -> None:
         """Validate options."""
         if self.options.sonarqube and self.options.json_compare:
-            msg = "A sonarqube report is not possible with --json-compare."
-            raise ValueError(msg)
+            msg = "A SonarQube report is not possible with --json-compare."
+            raise RuntimeError(msg)
 
         if (
             self.options.sonarqube_metric == "decision"

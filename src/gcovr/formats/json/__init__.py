@@ -116,8 +116,11 @@ class JsonHandler(BaseHandler):
                     "matching a specified pattern. In this case pattern "
                     "must be set in double quotation marks. "
                     "Option can be specified multiple times. "
-                    "When option is used gcov is not run to collect "
-                    "the new coverage data."
+                    "When option is used gcov is not executed to collect "
+                    "the new coverage data. "
+                    "WARNING: The option --merge-lines doesn't affect the "
+                    "JSON files and needs to be added when the JSON files are "
+                    "processed to generate the reports."
                 ),
                 action="append",
                 default=[],
@@ -148,7 +151,7 @@ class JsonHandler(BaseHandler):
                 "--json-compare requires exactly two input trace files "
                 f"but {len(self.options.json_tracefile)} were given."
             )
-            raise ValueError(msg)
+            raise RuntimeError(msg)
 
     def read_report(self) -> CoverageContainer:
         """Read report."""

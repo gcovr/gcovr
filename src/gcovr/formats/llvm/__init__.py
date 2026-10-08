@@ -98,7 +98,7 @@ class LlvmHandler(BaseHandler):
         """Validate options."""
         if self.options.llvm_profdata_cmd and self.options.json_compare:
             msg = "A LLVM report is not possible with --json-compare."
-            raise ValueError(msg)
+            raise RuntimeError(msg)
 
     def read_report(self) -> CoverageContainer:
         """Read report."""

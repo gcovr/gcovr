@@ -14,7 +14,7 @@ and :option:`--jacoco-pretty` options:
     :start-after: #BEGIN gcovr
     :end-before: #END gcovr
 
-This generates an XML summary of the lines executed:
+This generates a pretty indented XML report for better readability:
 
 .. literalinclude:: ../../examples/example_jacoco.xml
     :language: xml

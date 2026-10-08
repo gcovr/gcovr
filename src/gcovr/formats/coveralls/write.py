@@ -15,7 +15,7 @@
 #
 # ****************************************************************************
 
-"""GCOVR coveralls report."""
+"""GCOVR Coveralls report."""
 
 import datetime
 import os
@@ -201,7 +201,7 @@ def _make_source_file(filecov: FileCoverage, options: Options) -> dict[str, Any]
     source_file["coverage"] = coverage
     for linecov_collection in filecov.lines(sort=True):
         # Comment lines are not collected in `covdata`, but must
-        # be reported to coveralls (fill missing lines)
+        # be reported to Coveralls (fill missing lines)
         _extend_with_none(coverage, linecov_collection.lineno - 1)
         linecov_collection = linecov_collection.merge_lines()  # noqa: PLW2901
         linecov = next(iter(linecov_collection.linecov()))

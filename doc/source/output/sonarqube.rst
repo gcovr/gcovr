@@ -10,6 +10,9 @@ in a suitable XML format via the :option:`--sonarqube` option::
 
     gcovr --sonarqube coverage.xml
 
+The :option:`--coveralls-pretty` option generates
+an indented JSON report for better readability.
+
 If the given name ends with the suffix ``.gz`` the report is compressed by gzip,
 if it ends with ``.xz`` it is compressed by LZMA.
 

@@ -15,7 +15,7 @@
 #
 # ****************************************************************************
 
-"""Gcovr markdown report."""
+"""Gcovr Markdown report."""
 
 from typing import Any
 
@@ -50,7 +50,7 @@ def templates() -> Environment:
 def write_report(
     covdata: CoverageContainer, output_file: str, options: Options
 ) -> None:
-    """Produce the gcovr report in markdown."""
+    """Produce the gcovr report in Markdown."""
     data = {
         "title": options.markdown_title,
         "heading_level": options.markdown_heading_level,
@@ -79,7 +79,7 @@ def write_report(
 def write_summary_report(
     covdata: CoverageContainer, output_file: str, options: Options
 ) -> None:
-    """Produce the gcovr summary report in markdown."""
+    """Produce the gcovr summary report in Markdown."""
     data = {
         "title": options.markdown_title,
         "heading_level": options.markdown_heading_level,

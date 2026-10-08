@@ -448,7 +448,8 @@ GCOVR_CONFIG_OPTIONS = [
         ["--no-markers"],
         help=(
             "Turn off exclusion markers. Any exclusion markers "
-            "specified in source files will be ignored."
+            "specified in source files will be ignored. "
+            "ATTENTION: This option has no effect when generating reports from JSON tracefile."
         ),
         action="store_false",
     ),
@@ -746,7 +747,8 @@ GCOVR_CONFIG_OPTIONS = [
         help=(
             "Exclude directories that match this regex "
             "while searching raw coverage files. "
-            "Can be specified multiple times."
+            "Can be specified multiple times. "
+            "ATTENTION: This option has no effect when generating reports from JSON tracefile."
         ),
         action="append",
         type=NonEmptyFilterOption,
@@ -822,7 +824,11 @@ GCOVR_CONFIG_OPTIONS = [
         help=(
             "Merge line coverage for same line coming from different functions, "
             "e.g. template instances. The branches, conditions and calls are merged "
-            "accordingly."
+            "accordingly. "
+            "ATTENTION: This option doesn't affect the GCOVR JSON intermediate "
+            "format here still the raw data is reported. If you use a two pass generation "
+            "(1st run: GCOV -> JSON, 2nd run: JSON -> human readable reports), the "
+            "option is only needed in the second run."
         ),
         action="store_true",
     ),
@@ -830,7 +836,10 @@ GCOVR_CONFIG_OPTIONS = [
         "exclude_function_lines",
         ["--exclude-function-lines"],
         group="gcov_options",
-        help="Exclude coverage from lines defining a function.",
+        help=(
+            "Exclude coverage from lines defining a function."
+            "ATTENTION: This option has no effect when generating reports from JSON tracefile."
+        ),
         action="store_true",
     ),
     GcovrConfigOption(
@@ -840,7 +849,8 @@ GCOVR_CONFIG_OPTIONS = [
             "Exclude coverage of functions. If function starts and end "
             "with '/' it is treated as a regular expression. "
             "This option needs at least GCC 14 with a supported version of "
-            "JSON output format."
+            "JSON output format. "
+            "ATTENTION: This option has no effect when generating reports from JSON tracefile."
         ),
         action="append",
         type=str,
@@ -849,7 +859,10 @@ GCOVR_CONFIG_OPTIONS = [
     GcovrConfigOption(
         "exclude_lines_by_pattern",
         ["--exclude-lines-by-pattern"],
-        help="Exclude lines that match this regex. The regex must match the start of the line.",
+        help=(
+            "Exclude lines that match this regex. The regex must match the start of the line."
+            "ATTENTION: This option has no effect when generating reports from JSON tracefile."
+        ),
         action="append",
         type=str,
         default=[],
@@ -857,7 +870,10 @@ GCOVR_CONFIG_OPTIONS = [
     GcovrConfigOption(
         "exclude_branches_by_pattern",
         ["--exclude-branches-by-pattern"],
-        help="Exclude branches that match this regex. The regex must match the start of the line.",
+        help=(
+            "Exclude branches that match this regex. The regex must match the start of the line."
+            "ATTENTION: This option has no effect when generating reports from JSON tracefile."
+        ),
         action="append",
         type=str,
         default=[],
@@ -867,7 +883,9 @@ GCOVR_CONFIG_OPTIONS = [
         ["--exclude-pattern-prefix"],
         help=(
             "Define the regex prefix used in markers / line exclusions "
-            "(i.e ..._EXCL_START, ..._EXCL_START, ..._EXCL_STOP)"
+            "(i.e ..._EXCL_START, ..._EXCL_START, ..._EXCL_STOP). "
+            "ATTENTION: This option has no effect when generating reports from JSON tracefile "
+            "except for the syntax highlighting in the HTML report"
         ),
         type=str,
         default=r"[GL]COVR?",
@@ -875,7 +893,10 @@ GCOVR_CONFIG_OPTIONS = [
     GcovrConfigOption(
         "warn_excluded_lines_with_hits",
         ["--warn-excluded-lines-with-hits"],
-        help="Print a warning if a line excluded by comments has a hit counter != 0.",
+        help=(
+            "Print a warning if a line excluded by comments has a hit counter != 0. "
+            "ATTENTION: This option has no effect when generating reports from JSON tracefile."
+        ),
         action="store_true",
     ),
     GcovrConfigOption(
@@ -884,7 +905,8 @@ GCOVR_CONFIG_OPTIONS = [
         group="gcov_options",
         help=(
             "Include function coverage of compiler internal functions "
-            "(starting with '__' or '_GLOBAL__sub_I_')."
+            "(starting with '__' or '_GLOBAL__sub_I_'). "
+            "ATTENTION: This option has no effect when generating reports from JSON tracefile."
         ),
         action="store_false",
     ),
@@ -894,7 +916,8 @@ GCOVR_CONFIG_OPTIONS = [
         group="gcov_options",
         help=(
             "Remove branch coverage from lines without useful source code "
-            "(often, compiler-generated 'dead' code)."
+            "(often, compiler-generated 'dead' code). "
+            "ATTENTION: This option has no effect when generating reports from JSON tracefile."
         ),
         action="store_true",
     ),
@@ -903,7 +926,10 @@ GCOVR_CONFIG_OPTIONS = [
         ["--exclude-noncode-lines"],
         config="exclude-noncode-lines",
         group="gcov_options",
-        help="Remove coverage from lines which seem to be non-code.",
+        help=(
+            "Remove coverage from lines which seem to be non-code. "
+            "ATTENTION: This option has no effect when generating reports from JSON tracefile."
+        ),
         action="store_true",
         const_negate=False,
     ),
@@ -914,7 +940,8 @@ GCOVR_CONFIG_OPTIONS = [
         help=(
             "For branch coverage, remove branches "
             "that the compiler generates for exception handling. "
-            "This often leads to more 'sensible' coverage reports."
+            "This often leads to more 'sensible' coverage reports. "
+            "ATTENTION: This option has no effect when generating reports from JSON tracefile."
         ),
         action="store_true",
     ),

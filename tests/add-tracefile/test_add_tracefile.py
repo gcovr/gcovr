@@ -51,9 +51,32 @@ def test(gcovr_test_exec: "GcovrTestExec") -> None:
         "--delete-input-files", "--json-pretty", "--json", "coverage_bar.json"
     )
 
-    gcovr_test_exec.gcovr(
+    options_with_no_effect = [
+        "--exclude-directory",
+        ".*",
+        "--exclude-noncode-lines",
+        "--exclude-throw-branches",
+        "--exclude-unreachable-branches",
+        "--exclude-function-lines",
+        "--exclude-function",
+        "xxx",
+        "--exclude-lines-by-pattern",
+        ".*",
+        "--exclude-branches-by-pattern",
+        ".*",
+        "--warn-excluded-lines-with-hits",
+        "--include-internal-functions",
+        "--no-markers",
+    ]
+    process = gcovr_test_exec.gcovr(
         "--json-add-tracefile=coverage_*.json",
+        *options_with_no_effect,
         "--json-pretty",
         "--json=coverage.json",
     )
+    for option in [s for s in options_with_no_effect if s.startswith("--")]:
+        assert (
+            f"Option {option} has no effect when generating reports from tracefiles."
+            in process.stderr
+        )
     gcovr_test_exec.compare_json()

@@ -15,7 +15,7 @@
 #
 # ****************************************************************************
 
-"""GCOVR coveralls report interface."""
+"""GCOVR Coveralls report interface."""
 
 from ...data_model.container import CoverageContainer
 from ...formats.base import BaseHandler
@@ -64,7 +64,7 @@ class CoverallsHandler(BaseHandler):
                 "coveralls_pretty",
                 ["--coveralls-pretty"],
                 group=OPTION_GROUP,
-                help=("Pretty-print the coveralls report. Implies --coveralls."),
+                help=("Pretty-print the Coveralls report. Implies --coveralls."),
                 action="store_true",
             ),
         ]
@@ -72,8 +72,8 @@ class CoverallsHandler(BaseHandler):
     def validate_options(self) -> None:
         """Validate options."""
         if self.options.coveralls and self.options.json_compare:
-            msg = "A coveralls report is not possible with --json-compare."
-            raise ValueError(msg)
+            msg = "A Coveralls report is not possible with --json-compare."
+            raise RuntimeError(msg)
 
     def write_report(self, covdata: CoverageContainer, output_file: str) -> None:
         """Write report."""
