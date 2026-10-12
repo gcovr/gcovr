@@ -226,10 +226,14 @@ def main(args: list[str] | None = None) -> int:  # pylint: disable=too-many-retu
         parser = create_argument_parser()
         cli_options = parser.parse_args(args=args)
     except SystemExit as e:
-        if e.code != 0:
-            msg = "Exitcode must be 0."
-            raise SanityCheckError(msg) from e
-        return EXIT_SUCCESS
+        if e.code == 0:
+            return EXIT_SUCCESS
+        # Older versions of ArgumentParser exit instead of raising an error.
+        # See https://github.com/python/cpython/issues/121018
+        if e.code == 2:  # noqa: PLR2004
+            return EXIT_CMDLINE_ERROR
+        msg = "Exitcode must be 0 or 2."
+        raise SanityCheckError(msg) from e
     except ArgumentError as e:
         sys.stderr.write(f"gcovr: error: {e}\n")
         return EXIT_CMDLINE_ERROR

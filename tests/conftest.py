@@ -18,6 +18,7 @@
 # cspell:ignore addoption
 import difflib
 import fnmatch
+import logging
 import os
 import platform
 import re
@@ -27,8 +28,8 @@ import subprocess  # nosec: B404
 import zipfile
 from contextlib import contextmanager
 from pathlib import Path
-from sys import stderr, stdout
-from typing import Callable, Generator, NoReturn
+from sys import stderr
+from typing import Any, Callable, Generator, Literal, NoReturn, TextIO
 from unittest import mock
 
 import pytest
@@ -113,8 +114,7 @@ elif matches := re.search(
         f"clang-{version}" for version in range(10, CC_VERSION + 1)
     ]
 else:
-    msg = f"Unable to get compiler version from:\n{_CC_VERSION_OUTPUT}"
-    raise AssertionError(msg)
+    raise AssertionError(f"Unable to get compiler version from:\n{_CC_VERSION_OUTPUT}")  # noqa: EM102, TRY003
 
 USE_GCC_JSON_INTERMEDIATE_FORMAT = (
     IS_GCC and f"JSON format version: {GCOV_JSON_VERSION}" in _GCOV_VERSION_OUTPUT
@@ -210,9 +210,9 @@ def pytest_addoption(parser: pytest.Parser) -> None:  # pragma: no cover
 
 
 @contextmanager
-def chdir(directory: Path) -> Generator[None, None, None]:
+def _chdir(directory: Path) -> Generator[None, None, None]:
     """Context manager for changing the working directory."""
-    current_dir = os.getcwd()
+    current_dir = Path(os.getcwd())
     os.chdir(directory)
     try:
         yield
@@ -220,21 +220,11 @@ def chdir(directory: Path) -> Generator[None, None, None]:
         os.chdir(current_dir)
 
 
-@contextmanager
-def log_command(
-    capsys: pytest.CaptureFixture[str],
-    cwd: Path,
-    cmd: list[str],
-) -> Generator[None, None, None]:
-    """Context manager to log the start and end of a command to stderr."""
-    try:
-        with capsys.disabled():
-            cmd_quoted = shlex.join(cmd)
-            print(f"\nRunning in {cwd}: {cmd_quoted}", file=stderr)  # noqa: T201
-        yield
-    finally:
-        with capsys.disabled():
-            print("-------------- done --------------\n", file=stderr)  # noqa: T201
+def _get_subprocess_cmd(cwd: Path, *args: Path | str) -> tuple[str, ...]:
+    """Get the subprocess command from the given arguments."""
+    if not IS_WINDOWS or not str(args[0]).startswith("./"):
+        return tuple(str(arg) for arg in args)
+    return (str(cwd / args[0]), *(str(arg) for arg in args[1:]))
 
 
 @contextmanager
@@ -317,12 +307,13 @@ class GcovrTestCompare:
                         )
         self.reference_files = sorted(reference_files)
         if reference_files:
-            with self.capsys.disabled():
-                files = "\n  - ".join(str(p) for p in reference_files)
-                print(  # noqa: T201
-                    f"Expect following file(s) to be compared:\n  - {files}",
-                    file=stderr,
-                )
+            files = "\n  - ".join(str(p) for p in reference_files)
+            self.print(f"Expect following file(s) to be compared:\n  - {files}")
+
+    def print(self, msg: str, *, file: TextIO | Any = stderr) -> None:
+        """Print a message to file."""
+        with self.capsys.disabled():
+            print(msg, file=file)
 
     def reference_dirs(self) -> Generator[Path, None, None]:
         """Yield all reference directories."""
@@ -626,7 +617,7 @@ class GcovrTestCompare:
             raise AssertionError(message)
 
 
-class GcovrTestExec:
+class GcovrExecFixture:
     """Builder to compile the test executable."""
 
     def __init__(
@@ -636,6 +627,7 @@ class GcovrTestExec:
         test_name: str | None,
         test_id: str,
         capsys: pytest.CaptureFixture[str],
+        caplog: pytest.LogCaptureFixture,
         markers: list[pytest.Mark],
         compare: GcovrTestCompare,
     ) -> None:
@@ -644,6 +636,11 @@ class GcovrTestExec:
         self.test_name = test_name
         self.test_id = test_id
         self.capsys = capsys
+        self.caplog = caplog
+        self.out = ""
+        self.err = ""
+        self.__exitcode = 0
+        self.__record_tuples = list[tuple[str, int, str]]()
         self.markers = markers
         self.compare = compare
         self.use_llvm_profdata = False
@@ -703,11 +700,16 @@ class GcovrTestExec:
         if source is None:
             source = Path.cwd() / "source"
             if (source / self.test_id).exists():
+                self.print(f"Copy files from test id {self.test_id}...")
                 source = source / self.test_id
             elif self.test_name is not None and (source / self.test_name).exists():
+                self.print(f"Copy files from test name {self.test_name}...")
                 source = source / self.test_name
-            if not source.exists():
+            elif not source.exists():
+                self.print(f"Skip file copy because {source} does not exist.")
                 return
+            else:
+                self.print(f"Copy files from source {source}...")
 
             if source.is_file():
                 source = Path(
@@ -715,19 +717,24 @@ class GcovrTestExec:
                     / source.read_text(encoding="utf-8").splitlines()[0]
                     / "source"
                 )
+            self.print(f"   using {source}")
+        else:
+            self.print(f"Copy given source {source}...")
 
         if not source.exists():
             msg = f"Source data {source.absolute()} does not exist."
             raise ValueError(msg)
         if source.is_file():
+            self.print(f"   {source}")
             shutil.copy(source, self.output_dir)
         else:
             for entry in source.glob("*"):
-                print(f"Copying {entry} to {self.output_dir}", file=stderr)  # noqa: T201
+                self.print(f"   {entry}")
                 if entry.is_dir():
                     shutil.copytree(entry, self.output_dir / entry.name)
                 else:
                     shutil.copy(entry, self.output_dir)
+        self.print("done.")
 
     def skip(self, message: str) -> NoReturn:
         """Skip the current test."""
@@ -752,76 +759,108 @@ class GcovrTestExec:
 
         return env
 
-    @staticmethod
-    def __get_subprocess_cmd(cwd: Path, args: list[str]) -> list[str]:
-        """Get the subprocess command from the given arguments."""
-        if not IS_WINDOWS or not args[0].startswith("./"):
-            return args
-        return [str(cwd / args[0]), *args[1:]]
+    def print(self, msg: str, *, file: TextIO | Any = stderr) -> None:
+        """Print a message to file."""
+        with self.capsys.disabled():
+            print(msg, file=file)
+
+    @contextmanager
+    def log_command(
+        self, cwd: Path, args: list[Path | str]
+    ) -> Generator[None, None, None]:
+        """Context manager to log the start and end of a command to stderr."""
+        try:
+            cmd_quoted = shlex.join([str(arg) for arg in args])
+            self.print(f"\nRunning in {cwd}: {cmd_quoted}")
+            yield
+        finally:
+            self.print(
+                f"Exitcode {self.__exitcode}\nSTDOUT >>>{self.out}<<<\nSTDERR >>>{self.err}<<<"
+            )
 
     def run(
         self,
-        *args: str | Path,
+        cmd: Callable[[list[str] | None], int] | Path | str,
+        *args: Path | str,
         cwd: Path | None = None,
         env: dict[str, str] | None = None,
-    ) -> subprocess.CompletedProcess[str]:
+        level: int = logging.WARNING,
+        exitcode_ok: int = 0,
+    ) -> None:
         """Run the given arguments."""
-        cmd = [str(arg) for arg in args]
         if cwd is None:
             cwd = self.output_dir
         elif not cwd.is_absolute():
             cwd = self.output_dir / cwd
-        with log_command(self.capsys, cwd, cmd):
-            process = subprocess.run(  # nosec: B603  # noqa: S603
-                self.__get_subprocess_cmd(cwd, cmd),
-                capture_output=True,
-                encoding="utf-8",
-                env=self.__get_env(env),
-                cwd=str(cwd),
-                check=False,
-            )
-            with self.capsys.disabled():
-                if process.stdout:
-                    print(process.stdout, file=stdout)  # noqa: T201
-                if process.stderr:
-                    print(process.stderr, file=stderr)  # noqa: T201
-            process.check_returncode()
 
-        return process
+        self.__exitcode = -1
+
+        with (
+            _chdir(cwd),
+            self.log_command(cwd, [str(cmd), *args]),
+            self.caplog.at_level(level, "gcovr"),
+        ):
+            self.caplog.clear()
+            self.__record_tuples.clear()
+
+            if isinstance(cmd, (Path, str)):
+                process = subprocess.run(  # nosec: B603  # noqa: S603
+                    _get_subprocess_cmd(cwd, cmd, *args),
+                    capture_output=True,
+                    encoding="utf-8",
+                    env=self.__get_env(env),
+                    check=False,
+                )
+                self.__exitcode = process.returncode
+                self.out = process.stdout
+                self.err = process.stderr
+            else:
+                with mock.patch.dict(
+                    "os.environ",
+                    self.__get_env(env),
+                    clear=True,
+                ):
+                    self.__exitcode = cmd([str(arg) for arg in args])
+                self.__record_tuples.extend(self.caplog.record_tuples)
+                self.out, self.err = self.capsys.readouterr()
+            assert self.__exitcode == exitcode_ok, f"Exitcode is {exitcode_ok}."
 
     def run_parallel_from_directories(
         self,
         *args: str,
-        env: dict[str, str] | None = None,
         cwd: list[Path],
+        env: dict[str, str] | None = None,
+        level: int = logging.WARNING,
     ) -> None:
         """Run the given arguments."""
         processes = list[subprocess.Popen[str]]()
-        try:
-            for index, current_cwd in enumerate(cwd, start=1):
-                with self.capsys.disabled():
-                    print(  # noqa: T201
+        with (
+            self.caplog.at_level(level, "gcovr"),
+        ):
+            self.caplog.clear()
+            self.__record_tuples.clear()
+            try:
+                for index, current_cwd in enumerate(cwd, start=1):
+                    self.print(
                         f"\n[{index}] Starting in {current_cwd.relative_to(Path.cwd())}: {' '.join(args)}",
-                        file=stderr,
                     )
-                processes.append(
-                    subprocess.Popen(  # nosec: B603  # noqa: S603
-                        self.__get_subprocess_cmd(current_cwd, list(args)),
-                        encoding="utf-8",
-                        env=self.__get_env(env),
-                        cwd=str(current_cwd),
+                    processes.append(
+                        subprocess.Popen(  # nosec: B603  # noqa: S603
+                            _get_subprocess_cmd(current_cwd, *args),
+                            encoding="utf-8",
+                            env=self.__get_env(env),
+                            cwd=str(current_cwd),
+                        )
                     )
+            finally:
+                for index, process in enumerate(processes, start=1):
+                    process.wait()
+                    self.print(f"\n[{index}] done with exitcode {process.returncode}")
+
+            if any(process.returncode != 0 for process in processes):
+                raise subprocess.CalledProcessError(
+                    1, ["Not all processes are successful"]
                 )
-        finally:
-            for index, process in enumerate(processes, start=1):
-                process.wait()
-                with self.capsys.disabled():
-                    print(  # noqa: T201
-                        f"\n[{index}] done with exitcode {process.returncode}",
-                        file=stderr,
-                    )
-        if any(process.returncode != 0 for process in processes):
-            raise subprocess.CalledProcessError(1, ["Not all processes are successful"])
 
     def cc(
         self,
@@ -868,7 +907,7 @@ class GcovrTestExec:
         target = str(Path(source).with_suffix(".o")) if target is None else target
         if options is None:
             options = []
-        self.cc(*options, "-c", source, "-o", target, cwd=cwd, launcher=launcher)
+        self.cc("-c", "-o", *options, target, source, cwd=cwd, launcher=launcher)
         return target
 
     def cxx_compile(
@@ -884,58 +923,104 @@ class GcovrTestExec:
         target = str(Path(source).with_suffix(".o")) if target is None else target
         if options is None:
             options = []
-        self.cxx(*options, "-c", source, "-o", target, cwd=cwd, launcher=launcher)
+        self.cxx("-c", "-o", target, *options, source, cwd=cwd, launcher=launcher)
         return target
 
     def cc_link(
         self,
         executable: str | Path,
-        *args: str | Path,
+        *options: str | Path,
         cwd: Path | None = None,
         launcher: str | None = None,
     ) -> None:
         """Link the given objects and return the full path of the executable."""
-        self.cc(*args, "-o", executable, cwd=cwd, launcher=launcher)
+        self.cc("-o", executable, *options, cwd=cwd, launcher=launcher)
 
     def cxx_link(
         self,
         executable: str,
-        *args: str | Path,
+        *options: str | Path,
         cwd: Path | None = None,
         launcher: str | None = None,
     ) -> None:
         """Link the given objects and return the full path of the executable."""
-        self.cxx(*args, "-o", executable, cwd=cwd, launcher=launcher)
+        self.cxx("-o", executable, *options, cwd=cwd, launcher=launcher)
 
     def gcovr(
         self,
         *args: str | Path,
         cwd: Path | None = None,
         env: dict[str, str] | None = None,
-        use_main: bool = False,
-    ) -> subprocess.CompletedProcess[str]:
+        use_main: bool = True,
+        level: int = logging.WARNING,
+        exitcode_ok: int = 0,
+    ) -> None:
         """Run GCOVR with the given arguments."""
-        if use_main:
-            cwd = cwd or self.output_dir
-            with chdir(cwd), mock.patch.dict("os.environ", env or {}, clear=True):
-                cmd = ["--gcov-executable", shlex.join(str(e) for e in GCOV)] + [
-                    str(arg) for arg in args
-                ]
-                with log_command(self.capsys, cwd, ["gcovr-main", *cmd]):
-                    returncode = gcovr_main(cmd)
-                    out, err = self.capsys.readouterr()
-                    with self.capsys.disabled():
-                        print(out, file=stdout)  # noqa: T201
-                        print(err, file=stderr)  # noqa: T201
-                return subprocess.CompletedProcess(args, returncode, out, err)
-        else:
-            return self.run("gcovr", *args, cwd=cwd, env=env)
+        self.run(
+            gcovr_main if use_main else "gcovr",
+            "--gcov-executable",
+            shlex.join(str(e) for e in GCOV),
+            *[str(arg) for arg in args],
+            cwd=cwd,
+            env=env,
+            level=level,
+            exitcode_ok=exitcode_ok,
+        )
 
     def __check_and_update_marker(self, required_marker: str) -> None:
         if not any(m.name == required_marker for m in self.markers):
             msg = f"Marker '{required_marker}' not found in test markers."
             raise RuntimeError(msg)
         self.markers = [m for m in self.markers if m.name != required_marker]
+
+    def check_log(
+        self,
+        *expected_records: tuple[int, str],
+        expected_only: bool = True,
+        compare: Literal["startswith", "contains"] | None = None,
+    ) -> None:
+        """Ensure that the given log messages are found."""
+        if compare == "startswith":
+
+            def compare_function(_got: str, _expected: str) -> tuple[bool, str]:
+                return (_got.startswith(_expected), f"Message starts with {_expected}")
+
+        elif compare == "contains":
+
+            def compare_function(_got: str, _expected: str) -> tuple[bool, str]:
+                return (_expected in _got, f"Message contains {_expected}")
+
+        else:
+
+            def compare_function(_got: str, _expected: str) -> tuple[bool, str]:
+                return (False, "Undefined compare function.")
+
+        if expected_only:
+            if compare:
+                assert len(expected_records) == len(self.__record_tuples)
+                for index, expected_record, record in zip(
+                    range(len(expected_records)),
+                    expected_records,
+                    self.__record_tuples,
+                    strict=True,
+                ):
+                    assert expected_record[0] == record[1], (
+                        f"Record type for index {index}"
+                    )
+                    result, msg = compare_function(record[2], expected_record[1])
+                    assert result, msg
+            else:
+                assert expected_records == tuple(r[1:] for r in self.__record_tuples)
+        else:
+            for expected_record in expected_records:
+                if compare:
+                    assert any(
+                        expected_record[0] == r[1]
+                        and compare_function(r[2], expected_record[1])[0]
+                        for r in self.__record_tuples
+                    )
+                else:
+                    assert any(expected_record == r[1:] for r in self.__record_tuples)
 
     # Compare methods for our own formats
     def compare_csv(self) -> None:
@@ -1052,9 +1137,11 @@ class GcovrTestExec:
 
 
 @pytest.fixture
-def gcovr_test_exec(
-    request: pytest.FixtureRequest, capsys: pytest.CaptureFixture[str]
-) -> Generator[GcovrTestExec, None, None]:
+def gcovr_exec(
+    request: pytest.FixtureRequest,
+    capsys: pytest.CaptureFixture[str],
+    caplog: pytest.LogCaptureFixture,
+) -> Generator[GcovrExecFixture, None, None]:
     """Test fixture to build an object/executable and run gcovr tool with comparison of files."""
     function_name: str = request.node.name
     parameter: str | None = None
@@ -1068,14 +1155,15 @@ def gcovr_test_exec(
         test_id_parts.append(parameter.replace("_", "-"))
     test_id = "-".join(test_id_parts)
     with (
-        chdir(request.path.parent) as _test_dir,
+        _chdir(request.path.parent) as _test_dir,
         create_output(test_id, request) as output_dir,
     ):
-        test_exec = GcovrTestExec(
+        test_exec = GcovrExecFixture(
             output_dir=output_dir,
             test_name=test_id_parts[0] if test_id_parts else None,
             test_id=test_id,
             capsys=capsys,
+            caplog=caplog,
             markers=[
                 m
                 for m in request.node.iter_markers()
@@ -1085,9 +1173,11 @@ def gcovr_test_exec(
                 output_dir=output_dir,
                 test_id=test_id,
                 capsys=capsys,
-                generate_reference=request.config.getoption("generate_reference"),
-                update_reference=request.config.getoption("update_reference"),
-                archive_differences=request.config.getoption("archive_differences"),
+                generate_reference=bool(request.config.getoption("generate_reference")),
+                update_reference=bool(request.config.getoption("update_reference")),
+                archive_differences=bool(
+                    request.config.getoption("archive_differences")
+                ),
             ),
         )
         test_exec.copy_source()

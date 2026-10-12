@@ -22,7 +22,7 @@ from tests.conftest import (
     IS_DARWIN,
     IS_GCC,
     IS_LINUX,
-    GcovrTestExec,
+    GcovrExecFixture,
 )
 
 SKIP_TEST = not IS_LINUX and not (IS_DARWIN and not IS_GCC and CC_VERSION == 17)  # noqa: PLR2004
@@ -33,22 +33,22 @@ SKIP_TEST = not IS_LINUX and not (IS_DARWIN and not IS_GCC and CC_VERSION == 17)
     reason="Format is independent of OS and we do not want to have separate data for Windows and Darwin.",
 )
 @pytest.mark.txt
-def test_summary(gcovr_test_exec: "GcovrTestExec") -> None:
+def test_summary(gcovr_exec: "GcovrExecFixture") -> None:
     """Test of text summary."""
-    gcovr_test_exec.cxx_link(
+    gcovr_exec.cxx_link(
         "testcase",
         "main.cpp",
     )
 
-    gcovr_test_exec.run("./testcase")
-    process = gcovr_test_exec.gcovr(
+    gcovr_exec.run("./testcase")
+    gcovr_exec.gcovr(
         "--txt-summary",
         "--txt=coverage-output.txt",
     )
-    (gcovr_test_exec.output_dir / "coverage_summary.txt").write_text(
-        process.stdout, encoding="utf-8"
+    (gcovr_exec.output_dir / "coverage_summary.txt").write_text(
+        gcovr_exec.out, encoding="utf-8"
     )
-    gcovr_test_exec.compare_txt()
+    gcovr_exec.compare_txt()
 
 
 @pytest.mark.skipif(
@@ -56,24 +56,24 @@ def test_summary(gcovr_test_exec: "GcovrTestExec") -> None:
     reason="Format is independent of OS and we do not want to have separate data for Windows and Darwin.",
 )
 @pytest.mark.txt
-def test_summary_full(gcovr_test_exec: "GcovrTestExec") -> None:
+def test_summary_full(gcovr_exec: "GcovrExecFixture") -> None:
     """Test of text summary."""
-    gcovr_test_exec.cxx_link(
+    gcovr_exec.cxx_link(
         "testcase",
         "main.cpp",
     )
 
-    gcovr_test_exec.run("./testcase")
-    process = gcovr_test_exec.gcovr(
+    gcovr_exec.run("./testcase")
+    gcovr_exec.gcovr(
         "--txt-summary",
         "--calls",
         "--decision",
         "--txt=coverage-output.txt",
     )
-    (gcovr_test_exec.output_dir / "coverage_summary.txt").write_text(
-        process.stdout, encoding="utf-8"
+    (gcovr_exec.output_dir / "coverage_summary.txt").write_text(
+        gcovr_exec.out, encoding="utf-8"
     )
-    gcovr_test_exec.compare_txt()
+    gcovr_exec.compare_txt()
 
 
 @pytest.mark.skipif(
@@ -81,16 +81,16 @@ def test_summary_full(gcovr_test_exec: "GcovrTestExec") -> None:
     reason="Format is independent of OS and we do not want to have separate data for Windows and Darwin.",
 )
 @pytest.mark.txt
-def test_default(gcovr_test_exec: "GcovrTestExec") -> None:
+def test_default(gcovr_exec: "GcovrExecFixture") -> None:
     """Test text output coverage."""
-    gcovr_test_exec.cxx_link(
+    gcovr_exec.cxx_link(
         "testcase",
         "main.cpp",
     )
 
-    gcovr_test_exec.run("./testcase")
-    gcovr_test_exec.gcovr("--txt=coverage.txt")
-    gcovr_test_exec.compare_txt()
+    gcovr_exec.run("./testcase")
+    gcovr_exec.gcovr("--txt=coverage.txt")
+    gcovr_exec.compare_txt()
 
 
 @pytest.mark.skipif(
@@ -98,18 +98,18 @@ def test_default(gcovr_test_exec: "GcovrTestExec") -> None:
     reason="Format is independent of OS and we do not want to have separate data for Windows and Darwin.",
 )
 @pytest.mark.txt
-def test_branches(gcovr_test_exec: "GcovrTestExec") -> None:
+def test_branches(gcovr_exec: "GcovrExecFixture") -> None:
     """Test branch metric in text output."""
-    gcovr_test_exec.cxx_link(
+    gcovr_exec.cxx_link(
         "testcase",
         "main.cpp",
     )
-    gcovr_test_exec.run("./testcase")
-    gcovr_test_exec.gcovr(
+    gcovr_exec.run("./testcase")
+    gcovr_exec.gcovr(
         "--txt-metric=branch",
         "--txt=coverage.txt",
     )
-    gcovr_test_exec.compare_txt()
+    gcovr_exec.compare_txt()
 
 
 @pytest.mark.skipif(
@@ -117,18 +117,18 @@ def test_branches(gcovr_test_exec: "GcovrTestExec") -> None:
     reason="Format is independent of OS and we do not want to have separate data for Windows and Darwin.",
 )
 @pytest.mark.txt
-def test_report_covered(gcovr_test_exec: "GcovrTestExec") -> None:
+def test_report_covered(gcovr_exec: "GcovrExecFixture") -> None:
     """Test covered lines in text output."""
-    gcovr_test_exec.cxx_link(
+    gcovr_exec.cxx_link(
         "testcase",
         "main.cpp",
     )
-    gcovr_test_exec.run("./testcase")
-    gcovr_test_exec.gcovr(
+    gcovr_exec.run("./testcase")
+    gcovr_exec.gcovr(
         "--txt-report-covered",
         "--txt=coverage.txt",
     )
-    gcovr_test_exec.compare_txt()
+    gcovr_exec.compare_txt()
 
 
 @pytest.mark.skipif(
@@ -136,14 +136,14 @@ def test_report_covered(gcovr_test_exec: "GcovrTestExec") -> None:
     reason="Format is independent of OS and we do not want to have separate data for Windows and Darwin.",
 )
 @pytest.mark.txt
-def test_report_covered_branches(gcovr_test_exec: "GcovrTestExec") -> None:
+def test_report_covered_branches(gcovr_exec: "GcovrExecFixture") -> None:
     """Test branch metric with covered report in text output."""
-    gcovr_test_exec.cxx_link("testcase", "main.cpp")
+    gcovr_exec.cxx_link("testcase", "main.cpp")
 
-    gcovr_test_exec.run("./testcase")
-    gcovr_test_exec.gcovr(
+    gcovr_exec.run("./testcase")
+    gcovr_exec.gcovr(
         "--txt-metric=branch",
         "--txt-report-covered",
         "--txt=coverage.txt",
     )
-    gcovr_test_exec.compare_txt()
+    gcovr_exec.compare_txt()

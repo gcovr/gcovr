@@ -22,16 +22,16 @@ import pytest
 from pytest_check import check
 
 if TYPE_CHECKING:
-    from tests.conftest import GcovrTestExec
+    from tests.conftest import GcovrExecFixture
 
 
 @pytest.mark.parametrize("activate_trace", [True, False])
-def test(gcovr_test_exec: "GcovrTestExec", *, activate_trace: bool) -> None:
+def test(gcovr_exec: "GcovrExecFixture", *, activate_trace: bool) -> None:
     """Test adding a tracefile output."""
-    gcovr_test_exec.cxx_link(
+    gcovr_exec.cxx_link(
         "subdir/testcase",
         *[
-            gcovr_test_exec.cxx_compile(source, target=source + ".o", options=["-DFOO"])
+            gcovr_exec.cxx_compile(source, target=source + ".o", options=["-DFOO"])
             for source in [
                 "subdir/A/file1.cpp",
                 "subdir/A/File2.cpp",
@@ -53,30 +53,32 @@ def test(gcovr_test_exec: "GcovrTestExec", *, activate_trace: bool) -> None:
         ]
     else:
         check_function = check.is_false
-    gcovr_test_exec.run("./subdir/testcase")
-    process = gcovr_test_exec.gcovr(
+    gcovr_exec.run("./subdir/testcase")
+    gcovr_exec.gcovr(
         *additional_options,
         "--json-pretty",
         "--json=coverage.json",
+        "--verbose",
+        use_main=False,
     )
     for filename in ["File2", "File4"]:
         regex = re.compile(
             rf"^\(TRACE\) Running gcov in .+: .+{filename}.cpp.gcda .+$", re.MULTILINE
         )
         check_function(
-            regex.search(process.stderr),
+            regex.search(gcovr_exec.err),
             f"Expected TRACE log running gcov for {filename} found.",
         )
         regex = re.compile(rf"^\(TRACE\) STDOUT >>File .+{filename}.+$", re.MULTILINE)
         check_function(
-            regex.search(process.stderr),
+            regex.search(gcovr_exec.err),
             f"Expected TRACE log for gcov stdout of {filename} found.",
         )
         regex = re.compile(
             rf"^\(TRACE\) Parsing gcov data file .+{filename}.+:$", re.MULTILINE
         )
         check_function(
-            regex.search(process.stderr),
+            regex.search(gcovr_exec.err),
             f"Expected TRACE log for parsing {filename} found.",
         )
     for filename in ["file1", "file3", "file5", "File6", "main"]:
@@ -84,25 +86,25 @@ def test(gcovr_test_exec: "GcovrTestExec", *, activate_trace: bool) -> None:
             rf"^\(TRACE\) Running gcov in .+: .+{filename}.cpp.gcda .+$", re.MULTILINE
         )
         check.is_false(
-            regex.search(process.stderr),
+            regex.search(gcovr_exec.err),
             f"Unexpected TRACE log running gcov for {filename} found.",
         )
         regex = re.compile(rf"^\(TRACE\) STDOUT >>File .+{filename}.+$", re.MULTILINE)
         check.is_false(
-            regex.search(process.stderr),
+            regex.search(gcovr_exec.err),
             f"Unexpected TRACE log for gcov stdout of {filename} found",
         )
         regex = re.compile(
             rf"^\(TRACE\) Parsing gcov data file .+{filename}.+:$", re.MULTILINE
         )
         check.is_false(
-            regex.search(process.stderr),
+            regex.search(gcovr_exec.err),
             f"Unexpected TRACE log for {filename} not found.",
         )
 
     if activate_trace:
         for function in ["bar", "foobar"]:
-            if gcovr_test_exec.use_gcc_json_format():
+            if gcovr_exec.use_gcc_json_format():
                 regex = re.compile(
                     rf"^\(TRACE\) Reading .*:\d+ of function .*{function}.*$",
                     re.MULTILINE,
@@ -113,6 +115,6 @@ def test(gcovr_test_exec: "GcovrTestExec", *, activate_trace: bool) -> None:
                     re.MULTILINE,
                 )
             check.is_true(
-                regex.search(process.stderr),
+                regex.search(gcovr_exec.err),
                 f"Expected TRACE log for function '{regex.pattern}' found.",
             )

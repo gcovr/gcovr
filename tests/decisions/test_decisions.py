@@ -24,7 +24,7 @@ from tests.conftest import (
     CONDITION_COVERAGE_POSSIBLE,
     IS_LINUX,
     USE_PROFDATA_POSSIBLE,
-    GcovrTestExec,
+    GcovrExecFixture,
 )
 
 
@@ -35,53 +35,53 @@ from tests.conftest import (
 @pytest.mark.html
 @pytest.mark.json
 @pytest.mark.txt
-def test_decisions(gcovr_test_exec: "GcovrTestExec") -> None:
+def test_decisions(gcovr_exec: "GcovrExecFixture") -> None:
     """Test of decision parsing."""
-    gcovr_test_exec.cxx_link(
+    gcovr_exec.cxx_link(
         "testcase",
         "main.cpp",
         "switch_test.cpp",
     )
 
-    gcovr_test_exec.run("./testcase")
-    gcovr_test_exec.gcovr(
+    gcovr_exec.run("./testcase")
+    gcovr_exec.gcovr(
         "--keep-intermediate-files",
         "--verbose",
         "--decisions",
         "--json-pretty",
         "--json=coverage.json.gz",
     )
-    gcovr_test_exec.gcovr(
+    gcovr_exec.gcovr(
         "--verbose",
         "--json-add-tracefile=coverage.json.gz",
         "--json-pretty",
         "--json=coverage.json",
     )
-    gcovr_test_exec.gcovr(
+    gcovr_exec.gcovr(
         "--verbose",
         "--json-add-tracefile=coverage.json.gz",
         "--decision",
         "--json-summary-pretty",
         "--json-summary=coverage_summary.json",
     )
-    gcovr_test_exec.compare_json()
+    gcovr_exec.compare_json()
 
-    gcovr_test_exec.gcovr(
+    gcovr_exec.gcovr(
         "--verbose",
         "--json-add-tracefile=coverage.json.gz",
         "--decision",
         "--html-details=coverage.html",
     )
-    gcovr_test_exec.compare_html()
+    gcovr_exec.compare_html()
 
-    gcovr_test_exec.gcovr(
+    gcovr_exec.gcovr(
         "--verbose",
         "--json-add-tracefile=coverage.json.gz",
         "--txt-metric=decision",
         "--txt-metric=line",
         "--txt=coverage_multiple.txt",
     )
-    process = gcovr_test_exec.gcovr(
+    gcovr_exec.gcovr(
         "--verbose",
         "--json-add-tracefile=coverage.json.gz",
         "--txt-metric=decision",
@@ -89,11 +89,11 @@ def test_decisions(gcovr_test_exec: "GcovrTestExec") -> None:
         "--txt-summary",
         "--txt=coverage.txt",
     )
-    (gcovr_test_exec.output_dir / "coverage_summary.txt").write_text(
-        process.stdout, encoding="utf-8"
+    (gcovr_exec.output_dir / "coverage_summary.txt").write_text(
+        gcovr_exec.out, encoding="utf-8"
     )
 
-    process = gcovr_test_exec.gcovr(
+    gcovr_exec.gcovr(
         "--verbose",
         "--json-add-tracefile=coverage.json.gz",
         "--txt-report-covered",
@@ -101,10 +101,10 @@ def test_decisions(gcovr_test_exec: "GcovrTestExec") -> None:
         "--txt-summary",
         "--txt=coverage_uncovered.txt",
     )
-    (gcovr_test_exec.output_dir / "coverage_uncovered_summary.txt").write_text(
-        process.stdout, encoding="utf-8"
+    (gcovr_exec.output_dir / "coverage_uncovered_summary.txt").write_text(
+        gcovr_exec.out, encoding="utf-8"
     )
-    gcovr_test_exec.compare_txt()
+    gcovr_exec.compare_txt()
 
 
 @pytest.mark.skipif(
@@ -112,25 +112,25 @@ def test_decisions(gcovr_test_exec: "GcovrTestExec") -> None:
     reason="LLVM profdata is needed.",
 )
 @pytest.mark.json
-def test_decisions_llvm_profdata(gcovr_test_exec: "GcovrTestExec") -> None:
+def test_decisions_llvm_profdata(gcovr_exec: "GcovrExecFixture") -> None:
     """Test of decision parsing."""
-    gcovr_test_exec.use_llvm_profdata = True
-    gcovr_test_exec.copy_source(Path("source", "decisions"))
+    gcovr_exec.use_llvm_profdata = True
+    gcovr_exec.copy_source(Path("source", "decisions"))
 
-    mcdc_supported_by_compiler = gcovr_test_exec.is_in_gcc_help("coverage-mcdc")
+    mcdc_supported_by_compiler = gcovr_exec.is_in_gcc_help("coverage-mcdc")
     additional_options = []
     if mcdc_supported_by_compiler:
         additional_options.append("-fcoverage-mcdc")
 
-    gcovr_test_exec.cxx_link(
+    gcovr_exec.cxx_link(
         "testcase",
         *additional_options,
         "main.cpp",
         "switch_test.cpp",
     )
 
-    gcovr_test_exec.run("./testcase")
-    process = gcovr_test_exec.gcovr(
+    gcovr_exec.run("./testcase")
+    gcovr_exec.gcovr(
         "--verbose",
         "--delete-input-files",
         "--decisions",
@@ -139,31 +139,32 @@ def test_decisions_llvm_profdata(gcovr_test_exec: "GcovrTestExec") -> None:
         "--json-pretty",
         "--json=coverage.json.gz",
         "default.profraw",
+        use_main=False,
     )
     if mcdc_supported_by_compiler:
         check.is_in(
             "Found 'mcdc_records' in exported JSON report. This is ignored by GCOVR.",
-            process.stderr,
+            gcovr_exec.err,
         )
     else:
         check.is_not_in(
             "Found 'mcdc_records' in exported JSON report. This is ignored by GCOVR.",
-            process.stderr,
+            gcovr_exec.err,
         )
-    gcovr_test_exec.gcovr(
+    gcovr_exec.gcovr(
         "--verbose",
         "--json-add-tracefile=coverage.json.gz",
         "--json-pretty",
         "--json=coverage.json",
     )
-    gcovr_test_exec.gcovr(
+    gcovr_exec.gcovr(
         "--verbose",
         "--json-add-tracefile=coverage.json.gz",
         "--decision",
         "--json-summary-pretty",
         "--json-summary=coverage_summary.json",
     )
-    gcovr_test_exec.compare_json()
+    gcovr_exec.compare_json()
 
 
 @pytest.mark.skipif(
@@ -173,7 +174,7 @@ def test_decisions_llvm_profdata(gcovr_test_exec: "GcovrTestExec") -> None:
 @pytest.mark.html
 @pytest.mark.json
 @pytest.mark.txt
-def test_decisions_neg_delta(gcovr_test_exec: "GcovrTestExec") -> None:
+def test_decisions_neg_delta(gcovr_exec: "GcovrExecFixture") -> None:
     """
     Test case causes a negative delta value during the multiline decision analysis.
 
@@ -181,23 +182,23 @@ def test_decisions_neg_delta(gcovr_test_exec: "GcovrTestExec") -> None:
     DecisionCoverageUncheckable: decision and a debug log
     AssertionError: assert count_false >= 0
     """
-    gcovr_test_exec.cxx_link(
+    gcovr_exec.cxx_link(
         "testcase",
         "-std=c++11",
         "-O0",
         "main.cpp",
     )
 
-    gcovr_test_exec.run("./testcase")
-    gcovr_test_exec.gcovr(
+    gcovr_exec.run("./testcase")
+    gcovr_exec.gcovr(
         "--verbose",
         "--decisions",
         "--json-pretty",
         "--json=coverage.json",
     )
-    gcovr_test_exec.compare_json()
+    gcovr_exec.compare_json()
 
-    gcovr_test_exec.gcovr(
+    gcovr_exec.gcovr(
         "--verbose",
         "--json-add-tracefile",
         "coverage.json",
@@ -205,13 +206,13 @@ def test_decisions_neg_delta(gcovr_test_exec: "GcovrTestExec") -> None:
         "decision",
         "--txt=coverage.txt",
     )
-    gcovr_test_exec.compare_txt()
+    gcovr_exec.compare_txt()
 
-    gcovr_test_exec.gcovr(
+    gcovr_exec.gcovr(
         "--verbose",
         "--json-add-tracefile",
         "coverage.json",
         "--decision",
         "--html-details=coverage.html",
     )
-    gcovr_test_exec.compare_html()
+    gcovr_exec.compare_html()

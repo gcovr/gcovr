@@ -20,7 +20,7 @@ import typing
 import pytest
 
 if typing.TYPE_CHECKING:
-    from tests.conftest import GcovrTestExec
+    from tests.conftest import GcovrExecFixture
 
 
 @pytest.mark.parametrize(
@@ -28,19 +28,19 @@ if typing.TYPE_CHECKING:
     ["line", "branch", "condition", "decision"],
 )
 @pytest.mark.sonarqube
-def test_metric(gcovr_test_exec: "GcovrTestExec", metric: str) -> None:
+def test_metric(gcovr_exec: "GcovrExecFixture", metric: str) -> None:
     """Test excluding of functions."""
-    gcovr_test_exec.cxx_link(
+    gcovr_exec.cxx_link(
         "testcase",
         "main.cpp",
     )
 
-    gcovr_test_exec.run("./testcase")
+    gcovr_exec.run("./testcase")
     additional_options = [f"--sonarqube-metric={metric}"]
     if metric == "decision":
         additional_options.append("--decision")
-    gcovr_test_exec.gcovr(
+    gcovr_exec.gcovr(
         *additional_options,
         "--sonarqube=sonarqube.xml",
     )
-    gcovr_test_exec.compare_sonarqube()
+    gcovr_exec.compare_sonarqube()

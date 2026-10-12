@@ -21,327 +21,292 @@ import logging
 import platform
 import re
 import sys
+import textwrap
+import typing
 from pathlib import Path
 
 import pytest
 
-from gcovr.__main__ import main
 from gcovr.data_model.coverage import FileCoverage
 from gcovr.data_model.version import FORMAT_VERSION
 from gcovr.version import __version__
 from tests.conftest import GCOVR_ISOLATED_TEST
 
-
-class CaptureObject:
-    """The CaptureObject class holds the capture method result."""
-
-    def __init__(self, out: str, err: str, exitcode: int) -> None:
-        """Initialize the capture object."""
-        self.out = out
-        self.err = err
-        self.exitcode = exitcode
+if typing.TYPE_CHECKING:
+    from tests.conftest import GcovrExecFixture
 
 
-def capture(capsys: pytest.CaptureFixture[str], args: list[str]) -> CaptureObject:
-    """Call the main method and captures its output/error streams and exit code."""
-    e = main(args)
-    out, err = capsys.readouterr()
-    return CaptureObject(out, err, e)
+def test_version(gcovr_exec: "GcovrExecFixture") -> None:
+    gcovr_exec.gcovr("--version", exitcode_ok=0)
+    assert gcovr_exec.err == ""
+    assert gcovr_exec.out.startswith(f"gcovr {__version__}")
 
 
-class LogCaptureObject:
-    r"""The LogCaptureObject class holds the capture method result."""
-
-    def __init__(
-        self, record_tuples: list[tuple[str, int, str]], exitcode: int
-    ) -> None:
-        """Initialize log capture object."""
-        self.record_tuples = record_tuples
-        self.exitcode = exitcode
+def test_help(gcovr_exec: "GcovrExecFixture") -> None:
+    gcovr_exec.gcovr("-h", exitcode_ok=0)
+    assert gcovr_exec.err == ""
+    assert gcovr_exec.out.startswith("usage: gcovr [options]")
 
 
-def log_capture(caplog: pytest.LogCaptureFixture, args: list[str]) -> LogCaptureObject:
-    """Execute the main method and captures its output/error streams and exit code."""
-    e = main(args)
-    return LogCaptureObject(caplog.record_tuples, e)
+def test_empty_root(gcovr_exec: "GcovrExecFixture") -> None:
+    gcovr_exec.gcovr("-r", "", exitcode_ok=1)
+    assert gcovr_exec.out == ""
+    assert "argument -r/--root: Should not be set to an empty string." in gcovr_exec.err
 
 
-def test_version(capsys: pytest.CaptureFixture[str]) -> None:
-    c = capture(capsys, ["--version"])
-    assert c.err == ""
-    assert c.out.startswith(f"gcovr {__version__}")
-    assert c.exitcode == 0
+def test_empty_exclude(gcovr_exec: "GcovrExecFixture") -> None:
+    gcovr_exec.gcovr("--exclude", "", exitcode_ok=1)
+    assert gcovr_exec.out == ""
+    assert "filter cannot be empty" in gcovr_exec.err
 
 
-def test_help(capsys: pytest.CaptureFixture[str]) -> None:
-    c = capture(capsys, ["-h"])
-    assert c.err == ""
-    assert c.out.startswith("usage: gcovr [options]")
-    assert c.exitcode == 0
+def test_empty_exclude_directory(gcovr_exec: "GcovrExecFixture") -> None:
+    gcovr_exec.gcovr("--exclude-directory", "", exitcode_ok=1)
+    assert gcovr_exec.out == ""
+    assert "filter cannot be empty" in gcovr_exec.err
 
 
-def test_empty_root(capsys: pytest.CaptureFixture[str]) -> None:
-    c = capture(capsys, ["-r", ""])
-    assert c.out == ""
-    assert "argument -r/--root: Should not be set to an empty string." in c.err
-    assert c.exitcode != 0
-
-
-def test_empty_exclude(capsys: pytest.CaptureFixture[str]) -> None:
-    c = capture(capsys, ["--exclude", ""])
-    assert c.out == ""
-    assert "filter cannot be empty" in c.err
-    assert c.exitcode != 0
-
-
-def test_empty_exclude_directory(capsys: pytest.CaptureFixture[str]) -> None:
-    c = capture(capsys, ["--exclude-directory", ""])
-    assert c.out == ""
-    assert "filter cannot be empty" in c.err
-    assert c.exitcode != 0
-
-
-def test_empty_objdir(capsys: pytest.CaptureFixture[str]) -> None:
-    c = capture(capsys, ["--gcov-object-directory", ""])
-    assert c.out == ""
+def test_empty_objdir(gcovr_exec: "GcovrExecFixture") -> None:
+    gcovr_exec.gcovr("--gcov-object-directory", "", exitcode_ok=1)
+    assert gcovr_exec.out == ""
     assert (
         "argument --gcov-object-directory/--object-directory: Should not be set to an empty string."
-        in c.err
+        in gcovr_exec.err
     )
-    assert c.exitcode != 0
 
 
-def test_invalid_objdir(caplog: pytest.LogCaptureFixture) -> None:
-    c = log_capture(caplog, ["--gcov-object-directory", "not-existing-dir"])
-    message = c.record_tuples[0]
-    assert message[1] == logging.ERROR
-    assert message[2].startswith("Bad --gcov-object-directory option.")
-    assert c.exitcode == 1
+def test_invalid_objdir(gcovr_exec: "GcovrExecFixture") -> None:
+    gcovr_exec.gcovr("--gcov-object-directory", "not-existing-dir", exitcode_ok=1)
+    gcovr_exec.check_log(
+        (logging.ERROR, "Bad --gcov-object-directory option."),
+        compare="startswith",
+    )
 
 
 def helper_test_non_existing_directory_output(
-    capsys: pytest.CaptureFixture[str], option: str
+    gcovr_exec: "GcovrExecFixture", option: str
 ) -> None:
-    c = capture(capsys, [option, "not-existing-dir/file.txt"])
-    assert c.out == ""
-    assert "Could not create output file 'not-existing-dir/file.txt': " in c.err
-    assert c.exitcode != 0
+    gcovr_exec.gcovr(option, "not-existing-dir/file.txt", exitcode_ok=1)
+    assert gcovr_exec.out == ""
+    assert (
+        "Could not create output file 'not-existing-dir/file.txt': " in gcovr_exec.err
+    )
 
 
-def test_non_existing_directory_output(capsys: pytest.CaptureFixture[str]) -> None:
-    helper_test_non_existing_directory_output(capsys, "--output")
+def test_non_existing_directory_output(gcovr_exec: "GcovrExecFixture") -> None:
+    helper_test_non_existing_directory_output(gcovr_exec, "--output")
 
 
-def test_non_existing_directory_txt(capsys: pytest.CaptureFixture[str]) -> None:
-    helper_test_non_existing_directory_output(capsys, "--txt")
+def test_non_existing_directory_txt(gcovr_exec: "GcovrExecFixture") -> None:
+    helper_test_non_existing_directory_output(gcovr_exec, "--txt")
 
 
-def test_non_existing_directory_xml(capsys: pytest.CaptureFixture[str]) -> None:
-    helper_test_non_existing_directory_output(capsys, "--xml")
+def test_non_existing_directory_xml(gcovr_exec: "GcovrExecFixture") -> None:
+    helper_test_non_existing_directory_output(gcovr_exec, "--xml")
 
 
-def test_non_existing_directory_html(capsys: pytest.CaptureFixture[str]) -> None:
-    helper_test_non_existing_directory_output(capsys, "--html")
+def test_non_existing_directory_html(gcovr_exec: "GcovrExecFixture") -> None:
+    helper_test_non_existing_directory_output(gcovr_exec, "--html")
 
 
 def test_non_existing_directory_html_details(
-    capsys: pytest.CaptureFixture[str],
+    gcovr_exec: "GcovrExecFixture",
 ) -> None:
-    helper_test_non_existing_directory_output(capsys, "--html-details")
+    helper_test_non_existing_directory_output(gcovr_exec, "--html-details")
 
 
-def test_non_existing_directory_html_nested(capsys: pytest.CaptureFixture[str]) -> None:
-    helper_test_non_existing_directory_output(capsys, "--html-nested")
+def test_non_existing_directory_html_nested(
+    gcovr_exec: "GcovrExecFixture",
+) -> None:
+    helper_test_non_existing_directory_output(gcovr_exec, "--html-nested")
 
 
-def test_non_existing_directory_sonarqube(capsys: pytest.CaptureFixture[str]) -> None:
-    helper_test_non_existing_directory_output(capsys, "--sonarqube")
+def test_non_existing_directory_sonarqube(gcovr_exec: "GcovrExecFixture") -> None:
+    helper_test_non_existing_directory_output(gcovr_exec, "--sonarqube")
 
 
-def test_non_existing_directory_json(capsys: pytest.CaptureFixture[str]) -> None:
-    helper_test_non_existing_directory_output(capsys, "--json")
+def test_non_existing_directory_json(gcovr_exec: "GcovrExecFixture") -> None:
+    helper_test_non_existing_directory_output(gcovr_exec, "--json")
 
 
-def test_non_existing_directory_csv(capsys: pytest.CaptureFixture[str]) -> None:
-    helper_test_non_existing_directory_output(capsys, "--csv")
+def test_non_existing_directory_csv(gcovr_exec: "GcovrExecFixture") -> None:
+    helper_test_non_existing_directory_output(gcovr_exec, "--csv")
 
 
 def helper_test_non_existing_directory_2_output(
-    capsys: pytest.CaptureFixture[str], option: str
+    gcovr_exec: "GcovrExecFixture", option: str
 ) -> None:
-    c = capture(capsys, [option, "not-existing-dir/subdir/"])
-    assert c.out == ""
-    assert "Could not create output directory 'not-existing-dir/subdir/': " in c.err
-    assert c.exitcode != 0
+    gcovr_exec.gcovr(option, "not-existing-dir/subdir/", exitcode_ok=1)
+    assert gcovr_exec.out == ""
+    assert (
+        "Could not create output directory 'not-existing-dir/subdir/': "
+        in gcovr_exec.err
+    )
 
 
-def test_non_existing_directory_2_output(capsys: pytest.CaptureFixture[str]) -> None:
-    helper_test_non_existing_directory_2_output(capsys, "--output")
+def test_non_existing_directory_2_output(gcovr_exec: "GcovrExecFixture") -> None:
+    helper_test_non_existing_directory_2_output(gcovr_exec, "--output")
 
 
-def test_non_existing_directory_2_txt(capsys: pytest.CaptureFixture[str]) -> None:
-    helper_test_non_existing_directory_2_output(capsys, "--txt")
+def test_non_existing_directory_2_txt(gcovr_exec: "GcovrExecFixture") -> None:
+    helper_test_non_existing_directory_2_output(gcovr_exec, "--txt")
 
 
-def test_non_existing_directory_2_xml(capsys: pytest.CaptureFixture[str]) -> None:
-    helper_test_non_existing_directory_2_output(capsys, "--xml")
+def test_non_existing_directory_2_xml(gcovr_exec: "GcovrExecFixture") -> None:
+    helper_test_non_existing_directory_2_output(gcovr_exec, "--xml")
 
 
-def test_non_existing_directory_2_html(capsys: pytest.CaptureFixture[str]) -> None:
-    helper_test_non_existing_directory_2_output(capsys, "--html")
+def test_non_existing_directory_2_html(gcovr_exec: "GcovrExecFixture") -> None:
+    helper_test_non_existing_directory_2_output(gcovr_exec, "--html")
 
 
 def test_non_existing_directory_2_html_details(
-    capsys: pytest.CaptureFixture[str],
+    gcovr_exec: "GcovrExecFixture",
 ) -> None:
-    helper_test_non_existing_directory_2_output(capsys, "--html-details")
+    helper_test_non_existing_directory_2_output(gcovr_exec, "--html-details")
 
 
 def test_non_existing_directory_2_html_nested(
-    capsys: pytest.CaptureFixture[str],
+    gcovr_exec: "GcovrExecFixture",
 ) -> None:
-    helper_test_non_existing_directory_2_output(capsys, "--html-nested")
+    helper_test_non_existing_directory_2_output(gcovr_exec, "--html-nested")
 
 
-def test_non_existing_directory_2_sonarqube(capsys: pytest.CaptureFixture[str]) -> None:
-    helper_test_non_existing_directory_2_output(capsys, "--sonarqube")
+def test_non_existing_directory_2_sonarqube(
+    gcovr_exec: "GcovrExecFixture",
+) -> None:
+    helper_test_non_existing_directory_2_output(gcovr_exec, "--sonarqube")
 
 
-def test_non_existing_directory_2_json(capsys: pytest.CaptureFixture[str]) -> None:
-    helper_test_non_existing_directory_2_output(capsys, "--json")
+def test_non_existing_directory_2_json(gcovr_exec: "GcovrExecFixture") -> None:
+    helper_test_non_existing_directory_2_output(gcovr_exec, "--json")
 
 
-def test_non_existing_directory_2_csv(capsys: pytest.CaptureFixture[str]) -> None:
-    helper_test_non_existing_directory_2_output(capsys, "--csv")
+def test_non_existing_directory_2_csv(gcovr_exec: "GcovrExecFixture") -> None:
+    helper_test_non_existing_directory_2_output(gcovr_exec, "--csv")
 
 
 def helper_test_non_writable_directory_output(
-    capsys: pytest.CaptureFixture[str], option: str
+    gcovr_exec: "GcovrExecFixture", option: str
 ) -> None:
-    c = capture(capsys, [option, "/file.txt"])
-    assert c.out == ""
-    assert "Could not create output file '/file.txt': " in c.err
-    assert c.exitcode != 0
+    gcovr_exec.gcovr(option, "/file.txt", exitcode_ok=1)
+    assert gcovr_exec.out == ""
+    assert "Could not create output file '/file.txt': " in gcovr_exec.err
 
 
 @pytest.mark.skipif(not GCOVR_ISOLATED_TEST, reason="Only for docker")
-def test_non_writable_directory_output(capsys: pytest.CaptureFixture[str]) -> None:
-    helper_test_non_writable_directory_output(capsys, "--output")
+def test_non_writable_directory_output(gcovr_exec: "GcovrExecFixture") -> None:
+    helper_test_non_writable_directory_output(gcovr_exec, "--output")
 
 
 @pytest.mark.skipif(not GCOVR_ISOLATED_TEST, reason="Only for docker")
-def test_non_writable_directory_txt(capsys: pytest.CaptureFixture[str]) -> None:
-    helper_test_non_writable_directory_output(capsys, "--txt")
+def test_non_writable_directory_txt(gcovr_exec: "GcovrExecFixture") -> None:
+    helper_test_non_writable_directory_output(gcovr_exec, "--txt")
 
 
 @pytest.mark.skipif(not GCOVR_ISOLATED_TEST, reason="Only for docker")
-def test_non_writable_directory_xml(capsys: pytest.CaptureFixture[str]) -> None:
-    helper_test_non_writable_directory_output(capsys, "--xml")
+def test_non_writable_directory_xml(gcovr_exec: "GcovrExecFixture") -> None:
+    helper_test_non_writable_directory_output(gcovr_exec, "--xml")
 
 
 @pytest.mark.skipif(not GCOVR_ISOLATED_TEST, reason="Only for docker")
-def test_non_writable_directory_html(capsys: pytest.CaptureFixture[str]) -> None:
-    helper_test_non_writable_directory_output(capsys, "--html")
+def test_non_writable_directory_html(gcovr_exec: "GcovrExecFixture") -> None:
+    helper_test_non_writable_directory_output(gcovr_exec, "--html")
 
 
 @pytest.mark.skipif(not GCOVR_ISOLATED_TEST, reason="Only for docker")
 def test_non_writable_directory_html_details(
-    capsys: pytest.CaptureFixture[str],
+    gcovr_exec: "GcovrExecFixture",
 ) -> None:
-    helper_test_non_writable_directory_output(capsys, "--html-details")
+    helper_test_non_writable_directory_output(gcovr_exec, "--html-details")
 
 
 @pytest.mark.skipif(not GCOVR_ISOLATED_TEST, reason="Only for docker")
-def test_non_writable_directory_html_nested(capsys: pytest.CaptureFixture[str]) -> None:
-    helper_test_non_writable_directory_output(capsys, "--html-nested")
+def test_non_writable_directory_html_nested(
+    gcovr_exec: "GcovrExecFixture",
+) -> None:
+    helper_test_non_writable_directory_output(gcovr_exec, "--html-nested")
 
 
 @pytest.mark.skipif(not GCOVR_ISOLATED_TEST, reason="Only for docker")
-def test_non_writable_directory_sonarqube(capsys: pytest.CaptureFixture[str]) -> None:
-    helper_test_non_writable_directory_output(capsys, "--sonarqube")
+def test_non_writable_directory_sonarqube(gcovr_exec: "GcovrExecFixture") -> None:
+    helper_test_non_writable_directory_output(gcovr_exec, "--sonarqube")
 
 
 @pytest.mark.skipif(not GCOVR_ISOLATED_TEST, reason="Only for docker")
-def test_non_writable_directory_json(capsys: pytest.CaptureFixture[str]) -> None:
-    helper_test_non_writable_directory_output(capsys, "--json")
+def test_non_writable_directory_json(gcovr_exec: "GcovrExecFixture") -> None:
+    helper_test_non_writable_directory_output(gcovr_exec, "--json")
 
 
 @pytest.mark.skipif(not GCOVR_ISOLATED_TEST, reason="Only for docker")
-def test_non_writable_directory_csv(capsys: pytest.CaptureFixture[str]) -> None:
-    helper_test_non_writable_directory_output(capsys, "--csv")
+def test_non_writable_directory_csv(gcovr_exec: "GcovrExecFixture") -> None:
+    helper_test_non_writable_directory_output(gcovr_exec, "--csv")
 
 
-def test_stdout_no_html_self_contained(caplog: pytest.LogCaptureFixture) -> None:
-    c = log_capture(caplog, ["--output", "-", "--no-html-self-contained"])
-    message = c.record_tuples[0]
-    assert message[1] == logging.ERROR
-    assert message[2] == "only self contained reports can be printed to STDOUT"
-    assert c.exitcode != 0
-
-
-def test_no_output_html_details(caplog: pytest.LogCaptureFixture) -> None:
-    c = log_capture(caplog, ["--html-details"])
-    message = c.record_tuples[0]
-    assert message[1] == logging.ERROR
-    assert (
-        message[2]
-        == "a named output must be given, if the option --html-details is used."
+def test_stdout_no_html_self_contained(gcovr_exec: "GcovrExecFixture") -> None:
+    gcovr_exec.gcovr("--output", "-", "--no-html-self-contained", exitcode_ok=1)
+    gcovr_exec.check_log(
+        (logging.ERROR, "only self contained reports can be printed to STDOUT")
     )
-    assert c.exitcode != 0
 
 
-def test_stdout_html_details(caplog: pytest.LogCaptureFixture) -> None:
-    c = log_capture(caplog, ["--html-details", "-"])
-    message = c.record_tuples[0]
-    assert message[1] == logging.ERROR
-    assert (
-        message[2]
-        == "detailed reports can only be printed to STDOUT as --html-single-page."
+def test_no_output_html_details(gcovr_exec: "GcovrExecFixture") -> None:
+    gcovr_exec.gcovr("--html-details", exitcode_ok=1)
+    gcovr_exec.check_log(
+        (
+            logging.ERROR,
+            "a named output must be given, if the option --html-details is used.",
+        )
     )
-    assert c.exitcode != 0
 
 
-def test_no_output_html_nested(caplog: pytest.LogCaptureFixture) -> None:
-    c = log_capture(caplog, ["--html-nested"])
-    message = c.record_tuples[0]
-    assert message[1] == logging.ERROR
-    assert (
-        message[2]
-        == "a named output must be given, if the option --html-nested is used."
+def test_stdout_html_details(gcovr_exec: "GcovrExecFixture") -> None:
+    gcovr_exec.gcovr("--html-details", "-", exitcode_ok=1)
+    gcovr_exec.check_log(
+        (
+            logging.ERROR,
+            "detailed reports can only be printed to STDOUT as --html-single-page.",
+        )
     )
-    assert c.exitcode != 0
 
 
-def test_stdout_html_nested(caplog: pytest.LogCaptureFixture) -> None:
-    c = log_capture(caplog, ["--html-nested", "-"])
-    message = c.record_tuples[0]
-    assert message[1] == logging.ERROR
-    assert (
-        message[2]
-        == "detailed reports can only be printed to STDOUT as --html-single-page."
+def test_no_output_html_nested(gcovr_exec: "GcovrExecFixture") -> None:
+    gcovr_exec.gcovr("--html-nested", exitcode_ok=1)
+    gcovr_exec.check_log(
+        (
+            logging.ERROR,
+            "a named output must be given, if the option --html-nested is used.",
+        )
     )
-    assert c.exitcode != 0
 
 
-def test_html_details_and_html_nested(caplog: pytest.LogCaptureFixture) -> None:
-    c = log_capture(caplog, ["--output", "x", "--html-details", "--html-nested"])
-    message = c.record_tuples[0]
-    assert message[1] == logging.ERROR
-    assert message[2] == "--html-details and --html-nested can not be used together."
-    assert c.exitcode != 0
+def test_stdout_html_nested(gcovr_exec: "GcovrExecFixture") -> None:
+    gcovr_exec.gcovr("--html-nested", "-", exitcode_ok=1)
+    gcovr_exec.check_log(
+        (
+            logging.ERROR,
+            "detailed reports can only be printed to STDOUT as --html-single-page.",
+        )
+    )
+
+
+def test_html_details_and_html_nested(gcovr_exec: "GcovrExecFixture") -> None:
+    gcovr_exec.gcovr("--output", "x", "--html-details", "--html-nested", exitcode_ok=1)
+    gcovr_exec.check_log(
+        (logging.ERROR, "--html-details and --html-nested can not be used together.")
+    )
 
 
 def test_html_single_page_without_html_details_or_html_nested(
-    caplog: pytest.LogCaptureFixture,
+    gcovr_exec: "GcovrExecFixture",
 ) -> None:
-    c = log_capture(caplog, ["--output", "x", "--html-single-page"])
-    message = c.record_tuples[0]
-    assert message[1] == logging.ERROR
-    assert (
-        message[2]
-        == "option --html-details or --html-nested is needed, if the option --html-single-page is used."
+    gcovr_exec.gcovr("--output", "x", "--html-single-page", exitcode_ok=1)
+    gcovr_exec.check_log(
+        (
+            logging.ERROR,
+            "option --html-details or --html-nested is needed, if the option --html-single-page is used.",
+        )
     )
-    assert c.exitcode != 0
 
 
 @pytest.mark.parametrize(
@@ -356,12 +321,11 @@ def test_html_single_page_without_html_details_or_html_nested(
     ],
 )
 def test_failed_under_threshold_nan(
-    option: str, capsys: pytest.CaptureFixture[str]
+    gcovr_exec: "GcovrExecFixture", option: str
 ) -> None:
-    c = capture(capsys, [option, "nan"])
-    assert c.out == ""
-    assert "not in range [0.0, 100.0]" in c.err
-    assert c.exitcode != 0
+    gcovr_exec.gcovr(option, "nan", exitcode_ok=1)
+    assert gcovr_exec.out == ""
+    assert "not in range [0.0, 100.0]" in gcovr_exec.err
 
 
 @pytest.mark.parametrize(
@@ -376,12 +340,11 @@ def test_failed_under_threshold_nan(
     ],
 )
 def test_failed_under_threshold_negative(
-    option: str, capsys: pytest.CaptureFixture[str]
+    gcovr_exec: "GcovrExecFixture", option: str
 ) -> None:
-    c = capture(capsys, [option, "-0.1"])
-    assert c.out == ""
-    assert "not in range [0.0, 100.0]" in c.err
-    assert c.exitcode != 0
+    gcovr_exec.gcovr(option, "-0.1", exitcode_ok=1)
+    assert gcovr_exec.out == ""
+    assert "not in range [0.0, 100.0]" in gcovr_exec.err
 
 
 @pytest.mark.parametrize(
@@ -396,37 +359,40 @@ def test_failed_under_threshold_negative(
     ],
 )
 def test_failed_under_threshold_100_1(
-    option: str, capsys: pytest.CaptureFixture[str]
+    gcovr_exec: "GcovrExecFixture", option: str
 ) -> None:
-    c = capture(capsys, [option, "100.1"])
-    assert c.out == ""
-    assert "not in range [0.0, 100.0]" in c.err
-    assert c.exitcode != 0
+    gcovr_exec.gcovr(option, "100.1", exitcode_ok=1)
+    assert gcovr_exec.out == ""
+    assert "not in range [0.0, 100.0]" in gcovr_exec.err
 
 
-def test_filter_backslashes_are_detected(caplog: pytest.LogCaptureFixture) -> None:
+def test_filter_backslashes_are_detected(
+    gcovr_exec: "GcovrExecFixture",
+) -> None:
     # gcov-exclude all to prevent any coverage data from being found
-    c = log_capture(
-        caplog,
-        args=["--filter", r"C:\\foo\moo", "--gcov-exclude", ""],
+    gcovr_exec.gcovr(
+        "--filter",
+        r"C:\\foo\moo",
+        "--gcov-exclude",
+        "",
+        exitcode_ok=1,
     )
-    message0 = c.record_tuples[0]
-    assert message0[1] == logging.WARNING
-    assert message0[2].startswith(
-        "Filters must use forward slashes as path separators, your filter >>C:\\\\foo\\moo<<."
-    )
-    message = c.record_tuples[1]
-    assert message[1] == logging.WARNING
-    assert message[2].startswith("Did you mean >>C:/foo/moo<<?")
-    message = c.record_tuples[2]
-    assert message[1] == logging.ERROR
-    assert message[2].startswith(
-        "Error setting up filter --filter='C:\\\\foo\\moo': bad escape \\m at position 7"
+    gcovr_exec.check_log(
+        (
+            logging.WARNING,
+            "Filters must use forward slashes as path separators, your filter >>C:\\\\foo\\moo<<.",
+        ),
+        (logging.WARNING, "Did you mean >>C:/foo/moo<<?"),
+        (
+            logging.ERROR,
+            "Error setting up filter --filter='C:\\\\foo\\moo': bad escape \\m at position 7",
+        ),
+        compare="startswith",
     )
 
 
-def test_html_css_not_exists(capsys: pytest.CaptureFixture[str]) -> None:
-    c = capture(capsys, ["--html-css", "/File/does/not/\texist"])
+def test_html_css_not_exists(gcovr_exec: "GcovrExecFixture") -> None:
+    gcovr_exec.gcovr("--html-css", "/File/does/not/\texist", exitcode_ok=1)
     if platform.system() == "Windows":
         pattern = r"\\\\File\\\\does\\\\not\\\\\\texist"
         # Starting with 3.13 a path starting with a leading (back)slash isn't considered
@@ -435,180 +401,169 @@ def test_html_css_not_exists(capsys: pytest.CaptureFixture[str]) -> None:
             pattern = rf"[A-Z]:(?:\\\\[^\\]+)*?{pattern}"
     else:
         pattern = r"/File/does/not/\\texist"
-    assert c.out == ""
+    assert gcovr_exec.out == ""
     assert (
         re.search(
             rf"Should be a file that already exists: '{pattern}'",
-            c.err,
+            gcovr_exec.err,
         )
         is not None
     )
-    assert c.exitcode != 0
 
 
-def test_html_title_empty_string(caplog: pytest.LogCaptureFixture) -> None:
-    c = log_capture(caplog, ["--html-title", ""])
-    message = c.record_tuples[0]
-    assert message[1] == logging.ERROR
-    assert message[2] == "An empty --html-title= is not allowed."
-    assert c.exitcode != 0
+def test_html_title_empty_string(gcovr_exec: "GcovrExecFixture") -> None:
+    gcovr_exec.gcovr("--html-title", "", exitcode_ok=1)
+    gcovr_exec.check_log((logging.ERROR, "An empty --html-title= is not allowed."))
 
 
-def test_medium_threshold_nan(capsys: pytest.CaptureFixture[str]) -> None:
-    c = capture(capsys, ["--medium-threshold", "nan"])
-    assert c.out == ""
+def test_medium_threshold_nan(gcovr_exec: "GcovrExecFixture") -> None:
+    gcovr_exec.gcovr("--medium-threshold", "nan", exitcode_ok=1)
+    assert gcovr_exec.out == ""
     assert (
         "--medium-threshold/--html-medium-threshold: nan not in range [0.0, 100.0]"
-        in c.err
+        in gcovr_exec.err
     )
-    assert c.exitcode != 0
 
 
-def test_medium_threshold_negative(capsys: pytest.CaptureFixture[str]) -> None:
-    c = capture(capsys, ["--medium-threshold", "-0.1"])
-    assert c.out == ""
-    assert "not in range [0.0, 100.0]" in c.err
-    assert c.exitcode != 0
+def test_medium_threshold_negative(gcovr_exec: "GcovrExecFixture") -> None:
+    gcovr_exec.gcovr("--medium-threshold", "-0.1", exitcode_ok=1)
+    assert gcovr_exec.out == ""
+    assert "not in range [0.0, 100.0]" in gcovr_exec.err
 
 
-def test_medium_threshold_zero(caplog: pytest.LogCaptureFixture) -> None:
-    c = log_capture(caplog, ["--medium-threshold", "0.0"])
-    message = c.record_tuples[0]
-    assert message[1] == logging.ERROR
-    assert message[2] == "Value of --medium-threshold should not be zero."
-    assert c.exitcode != 0
+def test_medium_threshold_zero(gcovr_exec: "GcovrExecFixture") -> None:
+    gcovr_exec.gcovr("--medium-threshold", "0.0", exitcode_ok=1)
+    gcovr_exec.check_log(
+        (logging.ERROR, "Value of --medium-threshold should not be zero.")
+    )
 
 
-def test_high_threshold_nan(capsys: pytest.CaptureFixture[str]) -> None:
-    c = capture(capsys, ["--high-threshold", "nan"])
-    assert c.out == ""
-    assert "not in range [0.0, 100.0]" in c.err
-    assert c.exitcode != 0
+def test_high_threshold_nan(gcovr_exec: "GcovrExecFixture") -> None:
+    gcovr_exec.gcovr("--high-threshold", "nan", exitcode_ok=1)
+    assert gcovr_exec.out == ""
+    assert "not in range [0.0, 100.0]" in gcovr_exec.err
 
 
-def test_high_threshold_negative(capsys: pytest.CaptureFixture[str]) -> None:
-    c = capture(capsys, ["--high-threshold", "-0.1"])
-    assert c.out == ""
-    assert "not in range [0.0, 100.0]" in c.err
-    assert c.exitcode != 0
+def test_high_threshold_negative(gcovr_exec: "GcovrExecFixture") -> None:
+    gcovr_exec.gcovr("--high-threshold", "-0.1", exitcode_ok=1)
+    assert gcovr_exec.out == ""
+    assert "not in range [0.0, 100.0]" in gcovr_exec.err
 
 
 def test_medium_threshold_gt_high_threshold(
-    caplog: pytest.LogCaptureFixture,
+    gcovr_exec: "GcovrExecFixture",
 ) -> None:
-    c = log_capture(caplog, ["--medium-threshold", "60", "--high-threshold", "50"])
-    message = c.record_tuples[0]
-    assert message[1] == logging.ERROR
-    assert (
-        message[2]
-        == "Value of --medium-threshold=60.0 should be\nlower than or equal to the value of --high-threshold=50.0."
+    gcovr_exec.gcovr(
+        "--medium-threshold", "60", "--high-threshold", "50", exitcode_ok=1
     )
-    assert c.exitcode != 0
-
-
-def test_html_tab_size_zero(caplog: pytest.LogCaptureFixture) -> None:
-    c = log_capture(caplog, ["--html-tab-size", "0"])
-    message = c.record_tuples[0]
-    assert message[1] == logging.ERROR
-    assert message[2] == "Value of --html-tab-size should be greater 0."
-    assert c.exitcode != 0
-
-
-def test_multiple_output_formats_to_stdout(caplog: pytest.LogCaptureFixture) -> None:
-    c = log_capture(
-        caplog,
-        [
-            "--coveralls",
-            "--cobertura",
-            "--csv",
-            "--html",
-            "--jacoco",
-            "--json",
-            "--json-summary",
-            "--sonarqube",
-            "--txt",
-            "--root",
-            "src/gcovr",
-        ],
-    )
-    for index, text_fragments in enumerate(
-        [
-            ("Coveralls", "--coveralls"),
-            ("CSV", "--csv"),
-            ("HTML", "--html"),
-            ("JaCoCo", "--jacoco"),
-            ("JSON", "--json"),
-            ("JSON summary", "--json-summary"),
-            ("SonarQube", "--sonarqube"),
-            ("Text", "--txt"),
-        ],
-        start=1,
-    ):
-        format_name, option = text_fragments
-        message = c.record_tuples[index]
-        assert message[1] == logging.WARNING
-        assert (
-            message[2]
-            == f"{format_name} output skipped - consider providing an output file with `{option}=OUTPUT`."
+    gcovr_exec.check_log(
+        (
+            logging.ERROR,
+            "Value of --medium-threshold=60.0 should be\nlower than or equal to the value of --high-threshold=50.0.",
         )
-    assert c.exitcode == 0
-
-
-def test_multiple_output_formats_to_stdout_1(caplog: pytest.LogCaptureFixture) -> None:
-    c = log_capture(
-        caplog,
-        [
-            "--coveralls",
-            "--cobertura",
-            "--csv",
-            "--html",
-            "--jacoco",
-            "--json",
-            "--json-summary",
-            "--sonarqube",
-            "--txt",
-            "-o",
-            "-",
-            "--root",
-            "src/gcovr",
-        ],
     )
-    for index, text_fragments in enumerate(
-        [
-            ("Coveralls", "--coveralls"),
-            ("CSV", "--csv"),
-            ("HTML", "--html"),
-            ("JaCoCo", "--jacoco"),
-            ("JSON", "--json"),
-            ("JSON summary", "--json-summary"),
-            ("SonarQube", "--sonarqube"),
-            ("Text", "--txt"),
-        ],
-        start=1,
-    ):
-        format_name, option = text_fragments
-        message = c.record_tuples[index]
-        assert message[1] == logging.WARNING
-        assert (
-            message[2]
-            == f"{format_name} output skipped - consider providing an output file with `{option}=OUTPUT`."
+
+
+def test_html_tab_size_zero(gcovr_exec: "GcovrExecFixture") -> None:
+    gcovr_exec.gcovr("--html-tab-size", "0", exitcode_ok=1)
+    gcovr_exec.check_log(
+        (logging.ERROR, "Value of --html-tab-size should be greater 0.")
+    )
+
+
+def test_multiple_output_formats_to_stdout(gcovr_exec: "GcovrExecFixture") -> None:
+    """Test to check if a output file is missing."""
+    gcovr_exec.gcovr(
+        "--coveralls",
+        "--cobertura",
+        "--csv",
+        "--html",
+        "--jacoco",
+        "--json",
+        "--json-summary",
+        "--sonarqube",
+        "--txt",
+        "--root",
+        ".",
+    )
+
+    gcovr_exec.check_log(
+        (
+            logging.WARNING,
+            "All coverage data is filtered out. Please check your paths and filters.",
+        ),
+        *(
+            (
+                logging.WARNING,
+                f"{format_name} output skipped - consider providing an output file with `{option}=OUTPUT`.",
+            )
+            for format_name, option in [
+                ("Coveralls", "--coveralls"),
+                ("CSV", "--csv"),
+                ("HTML", "--html"),
+                ("JaCoCo", "--jacoco"),
+                ("JSON", "--json"),
+                ("JSON summary", "--json-summary"),
+                ("SonarQube", "--sonarqube"),
+                ("Text", "--txt"),
+            ]
+        ),
+    )
+
+
+def test_multiple_output_formats_to_stdout_1(gcovr_exec: "GcovrExecFixture") -> None:
+    """Test to check if a output file is missing."""
+    gcovr_exec.gcovr(
+        "--coveralls",
+        "--cobertura",
+        "--csv",
+        "--html",
+        "--jacoco",
+        "--json",
+        "--json-summary",
+        "--sonarqube",
+        "--txt",
+        "-o",
+        "-",
+        "--root",
+        ".",
+    )
+    gcovr_exec.check_log(
+        (
+            logging.WARNING,
+            "All coverage data is filtered out. Please check your paths and filters.",
+        ),
+        *(
+            (
+                logging.WARNING,
+                f"{format_name} output skipped - consider providing an output file with `{option}=OUTPUT`.",
+            )
+            for format_name, option in [
+                ("Coveralls", "--coveralls"),
+                ("CSV", "--csv"),
+                ("HTML", "--html"),
+                ("JaCoCo", "--jacoco"),
+                ("JSON", "--json"),
+                ("JSON summary", "--json-summary"),
+                ("SonarQube", "--sonarqube"),
+                ("Text", "--txt"),
+            ]
+        ),
+    )
+
+
+def test_no_self_contained_without_file(gcovr_exec: "GcovrExecFixture") -> None:
+    gcovr_exec.gcovr("--no-html-self-contained", "--html", exitcode_ok=1)
+    gcovr_exec.check_log(
+        (
+            logging.ERROR,
+            "can only disable --html-self-contained when a named output is given.",
         )
-    assert c.exitcode == 0
-
-
-def test_no_self_contained_without_file(caplog: pytest.LogCaptureFixture) -> None:
-    c = log_capture(caplog, ["--no-html-self-contained", "--html"])
-    message = c.record_tuples[0]
-    assert message[1] == logging.ERROR
-    assert (
-        message[2]
-        == "can only disable --html-self-contained when a named output is given."
     )
-    assert c.exitcode != 0
 
 
 def test_html_injection_via_json(
-    capsys: pytest.CaptureFixture[str], tmp_path: Path
+    gcovr_exec: "GcovrExecFixture", tmp_path: Path
 ) -> None:
     import json  # noqa: PLC0415
 
@@ -628,11 +583,12 @@ def test_html_injection_via_json(
     with tempfile.open("w+") as json_file:
         json.dump(json_data, json_file)
 
-    c = capture(capsys, ["-a", str(tempfile), "--html"])
+    gcovr_exec.gcovr("-a", str(tempfile), "--html")
 
-    assert script not in c.out
-    assert str(markupsafe.escape(script)) in c.out, f"--- got:\n{c.out}\n---"
-    assert c.exitcode == 0
+    assert script not in gcovr_exec.out
+    assert str(markupsafe.escape(script)) in gcovr_exec.out, (
+        f"--- got:\n{gcovr_exec.out}\n---"
+    )
 
 
 def test_import_valid_cobertura_file(tmp_path: Path) -> None:
@@ -732,34 +688,39 @@ def test_import_valid_cobertura_file(tmp_path: Path) -> None:
             assert len(branchcov_list) == 0
 
 
-def test_invalid_cobertura_file(caplog: pytest.LogCaptureFixture) -> None:
-    c = log_capture(caplog, ["--cobertura-add-tracefile", "/*.FileDoesNotExist.*"])
-    message = c.record_tuples[0]
-    assert message[1] == logging.ERROR
-    assert (
-        "Bad --covertura-add-tracefile option.\n\tThe specified file does not exist."
-        in message[2]
+def test_invalid_cobertura_file(gcovr_exec: "GcovrExecFixture") -> None:
+    gcovr_exec.gcovr(
+        "--cobertura-add-tracefile",
+        "/*.FileDoesNotExist.*",
+        exitcode_ok=64,
     )
-    assert c.exitcode != 0
+    gcovr_exec.check_log(
+        (
+            logging.ERROR,
+            "Bad --covertura-add-tracefile option.\n\tThe specified file does not exist.",
+        ),
+        compare="contains",
+    )
 
 
 def test_import_corrupt_cobertura_file(
-    caplog: pytest.LogCaptureFixture, tmp_path: Path
+    gcovr_exec: "GcovrExecFixture", tmp_path: Path
 ) -> None:
     xml_data = "Invalid XML content"
     tempfile = tmp_path / "corrupt_cobertura.xml"
     with tempfile.open("w+") as fp:
         fp.write(xml_data)
 
-    c = log_capture(caplog, ["--cobertura-add-tracefile", str(tempfile)])
-    message = c.record_tuples[0]
-    assert message[1] == logging.ERROR
-    assert "Start tag expected" in message[2]
-    assert c.exitcode != 0
+    gcovr_exec.gcovr(
+        "--cobertura-add-tracefile",
+        str(tempfile),
+        exitcode_ok=64,
+    )
+    gcovr_exec.check_log((logging.ERROR, "Start tag expected"), compare="contains")
 
 
 def test_import_cobertura_file_with_invalid_line(
-    caplog: pytest.LogCaptureFixture, tmp_path: Path
+    gcovr_exec: "GcovrExecFixture", tmp_path: Path
 ) -> None:
     xml_data = """<?xml version='1.0' encoding='UTF-8'?>
 <!DOCTYPE coverage SYSTEM 'https://github.com/cobertura/cobertura/blob/e5eea8679ebce047ec6ccdfdbf6cf2c14b376875/cobertura/src/site/htdocs/xml/coverage-04.dtd'>
@@ -796,13 +757,17 @@ def test_import_cobertura_file_with_invalid_line(
     with tempfile.open("w+") as fp:
         fp.write(xml_data)
 
-    c = log_capture(
-        caplog, ["--cobertura-add-tracefile", str(tempfile), "--filter", "."]
+    gcovr_exec.gcovr(
+        "--cobertura-add-tracefile",
+        str(tempfile),
+        "--filter",
+        ".",
+        exitcode_ok=64,
     )
-    message = c.record_tuples[0]
-    assert message[1] == logging.ERROR
-    assert "'number' attribute is required and must be an integer" in message[2]
-    assert c.exitcode != 0
+    gcovr_exec.check_log(
+        (logging.ERROR, "'number' attribute is required and must be an integer"),
+        compare="contains",
+    )
 
 
 @pytest.mark.parametrize(
@@ -820,17 +785,15 @@ def test_import_cobertura_file_with_invalid_line(
         "--exclude-branches-by-pattern",
     ],
 )
-def test_exclude_filter(caplog: pytest.LogCaptureFixture, option: str) -> None:
-    c = log_capture(
-        caplog,
-        [option, "example.**"],
+def test_exclude_filter(gcovr_exec: "GcovrExecFixture", option: str) -> None:
+    gcovr_exec.gcovr(option, "example.**", exitcode_ok=1)
+    gcovr_exec.check_log(
+        (
+            logging.ERROR,
+            f"Error setting up {'pattern' if 'pattern' in option else 'filter'} {option}='example.**': multiple repeat at position 9",
+        ),
+        compare="startswith",
     )
-    message = c.record_tuples[0]
-    assert message[1] == logging.ERROR
-    assert message[2].startswith(
-        f"Error setting up {'pattern' if 'pattern' in option else 'filter'} {option}='example.**': multiple repeat at position 9"
-    )
-    assert c.exitcode != 0
 
 
 @pytest.mark.parametrize(
@@ -841,36 +804,38 @@ def test_exclude_filter(caplog: pytest.LogCaptureFixture, option: str) -> None:
         "--exclude-branches-by-pattern",
     ],
 )
-def test_exclude_pattern(caplog: pytest.LogCaptureFixture, option: str) -> None:
-    c = log_capture(
-        caplog,
-        [option, "/example.**/" if option == "--exclude-function" else "example.**"],
+def test_exclude_pattern(gcovr_exec: "GcovrExecFixture", option: str) -> None:
+    gcovr_exec.gcovr(
+        option,
+        "/example.**/" if option == "--exclude-function" else "example.**",
+        exitcode_ok=1,
     )
-    message = c.record_tuples[0]
-    assert message[1] == logging.ERROR
-    assert message[2].startswith(
-        f"Error setting up pattern {option}='example.**': multiple repeat at position 9"
+    gcovr_exec.check_log(
+        (
+            logging.ERROR,
+            f"Error setting up pattern {option}='example.**': multiple repeat at position 9",
+        ),
+        compare="startswith",
     )
-    assert c.exitcode != 0
 
 
-def test_invalid_timestamp(capsys: pytest.CaptureFixture[str]) -> None:
-    c = capture(capsys, ["--timestamp=foo"])
-    assert c.out == ""
-    assert "argument --timestamp: unknown timestamp format: 'foo'" in c.err
-    assert c.exitcode != 0
+def test_invalid_timestamp(gcovr_exec: "GcovrExecFixture") -> None:
+    gcovr_exec.gcovr("--timestamp=foo", exitcode_ok=1)
+    assert gcovr_exec.out == ""
+    assert "argument --timestamp: unknown timestamp format: 'foo'" in gcovr_exec.err
 
 
 def test_sort_branch_and_not_uncovered_or_percent(
-    caplog: pytest.LogCaptureFixture,
+    gcovr_exec: "GcovrExecFixture",
 ) -> None:
-    c = log_capture(caplog, ["--sort-branches"])
-    message = c.record_tuples[0]
-    assert message[1] == logging.ERROR
-    assert message[2].startswith(
-        "The options --sort-branches without '--sort uncovered-number' or '--sort uncovered-percent' doesn't make sense."
+    gcovr_exec.gcovr("--sort-branches", exitcode_ok=1)
+    gcovr_exec.check_log(
+        (
+            logging.ERROR,
+            "The options --sort-branches without '--sort uncovered-number' or '--sort uncovered-percent' doesn't make sense.",
+        ),
+        compare="startswith",
     )
-    assert c.exitcode == 1
 
 
 @pytest.mark.parametrize(
@@ -882,23 +847,37 @@ def test_sort_branch_and_not_uncovered_or_percent(
     ids=lambda option: option[0],
 )
 def test_deprecated_option(
-    caplog: pytest.LogCaptureFixture, option: tuple[str, str]
+    gcovr_exec: "GcovrExecFixture", option: tuple[str, str]
 ) -> None:
-    c = log_capture(caplog, [option[0], "--help"])
-    message = c.record_tuples[0]
-    assert message[1] == logging.WARNING
-    assert (
-        f"Deprecated option {option[0]} used, please use {option[1]!r} instead"
-        in message[2]
+    gcovr_exec.gcovr(option[0], "--help")
+    gcovr_exec.check_log(
+        (
+            logging.WARNING,
+            f"Deprecated option {option[0]} used, please use {option[1]!r} instead.",
+        )
     )
-    assert c.exitcode != 1
+
+
+def test_lcov_report_name_with_spaces(gcovr_exec: "GcovrExecFixture") -> None:
+    """Test error if report name contains spaces."""
+    gcovr_exec.gcovr(
+        "--lcov-test-name",
+        "Name with spaces",
+        exitcode_ok=1,
+    )
+    gcovr_exec.check_log(
+        (
+            logging.ERROR,
+            "The LCOV test name must not contain spaces, got 'Name with spaces'.",
+        )
+    )
 
 
 @pytest.mark.parametrize(
-    ("msg", "option"),
+    ("name", "option"),
     [
-        (rf"A {msg} report is not possible with --json-compare.", f"--{msg.lower()}")
-        for msg in [
+        pytest.param(name, f"--{name.lower()}", id=name)
+        for name in [
             "Clover",
             "Cobertura",
             "Coveralls",
@@ -909,66 +888,109 @@ def test_deprecated_option(
             "SonarQube",
         ]
     ],
-    ids=lambda args: args[1],
 )
 def test_json_compare_not_possible_option(
-    caplog: pytest.LogCaptureFixture, msg: str, option: str
+    gcovr_exec: "GcovrExecFixture", name: str, option: str
 ) -> None:
     """Test if a report is not possible with --json-compare."""
-    c = log_capture(
-        caplog,
-        [
-            "--json-add-tracefile=coverage_1.json",
-            "--json-add-tracefile=coverage_2.json",
-            "--json-compare",
-            option,
-        ],
+    gcovr_exec.gcovr(
+        "--json-add-tracefile=coverage_1.json",
+        "--json-add-tracefile=coverage_2.json",
+        "--json-compare",
+        option,
+        exitcode_ok=1,
     )
-    message = c.record_tuples[0]
-    assert message[1] == logging.ERROR
-    assert msg == message[2]
-    assert c.exitcode == 1
+    gcovr_exec.check_log(
+        (logging.ERROR, f"A {name} report is not possible with --json-compare.")
+    )
 
 
 def test_json_compare_with_several_text_metrics(
-    caplog: pytest.LogCaptureFixture,
+    gcovr_exec: "GcovrExecFixture",
 ) -> None:
     """Test if a report is not possible with --json-compare."""
-    c = log_capture(
-        caplog,
-        [
-            "--json-add-tracefile=coverage_1.json",
-            "--json-add-tracefile=coverage_2.json",
-            "--json-compare",
-            "--txt-metric=line",
-            "--txt-metric=branch",
-            "--txt",
-        ],
+    gcovr_exec.gcovr(
+        "--json-add-tracefile=coverage_1.json",
+        "--json-add-tracefile=coverage_2.json",
+        "--json-compare",
+        "--txt-metric=line",
+        "--txt-metric=branch",
+        "--txt",
+        exitcode_ok=1,
     )
-    message = c.record_tuples[0]
-    assert message[1] == logging.ERROR
-    assert (
-        message[2]
-        == "A txt report with several metrics is not possible with --json-compare."
+    gcovr_exec.check_log(
+        (
+            logging.ERROR,
+            "A txt report with several metrics is not possible with --json-compare.",
+        )
     )
-    assert c.exitcode == 1
 
 
 def test_json_compare_with_several_cobertura_tracefile(
-    caplog: pytest.LogCaptureFixture,
+    gcovr_exec: "GcovrExecFixture",
 ) -> None:
     """Test if a report is not possible with --json-compare."""
-    c = log_capture(
-        caplog,
-        [
-            "--json-add-tracefile=coverage_1.json",
-            "--json-add-tracefile=coverage_2.json",
-            "--cobertura-add-tracefile=coverage_1.json",
-            "--json-compare",
-            "--txt",
-        ],
+    gcovr_exec.gcovr(
+        "--json-add-tracefile=coverage_1.json",
+        "--json-add-tracefile=coverage_2.json",
+        "--cobertura-add-tracefile=coverage_1.json",
+        "--json-compare",
+        "--txt",
+        exitcode_ok=1,
     )
-    message = c.record_tuples[0]
-    assert message[1] == logging.ERROR
-    assert message[2] == "A Cobertura tracefile is not possible with --json-compare."
-    assert c.exitcode == 1
+    gcovr_exec.check_log(
+        (logging.ERROR, "A Cobertura tracefile is not possible with --json-compare.")
+    )
+
+
+def test_json_tracefile_with_useless_option(
+    gcovr_exec: "GcovrExecFixture",
+) -> None:
+    """Test if a report is not possible with --json-compare."""
+    coverage_json = gcovr_exec.output_dir / "coverage_in.json"
+    coverage_json.write_text(
+        textwrap.dedent("""\
+            {
+                "gcovr/format_version": "0.15",
+                "files": []
+            }
+            """),
+        encoding="UTF-8",
+    )
+
+    options_with_no_effect = [
+        "--exclude-directory",
+        ".*",
+        "--exclude-noncode-lines",
+        "--exclude-throw-branches",
+        "--exclude-unreachable-branches",
+        "--exclude-function-lines",
+        "--exclude-function",
+        "xxx",
+        "--exclude-lines-by-pattern",
+        ".*",
+        "--exclude-branches-by-pattern",
+        ".*",
+        "--warn-excluded-lines-with-hits",
+        "--include-internal-functions",
+        "--no-markers",
+    ]
+    gcovr_exec.gcovr(
+        f"--json-add-tracefile={coverage_json}",
+        *options_with_no_effect,
+        "--json-pretty",
+        "--json=coverage.json",
+    )
+    gcovr_exec.check_log(
+        *(
+            (
+                logging.WARNING,
+                f"Option {option} has no effect when generating reports from tracefiles.",
+            )
+            for option in [s for s in options_with_no_effect if s.startswith("--")]
+        ),
+        (
+            logging.WARNING,
+            "All coverage data is filtered out. Please check your paths and filters.",
+        ),
+    )

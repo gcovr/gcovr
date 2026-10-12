@@ -20,17 +20,17 @@ import typing
 import pytest
 
 if typing.TYPE_CHECKING:
-    from tests.conftest import GcovrTestExec
+    from tests.conftest import GcovrExecFixture
 
 
 @pytest.mark.csv
-def test(gcovr_test_exec: "GcovrTestExec") -> None:
+def test(gcovr_exec: "GcovrExecFixture") -> None:
     """Test for generation of CSV report."""
-    gcovr_test_exec.cxx_link(
+    gcovr_exec.cxx_link(
         "testcase",
-        gcovr_test_exec.cxx_compile("main.cpp"),
+        gcovr_exec.cxx_compile("main.cpp"),
     )
 
-    gcovr_test_exec.run("./testcase")
-    gcovr_test_exec.gcovr("--delete-input-files", "--csv", "coverage.csv")
-    gcovr_test_exec.compare_csv()
+    gcovr_exec.run("./testcase")
+    gcovr_exec.gcovr("--delete-input-files", "--csv", "coverage.csv")
+    gcovr_exec.compare_csv()

@@ -21,12 +21,12 @@ import shutil
 
 import pytest
 
-from tests.conftest import IS_DARWIN, IS_GCC, IS_WINDOWS, GcovrTestExec
+from tests.conftest import IS_DARWIN, IS_GCC, IS_WINDOWS, GcovrExecFixture
 
 BAZEL = shutil.which("bazel")
 
 
-def build_bazel_example(gcovr_test_exec: "GcovrTestExec") -> dict[str, str]:
+def build_bazel_example(gcovr_exec: "GcovrExecFixture") -> dict[str, str]:
     """Build the bazel example to verify that bazel is working."""
     bazel_build_options = [
         "--instrumentation_filter=//:lib",
@@ -34,20 +34,20 @@ def build_bazel_example(gcovr_test_exec: "GcovrTestExec") -> dict[str, str]:
         "--test_output=all",
         "--test_env=VERBOSE_COVERAGE=1",
     ]
-    if not gcovr_test_exec.is_windows():
+    if not gcovr_exec.is_windows():
         bazel_build_options.append("--force_pic")
-    if gcovr_test_exec.is_llvm():
+    if gcovr_exec.is_llvm():
         bazel_build_options.append("--config=clang-gcov")
 
     env = os.environ.copy()
     env.update(
         {
             "USE_BAZEL_VERSION": "7.7.0",
-            "GCOV": gcovr_test_exec.gcov()[0],
+            "GCOV": gcovr_exec.gcov()[0],
         }
     )
 
-    gcovr_test_exec.run(
+    gcovr_exec.run(
         str(BAZEL),
         "build",
         *bazel_build_options,
@@ -56,7 +56,7 @@ def build_bazel_example(gcovr_test_exec: "GcovrTestExec") -> dict[str, str]:
     )
 
     # Remove all existing gcda files
-    for directory in (gcovr_test_exec.output_dir / "bazel-out").glob("*-fastbuild"):
+    for directory in (gcovr_exec.output_dir / "bazel-out").glob("*-fastbuild"):
         for file in directory.rglob("*.gcda"):
             with contextlib.suppress(OSError):
                 file.unlink()
@@ -69,17 +69,17 @@ def build_bazel_example(gcovr_test_exec: "GcovrTestExec") -> dict[str, str]:
     reason="Bazel test not working on Windows or on MacOs (with gcc).",
 )
 @pytest.mark.json
-def test_run_on_our_own(gcovr_test_exec: "GcovrTestExec") -> None:
+def test_run_on_our_own(gcovr_exec: "GcovrExecFixture") -> None:
     """Test bazel build."""
-    build_bazel_example(gcovr_test_exec)
+    build_bazel_example(gcovr_exec)
 
-    for directory in (gcovr_test_exec.output_dir / "bazel-out").glob("*-fastbuild"):
-        gcovr_test_exec.run(directory / "bin" / "test" / "testcase")
+    for directory in (gcovr_exec.output_dir / "bazel-out").glob("*-fastbuild"):
+        gcovr_exec.run(directory / "bin" / "test" / "testcase")
         additional_options = []
-        if gcovr_test_exec.use_gcc_json_format():
+        if gcovr_exec.use_gcc_json_format():
             additional_options += ["--root", "/proc/self/cwd"]
 
-        gcovr_test_exec.gcovr(
+        gcovr_exec.gcovr(
             "--json-pretty",
             "--json=coverage.json",
             *additional_options,
@@ -90,7 +90,7 @@ def test_run_on_our_own(gcovr_test_exec: "GcovrTestExec") -> None:
         msg = "Can't resolve directory bazel-out/*-fastbuild."
         raise AssertionError(msg)
 
-    gcovr_test_exec.compare_json()
+    gcovr_exec.compare_json()
 
 
 @pytest.mark.skipif(
@@ -98,20 +98,20 @@ def test_run_on_our_own(gcovr_test_exec: "GcovrTestExec") -> None:
     reason="Bazel test not working on Windows and MacOs or with LLVM/clang.",
 )
 @pytest.mark.json
-def test_bazel_coverage(gcovr_test_exec: "GcovrTestExec") -> None:
+def test_bazel_coverage(gcovr_exec: "GcovrExecFixture") -> None:
     """Test bazel build."""
-    env = build_bazel_example(gcovr_test_exec)
+    env = build_bazel_example(gcovr_exec)
 
-    for directory in (gcovr_test_exec.output_dir / "bazel-out").glob("*-fastbuild"):
+    for directory in (gcovr_exec.output_dir / "bazel-out").glob("*-fastbuild"):
         bazel_coverage_options = [
             "--instrumentation_filter=//:lib",
             "--experimental_fetch_all_coverage_outputs",
             "--test_output=all",
             "--test_env=VERBOSE_COVERAGE=1",
         ]
-        if not gcovr_test_exec.is_windows():
+        if not gcovr_exec.is_windows():
             bazel_coverage_options.append("--force_pic")
-        gcovr_test_exec.run(
+        gcovr_exec.run(
             str(BAZEL),
             "coverage",
             *bazel_coverage_options,
@@ -120,14 +120,14 @@ def test_bazel_coverage(gcovr_test_exec: "GcovrTestExec") -> None:
         )
 
         additional_options = []
-        if gcovr_test_exec.use_gcc_json_format():
+        if gcovr_exec.use_gcc_json_format():
             additional_options += [
                 "--root",
                 "/proc/self/cwd",
                 "--gcov-use-existing",
                 "--keep-intermediate-files",
             ]
-        gcovr_test_exec.gcovr(
+        gcovr_exec.gcovr(
             "--verbose",
             "--json-pretty",
             "--json=coverage.json",
@@ -140,4 +140,4 @@ def test_bazel_coverage(gcovr_test_exec: "GcovrTestExec") -> None:
         msg = "Can't resolve directory bazel-out/*-fastbuild."
         raise AssertionError(msg)
 
-    gcovr_test_exec.compare_json()
+    gcovr_exec.compare_json()

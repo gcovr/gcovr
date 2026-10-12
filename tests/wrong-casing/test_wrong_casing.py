@@ -20,13 +20,13 @@ import typing
 import pytest
 
 if typing.TYPE_CHECKING:
-    from tests.conftest import GcovrTestExec
+    from tests.conftest import GcovrExecFixture
 
 
 @pytest.mark.json
-def test(gcovr_test_exec: "GcovrTestExec") -> None:
+def test(gcovr_exec: "GcovrExecFixture") -> None:
     """Test workspace coverage."""
-    gcovr_test_exec.gcovr(
+    gcovr_exec.gcovr(
         "--verbose",
         "--gcov-use-existing-files",
         "--json-pretty",
@@ -34,4 +34,4 @@ def test(gcovr_test_exec: "GcovrTestExec") -> None:
         "main.case_1.gcov",
         "data",
     )
-    gcovr_test_exec.compare_json()
+    gcovr_exec.compare_json()

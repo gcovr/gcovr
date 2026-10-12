@@ -17,7 +17,6 @@
 
 import logging
 import platform
-import sys
 from contextlib import contextmanager
 from pathlib import Path
 from typing import TYPE_CHECKING, Generator
@@ -25,34 +24,36 @@ from typing import TYPE_CHECKING, Generator
 import pytest
 
 if TYPE_CHECKING:
-    from tests.conftest import GcovrTestExec
+    from tests.conftest import GcovrExecFixture
 
 LOGGER = logging.getLogger(__name__)
 
 
 @contextmanager
-def subst(gcovr_test_exec: "GcovrTestExec") -> Generator[Path, None, None]:
+def subst(gcovr_exec: "GcovrExecFixture") -> Generator[Path, None, None]:
     """Subst the path to a drive and return it."""
     import string  # noqa: PLC0415
 
     import win32api  # noqa: PLC0415
 
     used_drives = [e[:-1] for e in win32api.GetLogicalDriveStrings().split("\0")]
-    sys.stdout.write(f"Used drives: {', '.join(used_drives)}")
+    gcovr_exec.print(f"Used drives: {', '.join(used_drives)}")
     free_drives = sorted({f"{e}:" for e in string.ascii_uppercase} - set(used_drives))
-    sys.stdout.write(f"Free drives: {', '.join(free_drives)}")
+    gcovr_exec.print(f"Free drives: {', '.join(free_drives)}")
     assert free_drives, "Must have at least one free drive letter"
     drive = None
     try:
-        path = gcovr_test_exec.output_dir
+        path = gcovr_exec.output_dir
         drive = free_drives[-1]
-        gcovr_test_exec.run("cmd", "/C", f"subst {drive} {path.parent}")
-        LOGGER.info("Substituted path %s to %s.", path.parent, drive)
-        yield Path(drive, path.name)
+        gcovr_exec.run("cmd", "/C", f"subst {drive} {path.parent}")
+        gcovr_exec.print(f"Substituted path {path.parent} to {drive}.")
+        yield Path(f"{drive}/{path.name}")
     finally:
         if drive is not None:
-            LOGGER.info("Remove substitution %s.", drive)
-            gcovr_test_exec.run("cmd", "/C", f"subst {drive} /d")
+            gcovr_exec.print(
+                f"Remove substitution {drive}.",
+            )
+            gcovr_exec.run("cmd", "/C", f"subst {drive} /d")
 
 
 @pytest.mark.skipif(platform.system() != "Windows", reason="Only for windows")
@@ -65,76 +66,78 @@ def subst(gcovr_test_exec: "GcovrTestExec") -> Generator[Path, None, None]:
 @pytest.mark.lcov
 @pytest.mark.sonarqube
 @pytest.mark.txt
-def test_drive_subst(gcovr_test_exec: "GcovrTestExec") -> None:
+def test_drive_subst(gcovr_exec: "GcovrExecFixture") -> None:
     """Test with drive substitution on Windows."""
-    with subst(gcovr_test_exec) as subst_drive:
-        gcovr_test_exec.cxx_link("testcase", "main.cpp", cwd=subst_drive)
+    with subst(gcovr_exec) as subst_drive:
+        gcovr_exec.cxx_link("testcase", "main.cpp", cwd=subst_drive)
 
-        gcovr_test_exec.run("./testcase")
-        gcovr_test_exec.gcovr("--json-pretty", "--json=coverage.json", cwd=subst_drive)
-        gcovr_test_exec.gcovr(
+        gcovr_exec.run("./testcase")
+        gcovr_exec.gcovr("--json-pretty", "--json=coverage.json", cwd=subst_drive)
+        gcovr_exec.gcovr(
             "--json-add-tracefile=coverage.json",
             "--json-summary-pretty",
             "--json-summary=coverage_summary.json",
             cwd=subst_drive,
+            use_main=False,
         )
-        gcovr_test_exec.compare_json()
+        gcovr_exec.compare_json()
 
-        gcovr_test_exec.gcovr(
+        gcovr_exec.gcovr(
             "--json-add-tracefile=coverage.json",
             "--html-details=coverage.html",
             cwd=subst_drive,
         )
-        gcovr_test_exec.compare_html()
+        gcovr_exec.compare_html()
 
-        gcovr_test_exec.gcovr(
+        gcovr_exec.gcovr(
             "--json-add-tracefile=coverage.json",
             "--txt=coverage.txt",
             cwd=subst_drive,
         )
-        gcovr_test_exec.compare_txt()
+        gcovr_exec.compare_txt()
 
-        gcovr_test_exec.gcovr(
+        gcovr_exec.gcovr(
             "--json-add-tracefile=coverage.json",
             "--clover-pretty",
             "--clover=clover.xml",
             cwd=subst_drive,
         )
-        gcovr_test_exec.compare_clover()
+        gcovr_exec.compare_clover()
 
-        gcovr_test_exec.gcovr(
+        gcovr_exec.gcovr(
             "--json-add-tracefile=coverage.json",
             "--cobertura-pretty",
             "--cobertura=cobertura.xml",
             cwd=subst_drive,
         )
-        gcovr_test_exec.compare_cobertura()
+        gcovr_exec.compare_cobertura()
 
-        gcovr_test_exec.gcovr(
+        gcovr_exec.gcovr(
             "--json-add-tracefile=coverage.json",
             "--coveralls-pretty",
             "--coveralls=coveralls.json",
+            use_main=False,
             cwd=subst_drive,
         )
-        gcovr_test_exec.compare_coveralls()
+        gcovr_exec.compare_coveralls()
 
-        gcovr_test_exec.gcovr(
+        gcovr_exec.gcovr(
             "--json-add-tracefile=coverage.json",
             "--lcov=coverage.lcov",
             cwd=subst_drive,
         )
-        gcovr_test_exec.compare_lcov()
+        gcovr_exec.compare_lcov()
 
-        gcovr_test_exec.gcovr(
+        gcovr_exec.gcovr(
             "--json-add-tracefile=coverage.json",
             "--jacoco=jacoco.xml",
             cwd=subst_drive,
         )
-        gcovr_test_exec.compare_jacoco()
+        gcovr_exec.compare_jacoco()
 
-        gcovr_test_exec.gcovr(
+        gcovr_exec.gcovr(
             "--json-add-tracefile=coverage.json",
             "--sonarqube=sonarqube.xml",
             cwd=subst_drive,
         )
-        gcovr_test_exec.compare_sonarqube()
+        gcovr_exec.compare_sonarqube()

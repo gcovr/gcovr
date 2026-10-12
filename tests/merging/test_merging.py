@@ -17,14 +17,13 @@
 
 import logging
 import re
-import subprocess  # nosec
 import typing
 from pathlib import Path
 
 import pytest
 from pytest_check import check
 
-from tests.conftest import IS_LINUX, GcovrTestExec
+from tests.conftest import IS_LINUX, GcovrExecFixture
 
 
 @pytest.mark.skipif(
@@ -32,36 +31,36 @@ from tests.conftest import IS_LINUX, GcovrTestExec
     reason="Merging of branches is independent of OS and we do not want to have separate data for Windows and Darwin.",
 )
 @pytest.mark.json
-def test_different_branches(gcovr_test_exec: "GcovrTestExec") -> None:
+def test_different_branches(gcovr_exec: "GcovrExecFixture") -> None:
     """Test merging different branch information for same line."""
 
     def outputs() -> typing.Iterable[tuple[int, Path]]:
         """Build the executables."""
         for postfix in range(1, 5):
-            yield (postfix, gcovr_test_exec.output_dir / f"build{postfix}")
+            yield (postfix, gcovr_exec.output_dir / f"build{postfix}")
 
     for postfix, build_dir in outputs():
         build_dir.mkdir()
         additional_options = []
         if postfix in [3, 4]:
             additional_options.append("-DTWO_CONDITIONS")
-        gcovr_test_exec.cxx_link(
+        gcovr_exec.cxx_link(
             "testcase",
             *additional_options,
             "../main.c",
             cwd=build_dir,
         )
 
-    gcovr_test_exec.run_parallel_from_directories(
+    gcovr_exec.run_parallel_from_directories(
         "./testcase",
         cwd=[build_dir for _, build_dir in outputs()],
     )
-    gcovr_test_exec.gcovr(
+    gcovr_exec.gcovr(
         "--json-trace-data-source",
         "--json-pretty",
         "--json=coverage.json",
     )
-    gcovr_test_exec.compare_json()
+    gcovr_exec.compare_json()
 
 
 @pytest.mark.skipif(
@@ -69,42 +68,40 @@ def test_different_branches(gcovr_test_exec: "GcovrTestExec") -> None:
     reason="Merging of functions is independent of OS and we do not want to have separate data for Windows and Darwin.",
 )
 def test_different_functions_strict(
-    gcovr_test_exec: "GcovrTestExec",
+    gcovr_exec: "GcovrExecFixture",
     caplog: pytest.LogCaptureFixture,
 ) -> None:
     """Test merging same function defined on different lines."""
-    gcovr_test_exec.copy_source(Path("source", "different-functions"))
+    gcovr_exec.copy_source(Path("source", "different-functions"))
 
     def outputs() -> typing.Iterable[tuple[int, Path]]:
         """Build the executables."""
         for postfix in [1, 2]:
-            yield (postfix, gcovr_test_exec.output_dir / f"build{postfix}")
+            yield (postfix, gcovr_exec.output_dir / f"build{postfix}")
 
     for postfix, build_dir in outputs():
         build_dir.mkdir()
         additional_options = []
         if postfix == 2:  # noqa: PLR2004
             additional_options.append("-DFOO_OTHER_LINE")
-        gcovr_test_exec.cxx_link(
+        gcovr_exec.cxx_link(
             "testcase",
             *additional_options,
             "../main.c",
             cwd=build_dir,
         )
 
-    gcovr_test_exec.run_parallel_from_directories(
+    gcovr_exec.run_parallel_from_directories(
         "./testcase",
         cwd=[build_dir for _, build_dir in outputs()],
     )
 
-    process = gcovr_test_exec.gcovr(
+    gcovr_exec.gcovr(
         "--json-trace-data-source",
         "--json-pretty",
         "--json=coverage.json",
-        use_main=True,
+        exitcode_ok=64,
     )
-    with check:
-        assert process.returncode == 64, "Read error."  # noqa: PLR2004
     messages = caplog.record_tuples
     with check:
         assert len(messages) == 2  # noqa: PLR2004
@@ -141,7 +138,7 @@ def test_different_functions_strict(
 @pytest.mark.lcov
 @pytest.mark.sonarqube
 def test_different_functions(
-    gcovr_test_exec: "GcovrTestExec",
+    gcovr_exec: "GcovrExecFixture",
     merge_mode_function: str,
 ) -> None:
     """Test merging same function defined on different lines."""
@@ -149,96 +146,94 @@ def test_different_functions(
     def outputs() -> typing.Iterable[tuple[int, Path]]:
         """Build the executables."""
         for postfix in [1, 2]:
-            yield (postfix, gcovr_test_exec.output_dir / f"build{postfix}")
+            yield (postfix, gcovr_exec.output_dir / f"build{postfix}")
 
     for postfix, build_dir in outputs():
         build_dir.mkdir()
         additional_options = []
         if postfix == 2:  # noqa: PLR2004
             additional_options.append("-DFOO_OTHER_LINE")
-        gcovr_test_exec.cxx_link(
+        gcovr_exec.cxx_link(
             "testcase",
             *additional_options,
             "../main.c",
             cwd=build_dir,
         )
 
-    gcovr_test_exec.run_parallel_from_directories(
+    gcovr_exec.run_parallel_from_directories(
         "./testcase",
         cwd=[build_dir for _, build_dir in outputs()],
     )
 
     additional_options = [f"--merge-mode-functions={merge_mode_function}"]
-    gcovr_test_exec.gcovr(
+    gcovr_exec.gcovr(
         "--verbose",
         *additional_options,
         "--json-pretty",
         "--json=coverage.json",
     )
-    gcovr_test_exec.compare_json()
+    gcovr_exec.compare_json()
 
     if merge_mode_function == "separate":
         # If we have only one file it must be readable in strict mode because it's overwritten.
-        gcovr_test_exec.gcovr(
+        gcovr_exec.gcovr(
             "--json-add-tracefile=coverage.json",
             "--json-pretty",
             "--json=coverage_roundtrip.json",
         )
-        gcovr_test_exec.run(
-            "diff", "-U", "1", "coverage.json", "coverage_roundtrip.json"
-        )
+        gcovr_exec.run("diff", "-U", "1", "coverage.json", "coverage_roundtrip.json")
         # For the second file a exception must be raised if the mode is strict
-        with pytest.raises(subprocess.CalledProcessError) as exception:
-            gcovr_test_exec.gcovr(
-                "--json-add-tracefile=coverage.json",
-                "--json-add-tracefile=coverage_roundtrip.json",
-                "--json-pretty",
-                "--json=coverage.error.json",
-            )
-        assert exception.value.returncode == 64, "Read error."  # noqa: PLR2004
+        gcovr_exec.gcovr(
+            "--json-add-tracefile=coverage.json",
+            "--json-add-tracefile=coverage_roundtrip.json",
+            "--json-pretty",
+            "--json=coverage.error.json",
+            exitcode_ok=64,
+        )
     else:
         additional_options.clear()
 
-    gcovr_test_exec.gcovr(
+    gcovr_exec.gcovr(
         "--json-add-tracefile=coverage.json",
         *additional_options,
         "--html-details=coverage.html",
     )
-    gcovr_test_exec.compare_html()
+    gcovr_exec.compare_html()
 
-    gcovr_test_exec.gcovr(
+    gcovr_exec.gcovr(
         "--json-add-tracefile=coverage.json",
         *additional_options,
         "--txt=coverage.txt",
     )
-    gcovr_test_exec.compare_txt()
+    gcovr_exec.compare_txt()
 
-    gcovr_test_exec.gcovr(
+    gcovr_exec.gcovr(
         "--json-add-tracefile=coverage.json",
         *additional_options,
         "--cobertura-pretty",
         "--cobertura=cobertura.xml",
     )
-    gcovr_test_exec.compare_cobertura()
+    gcovr_exec.compare_cobertura()
 
-    gcovr_test_exec.gcovr(
+    gcovr_exec.gcovr(
         "--json-add-tracefile=coverage.json",
         *additional_options,
         "--coveralls-pretty",
         "--coveralls=coveralls.json",
+        use_main=False,
     )
-    gcovr_test_exec.compare_coveralls()
+    gcovr_exec.compare_coveralls()
 
-    gcovr_test_exec.gcovr(
+    gcovr_exec.gcovr(
         "--json-add-tracefile=coverage.json",
         *additional_options,
         "--lcov=coverage.lcov",
     )
-    gcovr_test_exec.compare_lcov()
+    gcovr_exec.compare_lcov()
 
-    gcovr_test_exec.gcovr(
+    gcovr_exec.gcovr(
         "--json-add-tracefile=coverage.json",
         *additional_options,
         "--sonarqube=sonarqube.xml",
     )
-    gcovr_test_exec.compare_sonarqube()
+    gcovr_exec.compare_sonarqube()

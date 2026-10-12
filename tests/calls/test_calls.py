@@ -21,38 +21,38 @@ from pathlib import Path
 import pytest
 
 if typing.TYPE_CHECKING:
-    from tests.conftest import GcovrTestExec
+    from tests.conftest import GcovrExecFixture
 
 
 @pytest.mark.html
 @pytest.mark.json
-def test(gcovr_test_exec: "GcovrTestExec") -> None:
+def test(gcovr_exec: "GcovrExecFixture") -> None:
     """Test call coverage."""
-    gcovr_test_exec.cxx_link(
+    gcovr_exec.cxx_link(
         "testcase",
-        gcovr_test_exec.cxx_compile("main.c"),
+        gcovr_exec.cxx_compile("main.c"),
     )
 
-    gcovr_test_exec.run("./testcase")
+    gcovr_exec.run("./testcase")
     first_json = Path("first.json")
-    gcovr_test_exec.gcovr("--calls", "--json", first_json)
+    gcovr_exec.gcovr("--calls", "--json", first_json)
 
-    gcovr_test_exec.run("./testcase")
+    gcovr_exec.run("./testcase")
     second_json = Path("second.json")
-    gcovr_test_exec.gcovr("--calls", "--json", second_json)
+    gcovr_exec.gcovr("--calls", "--json", second_json)
 
-    gcovr_test_exec.gcovr(
+    gcovr_exec.gcovr(
         "--json-add-tracefile",
         first_json,
         "--json-add-tracefile",
         second_json,
         "--json=coverage.json",
     )
-    gcovr_test_exec.compare_json()
+    gcovr_exec.compare_json()
 
-    gcovr_test_exec.gcovr(
+    gcovr_exec.gcovr(
         "--calls",
         "--json-add-tracefile=coverage.json",
         "--html-details=coverage.html",
     )
-    gcovr_test_exec.compare_html()
+    gcovr_exec.compare_html()

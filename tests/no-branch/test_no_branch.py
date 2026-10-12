@@ -20,7 +20,7 @@ import typing
 import pytest
 
 if typing.TYPE_CHECKING:
-    from tests.conftest import GcovrTestExec
+    from tests.conftest import GcovrExecFixture
 
 
 @pytest.mark.html
@@ -30,67 +30,68 @@ if typing.TYPE_CHECKING:
 @pytest.mark.lcov
 @pytest.mark.sonarqube
 @pytest.mark.txt
-def test(gcovr_test_exec: "GcovrTestExec") -> None:
+def test(gcovr_exec: "GcovrExecFixture") -> None:
     """A simple test that verifies line coverage with no branches."""
-    gcovr_test_exec.cxx_link("testcase", "main.cpp")
+    gcovr_exec.cxx_link("testcase", "main.cpp")
 
-    gcovr_test_exec.run("./testcase")
-    gcovr_test_exec.gcovr(
+    gcovr_exec.run("./testcase")
+    gcovr_exec.gcovr(
         "--fail-under-branch=100.0",
         "--json-pretty",
         "--json=coverage.json",
     )
 
-    gcovr_test_exec.gcovr(
+    gcovr_exec.gcovr(
         "--fail-under-branch=100.0",
         "--json-add-tracefile=coverage.json",
         "--html-details",
         "--html=coverage.html",
     )
-    gcovr_test_exec.compare_html()
+    gcovr_exec.compare_html()
 
-    gcovr_test_exec.gcovr(
+    gcovr_exec.gcovr(
         "--txt-metric",
         "branch",
         "--fail-under-branch=100.0",
         "--json-add-tracefile=coverage.json",
         "--txt=coverage.txt",
     )
-    gcovr_test_exec.compare_txt()
+    gcovr_exec.compare_txt()
 
-    gcovr_test_exec.gcovr(
+    gcovr_exec.gcovr(
         "--fail-under-branch=100.0",
         "--json-add-tracefile=coverage.json",
         "--cobertura-pretty",
         "--cobertura=cobertura.xml",
     )
-    gcovr_test_exec.compare_cobertura()
+    gcovr_exec.compare_cobertura()
 
-    gcovr_test_exec.gcovr(
+    gcovr_exec.gcovr(
         "--fail-under-branch=100.0",
         "--json-add-tracefile=coverage.json",
         "--coveralls-pretty",
         "--coveralls=coveralls.json",
+        use_main=False,
     )
-    gcovr_test_exec.compare_coveralls()
+    gcovr_exec.compare_coveralls()
 
-    gcovr_test_exec.gcovr(
+    gcovr_exec.gcovr(
         "--fail-under-branch=100.0",
         "--json-add-tracefile=coverage.json",
         "--lcov=coverage.lcov",
     )
-    gcovr_test_exec.compare_lcov()
+    gcovr_exec.compare_lcov()
 
-    gcovr_test_exec.gcovr(
+    gcovr_exec.gcovr(
         "--fail-under-branch=100.0",
         "--json-add-tracefile=coverage.json",
         "--jacoco=jacoco.xml",
     )
-    gcovr_test_exec.compare_jacoco()
+    gcovr_exec.compare_jacoco()
 
-    gcovr_test_exec.gcovr(
+    gcovr_exec.gcovr(
         "--fail-under-branch=100.0",
         "--json-add-tracefile=coverage.json",
         "--sonarqube=sonarqube.xml",
     )
-    gcovr_test_exec.compare_sonarqube()
+    gcovr_exec.compare_sonarqube()

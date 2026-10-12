@@ -20,44 +20,42 @@ import typing
 import pytest
 
 if typing.TYPE_CHECKING:
-    from tests.conftest import GcovrTestExec
+    from tests.conftest import GcovrExecFixture
 
 
 @pytest.mark.json
-def test_oos_1(gcovr_test_exec: "GcovrTestExec") -> None:
+def test_oos_1(gcovr_exec: "GcovrExecFixture") -> None:
     """Test out-of-source build and coverage."""
-    build_dir = gcovr_test_exec.output_dir / "build"
+    build_dir = gcovr_exec.output_dir / "build"
     build_dir.mkdir()
-    gcovr_test_exec.cxx_link(
+    gcovr_exec.cxx_link(
         "build/testcase",
-        gcovr_test_exec.cxx_compile("src/file1.cpp", target="build/file1.o"),
-        gcovr_test_exec.cxx_compile("src/main.cpp", target="build/main.o"),
+        gcovr_exec.cxx_compile("src/file1.cpp", target="build/file1.o"),
+        gcovr_exec.cxx_compile("src/main.cpp", target="build/main.o"),
     )
 
-    gcovr_test_exec.run("./build/testcase")
-    gcovr_test_exec.gcovr(
+    gcovr_exec.run("./build/testcase")
+    gcovr_exec.gcovr(
         "--json-pretty",
         "--json=coverage.json",
     )
-    gcovr_test_exec.compare_json()
+    gcovr_exec.compare_json()
 
 
 @pytest.mark.json
-def test_oos_2(gcovr_test_exec: "GcovrTestExec") -> None:
+def test_oos_2(gcovr_exec: "GcovrExecFixture") -> None:
     """Test out-of-source build and coverage."""
-    build_dir = gcovr_test_exec.output_dir / "build"
+    build_dir = gcovr_exec.output_dir / "build"
     build_dir.mkdir()
-    gcovr_test_exec.cxx_link(
+    gcovr_exec.cxx_link(
         "testcase",
-        gcovr_test_exec.cxx_compile(
-            "../src/file1.cpp", target="file1.o", cwd=build_dir
-        ),
-        gcovr_test_exec.cxx_compile("../src/main.cpp", target="main.o", cwd=build_dir),
+        gcovr_exec.cxx_compile("../src/file1.cpp", target="file1.o", cwd=build_dir),
+        gcovr_exec.cxx_compile("../src/main.cpp", target="main.o", cwd=build_dir),
         cwd=build_dir,
     )
 
-    gcovr_test_exec.run("./build/testcase")
-    gcovr_test_exec.gcovr(
+    gcovr_exec.run("./build/testcase")
+    gcovr_exec.gcovr(
         "-r",
         "../src",
         "--json-pretty",
@@ -66,4 +64,4 @@ def test_oos_2(gcovr_test_exec: "GcovrTestExec") -> None:
         ".",
         cwd=build_dir,
     )
-    gcovr_test_exec.compare_json()
+    gcovr_exec.compare_json()
