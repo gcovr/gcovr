@@ -14,7 +14,7 @@
         "context": ".."
     },
     "containerEnv": {
-        "CC": "$COMPILER_VERSIONS"
+        "CC": "gcc-8"
     },
     "customizations": {
         "vscode": {

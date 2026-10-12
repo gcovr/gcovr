@@ -17,7 +17,7 @@
 
 import pytest
 
-from tests.conftest import _CC_HELP_OUTPUT, GcovrTestExec
+from tests.conftest import _CC_HELP_OUTPUT, GcovrExecFixture
 
 PROFILE_ABS_PATH = "-fprofile-abs-path"
 
@@ -27,20 +27,18 @@ PROFILE_ABS_PATH = "-fprofile-abs-path"
     reason=f"GCC version does not support {PROFILE_ABS_PATH}",
 )
 @pytest.mark.json
-def test(gcovr_test_exec: "GcovrTestExec") -> None:
+def test(gcovr_exec: "GcovrExecFixture") -> None:
     """Test gcc-abspath coverage."""
-    subfolder = gcovr_test_exec.output_dir / "subfolder"
-    gcovr_test_exec.cc_link(
+    subfolder = gcovr_exec.output_dir / "subfolder"
+    gcovr_exec.cc_link(
         "testcase",
         PROFILE_ABS_PATH,
         "main.c",
         cwd=subfolder,
     )
 
-    gcovr_test_exec.run("./testcase", cwd=subfolder)
+    gcovr_exec.run("./testcase", cwd=subfolder)
     for file in subfolder.glob("*.gc??"):
         file.rename(file.parent.parent / file.name)
-    gcovr_test_exec.gcovr(
-        "--delete-input-files", "--json-pretty", "--json=coverage.json"
-    )
-    gcovr_test_exec.compare_json()
+    gcovr_exec.gcovr("--delete-input-files", "--json-pretty", "--json=coverage.json")
+    gcovr_exec.compare_json()

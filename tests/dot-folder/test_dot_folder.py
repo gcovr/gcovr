@@ -17,7 +17,7 @@
 
 import pytest
 
-from tests.conftest import IS_WINDOWS, GcovrTestExec
+from tests.conftest import IS_WINDOWS, GcovrExecFixture
 
 
 @pytest.mark.skipif(
@@ -32,15 +32,13 @@ from tests.conftest import IS_WINDOWS, GcovrTestExec
 @pytest.mark.lcov
 @pytest.mark.sonarqube
 @pytest.mark.txt
-def test(gcovr_test_exec: "GcovrTestExec") -> None:
+def test(gcovr_exec: "GcovrExecFixture") -> None:
     """Test adding a tracefile output."""
-    (gcovr_test_exec.output_dir / "subdir").rename(
-        gcovr_test_exec.output_dir / ".subdir"
-    )
-    gcovr_test_exec.cxx_link(
+    (gcovr_exec.output_dir / "subdir").rename(gcovr_exec.output_dir / ".subdir")
+    gcovr_exec.cxx_link(
         ".subdir/testcase",
         *[
-            gcovr_test_exec.cxx_compile(source, target=source + ".o", options=["-DFOO"])
+            gcovr_exec.cxx_compile(source, target=source + ".o", options=["-DFOO"])
             for source in [
                 ".subdir/A/file1.cpp",
                 ".subdir/A/File2.cpp",
@@ -53,53 +51,54 @@ def test(gcovr_test_exec: "GcovrTestExec") -> None:
         ],
     )
 
-    gcovr_test_exec.run(".subdir/testcase")
-    gcovr_test_exec.gcovr(
+    gcovr_exec.run(".subdir/testcase")
+    gcovr_exec.gcovr(
         "--json-pretty",
         "--json=coverage.json",
     )
-    gcovr_test_exec.compare_json()
+    gcovr_exec.compare_json()
 
-    gcovr_test_exec.gcovr(
+    gcovr_exec.gcovr(
         "--json-add-tracefile=coverage.json",
         "--html-details=coverage.html",
     )
-    gcovr_test_exec.compare_html()
+    gcovr_exec.compare_html()
 
-    gcovr_test_exec.gcovr(
+    gcovr_exec.gcovr(
         "--json-add-tracefile=coverage.json",
         "--txt=coverage.txt",
     )
-    gcovr_test_exec.compare_txt()
+    gcovr_exec.compare_txt()
 
-    gcovr_test_exec.gcovr(
+    gcovr_exec.gcovr(
         "--json-add-tracefile=coverage.json",
         "--cobertura-pretty",
         "--cobertura=cobertura.xml",
     )
-    gcovr_test_exec.compare_cobertura()
+    gcovr_exec.compare_cobertura()
 
-    gcovr_test_exec.gcovr(
+    gcovr_exec.gcovr(
         "--json-add-tracefile=coverage.json",
         "--coveralls-pretty",
         "--coveralls=coveralls.json",
+        use_main=False,
     )
-    gcovr_test_exec.compare_coveralls()
+    gcovr_exec.compare_coveralls()
 
-    gcovr_test_exec.gcovr(
+    gcovr_exec.gcovr(
         "--json-add-tracefile=coverage.json",
         "--jacoco=jacoco.xml",
     )
-    gcovr_test_exec.compare_jacoco()
+    gcovr_exec.compare_jacoco()
 
-    gcovr_test_exec.gcovr(
+    gcovr_exec.gcovr(
         "--json-add-tracefile=coverage.json",
         "--lcov=coverage.lcov",
     )
-    gcovr_test_exec.compare_lcov()
+    gcovr_exec.compare_lcov()
 
-    gcovr_test_exec.gcovr(
+    gcovr_exec.gcovr(
         "--json-add-tracefile=coverage.json",
         "--sonarqube=sonarqube.xml",
     )
-    gcovr_test_exec.compare_sonarqube()
+    gcovr_exec.compare_sonarqube()

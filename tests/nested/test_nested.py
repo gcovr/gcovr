@@ -24,7 +24,7 @@ from unittest import mock
 import pytest
 from pytest_check import check
 
-from tests.conftest import GCOVR_ISOLATED_TEST, USE_PROFDATA_POSSIBLE, GcovrTestExec
+from tests.conftest import GCOVR_ISOLATED_TEST, USE_PROFDATA_POSSIBLE, GcovrExecFixture
 
 LOGGER = logging.getLogger(__name__)
 
@@ -39,30 +39,30 @@ LOGGER = logging.getLogger(__name__)
 @pytest.mark.markdown
 @pytest.mark.sonarqube
 @pytest.mark.txt
-def test_standard(gcovr_test_exec: "GcovrTestExec") -> None:
+def test_standard(gcovr_exec: "GcovrExecFixture") -> None:
     """Test nested coverage report generation."""
-    file2_cpp = gcovr_test_exec.output_dir / "subdir" / "A" / "File2.cpp"
+    file2_cpp = gcovr_exec.output_dir / "subdir" / "A" / "File2.cpp"
     deep_dir = file2_cpp.parent.joinpath(*[f"subdir_{i}" for i in range(10)])
     deep_dir.mkdir(parents=True, exist_ok=True)
     file2_cpp = file2_cpp.rename(deep_dir / file2_cpp.name).relative_to(
-        gcovr_test_exec.output_dir
+        gcovr_exec.output_dir
     )
-    gcovr_test_exec.cxx_link(
+    gcovr_exec.cxx_link(
         "subdir/testcase",
-        gcovr_test_exec.cxx_compile("subdir/A/file1.cpp"),
-        gcovr_test_exec.cxx_compile(file2_cpp),
-        gcovr_test_exec.cxx_compile("subdir/A/file3.cpp"),
-        gcovr_test_exec.cxx_compile("subdir/A/File4.cpp"),
-        gcovr_test_exec.cxx_compile("subdir/A/file7.cpp"),
-        gcovr_test_exec.cxx_compile("subdir/A/C/file5.cpp"),
-        gcovr_test_exec.cxx_compile("subdir/A/C/D/File6.cpp"),
-        gcovr_test_exec.cxx_compile("subdir/B/main.cpp"),
+        gcovr_exec.cxx_compile("subdir/A/file1.cpp"),
+        gcovr_exec.cxx_compile(file2_cpp),
+        gcovr_exec.cxx_compile("subdir/A/file3.cpp"),
+        gcovr_exec.cxx_compile("subdir/A/File4.cpp"),
+        gcovr_exec.cxx_compile("subdir/A/file7.cpp"),
+        gcovr_exec.cxx_compile("subdir/A/C/file5.cpp"),
+        gcovr_exec.cxx_compile("subdir/A/C/D/File6.cpp"),
+        gcovr_exec.cxx_compile("subdir/B/main.cpp"),
     )
 
-    gcovr_test_exec.run("./subdir/testcase")
-    all_gcda_files = list[Path](gcovr_test_exec.output_dir.rglob("*.gcda"))
+    gcovr_exec.run("./subdir/testcase")
+    all_gcda_files = list[Path](gcovr_exec.output_dir.rglob("*.gcda"))
 
-    gcovr_test_exec.gcovr(
+    gcovr_exec.gcovr(
         "--keep-intermediate-files",
         "--gcov-filter=(?:subdir#|(?i:main|file\\d)).*",
         "--trace-include=.*",
@@ -70,29 +70,29 @@ def test_standard(gcovr_test_exec: "GcovrTestExec") -> None:
         "--json-pretty",
         "--json=coverage.json",
     )
-    gcovr_test_exec.compare_json()
+    gcovr_exec.compare_json()
 
     for file in all_gcda_files:
         file_pattern = file.with_suffix(file.suffix + "*.gcov*").name
-        matching_files = list(gcovr_test_exec.output_dir.rglob(file_pattern))
+        matching_files = list(gcovr_exec.output_dir.rglob(file_pattern))
         check.is_true(
             len(matching_files) == 1,
             f"Expected exactly one gcov file for {file_pattern}, found {matching_files}",
         )
 
-    gcovr_test_exec.gcovr(
+    gcovr_exec.gcovr(
         "--root=subdir",
         "--json-add-tracefile=coverage.json",
         "--html-details=coverage.html",
     )
-    gcovr_test_exec.compare_html()
+    gcovr_exec.compare_html()
 
-    gcovr_test_exec.gcovr(
+    gcovr_exec.gcovr(
         "--root=subdir", "--json-add-tracefile=coverage.json", "--txt", "coverage.txt"
     )
-    gcovr_test_exec.compare_txt()
+    gcovr_exec.compare_txt()
 
-    gcovr_test_exec.gcovr(
+    gcovr_exec.gcovr(
         "--root=subdir",
         "--json-add-tracefile=coverage.json",
         "--markdown",
@@ -102,17 +102,17 @@ def test_standard(gcovr_test_exec: "GcovrTestExec") -> None:
         "--markdown-file-link",
         "http://link/to/file/{file}",
     )
-    gcovr_test_exec.compare_markdown()
+    gcovr_exec.compare_markdown()
 
-    gcovr_test_exec.gcovr(
+    gcovr_exec.gcovr(
         "--root=subdir",
         "--json-add-tracefile=coverage.json",
         "--lcov=coverage.lcov",
         "--lcov-format-1.x",
     )
-    gcovr_test_exec.compare_lcov()
+    gcovr_exec.compare_lcov()
 
-    gcovr_test_exec.gcovr(
+    gcovr_exec.gcovr(
         "--root=subdir",
         "--json-add-tracefile=coverage.json",
         "--clover-pretty",
@@ -120,38 +120,39 @@ def test_standard(gcovr_test_exec: "GcovrTestExec") -> None:
         "--clover-project",
         "Test project",
     )
-    gcovr_test_exec.compare_clover()
+    gcovr_exec.compare_clover()
 
-    gcovr_test_exec.gcovr(
+    gcovr_exec.gcovr(
         "--root=subdir",
         "--json-add-tracefile=coverage.json",
         "--cobertura-pretty",
         "--cobertura=cobertura.xml",
     )
-    gcovr_test_exec.compare_cobertura()
+    gcovr_exec.compare_cobertura()
 
-    gcovr_test_exec.gcovr(
+    gcovr_exec.gcovr(
         "--root=subdir",
         "--json-add-tracefile=coverage.json",
         "--coveralls-pretty",
         "--coveralls=coveralls.json",
+        use_main=False,
     )
-    gcovr_test_exec.compare_coveralls()
+    gcovr_exec.compare_coveralls()
 
-    gcovr_test_exec.gcovr(
+    gcovr_exec.gcovr(
         "--root=subdir",
         "--json-add-tracefile=coverage.json",
         "--jacoco-pretty",
         "--jacoco=jacoco.xml",
     )
-    gcovr_test_exec.compare_jacoco()
+    gcovr_exec.compare_jacoco()
 
-    gcovr_test_exec.gcovr(
+    gcovr_exec.gcovr(
         "--root=subdir",
         "--json-add-tracefile=coverage.json",
         "--sonarqube=sonarqube.xml",
     )
-    gcovr_test_exec.compare_sonarqube()
+    gcovr_exec.compare_sonarqube()
 
 
 @pytest.mark.skipif(
@@ -159,22 +160,22 @@ def test_standard(gcovr_test_exec: "GcovrTestExec") -> None:
     reason="Only available in isolated docker test.",
 )
 @pytest.mark.json
-def test_standard_ccache(gcovr_test_exec: "GcovrTestExec") -> None:
+def test_standard_ccache(gcovr_exec: "GcovrExecFixture") -> None:
     """Test nested coverage report generation."""
-    build_dir = gcovr_test_exec.output_dir / "build"
+    build_dir = gcovr_exec.output_dir / "build"
     for run in range(2):
         LOGGER.info("***** Build with ccache (%s) *****", run)
         with mock.patch.dict(
             "os.environ",
-            {"CCACHE_DIR": str(gcovr_test_exec.output_dir / "ccache")},
+            {"CCACHE_DIR": str(gcovr_exec.output_dir / "ccache")},
         ):
             if build_dir.exists():
                 shutil.rmtree(build_dir)
             build_dir.mkdir()
-            gcovr_test_exec.cxx_link(
+            gcovr_exec.cxx_link(
                 "subdir/testcase",
                 *[
-                    gcovr_test_exec.cxx_compile(
+                    gcovr_exec.cxx_compile(
                         source,
                         target=str(build_dir / (Path(source).name + ".o")),
                         launcher="ccache",
@@ -192,25 +193,25 @@ def test_standard_ccache(gcovr_test_exec: "GcovrTestExec") -> None:
                 ],
                 launcher="ccache",
             )
-            process = gcovr_test_exec.run("ccache", "--show-stats", cwd=build_dir)
+            gcovr_exec.run("ccache", "--show-stats", cwd=build_dir)
             rate = 0 if run == 0 else 100
             check.is_true(
                 re.search(
                     rf"(?:cache hit rate\s+{rate}.00 %|Hits:.+\(\s*{rate}.0{'' if rate else '0'}\s*%\))",
-                    process.stdout,
+                    gcovr_exec.out,
                 )
             )
-            gcovr_test_exec.run("ccache", "--zero-stats", cwd=build_dir)
+            gcovr_exec.run("ccache", "--zero-stats", cwd=build_dir)
 
-            gcovr_test_exec.run("./subdir/testcase")
-            gcovr_test_exec.gcovr(
+            gcovr_exec.run("./subdir/testcase")
+            gcovr_exec.gcovr(
                 "--root=subdir",
                 "--json-pretty",
                 f"--json=coverage{'' if run == 0 else '.cached'}.json",
                 str(build_dir),
             )
-    gcovr_test_exec.compare_json()
-    gcovr_test_exec.run("diff", "-U", "1", "coverage.json", "coverage.cached.json")
+    gcovr_exec.compare_json()
+    gcovr_exec.run("diff", "-U", "1", "coverage.json", "coverage.cached.json")
 
 
 @pytest.mark.skipif(
@@ -218,57 +219,57 @@ def test_standard_ccache(gcovr_test_exec: "GcovrTestExec") -> None:
     reason="LLVM profdata is not compatible with GCC coverage data.",
 )
 @pytest.mark.json
-def test_standard_llvm_profdata(gcovr_test_exec: "GcovrTestExec") -> None:
+def test_standard_llvm_profdata(gcovr_exec: "GcovrExecFixture") -> None:
     """Test nested coverage report generation."""
-    gcovr_test_exec.cxx_link(
+    gcovr_exec.cxx_link(
         "subdir/testcase",
-        gcovr_test_exec.cxx_compile("subdir/A/file1.cpp"),
-        gcovr_test_exec.cxx_compile("subdir/A/File2.cpp"),
-        gcovr_test_exec.cxx_compile("subdir/A/file3.cpp"),
-        gcovr_test_exec.cxx_compile("subdir/A/File4.cpp"),
-        gcovr_test_exec.cxx_compile("subdir/A/file7.cpp"),
-        gcovr_test_exec.cxx_compile("subdir/A/C/file5.cpp"),
-        gcovr_test_exec.cxx_compile("subdir/A/C/D/File6.cpp"),
-        gcovr_test_exec.cxx_compile("subdir/B/main.cpp"),
+        gcovr_exec.cxx_compile("subdir/A/file1.cpp"),
+        gcovr_exec.cxx_compile("subdir/A/File2.cpp"),
+        gcovr_exec.cxx_compile("subdir/A/file3.cpp"),
+        gcovr_exec.cxx_compile("subdir/A/File4.cpp"),
+        gcovr_exec.cxx_compile("subdir/A/file7.cpp"),
+        gcovr_exec.cxx_compile("subdir/A/C/file5.cpp"),
+        gcovr_exec.cxx_compile("subdir/A/C/D/File6.cpp"),
+        gcovr_exec.cxx_compile("subdir/B/main.cpp"),
     )
 
-    gcovr_test_exec.run("./testcase", cwd=Path("subdir"))
-    gcovr_test_exec.gcovr(
+    gcovr_exec.run("./testcase", cwd=Path("subdir"))
+    gcovr_exec.gcovr(
         "--llvm-cov-binary=./testcase",
         "--trace-include=.+/file.\\.cpp$",
         "--json-pretty",
         "--json=../coverage.json",
         cwd=Path("subdir"),
     )
-    gcovr_test_exec.compare_json()
+    gcovr_exec.compare_json()
 
 
 @pytest.mark.json
-def test_threaded(gcovr_test_exec: "GcovrTestExec") -> None:
+def test_threaded(gcovr_exec: "GcovrExecFixture") -> None:
     """Test nested coverage report generation."""
-    gcovr_test_exec.cxx_link(
+    gcovr_exec.cxx_link(
         "subdir/testcase",
-        gcovr_test_exec.cxx_compile("subdir/A/file1.cpp"),
-        gcovr_test_exec.cxx_compile("subdir/A/File2.cpp"),
-        gcovr_test_exec.cxx_compile("subdir/A/file3.cpp"),
-        gcovr_test_exec.cxx_compile("subdir/A/File4.cpp"),
-        gcovr_test_exec.cxx_compile("subdir/A/file7.cpp"),
-        gcovr_test_exec.cxx_compile("subdir/A/C/file5.cpp"),
-        gcovr_test_exec.cxx_compile("subdir/A/C/D/File6.cpp"),
-        gcovr_test_exec.cxx_compile("subdir/B/main.cpp"),
+        gcovr_exec.cxx_compile("subdir/A/file1.cpp"),
+        gcovr_exec.cxx_compile("subdir/A/File2.cpp"),
+        gcovr_exec.cxx_compile("subdir/A/file3.cpp"),
+        gcovr_exec.cxx_compile("subdir/A/File4.cpp"),
+        gcovr_exec.cxx_compile("subdir/A/file7.cpp"),
+        gcovr_exec.cxx_compile("subdir/A/C/file5.cpp"),
+        gcovr_exec.cxx_compile("subdir/A/C/D/File6.cpp"),
+        gcovr_exec.cxx_compile("subdir/B/main.cpp"),
     )
 
-    gcovr_test_exec.run(
+    gcovr_exec.run(
         "./testcase",
         cwd=Path("subdir"),
     )
-    gcovr_test_exec.gcovr(
+    gcovr_exec.gcovr(
         "-j=-1",
         "--json-pretty",
         "--json=../coverage.json",
         cwd=Path("subdir"),
     )
-    gcovr_test_exec.compare_json()
+    gcovr_exec.compare_json()
 
 
 @pytest.mark.cobertura
@@ -279,7 +280,7 @@ def test_threaded(gcovr_test_exec: "GcovrTestExec") -> None:
 @pytest.mark.lcov
 @pytest.mark.sonarqube
 @pytest.mark.txt
-def test_linked(gcovr_test_exec: "GcovrTestExec") -> None:
+def test_linked(gcovr_exec: "GcovrExecFixture") -> None:
     """
     Test case was inspired by the logic in gcovr that traverses symbolic links.
 
@@ -302,8 +303,8 @@ def test_linked(gcovr_test_exec: "GcovrTestExec") -> None:
                   |-- testfile
 
     """
-    source_root = gcovr_test_exec.output_dir / "subdir"
-    target_root = gcovr_test_exec.output_dir / "nested" / "subdir"
+    source_root = gcovr_exec.output_dir / "subdir"
+    target_root = gcovr_exec.output_dir / "nested" / "subdir"
     target_root.parent.mkdir()
     source_root.rename(target_root)
     source_root.mkdir()
@@ -312,95 +313,92 @@ def test_linked(gcovr_test_exec: "GcovrTestExec") -> None:
     (source_root / "m" / "n").symlink_to(target_root / "A")
     (source_root / "A").symlink_to(source_root / "m" / "n")
     (source_root / "loop").symlink_to(source_root)
-    gcovr_test_exec.cxx_link(
+    gcovr_exec.cxx_link(
         "subdir/testcase",
-        gcovr_test_exec.cxx_compile("subdir/B/main.cpp"),
-        gcovr_test_exec.cxx_compile("subdir/A/file1.cpp"),
-        gcovr_test_exec.cxx_compile("subdir/A/File2.cpp"),
-        gcovr_test_exec.cxx_compile("subdir/A/file3.cpp"),
-        gcovr_test_exec.cxx_compile("subdir/A/File4.cpp"),
-        gcovr_test_exec.cxx_compile("subdir/A/C/file5.cpp"),
-        gcovr_test_exec.cxx_compile("subdir/A/C/D/File6.cpp"),
-        gcovr_test_exec.cxx_compile("subdir/A/file7.cpp"),
+        gcovr_exec.cxx_compile("subdir/B/main.cpp"),
+        gcovr_exec.cxx_compile("subdir/A/file1.cpp"),
+        gcovr_exec.cxx_compile("subdir/A/File2.cpp"),
+        gcovr_exec.cxx_compile("subdir/A/file3.cpp"),
+        gcovr_exec.cxx_compile("subdir/A/File4.cpp"),
+        gcovr_exec.cxx_compile("subdir/A/C/file5.cpp"),
+        gcovr_exec.cxx_compile("subdir/A/C/D/File6.cpp"),
+        gcovr_exec.cxx_compile("subdir/A/file7.cpp"),
     )
 
-    gcovr_test_exec.run("./subdir/testcase")
-    gcovr_test_exec.gcovr("--json-pretty", "--json=coverage.json")
-    gcovr_test_exec.compare_json()
+    gcovr_exec.run("./subdir/testcase")
+    gcovr_exec.gcovr("--json-pretty", "--json=coverage.json")
+    gcovr_exec.compare_json()
 
-    gcovr_test_exec.gcovr(
+    gcovr_exec.gcovr(
         "--json-add-tracefile=coverage.json",
         "--html-theme=github.green",
         "--html-details",
         "--html=coverage.html",
     )
-    gcovr_test_exec.compare_html()
+    gcovr_exec.compare_html()
 
-    gcovr_test_exec.gcovr("--json-add-tracefile=coverage.json", "--txt", "coverage.txt")
-    gcovr_test_exec.compare_txt()
+    gcovr_exec.gcovr("--json-add-tracefile=coverage.json", "--txt", "coverage.txt")
+    gcovr_exec.compare_txt()
 
-    gcovr_test_exec.gcovr(
+    gcovr_exec.gcovr(
         "--json-add-tracefile=coverage.json",
         "--cobertura-pretty",
         "--cobertura=cobertura.xml",
     )
-    gcovr_test_exec.compare_cobertura()
+    gcovr_exec.compare_cobertura()
 
-    gcovr_test_exec.gcovr(
+    gcovr_exec.gcovr(
         "--json-add-tracefile=coverage.json",
         "--coveralls-pretty",
         "--coveralls=coveralls.json",
+        use_main=False,
     )
-    gcovr_test_exec.compare_coveralls()
+    gcovr_exec.compare_coveralls()
 
-    gcovr_test_exec.gcovr(
-        "--json-add-tracefile=coverage.json", "--jacoco", "jacoco.xml"
-    )
-    gcovr_test_exec.compare_jacoco()
+    gcovr_exec.gcovr("--json-add-tracefile=coverage.json", "--jacoco", "jacoco.xml")
+    gcovr_exec.compare_jacoco()
 
-    gcovr_test_exec.gcovr(
-        "--json-add-tracefile=coverage.json", "--lcov", "coverage.lcov"
-    )
-    gcovr_test_exec.compare_lcov()
+    gcovr_exec.gcovr("--json-add-tracefile=coverage.json", "--lcov", "coverage.lcov")
+    gcovr_exec.compare_lcov()
 
-    gcovr_test_exec.gcovr(
+    gcovr_exec.gcovr(
         "--json-add-tracefile=coverage.json", "--sonarqube", "sonarqube.xml"
     )
-    gcovr_test_exec.compare_sonarqube()
+    gcovr_exec.compare_sonarqube()
 
 
 @pytest.mark.json
-def test_use_existing(gcovr_test_exec: "GcovrTestExec") -> None:
+def test_use_existing(gcovr_exec: "GcovrExecFixture") -> None:
     """Test nested2-use-existing coverage."""
     # Build all required binaries
-    gcovr_test_exec.cxx_link(
+    gcovr_exec.cxx_link(
         "subdir/testcase",
-        gcovr_test_exec.cxx_compile("subdir/A/file1.cpp"),
-        gcovr_test_exec.cxx_compile("subdir/A/File2.cpp"),
-        gcovr_test_exec.cxx_compile("subdir/A/file3.cpp"),
-        gcovr_test_exec.cxx_compile("subdir/A/File4.cpp"),
-        gcovr_test_exec.cxx_compile("subdir/A/file7.cpp"),
-        gcovr_test_exec.cxx_compile("subdir/A/C/file5.cpp"),
-        gcovr_test_exec.cxx_compile("subdir/A/C/D/File6.cpp"),
-        gcovr_test_exec.cxx_compile("subdir/B/main.cpp"),
+        gcovr_exec.cxx_compile("subdir/A/file1.cpp"),
+        gcovr_exec.cxx_compile("subdir/A/File2.cpp"),
+        gcovr_exec.cxx_compile("subdir/A/file3.cpp"),
+        gcovr_exec.cxx_compile("subdir/A/File4.cpp"),
+        gcovr_exec.cxx_compile("subdir/A/file7.cpp"),
+        gcovr_exec.cxx_compile("subdir/A/C/file5.cpp"),
+        gcovr_exec.cxx_compile("subdir/A/C/D/File6.cpp"),
+        gcovr_exec.cxx_compile("subdir/B/main.cpp"),
     )
-    gcovr_test_exec.run("./subdir/testcase")
-    for file in gcovr_test_exec.output_dir.rglob("*.gcda"):
-        gcovr_test_exec.run(
-            *gcovr_test_exec.gcov(),
+    gcovr_exec.run("./subdir/testcase")
+    for file in gcovr_exec.output_dir.rglob("*.gcda"):
+        gcovr_exec.run(
+            *gcovr_exec.gcov(),
             file,
             "--branch-counts",
             "--branch-probabilities",
             "--preserve-paths",
         )
 
-    gcovr_test_exec.gcovr(
+    gcovr_exec.gcovr(
         "--root=subdir",
         "--gcov-use-existing-files",
         "--json-pretty",
         "--json=coverage.json",
     )
-    gcovr_test_exec.compare_json()
+    gcovr_exec.compare_json()
 
 
 @pytest.mark.cobertura
@@ -411,77 +409,76 @@ def test_use_existing(gcovr_test_exec: "GcovrTestExec") -> None:
 @pytest.mark.lcov
 @pytest.mark.sonarqube
 @pytest.mark.txt
-def test_oos(gcovr_test_exec: "GcovrTestExec") -> None:
+def test_oos(gcovr_exec: "GcovrExecFixture") -> None:
     """Test nested with oos build."""
-    (gcovr_test_exec.output_dir / "objs").mkdir()
-    cwd = gcovr_test_exec.output_dir / "subdir"
-    gcovr_test_exec.cxx_link(
+    (gcovr_exec.output_dir / "objs").mkdir()
+    cwd = gcovr_exec.output_dir / "subdir"
+    gcovr_exec.cxx_link(
         "testcase",
-        gcovr_test_exec.cxx_compile("A/file1.cpp", target="../objs/file1.o", cwd=cwd),
-        gcovr_test_exec.cxx_compile("A/File2.cpp", target="../objs/file2.o", cwd=cwd),
-        gcovr_test_exec.cxx_compile("A/file3.cpp", target="../objs/file3.o", cwd=cwd),
-        gcovr_test_exec.cxx_compile("A/File4.cpp", target="../objs/file4.o", cwd=cwd),
-        gcovr_test_exec.cxx_compile("A/file7.cpp", target="../objs/file7.o", cwd=cwd),
-        gcovr_test_exec.cxx_compile("A/C/file5.cpp", target="../objs/file5.o", cwd=cwd),
-        gcovr_test_exec.cxx_compile(
-            "A/C/D/File6.cpp", target="../objs/file6.o", cwd=cwd
-        ),
-        gcovr_test_exec.cxx_compile("B/main.cpp", target="../objs/main.o", cwd=cwd),
+        gcovr_exec.cxx_compile("A/file1.cpp", target="../objs/file1.o", cwd=cwd),
+        gcovr_exec.cxx_compile("A/File2.cpp", target="../objs/file2.o", cwd=cwd),
+        gcovr_exec.cxx_compile("A/file3.cpp", target="../objs/file3.o", cwd=cwd),
+        gcovr_exec.cxx_compile("A/File4.cpp", target="../objs/file4.o", cwd=cwd),
+        gcovr_exec.cxx_compile("A/file7.cpp", target="../objs/file7.o", cwd=cwd),
+        gcovr_exec.cxx_compile("A/C/file5.cpp", target="../objs/file5.o", cwd=cwd),
+        gcovr_exec.cxx_compile("A/C/D/File6.cpp", target="../objs/file6.o", cwd=cwd),
+        gcovr_exec.cxx_compile("B/main.cpp", target="../objs/main.o", cwd=cwd),
         cwd=cwd,
     )
 
-    gcovr_test_exec.run("./subdir/testcase")
-    gcovr_test_exec.gcovr(
+    gcovr_exec.run("./subdir/testcase")
+    gcovr_exec.gcovr(
         "--root=subdir",
         "--gcov-object-directory=objs",
         "--exclude-function-lines",
         "--json-pretty",
         "--json=coverage.json",
     )
-    gcovr_test_exec.compare_json()
+    gcovr_exec.compare_json()
 
-    gcovr_test_exec.gcovr(
+    gcovr_exec.gcovr(
         "--root=subdir",
         "--json-add-tracefile=coverage.json",
         "--html-details",
         "--html=coverage.html",
     )
-    gcovr_test_exec.compare_html()
+    gcovr_exec.compare_html()
 
-    gcovr_test_exec.gcovr(
+    gcovr_exec.gcovr(
         "--root=subdir", "--json-add-tracefile=coverage.json", "--txt", "coverage.txt"
     )
-    gcovr_test_exec.compare_txt()
+    gcovr_exec.compare_txt()
 
-    gcovr_test_exec.gcovr(
+    gcovr_exec.gcovr(
         "--root=subdir",
         "--json-add-tracefile=coverage.json",
         "--cobertura-pretty",
         "--cobertura=cobertura.xml",
     )
-    gcovr_test_exec.compare_cobertura()
+    gcovr_exec.compare_cobertura()
 
-    gcovr_test_exec.gcovr(
+    gcovr_exec.gcovr(
         "--root=subdir",
         "--json-add-tracefile=coverage.json",
         "--coveralls-pretty",
         "--coveralls=coveralls.json",
+        use_main=False,
     )
-    gcovr_test_exec.compare_coveralls()
+    gcovr_exec.compare_coveralls()
 
-    gcovr_test_exec.gcovr(
+    gcovr_exec.gcovr(
         "--root=subdir", "--json-add-tracefile=coverage.json", "--jacoco", "jacoco.xml"
     )
-    gcovr_test_exec.compare_jacoco()
+    gcovr_exec.compare_jacoco()
 
-    gcovr_test_exec.gcovr(
+    gcovr_exec.gcovr(
         "--root=subdir", "--json-add-tracefile=coverage.json", "--lcov", "coverage.lcov"
     )
-    gcovr_test_exec.compare_lcov()
+    gcovr_exec.compare_lcov()
 
-    gcovr_test_exec.gcovr(
+    gcovr_exec.gcovr(
         "--root=subdir",
         "--json-add-tracefile=coverage.json",
         "--sonarqube=sonarqube.xml",
     )
-    gcovr_test_exec.compare_sonarqube()
+    gcovr_exec.compare_sonarqube()

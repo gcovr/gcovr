@@ -19,7 +19,7 @@ import logging
 
 import pytest
 
-from tests.conftest import CONDITION_COVERAGE_POSSIBLE, IS_LINUX, GcovrTestExec
+from tests.conftest import CONDITION_COVERAGE_POSSIBLE, IS_LINUX, GcovrExecFixture
 
 pytestmark = [
     pytest.mark.skipif(
@@ -35,107 +35,94 @@ pytestmark = [
 
 @pytest.mark.json
 @pytest.mark.txt
-def test_report(gcovr_test_exec: "GcovrTestExec") -> None:
+def test_report(gcovr_exec: "GcovrExecFixture") -> None:
     """Full branch coverage with an uncovered condition outcome."""
-    gcovr_test_exec.cc_link("testcase", "main.c")
+    gcovr_exec.cc_link("testcase", "main.c")
 
-    gcovr_test_exec.run("./testcase")
-    gcovr_test_exec.gcovr(
+    gcovr_exec.run("./testcase")
+    gcovr_exec.gcovr(
         "--json-pretty",
         "--json=coverage.json",
     )
-    gcovr_test_exec.gcovr(
+    gcovr_exec.gcovr(
         "--json-add-tracefile=coverage.json",
         "--json-summary-pretty",
         "--json-summary=coverage_summary.json",
     )
-    gcovr_test_exec.compare_json()
+    gcovr_exec.compare_json()
 
-    process = gcovr_test_exec.gcovr(
+    gcovr_exec.gcovr(
         "--json-add-tracefile=coverage.json",
         "--txt-summary",
         "--txt-metric=condition",
         "--txt=coverage.txt",
     )
-    (gcovr_test_exec.output_dir / "coverage_summary.txt").write_text(
-        process.stdout, encoding="utf-8"
+    (gcovr_exec.output_dir / "coverage_summary.txt").write_text(
+        gcovr_exec.out, encoding="utf-8"
     )
-    process = gcovr_test_exec.gcovr(
+    gcovr_exec.gcovr(
         "--json-add-tracefile=coverage.json",
         "--txt-summary",
         "--txt-metric=condition",
         "--txt-report-covered",
         "--txt=coverage_covered.txt",
     )
-    gcovr_test_exec.compare_txt()
+    gcovr_exec.compare_txt()
 
 
-def test_fail_under(
-    gcovr_test_exec: "GcovrTestExec", caplog: pytest.LogCaptureFixture
-) -> None:
+def test_fail_under(gcovr_exec: "GcovrExecFixture") -> None:
     """The condition threshold must fail where the branch threshold passes."""
-    gcovr_test_exec.cc_link("testcase", "main.c")
+    gcovr_exec.cc_link("testcase", "main.c")
 
-    gcovr_test_exec.run("./testcase")
-    gcovr_test_exec.gcovr(
+    gcovr_exec.run("./testcase")
+    gcovr_exec.gcovr(
         "--json-pretty",
         "--json=coverage.json",
     )
 
-    process = gcovr_test_exec.gcovr(
+    gcovr_exec.gcovr(
         "--json-add-tracefile=coverage.json",
         "--fail-under-line=100",
         "--fail-under-branch=100",
-        use_main=True,
     )
-    assert process.returncode == 0
-    assert caplog.record_tuples == []
 
-    process = gcovr_test_exec.gcovr(
+    gcovr_exec.gcovr(
         "--json-add-tracefile=coverage.json",
         "--fail-under-condition-or-decision=100",
-        use_main=True,
+        exitcode_ok=8,
     )
-    assert process.returncode == 8  # noqa: PLR2004
-    messages = caplog.record_tuples
-    assert len(messages) == 1
-    assert messages[0][1] == logging.ERROR
-    assert messages[0][2].startswith("Failed minimum condition coverage ")
-    caplog.clear()
+    gcovr_exec.check_log(
+        (logging.ERROR, "Failed minimum condition coverage "),
+        compare="startswith",
+    )
 
-    process = gcovr_test_exec.gcovr(
+    gcovr_exec.gcovr(
         "--json-add-tracefile=coverage.json",
         "--decisions",
         "--fail-under-condition-or-decision=100",
-        use_main=True,
+        exitcode_ok=8,
     )
-    assert process.returncode == 8  # noqa: PLR2004
-    messages = caplog.record_tuples
-    assert len(messages) == 1
-    assert messages[0][1] == logging.ERROR
-    assert messages[0][2].startswith("Failed minimum condition coverage ")
-    caplog.clear()
+    gcovr_exec.check_log(
+        (logging.ERROR, "Failed minimum condition coverage "),
+        compare="startswith",
+    )
 
     # The deprecated flags are synonyms of the combined threshold.
     for option in ["--fail-under-condition", "--fail-under-decision"]:
-        process = gcovr_test_exec.gcovr(
+        gcovr_exec.gcovr(
             "--json-add-tracefile=coverage.json",
             "--decisions",
             f"{option}=100",
-            use_main=True,
+            exitcode_ok=8,
         )
-        assert process.returncode == 8  # noqa: PLR2004
-        messages = caplog.record_tuples
-        assert len(messages) == 1
-        assert messages[0][1] == logging.ERROR
-        assert messages[0][2].startswith("Failed minimum condition coverage ")
-        caplog.clear()
+        gcovr_exec.check_log(
+            (logging.ERROR, "Failed minimum condition coverage "),
+            compare="startswith",
+        )
 
-    process = gcovr_test_exec.gcovr(
+    gcovr_exec.gcovr(
         "--json-add-tracefile=coverage.json",
         "--decisions",
         "--fail-under-condition-or-decision=83.3",
-        use_main=True,
     )
-    assert process.returncode == 0
-    assert caplog.record_tuples == []
+    gcovr_exec.check_log()

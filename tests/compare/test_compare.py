@@ -20,7 +20,7 @@ import typing
 import pytest
 
 if typing.TYPE_CHECKING:
-    from tests.conftest import GcovrTestExec
+    from tests.conftest import GcovrExecFixture
 
 PARAMETERS = [
     (
@@ -45,43 +45,43 @@ PARAMETERS = [
     ids=[p[0] for p in PARAMETERS],
 )
 def test(
-    gcovr_test_exec: "GcovrTestExec",
+    gcovr_exec: "GcovrExecFixture",
     _test_id: str,
     runs: int,
     run_options: list[str],
 ) -> None:
     """Test with same function const overload."""
-    gcovr_test_exec.cxx_link(
+    gcovr_exec.cxx_link(
         "subdir/testcase",
-        gcovr_test_exec.cxx_compile("subdir/A/file1.cpp"),
-        gcovr_test_exec.cxx_compile("subdir/A/File2.cpp"),
-        gcovr_test_exec.cxx_compile("subdir/A/file3.cpp"),
-        gcovr_test_exec.cxx_compile("subdir/A/File4.cpp"),
-        gcovr_test_exec.cxx_compile("subdir/A/file7.cpp"),
-        gcovr_test_exec.cxx_compile("subdir/A/C/file5.cpp"),
-        gcovr_test_exec.cxx_compile("subdir/A/C/D/File6.cpp"),
-        gcovr_test_exec.cxx_compile("subdir/B/main.cpp"),
+        gcovr_exec.cxx_compile("subdir/A/file1.cpp"),
+        gcovr_exec.cxx_compile("subdir/A/File2.cpp"),
+        gcovr_exec.cxx_compile("subdir/A/file3.cpp"),
+        gcovr_exec.cxx_compile("subdir/A/File4.cpp"),
+        gcovr_exec.cxx_compile("subdir/A/file7.cpp"),
+        gcovr_exec.cxx_compile("subdir/A/C/file5.cpp"),
+        gcovr_exec.cxx_compile("subdir/A/C/D/File6.cpp"),
+        gcovr_exec.cxx_compile("subdir/B/main.cpp"),
     )
 
-    gcovr_test_exec.run("./subdir/testcase")
+    gcovr_exec.run("./subdir/testcase")
     gcovr_options = ["--exclude", ".*/file1.cpp"] if run_options else []
-    gcovr_test_exec.gcovr(
+    gcovr_exec.gcovr(
         "--delete-input-files",
         *gcovr_options,
         "--json-pretty",
         "--json=coverage_1.json",
     )
     for _ in range(runs):
-        gcovr_test_exec.run("./subdir/testcase", *run_options)
+        gcovr_exec.run("./subdir/testcase", *run_options)
     gcovr_options = ["--exclude", ".*/file3.cpp"] if run_options else []
-    gcovr_test_exec.gcovr(
+    gcovr_exec.gcovr(
         "--delete-input-files",
         *gcovr_options,
         "--json-pretty",
         "--json=coverage_2.json",
     )
 
-    gcovr_test_exec.gcovr(
+    gcovr_exec.gcovr(
         "--json-add-tracefile=coverage_1.json",
         "--json-add-tracefile=coverage_2.json",
         "--json-compare",
@@ -89,32 +89,32 @@ def test(
         "--json=coverage_compare.json",
     )
 
-    gcovr_test_exec.gcovr(
+    gcovr_exec.gcovr(
         "--json-add-tracefile=coverage_compare.json",
         "--json-pretty",
         "--json=coverage_compare_roundtrip.json",
     )
-    gcovr_test_exec.run(
+    gcovr_exec.run(
         "diff", "-U", "1", "coverage_compare.json", "coverage_compare_roundtrip.json"
     )
-    (gcovr_test_exec.output_dir / "coverage_compare_roundtrip.json").unlink()
-    gcovr_test_exec.compare_json()
+    (gcovr_exec.output_dir / "coverage_compare_roundtrip.json").unlink()
+    gcovr_exec.compare_json()
 
-    process = gcovr_test_exec.gcovr(
+    gcovr_exec.gcovr(
         "--json-add-tracefile=coverage_compare.json",
         "--txt-summary",
         "--txt=coverage.txt",
     )
-    (gcovr_test_exec.output_dir / "coverage_summary.txt").write_text(
-        process.stdout, encoding="utf-8"
+    (gcovr_exec.output_dir / "coverage_summary.txt").write_text(
+        gcovr_exec.out, encoding="utf-8"
     )
-    gcovr_test_exec.compare_txt()
+    gcovr_exec.compare_txt()
 
     for theme in ["default", "github", "boost"]:
-        gcovr_test_exec.gcovr(
+        gcovr_exec.gcovr(
             "--json-add-tracefile=coverage_compare.json",
             "--html-nested",
             f"--html-theme={'' if theme == 'default' else (theme + '.')}green",
             f"--html=coverage.{theme}.html",
         )
-    gcovr_test_exec.compare_html()
+    gcovr_exec.compare_html()

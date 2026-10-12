@@ -66,6 +66,7 @@ Internal changes:
 - Use different python versions for testing in docker depending on Ubuntu version. (:issue:`1301`)
 - Activate most checks of ``ruff``. (:issue:`1303`)
 - Update CI runner images. (:issue:`1308`)
+- Always use GCOVR fixture in tests. (:issue:`1310`)
 
 .. _release_8_6:
 

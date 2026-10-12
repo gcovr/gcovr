@@ -23,7 +23,7 @@ from unittest import mock
 import pytest
 from pytest_check import check
 
-from tests.conftest import GCOVR_ISOLATED_TEST, GcovrTestExec
+from tests.conftest import GCOVR_ISOLATED_TEST, GcovrExecFixture
 
 LOGGER = logging.getLogger(__name__)
 
@@ -33,11 +33,11 @@ LOGGER = logging.getLogger(__name__)
     reason="Only available in isolated docker test.",
 )
 @pytest.mark.json
-def test_gtest(gcovr_test_exec: "GcovrTestExec") -> None:
+def test_gtest(gcovr_exec: "GcovrExecFixture") -> None:
     """Test cmake with gtest."""
-    for file in (gcovr_test_exec.output_dir / "gtest").glob("*"):
-        file.rename(gcovr_test_exec.output_dir / file.name)
-    gcovr_test_exec.run(
+    for file in (gcovr_exec.output_dir / "gtest").glob("*"):
+        file.rename(gcovr_exec.output_dir / file.name)
+    gcovr_exec.run(
         "cmake",
         "-G",
         "Ninja",
@@ -45,34 +45,34 @@ def test_gtest(gcovr_test_exec: "GcovrTestExec") -> None:
         "-S",
         ".",
         "-B",
-        gcovr_test_exec.output_dir,
+        gcovr_exec.output_dir,
     )
-    gcovr_test_exec.run("cmake", "--build", gcovr_test_exec.output_dir, "--", "-v")
+    gcovr_exec.run("cmake", "--build", gcovr_exec.output_dir, "--", "-v")
 
-    gcovr_test_exec.run(
-        gcovr_test_exec.output_dir / "gcovr_gtest",
-        cwd=gcovr_test_exec.output_dir,
+    gcovr_exec.run(
+        gcovr_exec.output_dir / "gcovr_gtest",
+        cwd=gcovr_exec.output_dir,
     )
-    gcovr_test_exec.gcovr(
+    gcovr_exec.gcovr(
         "--filter",
         "source/",
         "--json-pretty",
         "--json=coverage.json",
         "--gcov-object-directory",
-        gcovr_test_exec.output_dir,
+        gcovr_exec.output_dir,
     )
-    gcovr_test_exec.compare_json()
+    gcovr_exec.compare_json()
 
 
 @pytest.mark.json
-def test_oos_makefile(gcovr_test_exec: "GcovrTestExec") -> None:
+def test_oos_makefile(gcovr_exec: "GcovrExecFixture") -> None:
     """Test CMake out of source build with makefile."""
-    for file in (gcovr_test_exec.output_dir / "simple_main").glob("*"):
-        file.rename(gcovr_test_exec.output_dir / file.name)
-    build_dir = gcovr_test_exec.output_dir / "build"
+    for file in (gcovr_exec.output_dir / "simple_main").glob("*"):
+        file.rename(gcovr_exec.output_dir / file.name)
+    build_dir = gcovr_exec.output_dir / "build"
     build_dir.mkdir()
-    generator = "MSYS Makefiles" if gcovr_test_exec.is_windows() else "Unix Makefiles"
-    gcovr_test_exec.run(
+    generator = "MSYS Makefiles" if gcovr_exec.is_windows() else "Unix Makefiles"
+    gcovr_exec.run(
         "cmake",
         "-G",
         generator,
@@ -80,20 +80,20 @@ def test_oos_makefile(gcovr_test_exec: "GcovrTestExec") -> None:
         "..",
         cwd=build_dir,
     )
-    gcovr_test_exec.run(
+    gcovr_exec.run(
         "make",
         cwd=build_dir,
     )
 
-    gcovr_test_exec.run(
+    gcovr_exec.run(
         build_dir / "testcase",
         cwd=build_dir,
     )
-    gcovr_test_exec.gcovr(
+    gcovr_exec.gcovr(
         "--json-pretty",
         "--json=coverage.json",
     )
-    gcovr_test_exec.compare_json()
+    gcovr_exec.compare_json()
 
 
 @pytest.mark.skipif(
@@ -101,24 +101,24 @@ def test_oos_makefile(gcovr_test_exec: "GcovrTestExec") -> None:
     reason="Only available in isolated docker test.",
 )
 @pytest.mark.json
-def test_oos_makefile_ccache(gcovr_test_exec: "GcovrTestExec") -> None:
+def test_oos_makefile_ccache(gcovr_exec: "GcovrExecFixture") -> None:
     """Test CMake out of source build with makefile."""
-    for file in (gcovr_test_exec.output_dir / "simple_main").glob("*"):
-        file.rename(gcovr_test_exec.output_dir / file.name)
-    build_dir = gcovr_test_exec.output_dir / "build"
+    for file in (gcovr_exec.output_dir / "simple_main").glob("*"):
+        file.rename(gcovr_exec.output_dir / file.name)
+    build_dir = gcovr_exec.output_dir / "build"
     for run in range(2):
         LOGGER.info("***** Build with ccache (%s) *****", run)
         with mock.patch.dict(
             "os.environ",
-            {"CCACHE_DIR": str(gcovr_test_exec.output_dir / "ccache")},
+            {"CCACHE_DIR": str(gcovr_exec.output_dir / "ccache")},
         ):
             if build_dir.exists():
                 shutil.rmtree(build_dir)
             build_dir.mkdir()
             generator = (
-                "MSYS Makefiles" if gcovr_test_exec.is_windows() else "Unix Makefiles"
+                "MSYS Makefiles" if gcovr_exec.is_windows() else "Unix Makefiles"
             )
-            gcovr_test_exec.run(
+            gcovr_exec.run(
                 "cmake",
                 "-G",
                 generator,
@@ -127,40 +127,40 @@ def test_oos_makefile_ccache(gcovr_test_exec: "GcovrTestExec") -> None:
                 "..",
                 cwd=build_dir,
             )
-            gcovr_test_exec.run(
+            gcovr_exec.run(
                 "make",
                 cwd=build_dir,
             )
-            process = gcovr_test_exec.run("ccache", "--show-stats", cwd=build_dir)
+            gcovr_exec.run("ccache", "--show-stats", cwd=build_dir)
             rate = 0 if run == 0 else 100
             check.is_true(
                 re.search(
                     rf"(?:cache hit rate\s+{rate}.00 %|Hits:.+\(\s*{rate}.0{'' if rate else '0'}\s*%\))",
-                    process.stdout,
+                    gcovr_exec.out,
                 )
             )
-            gcovr_test_exec.run("ccache", "--zero-stats", cwd=build_dir)
+            gcovr_exec.run("ccache", "--zero-stats", cwd=build_dir)
 
-            gcovr_test_exec.run(
+            gcovr_exec.run(
                 build_dir / "testcase",
                 cwd=build_dir,
             )
-            gcovr_test_exec.gcovr(
+            gcovr_exec.gcovr(
                 "--json-pretty",
                 f"--json=coverage{'' if run == 0 else '.cached'}.json",
             )
-    gcovr_test_exec.run("diff", "-U", "1", "coverage.json", "coverage.cached.json")
-    gcovr_test_exec.compare_json()
+    gcovr_exec.run("diff", "-U", "1", "coverage.json", "coverage.cached.json")
+    gcovr_exec.compare_json()
 
 
 @pytest.mark.json
-def test_oos_ninja(gcovr_test_exec: "GcovrTestExec") -> None:
+def test_oos_ninja(gcovr_exec: "GcovrExecFixture") -> None:
     """Test CMake out of source build with ninja."""
-    for file in (gcovr_test_exec.output_dir / "simple_main").glob("*"):
-        file.rename(gcovr_test_exec.output_dir / file.name)
-    build_dir = gcovr_test_exec.output_dir / "build"
+    for file in (gcovr_exec.output_dir / "simple_main").glob("*"):
+        file.rename(gcovr_exec.output_dir / file.name)
+    build_dir = gcovr_exec.output_dir / "build"
     build_dir.mkdir()
-    gcovr_test_exec.run(
+    gcovr_exec.run(
         "cmake",
         "-G",
         "Ninja",
@@ -171,17 +171,17 @@ def test_oos_ninja(gcovr_test_exec: "GcovrTestExec") -> None:
         ".",
         cwd=build_dir,
     )
-    gcovr_test_exec.run("cmake", "--build", build_dir, "--", "-v")
+    gcovr_exec.run("cmake", "--build", build_dir, "--", "-v")
 
-    gcovr_test_exec.run(
+    gcovr_exec.run(
         build_dir / "testcase",
         cwd=build_dir,
     )
-    gcovr_test_exec.gcovr(
+    gcovr_exec.gcovr(
         "--json-pretty",
         "--json=coverage.json",
     )
-    gcovr_test_exec.compare_json()
+    gcovr_exec.compare_json()
 
 
 @pytest.mark.skipif(
@@ -189,21 +189,21 @@ def test_oos_ninja(gcovr_test_exec: "GcovrTestExec") -> None:
     reason="Only available in isolated docker test.",
 )
 @pytest.mark.json
-def test_oos_ninja_ccache(gcovr_test_exec: "GcovrTestExec") -> None:
+def test_oos_ninja_ccache(gcovr_exec: "GcovrExecFixture") -> None:
     """Test CMake out of source build with ninja."""
-    for file in (gcovr_test_exec.output_dir / "simple_main").glob("*"):
-        file.rename(gcovr_test_exec.output_dir / file.name)
-    build_dir = gcovr_test_exec.output_dir / "build"
+    for file in (gcovr_exec.output_dir / "simple_main").glob("*"):
+        file.rename(gcovr_exec.output_dir / file.name)
+    build_dir = gcovr_exec.output_dir / "build"
     for run in range(2):
         LOGGER.info("***** Build with ccache (%s) *****", run)
         with mock.patch.dict(
             "os.environ",
-            {"CCACHE_DIR": str(gcovr_test_exec.output_dir / "ccache")},
+            {"CCACHE_DIR": str(gcovr_exec.output_dir / "ccache")},
         ):
             if build_dir.exists():
                 shutil.rmtree(build_dir)
             build_dir.mkdir()
-            gcovr_test_exec.run(
+            gcovr_exec.run(
                 "cmake",
                 "-G",
                 "Ninja",
@@ -215,24 +215,24 @@ def test_oos_ninja_ccache(gcovr_test_exec: "GcovrTestExec") -> None:
                 ".",
                 cwd=build_dir,
             )
-            gcovr_test_exec.run("cmake", "--build", build_dir, "--", "-v")
-            process = gcovr_test_exec.run("ccache", "--show-stats", cwd=build_dir)
+            gcovr_exec.run("cmake", "--build", build_dir, "--", "-v")
+            gcovr_exec.run("ccache", "--show-stats", cwd=build_dir)
             rate = 0 if run == 0 else 100
             check.is_true(
                 re.search(
                     rf"(?:cache hit rate\s+{rate}.00 %|Hits:.+\(\s*{rate}.0{'' if rate else '0'}\s*%\))",
-                    process.stdout,
+                    gcovr_exec.out,
                 )
             )
-            gcovr_test_exec.run("ccache", "--zero-stats", cwd=build_dir)
+            gcovr_exec.run("ccache", "--zero-stats", cwd=build_dir)
 
-            gcovr_test_exec.run(
+            gcovr_exec.run(
                 build_dir / "testcase",
                 cwd=build_dir,
             )
-            gcovr_test_exec.gcovr(
+            gcovr_exec.gcovr(
                 "--json-pretty",
                 f"--json=coverage{'' if run == 0 else '.cached'}.json",
             )
-    gcovr_test_exec.run("diff", "-U", "1", "coverage.json", "coverage.cached.json")
-    gcovr_test_exec.compare_json()
+    gcovr_exec.run("diff", "-U", "1", "coverage.json", "coverage.cached.json")
+    gcovr_exec.compare_json()

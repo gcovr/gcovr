@@ -289,7 +289,7 @@ The reference directory contains baseline files against
 which the gcovr output is compared.
 Tests can be executed even without baseline files.
 
-Each test function uses the fixture ``gcovr_test_exec`` which is defined in ``conftest.py``.
+Each test function uses the fixture ``gcovr_exec`` which is defined in ``conftest.py``.
 This fixture creates a temporary ``output`` directory for each test and copies
 the content of ``source`` into it. If source contains a sub directory with the test ID (the
 name of the test function without ``test_`` prefix and ``_`` replaced by ``-``),

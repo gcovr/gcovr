@@ -21,7 +21,7 @@ from pathlib import Path
 import pytest
 
 if typing.TYPE_CHECKING:
-    from tests.conftest import GcovrTestExec
+    from tests.conftest import GcovrExecFixture
 
 
 @pytest.mark.cobertura
@@ -32,11 +32,11 @@ if typing.TYPE_CHECKING:
 @pytest.mark.lcov
 @pytest.mark.sonarqube
 @pytest.mark.txt
-def test(gcovr_test_exec: "GcovrTestExec") -> None:
+def test(gcovr_exec: "GcovrExecFixture") -> None:
     """Test workspace coverage."""
-    gcovr_test_exec.cxx_link("testcase", "main.cpp", cwd=Path("src code"))
-    gcovr_test_exec.run("./testcase", cwd=Path("src code"))
-    gcovr_test_exec.gcovr(
+    gcovr_exec.cxx_link("testcase", "main.cpp", cwd=Path("src code"))
+    gcovr_exec.run("./testcase", cwd=Path("src code"))
+    gcovr_exec.gcovr(
         "--root=src code",
         "--json-pretty",
         "--json=coverage.json",
@@ -50,12 +50,13 @@ def test(gcovr_test_exec: "GcovrTestExec") -> None:
         "--jacoco=jacoco.xml",
         "--lcov=coverage.lcov",
         "--sonarqube=sonarqube.xml",
+        use_main=False,
     )
-    gcovr_test_exec.compare_json()
-    gcovr_test_exec.compare_html()
-    gcovr_test_exec.compare_txt()
-    gcovr_test_exec.compare_cobertura()
-    gcovr_test_exec.compare_coveralls()
-    gcovr_test_exec.compare_jacoco()
-    gcovr_test_exec.compare_lcov()
-    gcovr_test_exec.compare_sonarqube()
+    gcovr_exec.compare_json()
+    gcovr_exec.compare_html()
+    gcovr_exec.compare_txt()
+    gcovr_exec.compare_cobertura()
+    gcovr_exec.compare_coveralls()
+    gcovr_exec.compare_jacoco()
+    gcovr_exec.compare_lcov()
+    gcovr_exec.compare_sonarqube()

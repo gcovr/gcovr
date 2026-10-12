@@ -21,7 +21,7 @@ import typing
 import pytest
 
 if typing.TYPE_CHECKING:
-    from tests.conftest import GcovrTestExec
+    from tests.conftest import GcovrExecFixture
 
 # ATTENTION: The first environment variable triggers the system in coveralls report
 PARAMETERS = [
@@ -93,13 +93,11 @@ PARAMETERS = [
     ids=[p[0] for p in PARAMETERS],
 )
 @pytest.mark.coveralls
-def test_ci(
-    gcovr_test_exec: "GcovrTestExec", _test_id: str, env: dict[str, str]
-) -> None:
+def test_ci(gcovr_exec: "GcovrExecFixture", _test_id: str, env: dict[str, str]) -> None:
     """Test for adding CI information to coveralls report."""
-    gcovr_test_exec.cxx_link(
+    gcovr_exec.cxx_link(
         "testcase",
-        gcovr_test_exec.cxx_compile("main.cpp"),
+        gcovr_exec.cxx_compile("main.cpp"),
     )
 
     new_env = os.environ.copy()
@@ -110,12 +108,12 @@ def test_ci(
             del new_env[env_name]
     new_env.update(env)
 
-    gcovr_test_exec.run("./testcase")
-    gcovr_test_exec.gcovr(
+    gcovr_exec.run("./testcase")
+    gcovr_exec.gcovr(
         "--delete-input-files",
         "--coveralls-pretty",
         "--coveralls=coveralls.json",
+        use_main=False,
         env=new_env,
-        use_main=True,
     )
-    gcovr_test_exec.compare_coveralls()
+    gcovr_exec.compare_coveralls()

@@ -130,6 +130,7 @@ def configure_logging() -> None:
         logging.getLogger().addHandler(handler)
 
     def exception_hook(exc_type: Any, exc_value: Any, exc_traceback: Any) -> None:
+        """Global exception handler for unhandled exceptions."""
         LOGGER.exception(  # noqa: LOG004
             "Uncaught EXCEPTION", exc_info=(exc_type, exc_value, exc_traceback)
         )
@@ -139,8 +140,7 @@ def configure_logging() -> None:
 
 def update_logging(options: "Options") -> None:
     """Update the logger configuration depending on the options."""
-    if options.verbose:
-        LOGGER.setLevel(logging.DEBUG)
+    LOGGER.setLevel(logging.DEBUG if options.verbose else logging.WARNING)
 
     # Update the formatter of the default logger depending on options
     DEFAULT_LOGGING_HANDLER.setFormatter(__colored_formatter(options))

@@ -20,7 +20,7 @@ import re
 import pytest
 from pytest_check import check
 
-from tests.conftest import IS_DARWIN, IS_GCC, IS_LINUX, GcovrTestExec
+from tests.conftest import IS_DARWIN, IS_GCC, IS_LINUX, GcovrExecFixture
 
 
 @pytest.mark.skipif(
@@ -35,65 +35,67 @@ from tests.conftest import IS_DARWIN, IS_GCC, IS_LINUX, GcovrTestExec
 @pytest.mark.lcov
 @pytest.mark.sonarqube
 @pytest.mark.txt
-def test_exclude_line(gcovr_test_exec: "GcovrTestExec") -> None:
+def test_exclude_line(gcovr_exec: "GcovrExecFixture") -> None:
     """Test excluding of functions."""
-    gcovr_test_exec.cxx_link(
+    gcovr_exec.cxx_link(
         "testcase",
         "main.cpp",
     )
 
-    gcovr_test_exec.run("./testcase")
-    process = gcovr_test_exec.gcovr(
+    gcovr_exec.run("./testcase")
+    gcovr_exec.gcovr(
         "--warn-excluded-lines-with-hits",
         "--json-pretty",
         "--json=coverage.json",
+        use_main=False,
     )
-    check.is_in("main.cpp:8: Line with 1 hit(s) excluded.", process.stderr)
-    gcovr_test_exec.compare_json()
+    check.is_in("main.cpp:8: Line with 1 hit(s) excluded.", gcovr_exec.err)
+    gcovr_exec.compare_json()
 
-    gcovr_test_exec.gcovr(
+    gcovr_exec.gcovr(
         "--json-add-tracefile=coverage.json",
         "--html-details=coverage.html",
     )
-    gcovr_test_exec.compare_html()
+    gcovr_exec.compare_html()
 
-    gcovr_test_exec.gcovr(
+    gcovr_exec.gcovr(
         "--json-add-tracefile=coverage.json",
         "--txt=coverage.txt",
     )
-    gcovr_test_exec.compare_txt()
+    gcovr_exec.compare_txt()
 
-    gcovr_test_exec.gcovr(
+    gcovr_exec.gcovr(
         "--json-add-tracefile=coverage.json",
         "--cobertura-pretty",
         "--cobertura=cobertura.xml",
     )
-    gcovr_test_exec.compare_cobertura()
+    gcovr_exec.compare_cobertura()
 
-    gcovr_test_exec.gcovr(
+    gcovr_exec.gcovr(
         "--json-add-tracefile=coverage.json",
         "--coveralls-pretty",
         "--coveralls=coveralls.json",
+        use_main=False,
     )
-    gcovr_test_exec.compare_coveralls()
+    gcovr_exec.compare_coveralls()
 
-    gcovr_test_exec.gcovr(
+    gcovr_exec.gcovr(
         "--json-add-tracefile=coverage.json",
         "--lcov=coverage.lcov",
     )
-    gcovr_test_exec.compare_lcov()
+    gcovr_exec.compare_lcov()
 
-    gcovr_test_exec.gcovr(
+    gcovr_exec.gcovr(
         "--json-add-tracefile=coverage.json",
         "--jacoco=jacoco.xml",
     )
-    gcovr_test_exec.compare_jacoco()
+    gcovr_exec.compare_jacoco()
 
-    gcovr_test_exec.gcovr(
+    gcovr_exec.gcovr(
         "--json-add-tracefile=coverage.json",
         "--sonarqube=sonarqube.xml",
     )
-    gcovr_test_exec.compare_sonarqube()
+    gcovr_exec.compare_sonarqube()
 
 
 @pytest.mark.skipif(
@@ -108,73 +110,74 @@ def test_exclude_line(gcovr_test_exec: "GcovrTestExec") -> None:
 @pytest.mark.lcov
 @pytest.mark.sonarqube
 @pytest.mark.txt
-def test_exclude_line_custom(gcovr_test_exec: "GcovrTestExec") -> None:
+def test_exclude_line_custom(gcovr_exec: "GcovrExecFixture") -> None:
     """
     Test case verifies that custom tagged lines (LINE/START/STOP) are excluded per run options.
 
     It uses exclude_pattern_prefix to pass a custom prefix.
     """
-    gcovr_test_exec.cxx_link("testcase", "main.cpp")
+    gcovr_exec.cxx_link("testcase", "main.cpp")
 
-    gcovr_test_exec.run("./testcase")
-    gcovr_test_exec.gcovr(
+    gcovr_exec.run("./testcase")
+    gcovr_exec.gcovr(
         "--exclude-pattern-prefix=CUSTOM",
         "--json-pretty",
         "--json=coverage.json",
     )
-    gcovr_test_exec.compare_json()
+    gcovr_exec.compare_json()
 
-    gcovr_test_exec.gcovr(
+    gcovr_exec.gcovr(
         "--exclude-pattern-prefix=CUSTOM",
         "--json-add-tracefile=coverage.json",
         "--html-details",
         "--html=coverage.html",
     )
-    gcovr_test_exec.compare_html()
+    gcovr_exec.compare_html()
 
-    gcovr_test_exec.gcovr(
+    gcovr_exec.gcovr(
         "--exclude-pattern-prefix=CUSTOM",
         "--json-add-tracefile=coverage.json",
         "--txt=coverage.txt",
     )
-    gcovr_test_exec.compare_txt()
+    gcovr_exec.compare_txt()
 
-    gcovr_test_exec.gcovr(
+    gcovr_exec.gcovr(
         "--exclude-pattern-prefix=CUSTOM",
         "--json-add-tracefile=coverage.json",
         "--cobertura-pretty",
         "--cobertura=cobertura.xml",
     )
-    gcovr_test_exec.compare_cobertura()
+    gcovr_exec.compare_cobertura()
 
-    gcovr_test_exec.gcovr(
+    gcovr_exec.gcovr(
         "--exclude-pattern-prefix=CUSTOM",
         "--json-add-tracefile=coverage.json",
         "--coveralls-pretty",
         "--coveralls=coveralls.json",
+        use_main=False,
     )
-    gcovr_test_exec.compare_coveralls()
+    gcovr_exec.compare_coveralls()
 
-    gcovr_test_exec.gcovr(
+    gcovr_exec.gcovr(
         "--exclude-pattern-prefix=CUSTOM",
         "--json-add-tracefile=coverage.json",
         "--lcov=coverage.lcov",
     )
-    gcovr_test_exec.compare_lcov()
+    gcovr_exec.compare_lcov()
 
-    gcovr_test_exec.gcovr(
+    gcovr_exec.gcovr(
         "--exclude-pattern-prefix=CUSTOM",
         "--json-add-tracefile=coverage.json",
         "--jacoco=jacoco.xml",
     )
-    gcovr_test_exec.compare_jacoco()
+    gcovr_exec.compare_jacoco()
 
-    gcovr_test_exec.gcovr(
+    gcovr_exec.gcovr(
         "--exclude-pattern-prefix=CUSTOM",
         "--json-add-tracefile=coverage.json",
         "--sonarqube=sonarqube.xml",
     )
-    gcovr_test_exec.compare_sonarqube()
+    gcovr_exec.compare_sonarqube()
 
 
 PARAMETERS = [
@@ -211,7 +214,7 @@ PARAMETERS = [
 @pytest.mark.sonarqube
 @pytest.mark.txt
 def test_exclude_line_branch(
-    gcovr_test_exec: "GcovrTestExec", _test_id: str, options: list[str]
+    gcovr_exec: "GcovrExecFixture", _test_id: str, options: list[str]
 ) -> None:
     """
     Test for --exclude-unreachable-branches option.
@@ -219,113 +222,114 @@ def test_exclude_line_branch(
     The test attempts to test both GCOV/LCOV exclusion markers
     and auto-detection of compiler-generated code.
     """
-    gcovr_test_exec.cxx_link(
+    gcovr_exec.cxx_link(
         "testcase",
         "main.cpp",
         "foo.cpp",
         "bar.cpp",
     )
 
-    cwd = gcovr_test_exec.output_dir.parent
+    cwd = gcovr_exec.output_dir.parent
 
-    gcovr_test_exec.run("./testcase")
-    gcovr_test_exec.gcovr(
+    gcovr_exec.run("./testcase")
+    gcovr_exec.gcovr(
         "--exclude-unreachable-branches",
         "--keep-intermediate-files",
         *options,
         "--json-pretty",
         "--json",
-        gcovr_test_exec.output_dir / "coverage.json",
-        gcovr_test_exec.output_dir,
+        gcovr_exec.output_dir / "coverage.json",
+        gcovr_exec.output_dir,
         cwd=cwd,
     )
-    gcovr_test_exec.gcovr(
+    gcovr_exec.gcovr(
         "--exclude-unreachable-branches",
         "--json-summary-pretty",
         "--json-summary",
-        gcovr_test_exec.output_dir / "coverage_summary.json",
-        gcovr_test_exec.output_dir,
+        gcovr_exec.output_dir / "coverage_summary.json",
+        gcovr_exec.output_dir,
         cwd=cwd,
     )
-    gcovr_test_exec.compare_json()
+    gcovr_exec.compare_json()
 
     for theme in ["default", "github", "boost"]:
-        gcovr_test_exec.gcovr(
+        gcovr_exec.gcovr(
             "--json-add-tracefile",
-            gcovr_test_exec.output_dir / "coverage.json",
+            gcovr_exec.output_dir / "coverage.json",
             "--html-theme",
             f"{'' if theme == 'default' else theme + '.'}green",
             "--html-nested",
-            gcovr_test_exec.output_dir / f"coverage.{theme}.html",
+            gcovr_exec.output_dir / f"coverage.{theme}.html",
             cwd=cwd,
         )
-    gcovr_test_exec.compare_html()
+    gcovr_exec.compare_html()
 
-    gcovr_test_exec.gcovr(
+    gcovr_exec.gcovr(
         "--json-add-tracefile",
-        gcovr_test_exec.output_dir / "coverage.json",
+        gcovr_exec.output_dir / "coverage.json",
         "--txt",
-        gcovr_test_exec.output_dir / "coverage.txt",
+        gcovr_exec.output_dir / "coverage.txt",
         cwd=cwd,
     )
-    gcovr_test_exec.compare_txt()
+    gcovr_exec.compare_txt()
 
-    gcovr_test_exec.gcovr(
+    gcovr_exec.gcovr(
         "--json-add-tracefile",
-        gcovr_test_exec.output_dir / "coverage.json",
+        gcovr_exec.output_dir / "coverage.json",
         "--clover-pretty",
         "--clover",
-        gcovr_test_exec.output_dir / "clover.xml",
+        gcovr_exec.output_dir / "clover.xml",
         cwd=cwd,
     )
-    gcovr_test_exec.compare_clover()
+    gcovr_exec.compare_clover()
 
-    gcovr_test_exec.gcovr(
+    gcovr_exec.gcovr(
         "--json-add-tracefile",
-        gcovr_test_exec.output_dir / "coverage.json",
+        gcovr_exec.output_dir / "coverage.json",
         "--cobertura-pretty",
         "--cobertura",
-        gcovr_test_exec.output_dir / "cobertura.xml",
+        gcovr_exec.output_dir / "cobertura.xml",
         cwd=cwd,
     )
-    gcovr_test_exec.compare_cobertura()
+    gcovr_exec.compare_cobertura()
 
-    gcovr_test_exec.gcovr(
+    gcovr_exec.gcovr(
         "--json-add-tracefile",
-        gcovr_test_exec.output_dir / "coverage.json",
+        gcovr_exec.output_dir / "coverage.json",
         "--coveralls-pretty",
         "--coveralls",
-        gcovr_test_exec.output_dir / "coveralls.json",
+        gcovr_exec.output_dir / "coveralls.json",
         cwd=cwd,
+        use_main=False,
     )
-    gcovr_test_exec.compare_coveralls()
+    gcovr_exec.compare_coveralls()
 
-    gcovr_test_exec.gcovr(
+    gcovr_exec.gcovr(
         "--json-add-tracefile",
-        gcovr_test_exec.output_dir / "coverage.json",
+        gcovr_exec.output_dir / "coverage.json",
         "--jacoco",
-        gcovr_test_exec.output_dir / "jacoco.xml",
+        gcovr_exec.output_dir / "jacoco.xml",
         cwd=cwd,
     )
-    gcovr_test_exec.compare_jacoco()
+    gcovr_exec.compare_jacoco()
 
-    gcovr_test_exec.gcovr(
+    gcovr_exec.gcovr(
         "--json-add-tracefile",
-        gcovr_test_exec.output_dir / "coverage.json",
+        gcovr_exec.output_dir / "coverage.json",
         "--lcov",
-        gcovr_test_exec.output_dir / "coverage.lcov",
+        gcovr_exec.output_dir / "coverage.lcov",
         cwd=cwd,
     )
-    gcovr_test_exec.compare_lcov()
+    gcovr_exec.compare_lcov()
 
-    gcovr_test_exec.gcovr(
+    gcovr_exec.gcovr(
         "--json-add-tracefile",
-        gcovr_test_exec.output_dir / "coverage.json",
+        gcovr_exec.output_dir / "coverage.json",
         "--sonarqube",
-        gcovr_test_exec.output_dir / "sonarqube.xml",
+        gcovr_exec.output_dir / "sonarqube.xml",
         cwd=cwd,
     )
-    gcovr_test_exec.compare_sonarqube()
+    gcovr_exec.compare_sonarqube()
 
 
 @pytest.mark.html
@@ -335,71 +339,72 @@ def test_exclude_line_branch(
 @pytest.mark.lcov
 @pytest.mark.sonarqube
 @pytest.mark.txt
-def test_exclude_lines_by_pattern(gcovr_test_exec: "GcovrTestExec") -> None:
+def test_exclude_lines_by_pattern(gcovr_exec: "GcovrExecFixture") -> None:
     """
     Test case verifies that custom tagged lines (LINE/START/STOP) are excluded per run options.
 
     It uses exclude_pattern_prefix to pass a custom prefix.
     """
-    gcovr_test_exec.cxx_link("testcase", "main.cpp")
+    gcovr_exec.cxx_link("testcase", "main.cpp")
 
-    gcovr_test_exec.run("./testcase")
-    gcovr_test_exec.gcovr(
+    gcovr_exec.run("./testcase")
+    gcovr_exec.gcovr(
         "--delete-input-files",
         "--config=config/gcovr.config",
         "--html-details",
         "--html=coverage.html",
     )
-    gcovr_test_exec.compare_html()
+    gcovr_exec.compare_html()
 
-    gcovr_test_exec.run("./testcase")
-    gcovr_test_exec.gcovr(
+    gcovr_exec.run("./testcase")
+    gcovr_exec.gcovr(
         "--delete-input-files",
         "--exclude-lines-by-pattern= *panic\\([^)]*\\);",
         "--txt=coverage.txt",
     )
-    gcovr_test_exec.compare_txt()
+    gcovr_exec.compare_txt()
 
-    (gcovr_test_exec.output_dir / "config" / "pyproject.toml").rename(
-        gcovr_test_exec.output_dir / "pyproject.toml"
+    (gcovr_exec.output_dir / "config" / "pyproject.toml").rename(
+        gcovr_exec.output_dir / "pyproject.toml"
     )
 
-    gcovr_test_exec.run("./testcase")
-    gcovr_test_exec.gcovr(
+    gcovr_exec.run("./testcase")
+    gcovr_exec.gcovr(
         "--delete-input-files",
         "--cobertura-pretty",
         "--cobertura=cobertura.xml",
     )
-    gcovr_test_exec.compare_cobertura()
+    gcovr_exec.compare_cobertura()
 
-    gcovr_test_exec.run("./testcase")
-    gcovr_test_exec.gcovr(
+    gcovr_exec.run("./testcase")
+    gcovr_exec.gcovr(
         "--delete-input-files",
         "--coveralls-pretty",
         "--coveralls=coveralls.json",
+        use_main=False,
     )
-    gcovr_test_exec.compare_coveralls()
+    gcovr_exec.compare_coveralls()
 
-    gcovr_test_exec.run("./testcase")
-    gcovr_test_exec.gcovr(
+    gcovr_exec.run("./testcase")
+    gcovr_exec.gcovr(
         "--delete-input-files",
         "--lcov=coverage.lcov",
     )
-    gcovr_test_exec.compare_lcov()
+    gcovr_exec.compare_lcov()
 
-    gcovr_test_exec.run("./testcase")
-    gcovr_test_exec.gcovr(
+    gcovr_exec.run("./testcase")
+    gcovr_exec.gcovr(
         "--delete-input-files",
         "--jacoco=jacoco.xml",
     )
-    gcovr_test_exec.compare_jacoco()
+    gcovr_exec.compare_jacoco()
 
-    gcovr_test_exec.run("./testcase")
-    gcovr_test_exec.gcovr(
+    gcovr_exec.run("./testcase")
+    gcovr_exec.gcovr(
         "--delete-input-files",
         "--sonarqube=sonarqube.xml",
     )
-    gcovr_test_exec.compare_sonarqube()
+    gcovr_exec.compare_sonarqube()
 
 
 @pytest.mark.skipif(
@@ -414,68 +419,69 @@ def test_exclude_lines_by_pattern(gcovr_test_exec: "GcovrTestExec") -> None:
 @pytest.mark.lcov
 @pytest.mark.sonarqube
 @pytest.mark.txt
-def test_exclude_branch(gcovr_test_exec: "GcovrTestExec") -> None:
+def test_exclude_branch(gcovr_exec: "GcovrExecFixture") -> None:
     """Test case verifies that tagged lines (BR_LINE/BR_START/BR_STOP) are excluded per run options."""
-    gcovr_test_exec.cxx_link(
+    gcovr_exec.cxx_link(
         "testcase",
         "main.cpp",
     )
 
-    gcovr_test_exec.run("./testcase")
-    gcovr_test_exec.gcovr(
+    gcovr_exec.run("./testcase")
+    gcovr_exec.gcovr(
         "--no-markers",
         "--json-pretty",
         "--json=coverage.no-markers.json",
     )
-    gcovr_test_exec.gcovr(
+    gcovr_exec.gcovr(
         "--json-pretty",
         "--json=coverage.json",
     )
-    gcovr_test_exec.compare_json()
+    gcovr_exec.compare_json()
 
-    gcovr_test_exec.gcovr(
+    gcovr_exec.gcovr(
         "--json-add-tracefile=coverage.json",
         "--html-details=coverage.html",
     )
-    gcovr_test_exec.compare_html()
+    gcovr_exec.compare_html()
 
-    gcovr_test_exec.gcovr(
+    gcovr_exec.gcovr(
         "--json-add-tracefile=coverage.json",
         "--txt=coverage.txt",
     )
-    gcovr_test_exec.compare_txt()
+    gcovr_exec.compare_txt()
 
-    gcovr_test_exec.gcovr(
+    gcovr_exec.gcovr(
         "--json-add-tracefile=coverage.json",
         "--cobertura-pretty",
         "--cobertura=cobertura.xml",
     )
-    gcovr_test_exec.compare_cobertura()
+    gcovr_exec.compare_cobertura()
 
-    gcovr_test_exec.gcovr(
+    gcovr_exec.gcovr(
         "--json-add-tracefile=coverage.json",
         "--coveralls-pretty",
         "--coveralls=coveralls.json",
+        use_main=False,
     )
-    gcovr_test_exec.compare_coveralls()
+    gcovr_exec.compare_coveralls()
 
-    gcovr_test_exec.gcovr(
+    gcovr_exec.gcovr(
         "--json-add-tracefile=coverage.json",
         "--jacoco=jacoco.xml",
     )
-    gcovr_test_exec.compare_jacoco()
+    gcovr_exec.compare_jacoco()
 
-    gcovr_test_exec.gcovr(
+    gcovr_exec.gcovr(
         "--json-add-tracefile=coverage.json",
         "--lcov=coverage.lcov",
     )
-    gcovr_test_exec.compare_lcov()
+    gcovr_exec.compare_lcov()
 
-    gcovr_test_exec.gcovr(
+    gcovr_exec.gcovr(
         "--json-add-tracefile=coverage.json",
         "--sonarqube=sonarqube.xml",
     )
-    gcovr_test_exec.compare_sonarqube()
+    gcovr_exec.compare_sonarqube()
 
 
 @pytest.mark.skipif(
@@ -490,100 +496,98 @@ def test_exclude_branch(gcovr_test_exec: "GcovrTestExec") -> None:
 @pytest.mark.lcov
 @pytest.mark.sonarqube
 @pytest.mark.txt
-def test_exclude_branch_source(gcovr_test_exec: "GcovrTestExec") -> None:
+def test_exclude_branch_source(gcovr_exec: "GcovrExecFixture") -> None:
     """Test exclusion of source branches, following the output order from exclude-line-custom."""
-    gcovr_test_exec.cxx_link(
+    gcovr_exec.cxx_link(
         "testcase",
         "main.cpp",
     )
 
-    gcovr_test_exec.run("./testcase")
-    gcovr_test_exec.gcovr(
+    gcovr_exec.run("./testcase")
+    gcovr_exec.gcovr(
         "--no-markers",
         "--json-pretty",
         "--json=coverage.no-markers.json",
     )
-    process = gcovr_test_exec.gcovr(
+    gcovr_exec.gcovr(
         "--verbose",
         "--json-pretty",
         "--json=coverage.json",
         "--trace-include=.*main.cpp",
+        use_main=False,
     )
-    gcovr_test_exec.compare_json()
+    gcovr_exec.compare_json()
 
-    file = gcovr_test_exec.output_dir / "main.cpp"
+    file = gcovr_exec.output_dir / "main.cpp"
     check.is_in(
         f"Found marker for source branch exclusion at {file}:4:7 without coverage information",
-        process.stderr,
+        gcovr_exec.err,
     )
     # If block_ids entry is found the compiler supports the function excludes else we need to see a warning.
-    if '"block_ids"' in (gcovr_test_exec.output_dir / "coverage.json").read_text(
+    if '"block_ids"' in (gcovr_exec.output_dir / "coverage.json").read_text(
         encoding="utf-8"
     ):
         check.is_in(
             f"Source branch exclusion at {file}:11:20 is excluding branch 2->5 of line 5",
-            process.stderr,
+            gcovr_exec.err,
         )
         check.is_in(
             f"Source branch exclusion at {file}:19:39 found but no block ids defined at this line",
-            process.stderr,
+            gcovr_exec.err,
         )
         check.is_in(
             f"Source branch exclusion at {file}:24:45 is excluding branch 8->11 of line 20",
-            process.stderr,
+            gcovr_exec.err,
         )
     else:
         check.is_in(
             f"Source branch exclusion at {file}:11:20 needs at least gcc-14 with supported JSON format.",
-            process.stderr,
+            gcovr_exec.err,
         )
         check.is_in(
             f"Source branch exclusion at {file}:19:39 needs at least gcc-14 with supported JSON format.",
-            process.stderr,
+            gcovr_exec.err,
         )
         check.is_in(
             f"Source branch exclusion at {file}:24:45 needs at least gcc-14 with supported JSON format.",
-            process.stderr,
+            gcovr_exec.err,
         )
 
-    gcovr_test_exec.gcovr(
+    gcovr_exec.gcovr(
         "--json-add-tracefile=coverage.json",
         "--html-details",
         "--html=coverage.html",
     )
-    gcovr_test_exec.compare_html()
+    gcovr_exec.compare_html()
 
-    gcovr_test_exec.gcovr("--json-add-tracefile=coverage.json", "--txt", "coverage.txt")
-    gcovr_test_exec.compare_txt()
+    gcovr_exec.gcovr("--json-add-tracefile=coverage.json", "--txt", "coverage.txt")
+    gcovr_exec.compare_txt()
 
-    gcovr_test_exec.gcovr(
+    gcovr_exec.gcovr(
         "--json-add-tracefile=coverage.json",
         "--cobertura-pretty",
         "--cobertura=cobertura.xml",
     )
-    gcovr_test_exec.compare_cobertura()
+    gcovr_exec.compare_cobertura()
 
-    gcovr_test_exec.gcovr(
+    gcovr_exec.gcovr(
         "--json-add-tracefile=coverage.json",
         "--coveralls-pretty",
         "--coveralls=coveralls.json",
+        use_main=False,
     )
-    gcovr_test_exec.compare_coveralls()
+    gcovr_exec.compare_coveralls()
 
-    gcovr_test_exec.gcovr(
-        "--json-add-tracefile=coverage.json", "--lcov", "coverage.lcov"
-    )
-    gcovr_test_exec.compare_lcov()
+    gcovr_exec.gcovr("--json-add-tracefile=coverage.json", "--lcov", "coverage.lcov")
+    gcovr_exec.compare_lcov()
 
-    gcovr_test_exec.gcovr(
-        "--json-add-tracefile=coverage.json", "--jacoco", "jacoco.xml"
-    )
-    gcovr_test_exec.compare_jacoco()
+    gcovr_exec.gcovr("--json-add-tracefile=coverage.json", "--jacoco", "jacoco.xml")
+    gcovr_exec.compare_jacoco()
 
-    gcovr_test_exec.gcovr(
+    gcovr_exec.gcovr(
         "--json-add-tracefile=coverage.json", "--sonarqube", "sonarqube.xml"
     )
-    gcovr_test_exec.compare_sonarqube()
+    gcovr_exec.compare_sonarqube()
 
 
 @pytest.mark.html
@@ -594,88 +598,93 @@ def test_exclude_branch_source(gcovr_test_exec: "GcovrTestExec") -> None:
 @pytest.mark.lcov
 @pytest.mark.sonarqube
 @pytest.mark.txt
-def test_exclude_branch_without_hit(gcovr_test_exec: "GcovrTestExec") -> None:
+def test_exclude_branch_without_hit(gcovr_exec: "GcovrExecFixture") -> None:
     """Test exclusion of source branches, following the output order from exclude-line-custom."""
-    gcovr_test_exec.cxx_link(
+    gcovr_exec.cxx_link(
         "testcase",
         "main.cpp",
     )
 
-    gcovr_test_exec.run("./testcase")
-    gcovr_test_exec.gcovr(
+    gcovr_exec.run("./testcase")
+    gcovr_exec.gcovr(
         "--no-markers",
         "--json-pretty",
         "--json=coverage.no-markers.json",
     )
-    process = gcovr_test_exec.gcovr(
+    gcovr_exec.gcovr(
         "--verbose",
         "--json-pretty",
         "--json=coverage.json",
         "--trace-include=.*main.cpp",
+        use_main=False,
     )
-    gcovr_test_exec.compare_json()
+    gcovr_exec.compare_json()
 
-    file = gcovr_test_exec.output_dir / "main.cpp"
+    file = gcovr_exec.output_dir / "main.cpp"
     check.is_in(
         f"Found marker for exclusion of branches without hits at {file}:4:7 without coverage information",
-        process.stderr,
+        gcovr_exec.err,
     )
-    if '"block_ids"' in (gcovr_test_exec.output_dir / "coverage.json").read_text(
+    if '"block_ids"' in (gcovr_exec.output_dir / "coverage.json").read_text(
         encoding="utf-8"
     ):
         check.is_in(
             f"Exclusion of branches without hits at {file}:5:24 is excluding 2 branch(es)",
-            process.stderr,
+            gcovr_exec.err,
         )
     else:
         check.is_in(
             f"Exclusion of branches without hits (2/4) at {file}:5:24 is wrong. There are 3 out of 5 branches uncovered",
-            process.stderr,
+            gcovr_exec.err,
         )
-    x_out_of_y = "2 out of 4" if gcovr_test_exec.is_llvm() else "3 out of 6"
+    x_out_of_y = "2 out of 4" if gcovr_exec.is_llvm() else "3 out of 6"
     check.is_in(
         f"Exclusion of branches without hits (2/6) at {file}:20:31 is wrong. There are {x_out_of_y} branches uncovered",
-        process.stderr,
+        gcovr_exec.err,
     )
 
-    gcovr_test_exec.gcovr(
+    gcovr_exec.gcovr(
         "--json-add-tracefile=coverage.json",
         "--html-details",
         "--html=coverage.html",
     )
-    gcovr_test_exec.compare_html()
+    gcovr_exec.compare_html()
 
-    gcovr_test_exec.gcovr("--json-add-tracefile=coverage.json", "--txt", "coverage.txt")
-    gcovr_test_exec.compare_txt()
+    gcovr_exec.gcovr("--json-add-tracefile=coverage.json", "--txt", "coverage.txt")
+    gcovr_exec.compare_txt()
 
-    gcovr_test_exec.gcovr(
+    gcovr_exec.gcovr(
         "--json-add-tracefile=coverage.json",
         "--cobertura-pretty",
         "--cobertura=cobertura.xml",
     )
-    gcovr_test_exec.compare_cobertura()
+    gcovr_exec.compare_cobertura()
 
-    gcovr_test_exec.gcovr(
+    gcovr_exec.gcovr(
         "--json-add-tracefile=coverage.json",
         "--coveralls-pretty",
         "--coveralls=coveralls.json",
+        use_main=False,
     )
-    gcovr_test_exec.compare_coveralls()
+    gcovr_exec.compare_coveralls()
 
-    gcovr_test_exec.gcovr(
-        "--json-add-tracefile=coverage.json", "--lcov", "coverage.lcov"
+    gcovr_exec.gcovr(
+        "--json-add-tracefile=coverage.json",
+        "--lcov=coverage.lcov",
     )
-    gcovr_test_exec.compare_lcov()
+    gcovr_exec.compare_lcov()
 
-    gcovr_test_exec.gcovr(
-        "--json-add-tracefile=coverage.json", "--jacoco", "jacoco.xml"
+    gcovr_exec.gcovr(
+        "--json-add-tracefile=coverage.json",
+        "--jacoco=jacoco.xml",
     )
-    gcovr_test_exec.compare_jacoco()
+    gcovr_exec.compare_jacoco()
 
-    gcovr_test_exec.gcovr(
-        "--json-add-tracefile=coverage.json", "--sonarqube", "sonarqube.xml"
+    gcovr_exec.gcovr(
+        "--json-add-tracefile=coverage.json",
+        "--sonarqube=sonarqube.xml",
     )
-    gcovr_test_exec.compare_sonarqube()
+    gcovr_exec.compare_sonarqube()
 
 
 @pytest.mark.skipif(
@@ -690,100 +699,104 @@ def test_exclude_branch_without_hit(gcovr_test_exec: "GcovrTestExec") -> None:
 @pytest.mark.lcov
 @pytest.mark.sonarqube
 @pytest.mark.txt
-def test_exclude_throw_branches(gcovr_test_exec: "GcovrTestExec") -> None:
+def test_exclude_throw_branches(gcovr_exec: "GcovrExecFixture") -> None:
     """Test exclude-throw-branches option."""
-    gcovr_test_exec.cxx_link(
+    gcovr_exec.cxx_link(
         "testcase",
         "main.cpp",
     )
 
-    gcovr_test_exec.run("./testcase")
-    gcovr_test_exec.gcovr("--json-pretty", "--json=coverage-throw.json")
-    process = gcovr_test_exec.gcovr(
+    gcovr_exec.run("./testcase")
+    gcovr_exec.gcovr("--json-pretty", "--json=coverage-throw.json")
+    gcovr_exec.gcovr(
         "--exclude-throw-branches",
         "--trace-include=.*",
         "--json-pretty",
         "--json=coverage-exclude-throw.json",
+        "--verbose",
+        use_main=False,
     )
     lines = [5, 28, 33, 36, 41] if IS_GCC else []
     for line in lines:
         check.is_true(
             re.search(
                 rf"main.cpp:{line}: Removing \d+ unreachable branch\(es\) detected as exception-only code",
-                process.stderr,
+                gcovr_exec.err,
             ),
             f"Expected exclusion message for throw branch at line {line} not found in stderr.",
         )
-    gcovr_test_exec.compare_json()
+    gcovr_exec.compare_json()
 
-    gcovr_test_exec.gcovr(
+    gcovr_exec.gcovr(
         "--json-add-tracefile=coverage-throw.json",
         "--html-details",
         "--html=coverage-throw.html",
     )
-    gcovr_test_exec.gcovr(
+    gcovr_exec.gcovr(
         "--json-add-tracefile=coverage-exclude-throw.json",
         "--html-details",
         "--html=coverage-exclude-throw.html",
     )
-    gcovr_test_exec.compare_html()
+    gcovr_exec.compare_html()
 
-    gcovr_test_exec.gcovr(
+    gcovr_exec.gcovr(
         "--json-add-tracefile=coverage-throw.json", "--txt=coverage-throw.txt"
     )
-    gcovr_test_exec.gcovr(
+    gcovr_exec.gcovr(
         "--json-add-tracefile=coverage-exclude-throw.json",
         "--txt=coverage-exclude-throw.txt",
     )
-    gcovr_test_exec.compare_txt()
+    gcovr_exec.compare_txt()
 
-    gcovr_test_exec.gcovr(
+    gcovr_exec.gcovr(
         "--json-add-tracefile=coverage-throw.json", "--cobertura=cobertura-throw.xml"
     )
-    gcovr_test_exec.gcovr(
+    gcovr_exec.gcovr(
         "--json-add-tracefile=coverage-exclude-throw.json",
         "--cobertura=cobertura-exclude-throw.xml",
     )
-    gcovr_test_exec.compare_cobertura()
+    gcovr_exec.compare_cobertura()
 
-    gcovr_test_exec.gcovr(
+    gcovr_exec.gcovr(
         "--json-add-tracefile=coverage-throw.json",
         "--coveralls-pretty",
         "--coveralls=coveralls-throw.json",
+        use_main=False,
     )
-    gcovr_test_exec.gcovr(
+    gcovr_exec.gcovr(
         "--json-add-tracefile=coverage-exclude-throw.json",
         "--coveralls-pretty",
         "--coveralls=coveralls-exclude-throw.json",
+        use_main=False,
     )
-    gcovr_test_exec.compare_coveralls()
+    gcovr_exec.compare_coveralls()
 
-    gcovr_test_exec.gcovr(
+    gcovr_exec.gcovr(
         "--json-add-tracefile=coverage-throw.json", "--lcov=coverage-throw.lcov"
     )
-    gcovr_test_exec.gcovr(
+    gcovr_exec.gcovr(
         "--json-add-tracefile=coverage-exclude-throw.json",
         "--lcov=coverage-exclude-throw.lcov",
     )
-    gcovr_test_exec.compare_lcov()
+    gcovr_exec.compare_lcov()
 
-    gcovr_test_exec.gcovr(
+    gcovr_exec.gcovr(
         "--json-add-tracefile=coverage-throw.json", "--jacoco=jacoco-throw.xml"
     )
-    gcovr_test_exec.gcovr(
+    gcovr_exec.gcovr(
         "--json-add-tracefile=coverage-exclude-throw.json",
         "--jacoco=jacoco-exclude-throw.xml",
     )
-    gcovr_test_exec.compare_jacoco()
+    gcovr_exec.compare_jacoco()
 
-    gcovr_test_exec.gcovr(
+    gcovr_exec.gcovr(
         "--json-add-tracefile=coverage-throw.json", "--sonarqube=sonarqube-throw.xml"
     )
-    gcovr_test_exec.gcovr(
+    gcovr_exec.gcovr(
         "--json-add-tracefile=coverage-exclude-throw.json",
         "--sonarqube=sonarqube-exclude-throw.xml",
     )
-    gcovr_test_exec.compare_sonarqube()
+    gcovr_exec.compare_sonarqube()
 
 
 @pytest.mark.html
@@ -794,86 +807,87 @@ def test_exclude_throw_branches(gcovr_test_exec: "GcovrTestExec") -> None:
 @pytest.mark.lcov
 @pytest.mark.sonarqube
 @pytest.mark.txt
-def test_exclude_directories_relative(gcovr_test_exec: "GcovrTestExec") -> None:
+def test_exclude_directories_relative(gcovr_exec: "GcovrExecFixture") -> None:
     """A simple test for excluding gcov files using relative directory paths."""
-    (gcovr_test_exec.output_dir / "build" / "a").mkdir(parents=True)
-    (gcovr_test_exec.output_dir / "build" / "b").mkdir(parents=True)
-    gcovr_test_exec.cxx_link(
+    (gcovr_exec.output_dir / "build" / "a").mkdir(parents=True)
+    (gcovr_exec.output_dir / "build" / "b").mkdir(parents=True)
+    gcovr_exec.cxx_link(
         "testcase",
-        gcovr_test_exec.cxx_compile("a/file1.cpp", target="build/a/file.o"),
-        gcovr_test_exec.cxx_compile("b/main.cpp", target="build/b/main.o"),
+        gcovr_exec.cxx_compile("a/file1.cpp", target="build/a/file.o"),
+        gcovr_exec.cxx_compile("b/main.cpp", target="build/b/main.o"),
     )
 
-    gcovr_test_exec.run("./testcase")
-    gcovr_test_exec.gcovr(
+    gcovr_exec.run("./testcase")
+    gcovr_exec.gcovr(
         "--gcov-exclude-directory",
         "build/a",
         "--json-pretty",
         "--json=coverage.json",
     )
-    gcovr_test_exec.compare_json()
+    gcovr_exec.compare_json()
 
-    gcovr_test_exec.gcovr(
+    gcovr_exec.gcovr(
         "--json-add-tracefile=coverage.json",
         "--txt=coverage.txt",
     )
-    gcovr_test_exec.compare_txt()
+    gcovr_exec.compare_txt()
 
-    gcovr_test_exec.gcovr(
+    gcovr_exec.gcovr(
         "--json-add-tracefile=coverage.json",
         "--html-details=coverage.html",
     )
-    gcovr_test_exec.compare_html()
+    gcovr_exec.compare_html()
 
-    gcovr_test_exec.gcovr(
+    gcovr_exec.gcovr(
         "--json-add-tracefile=coverage.json",
         "--cobertura-pretty",
         "--cobertura=cobertura.xml",
     )
-    gcovr_test_exec.compare_cobertura()
+    gcovr_exec.compare_cobertura()
 
-    gcovr_test_exec.gcovr(
+    gcovr_exec.gcovr(
         "--json-add-tracefile=coverage.json",
         "--coveralls-pretty",
         "--coveralls=coveralls.json",
+        use_main=False,
     )
-    gcovr_test_exec.compare_coveralls()
+    gcovr_exec.compare_coveralls()
 
-    gcovr_test_exec.gcovr(
+    gcovr_exec.gcovr(
         "--json-add-tracefile=coverage.json",
         "--jacoco=jacoco.xml",
     )
-    gcovr_test_exec.compare_jacoco()
+    gcovr_exec.compare_jacoco()
 
-    gcovr_test_exec.gcovr(
+    gcovr_exec.gcovr(
         "--json-add-tracefile=coverage.json",
         "--lcov=coverage.lcov",
     )
-    gcovr_test_exec.compare_lcov()
+    gcovr_exec.compare_lcov()
 
-    gcovr_test_exec.gcovr(
+    gcovr_exec.gcovr(
         "--json-add-tracefile=coverage.json",
         "--sonarqube=sonarqube.xml",
     )
-    gcovr_test_exec.compare_sonarqube()
+    gcovr_exec.compare_sonarqube()
 
 
 @pytest.mark.json
-def test_exclude_file_relative(gcovr_test_exec: "GcovrTestExec") -> None:
+def test_exclude_file_relative(gcovr_exec: "GcovrExecFixture") -> None:
     """A simple test for excluding source files using relative filepaths."""
-    gcovr_test_exec.cxx_link("testcase", "main.cpp", "file1.cpp")
+    gcovr_exec.cxx_link("testcase", "main.cpp", "file1.cpp")
 
-    gcovr_test_exec.run("./testcase")
-    gcovr_test_exec.gcovr(
+    gcovr_exec.run("./testcase")
+    gcovr_exec.gcovr(
         "--json-pretty",
         "--json=coverage.no-markers.json",
     )
-    gcovr_test_exec.gcovr(
-        f"--exclude={'File1.cpp' if gcovr_test_exec.is_windows() else 'file1.cpp'}",
+    gcovr_exec.gcovr(
+        f"--exclude={'File1.cpp' if gcovr_exec.is_windows() else 'file1.cpp'}",
         "--json-pretty",
         "--json=coverage.json",
     )
-    gcovr_test_exec.compare_json()
+    gcovr_exec.compare_json()
 
 
 @pytest.mark.skipif(
@@ -881,23 +895,24 @@ def test_exclude_file_relative(gcovr_test_exec: "GcovrTestExec") -> None:
     reason="Exclusion markers are independent of OS and we do not want to have separate data for Windows and Darwin.",
 )
 @pytest.mark.json
-def test_exclude_function(gcovr_test_exec: "GcovrTestExec") -> None:
+def test_exclude_function(gcovr_exec: "GcovrExecFixture") -> None:
     """Test excluding of functions."""
-    gcovr_test_exec.cxx_link(
+    gcovr_exec.cxx_link(
         "testcase",
         "main.cpp",
     )
 
-    gcovr_test_exec.run("./testcase")
-    process = gcovr_test_exec.gcovr(
+    gcovr_exec.run("./testcase")
+    gcovr_exec.gcovr(
         "--exclude-function",
         "sort_excluded_both()::{lambda(int, int)#2}::operator()(int, int) const",
         "--exclude-function",
         "/bar.+/",
         "--json-pretty",
         "--json=coverage.json",
+        use_main=False,
     )
-    coverage_json_content = (gcovr_test_exec.output_dir / "coverage.json").read_text(
+    coverage_json_content = (gcovr_exec.output_dir / "coverage.json").read_text(
         encoding="utf-8"
     )
     if '"pos"' in coverage_json_content:
@@ -905,18 +920,18 @@ def test_exclude_function(gcovr_test_exec: "GcovrTestExec") -> None:
             with check:
                 assert (
                     f"Function exclude marker found on line {pos} but no function definition found"
-                    in process.stderr
+                    in gcovr_exec.err
                 )
 
         def assert_stderr(string: str) -> None:
-            assert string not in process.stderr
+            assert string not in gcovr_exec.err
     else:
 
         def assert_stderr(string: str) -> None:
-            assert string in process.stderr
+            assert string in gcovr_exec.err
 
     positions = ["9:8", "50:19"]
-    if gcovr_test_exec.is_cxx_lambda_expression_available():
+    if gcovr_exec.is_cxx_lambda_expression_available():
         positions += ["44:29", "50:19", "57:29", "66:34", "73:29"]
     for pos in positions:
         with check:
@@ -924,7 +939,7 @@ def test_exclude_function(gcovr_test_exec: "GcovrTestExec") -> None:
                 f"Function exclude marker found on line {pos} but not supported for this compiler"
             )
 
-    gcovr_test_exec.compare_json()
+    gcovr_exec.compare_json()
 
 
 @pytest.mark.skipif(
@@ -932,21 +947,21 @@ def test_exclude_function(gcovr_test_exec: "GcovrTestExec") -> None:
     reason="Exclude Darwin to not have separate reference.",
 )
 @pytest.mark.json
-def test_gcov_exclude(gcovr_test_exec: "GcovrTestExec") -> None:
-    gcovr_test_exec.cxx_link(
+def test_gcov_exclude(gcovr_exec: "GcovrExecFixture") -> None:
+    gcovr_exec.cxx_link(
         "subdir/testcase",
-        gcovr_test_exec.cxx_compile("subdir/B/main.cpp"),
-        gcovr_test_exec.cxx_compile("subdir/A/file1.cpp"),
-        gcovr_test_exec.cxx_compile("subdir/A/File2.cpp"),
-        gcovr_test_exec.cxx_compile("subdir/A/file3.cpp"),
-        gcovr_test_exec.cxx_compile("subdir/A/File4.cpp"),
-        gcovr_test_exec.cxx_compile("subdir/A/C/file5.cpp"),
-        gcovr_test_exec.cxx_compile("subdir/A/C/D/File6.cpp"),
-        gcovr_test_exec.cxx_compile("subdir/A/file7.cpp"),
+        gcovr_exec.cxx_compile("subdir/B/main.cpp"),
+        gcovr_exec.cxx_compile("subdir/A/file1.cpp"),
+        gcovr_exec.cxx_compile("subdir/A/File2.cpp"),
+        gcovr_exec.cxx_compile("subdir/A/file3.cpp"),
+        gcovr_exec.cxx_compile("subdir/A/File4.cpp"),
+        gcovr_exec.cxx_compile("subdir/A/C/file5.cpp"),
+        gcovr_exec.cxx_compile("subdir/A/C/D/File6.cpp"),
+        gcovr_exec.cxx_compile("subdir/A/file7.cpp"),
     )
 
-    gcovr_test_exec.run("./subdir/testcase")
-    gcovr_test_exec.gcovr(
+    gcovr_exec.run("./subdir/testcase")
+    gcovr_exec.gcovr(
         "--root=subdir",
         "--gcov-exclude-directory=.*/A/C(?:/.*)?",
         "--gcov-filter=.*",
@@ -955,4 +970,4 @@ def test_gcov_exclude(gcovr_test_exec: "GcovrTestExec") -> None:
         "--json-pretty",
         "--json=coverage.json",
     )
-    gcovr_test_exec.compare_json()
+    gcovr_exec.compare_json()

@@ -17,13 +17,12 @@
 
 import logging
 import os
-import subprocess  # nosec
 
 import pytest
 from pytest_check import check
 
 from gcovr.formats.html.write import _make_short_source_filename
-from tests.conftest import IS_LINUX, IS_WINDOWS, GcovrTestExec
+from tests.conftest import IS_LINUX, IS_WINDOWS, GcovrExecFixture
 
 LOGGER = logging.getLogger(__name__)
 
@@ -196,47 +195,52 @@ PARAMETERS = [
     ids=[p[0] for p in PARAMETERS],
 )
 @pytest.mark.html
-def test(gcovr_test_exec: "GcovrTestExec", _test_id: str, options: list[str]) -> None:
+def test(gcovr_exec: "GcovrExecFixture", _test_id: str, options: list[str]) -> None:
     """Test HTML single page output variants."""
-    gcovr_test_exec.cxx_link(
+    gcovr_exec.cxx_link(
         "testcase",
         "main.cpp",
     )
 
-    gcovr_test_exec.run("./testcase")
-    gcovr_test_exec.gcovr(
+    gcovr_exec.run("./testcase")
+    gcovr_exec.gcovr(
         "--delete-input-files", "--html", *options, "--html", "coverage.html"
     )
-    gcovr_test_exec.compare_html()
+    gcovr_exec.compare_html()
 
 
 @pytest.mark.skipif(
-    GcovrTestExec.cc_version() >= (8 if GcovrTestExec.is_gcc() else 12),
+    GcovrExecFixture.cc_version() >= (8 if GcovrExecFixture.is_gcc() else 12),
     reason="Newer versions stub the missing lines",
 )
 @pytest.mark.html
-def test_less_lines(gcovr_test_exec: "GcovrTestExec") -> None:
+def test_less_lines(gcovr_exec: "GcovrExecFixture") -> None:
     """Test HTML single page output variants."""
-    main_cpp = gcovr_test_exec.output_dir / "main.cpp"
+    main_cpp = gcovr_exec.output_dir / "main.cpp"
     content = main_cpp.read_text(encoding="utf-8")
     main_cpp.write_text(("\n" * 20) + content)
 
-    gcovr_test_exec.cxx_link(
+    gcovr_exec.cxx_link(
         "testcase",
         "main.cpp",
     )
 
     main_cpp.write_text(content)
 
-    gcovr_test_exec.run("./testcase")
-    process = gcovr_test_exec.gcovr("--html-details", "--html", "coverage.html")
+    gcovr_exec.run("./testcase")
+    gcovr_exec.gcovr(
+        "--html-details",
+        "--html",
+        "coverage.html",
+        use_main=False,
+    )
     with check:
         assert (
             f"(WARNING) File {main_cpp} has 5 line(s) but coverage data has 23 line(s)."
-            in process.stderr
+            in gcovr_exec.err
         )
 
-    gcovr_test_exec.compare_html()
+    gcovr_exec.compare_html()
 
 
 PARAMETERS_ENCODING = [
@@ -270,66 +274,65 @@ PARAMETERS_ENCODING = [
 )
 @pytest.mark.html
 def test_encoding(
-    gcovr_test_exec: "GcovrTestExec",
+    gcovr_exec: "GcovrExecFixture",
     _test_id: str,
     source_encoding: str,
     html_encoding: str,
 ) -> None:
     """Test HTML single page output variants."""
-    (gcovr_test_exec.output_dir / "main.cpp").unlink()
-    (gcovr_test_exec.output_dir / f"main.{source_encoding}.cpp").rename(
-        gcovr_test_exec.output_dir / "main.cpp"
+    (gcovr_exec.output_dir / "main.cpp").unlink()
+    (gcovr_exec.output_dir / f"main.{source_encoding}.cpp").rename(
+        gcovr_exec.output_dir / "main.cpp"
     )
-    gcovr_test_exec.cxx_link(
+    gcovr_exec.cxx_link(
         "testcase",
         "main.cpp",
     )
 
-    gcovr_test_exec.run("./testcase")
+    gcovr_exec.run("./testcase")
     additional_options = (
         [] if html_encoding == "utf8" else [f"--html-encoding={html_encoding}"]
     )
-    gcovr_test_exec.gcovr(
+    gcovr_exec.gcovr(
         "--delete-input-files",
         "--html-details",
         "--source-encoding=utf8",
         *additional_options,
         "--html=coverage.html",
     )
-    gcovr_test_exec.compare_html(encoding=html_encoding)
+    gcovr_exec.compare_html(encoding=html_encoding)
 
 
-def test_empty_nested_report(gcovr_test_exec: "GcovrTestExec") -> None:
+def test_empty_nested_report(gcovr_exec: "GcovrExecFixture") -> None:
     """Test HTML report generation without data files."""
-    gcovr_test_exec.gcovr(
+    gcovr_exec.gcovr(
         "--html-nested=coverage.html",
     )
 
 
 @pytest.mark.html
-def test_file_not_found(gcovr_test_exec: "GcovrTestExec") -> None:
+def test_file_not_found(gcovr_exec: "GcovrExecFixture") -> None:
     """Test HTML output when file is not found, using tracefile."""
     # No compilation needed, just run gcovr with tracefile
 
-    with pytest.raises(subprocess.CalledProcessError) as exc:
-        gcovr_test_exec.gcovr(
-            "--json-add-tracefile=file_not_found.json",
-            "--html-details=coverage.html",
-        )
-    assert exc.value.returncode == 128  # noqa: PLR2004
-    gcovr_test_exec.compare_html()
+    gcovr_exec.gcovr(
+        "--json-add-tracefile=file_not_found.json",
+        "--html-details=coverage.html",
+        exitcode_ok=128,
+    )
+    gcovr_exec.compare_html()
 
 
 @pytest.mark.html
-def test_template_dir(gcovr_test_exec: "GcovrTestExec") -> None:
+def test_template_dir(gcovr_exec: "GcovrExecFixture") -> None:
     """Test HTML single page output variants."""
-    gcovr_test_exec.cxx_link(
+    gcovr_exec.cxx_link(
         "testcase",
         "main.cpp",
     )
 
-    gcovr_test_exec.run("./testcase")
-    gcovr_test_exec.gcovr(
+    gcovr_exec.run("./testcase")
+    gcovr_exec.gcovr(
         "--delete-input-files",
         "--html",
         "--html-self-contained",
@@ -337,7 +340,7 @@ def test_template_dir(gcovr_test_exec: "GcovrTestExec") -> None:
         "--html-template-dir=user_template/config/",
         "--html=coverage.html",
     )
-    gcovr_test_exec.compare_html()
+    gcovr_exec.compare_html()
 
 
 PARAMETERS_NESTED = [
@@ -445,7 +448,7 @@ PARAMETERS_NESTED = [
 )
 @pytest.mark.html
 def test_details(
-    gcovr_test_exec: "GcovrTestExec", test_id: str, options: list[str]
+    gcovr_exec: "GcovrExecFixture", test_id: str, options: list[str]
 ) -> None:
     """
     Test the output of cascaded html coverage reports.
@@ -457,31 +460,29 @@ def test_details(
 
     In this case, the directory listings should be unsorted.
     """
-    file2_cpp = gcovr_test_exec.output_dir / "subdir" / "A" / "File2.cpp"
+    file2_cpp = gcovr_exec.output_dir / "subdir" / "A" / "File2.cpp"
     if test_id.startswith("theme-"):
         deep_dir = file2_cpp.parent.joinpath(*[f"subdir_{i}" for i in range(10)])
         deep_dir.mkdir(parents=True, exist_ok=True)
         file2_cpp = file2_cpp.rename(deep_dir / file2_cpp.name)
-    gcovr_test_exec.cxx_link(
+    gcovr_exec.cxx_link(
         "subdir/testcase",
-        gcovr_test_exec.cxx_compile("subdir/A/file1.cpp"),
-        gcovr_test_exec.cxx_compile(
-            file2_cpp.relative_to(gcovr_test_exec.output_dir).as_posix()
-        ),
-        gcovr_test_exec.cxx_compile("subdir/A/file3.cpp"),
-        gcovr_test_exec.cxx_compile("subdir/A/File4.cpp"),
-        gcovr_test_exec.cxx_compile("subdir/A/file7.cpp"),
-        gcovr_test_exec.cxx_compile("subdir/A/C/file5.cpp"),
-        gcovr_test_exec.cxx_compile("subdir/A/C/D/File6.cpp"),
-        gcovr_test_exec.cxx_compile("subdir/B/main.cpp"),
+        gcovr_exec.cxx_compile("subdir/A/file1.cpp"),
+        gcovr_exec.cxx_compile(file2_cpp.relative_to(gcovr_exec.output_dir).as_posix()),
+        gcovr_exec.cxx_compile("subdir/A/file3.cpp"),
+        gcovr_exec.cxx_compile("subdir/A/File4.cpp"),
+        gcovr_exec.cxx_compile("subdir/A/file7.cpp"),
+        gcovr_exec.cxx_compile("subdir/A/C/file5.cpp"),
+        gcovr_exec.cxx_compile("subdir/A/C/D/File6.cpp"),
+        gcovr_exec.cxx_compile("subdir/B/main.cpp"),
     )
 
-    gcovr_test_exec.run("./subdir/testcase")
-    gcovr_test_exec.gcovr(
+    gcovr_exec.run("./subdir/testcase")
+    gcovr_exec.gcovr(
         "--root=subdir",
         *options,
     )
-    gcovr_test_exec.compare_html()
+    gcovr_exec.compare_html()
 
 
 PARAMETERS_NESTED = [
@@ -583,7 +584,7 @@ PARAMETERS_NESTED = [
 )
 @pytest.mark.html
 def test_nested(
-    gcovr_test_exec: "GcovrTestExec", test_id: str, options: list[str]
+    gcovr_exec: "GcovrExecFixture", test_id: str, options: list[str]
 ) -> None:
     """
     Test the output of cascaded html coverage reports.
@@ -595,28 +596,26 @@ def test_nested(
 
     In this case, the directory listings should be unsorted.
     """
-    file2_cpp = gcovr_test_exec.output_dir / "subdir" / "A" / "File2.cpp"
+    file2_cpp = gcovr_exec.output_dir / "subdir" / "A" / "File2.cpp"
     if test_id.startswith("theme-"):
         deep_dir = file2_cpp.parent.joinpath(*[f"subdir_{i}" for i in range(10)])
         deep_dir.mkdir(parents=True, exist_ok=True)
         file2_cpp = file2_cpp.rename(deep_dir / file2_cpp.name)
-    gcovr_test_exec.cxx_link(
+    gcovr_exec.cxx_link(
         "subdir/testcase",
-        gcovr_test_exec.cxx_compile("subdir/A/file1.cpp"),
-        gcovr_test_exec.cxx_compile(
-            file2_cpp.relative_to(gcovr_test_exec.output_dir).as_posix()
-        ),
-        gcovr_test_exec.cxx_compile("subdir/A/file3.cpp"),
-        gcovr_test_exec.cxx_compile("subdir/A/File4.cpp"),
-        gcovr_test_exec.cxx_compile("subdir/A/file7.cpp"),
-        gcovr_test_exec.cxx_compile("subdir/A/C/file5.cpp"),
-        gcovr_test_exec.cxx_compile("subdir/A/C/D/File6.cpp"),
-        gcovr_test_exec.cxx_compile("subdir/B/main.cpp"),
+        gcovr_exec.cxx_compile("subdir/A/file1.cpp"),
+        gcovr_exec.cxx_compile(file2_cpp.relative_to(gcovr_exec.output_dir).as_posix()),
+        gcovr_exec.cxx_compile("subdir/A/file3.cpp"),
+        gcovr_exec.cxx_compile("subdir/A/File4.cpp"),
+        gcovr_exec.cxx_compile("subdir/A/file7.cpp"),
+        gcovr_exec.cxx_compile("subdir/A/C/file5.cpp"),
+        gcovr_exec.cxx_compile("subdir/A/C/D/File6.cpp"),
+        gcovr_exec.cxx_compile("subdir/B/main.cpp"),
     )
 
-    gcovr_test_exec.run("./subdir/testcase")
-    gcovr_test_exec.gcovr(
+    gcovr_exec.run("./subdir/testcase")
+    gcovr_exec.gcovr(
         "--root=subdir",
         *options,
     )
-    gcovr_test_exec.compare_html()
+    gcovr_exec.compare_html()

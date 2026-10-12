@@ -23,7 +23,7 @@ import pytest
 from tests.conftest import CONDITION_COVERAGE_POSSIBLE
 
 if typing.TYPE_CHECKING:
-    from tests.conftest import GcovrTestExec
+    from tests.conftest import GcovrExecFixture
 
 
 @pytest.mark.json
@@ -35,79 +35,80 @@ if typing.TYPE_CHECKING:
 @pytest.mark.jacoco
 @pytest.mark.sonarqube
 @pytest.mark.html
-def test_standard(gcovr_test_exec: "GcovrTestExec") -> None:
+def test_standard(gcovr_exec: "GcovrExecFixture") -> None:
     """Test excluding of functions."""
-    gcovr_test_exec.cxx_link(
+    gcovr_exec.cxx_link(
         "testcase",
         "main.cpp",
     )
 
-    gcovr_test_exec.run("./testcase")
-    gcovr_test_exec.gcovr(
+    gcovr_exec.run("./testcase")
+    gcovr_exec.gcovr(
         "--json-pretty",
         "--json=coverage.json",
     )
-    gcovr_test_exec.gcovr(
+    gcovr_exec.gcovr(
         "--json-add-tracefile=coverage.json",
         "--json-summary-pretty",
         "--json-summary=coverage_summary.json",
     )
-    gcovr_test_exec.compare_json()
+    gcovr_exec.compare_json()
 
-    gcovr_test_exec.gcovr(
+    gcovr_exec.gcovr(
         "--json-add-tracefile=coverage.json",
         "--html-details=coverage.html",
     )
-    gcovr_test_exec.compare_html()
+    gcovr_exec.compare_html()
 
-    gcovr_test_exec.gcovr(
+    gcovr_exec.gcovr(
         "--json-add-tracefile=coverage.json",
         "--markdown=coverage.md",
     )
-    gcovr_test_exec.gcovr(
+    gcovr_exec.gcovr(
         "--json-add-tracefile=coverage.json",
         "--markdown-summary=coverage_summary.md",
     )
-    gcovr_test_exec.compare_markdown()
+    gcovr_exec.compare_markdown()
 
-    gcovr_test_exec.gcovr(
+    gcovr_exec.gcovr(
         "--json-add-tracefile=coverage.json",
         "--txt=coverage.txt",
     )
-    gcovr_test_exec.compare_txt()
+    gcovr_exec.compare_txt()
 
-    gcovr_test_exec.gcovr(
+    gcovr_exec.gcovr(
         "--json-add-tracefile=coverage.json",
         "--clover-pretty",
         "--clover=clover.xml",
     )
-    gcovr_test_exec.compare_clover()
+    gcovr_exec.compare_clover()
 
-    gcovr_test_exec.gcovr(
+    gcovr_exec.gcovr(
         "--json-add-tracefile=coverage.json",
         "--cobertura-pretty",
         "--cobertura=cobertura.xml",
     )
-    gcovr_test_exec.compare_cobertura()
+    gcovr_exec.compare_cobertura()
 
-    gcovr_test_exec.gcovr(
+    gcovr_exec.gcovr(
         "--json-add-tracefile=coverage.json",
         "--coveralls-pretty",
         "--coveralls=coveralls.json",
+        use_main=False,
     )
-    gcovr_test_exec.compare_coveralls()
+    gcovr_exec.compare_coveralls()
 
-    gcovr_test_exec.gcovr(
+    gcovr_exec.gcovr(
         "--json-add-tracefile=coverage.json",
         "--jacoco=jacoco.xml",
     )
-    gcovr_test_exec.compare_jacoco()
+    gcovr_exec.compare_jacoco()
 
-    gcovr_test_exec.gcovr(
+    gcovr_exec.gcovr(
         "--json-add-tracefile=coverage.json",
         "--sonarqube=sonarqube.xml",
     )
-    gcovr_test_exec.compare_sonarqube()
+    gcovr_exec.compare_sonarqube()
 
 
 @pytest.mark.json
@@ -119,104 +120,115 @@ def test_standard(gcovr_test_exec: "GcovrTestExec") -> None:
 @pytest.mark.jacoco
 @pytest.mark.sonarqube
 @pytest.mark.html
-def test_stdout(gcovr_test_exec: "GcovrTestExec") -> None:
+def test_stdout(gcovr_exec: "GcovrExecFixture") -> None:
     """Test excluding of functions."""
-    gcovr_test_exec.cxx_link(
+    gcovr_exec.cxx_link(
         "testcase",
         "main.cpp",
     )
 
-    gcovr_test_exec.run("./testcase")
-    (gcovr_test_exec.output_dir / "coverage.json").write_text(
-        gcovr_test_exec.gcovr(
-            "--json-pretty",
-            "--json",
-        ).stdout,
+    gcovr_exec.run("./testcase")
+    gcovr_exec.gcovr(
+        "--json-pretty",
+        "--json",
+    )
+    (gcovr_exec.output_dir / "coverage.json").write_text(
+        gcovr_exec.out,
         encoding="utf-8",
     )
-    (gcovr_test_exec.output_dir / "coverage_summary.json").write_text(
-        gcovr_test_exec.gcovr(
-            "--json-add-tracefile=coverage.json",
-            "--json-summary-pretty",
-        ).stdout,
+    gcovr_exec.gcovr(
+        "--json-add-tracefile=coverage.json",
+        "--json-summary-pretty",
+    )
+    (gcovr_exec.output_dir / "coverage_summary.json").write_text(
+        gcovr_exec.out,
         encoding="utf-8",
     )
-    gcovr_test_exec.compare_json()
+    gcovr_exec.compare_json()
 
-    (gcovr_test_exec.output_dir / "coverage.html").write_text(
-        gcovr_test_exec.gcovr(
-            "--json-add-tracefile=coverage.json",
-            "--html",
-        ).stdout,
+    gcovr_exec.gcovr(
+        "--json-add-tracefile=coverage.json",
+        "--html",
+    )
+    (gcovr_exec.output_dir / "coverage.html").write_text(
+        gcovr_exec.out,
         encoding="utf-8",
     )
-    gcovr_test_exec.compare_html()
+    gcovr_exec.compare_html()
 
-    (gcovr_test_exec.output_dir / "coverage.txt").write_text(
-        gcovr_test_exec.gcovr(
-            "--json-add-tracefile=coverage.json",
-            "--txt",
-        ).stdout,
+    gcovr_exec.gcovr(
+        "--json-add-tracefile=coverage.json",
+        "--txt",
+    )
+    (gcovr_exec.output_dir / "coverage.txt").write_text(
+        gcovr_exec.out,
         encoding="utf-8",
     )
-    gcovr_test_exec.compare_txt()
+    gcovr_exec.compare_txt()
 
-    (gcovr_test_exec.output_dir / "clover.xml").write_text(
-        gcovr_test_exec.gcovr(
-            "--json-add-tracefile=coverage.json",
-            "--clover-pretty",
-            "--clover",
-        ).stdout,
+    gcovr_exec.gcovr(
+        "--json-add-tracefile=coverage.json",
+        "--clover-pretty",
+        "--clover",
+    )
+    (gcovr_exec.output_dir / "clover.xml").write_text(
+        gcovr_exec.out,
         encoding="utf-8",
     )
-    gcovr_test_exec.compare_clover()
+    gcovr_exec.compare_clover()
 
-    (gcovr_test_exec.output_dir / "cobertura.xml").write_text(
-        gcovr_test_exec.gcovr(
-            "--json-add-tracefile=coverage.json",
-            "--cobertura-pretty",
-            "--cobertura",
-        ).stdout,
+    gcovr_exec.gcovr(
+        "--json-add-tracefile=coverage.json",
+        "--cobertura-pretty",
+        "--cobertura",
+    )
+    (gcovr_exec.output_dir / "cobertura.xml").write_text(
+        gcovr_exec.out,
         encoding="utf-8",
     )
-    gcovr_test_exec.compare_cobertura()
+    gcovr_exec.compare_cobertura()
 
-    (gcovr_test_exec.output_dir / "coverage.lcov").write_text(
-        gcovr_test_exec.gcovr(
-            "--json-add-tracefile=coverage.json",
-            "--lcov",
-        ).stdout,
+    gcovr_exec.gcovr(
+        "--json-add-tracefile=coverage.json",
+        "--lcov",
+    )
+    (gcovr_exec.output_dir / "coverage.lcov").write_text(
+        gcovr_exec.out,
         encoding="utf-8",
     )
-    gcovr_test_exec.compare_lcov()
+    gcovr_exec.compare_lcov()
 
-    (gcovr_test_exec.output_dir / "coveralls.json").write_text(
-        gcovr_test_exec.gcovr(
-            "--json-add-tracefile=coverage.json",
-            "--coveralls-pretty",
-            "--coveralls",
-        ).stdout,
+    gcovr_exec.gcovr(
+        "--json-add-tracefile=coverage.json",
+        "--coveralls-pretty",
+        "--coveralls",
+        use_main=False,
+    )
+    (gcovr_exec.output_dir / "coveralls.json").write_text(
+        gcovr_exec.out,
         encoding="utf-8",
     )
-    gcovr_test_exec.compare_coveralls()
+    gcovr_exec.compare_coveralls()
 
-    (gcovr_test_exec.output_dir / "jacoco.xml").write_text(
-        gcovr_test_exec.gcovr(
-            "--json-add-tracefile=coverage.json",
-            "--jacoco",
-        ).stdout,
+    gcovr_exec.gcovr(
+        "--json-add-tracefile=coverage.json",
+        "--jacoco",
+    )
+    (gcovr_exec.output_dir / "jacoco.xml").write_text(
+        gcovr_exec.out,
         encoding="utf-8",
     )
-    gcovr_test_exec.compare_jacoco()
+    gcovr_exec.compare_jacoco()
 
-    (gcovr_test_exec.output_dir / "sonarqube.xml").write_text(
-        gcovr_test_exec.gcovr(
-            "--json-add-tracefile=coverage.json",
-            "--sonarqube",
-        ).stdout,
+    gcovr_exec.gcovr(
+        "--json-add-tracefile=coverage.json",
+        "--sonarqube",
+    )
+    (gcovr_exec.output_dir / "sonarqube.xml").write_text(
+        gcovr_exec.out,
         encoding="utf-8",
     )
-    gcovr_test_exec.compare_sonarqube()
+    gcovr_exec.compare_sonarqube()
 
 
 @pytest.mark.json
@@ -230,16 +242,16 @@ def test_stdout(gcovr_test_exec: "GcovrTestExec") -> None:
 @pytest.mark.jacoco
 @pytest.mark.lcov
 @pytest.mark.sonarqube
-def test_directory_output(gcovr_test_exec: "GcovrTestExec") -> None:
+def test_directory_output(gcovr_exec: "GcovrExecFixture") -> None:
     """Test all files at once with output directory."""
-    (gcovr_test_exec.output_dir / "output").mkdir()
-    gcovr_test_exec.cxx_link(
+    (gcovr_exec.output_dir / "output").mkdir()
+    gcovr_exec.cxx_link(
         "testcase",
         "main.cpp",
     )
 
-    gcovr_test_exec.run("./testcase")
-    gcovr_test_exec.gcovr(
+    gcovr_exec.run("./testcase")
+    gcovr_exec.gcovr(
         "--csv",
         "--html",
         "--json",
@@ -253,134 +265,116 @@ def test_directory_output(gcovr_test_exec: "GcovrTestExec") -> None:
         "--sonarqube",
         "-o",
         ".\\output/",
+        use_main=False,
     )
 
-    for file in (gcovr_test_exec.output_dir / "output").glob("*.*"):
-        file.rename(gcovr_test_exec.output_dir / file.name)
-    gcovr_test_exec.compare_json()
-    gcovr_test_exec.compare_csv()
-    gcovr_test_exec.compare_markdown()
-    gcovr_test_exec.compare_html()
-    gcovr_test_exec.compare_txt()
-    gcovr_test_exec.compare_clover()
-    gcovr_test_exec.compare_cobertura()
-    gcovr_test_exec.compare_coveralls()
-    gcovr_test_exec.compare_jacoco()
-    gcovr_test_exec.compare_lcov()
-    gcovr_test_exec.compare_sonarqube()
+    for file in (gcovr_exec.output_dir / "output").glob("*.*"):
+        file.rename(gcovr_exec.output_dir / file.name)
+    gcovr_exec.compare_json()
+    gcovr_exec.compare_csv()
+    gcovr_exec.compare_markdown()
+    gcovr_exec.compare_html()
+    gcovr_exec.compare_txt()
+    gcovr_exec.compare_clover()
+    gcovr_exec.compare_cobertura()
+    gcovr_exec.compare_coveralls()
+    gcovr_exec.compare_jacoco()
+    gcovr_exec.compare_lcov()
+    gcovr_exec.compare_sonarqube()
 
 
-def test_fail_under(
-    gcovr_test_exec: "GcovrTestExec", caplog: pytest.LogCaptureFixture
-) -> None:
+def test_fail_under(gcovr_exec: "GcovrExecFixture") -> None:
     """Test failure thresholds."""
-    gcovr_test_exec.cxx_link(
+    gcovr_exec.cxx_link(
         "testcase",
         "main.cpp",
     )
 
-    gcovr_test_exec.run("./testcase")
+    gcovr_exec.run("./testcase")
 
-    process = gcovr_test_exec.gcovr(
+    gcovr_exec.gcovr(
         "--fail-under-line=80.1",
         "--print-summary",
-        use_main=True,
+        exitcode_ok=2,
     )
-    assert process.returncode == 2  # noqa: PLR2004
-    messages = caplog.record_tuples
-    assert len(messages) == 1
-    assert messages[0][1] == logging.ERROR
-    assert messages[0][2].startswith("Failed minimum line coverage ")
-    caplog.clear()
+    gcovr_exec.check_log(
+        (logging.ERROR, "Failed minimum line coverage "),
+        compare="startswith",
+    )
 
-    process = gcovr_test_exec.gcovr(
+    gcovr_exec.gcovr(
         "--fail-under-branch=50.1",
         "--print-summary",
-        use_main=True,
+        exitcode_ok=4,
     )
-    assert process.returncode == 4  # noqa: PLR2004
-    messages = caplog.record_tuples
-    assert len(messages) == 1
-    assert messages[0][1] == logging.ERROR
-    assert messages[0][2].startswith("Failed minimum branch coverage ")
-    caplog.clear()
+    gcovr_exec.check_log(
+        (logging.ERROR, "Failed minimum branch coverage "),
+        compare="startswith",
+    )
 
-    process = gcovr_test_exec.gcovr(
+    gcovr_exec.gcovr(
         "--decision",
         "--fail-under-condition-or-decision=50.1",
         "--print-summary",
-        use_main=True,
+        exitcode_ok=8,
     )
-    assert process.returncode == 8  # noqa: PLR2004
-    # The condition coverage is only reported if the compiler supports it.
-    expected_messages = [
+    gcovr_exec.check_log(
         *(
-            ["Failed minimum condition coverage "]
+            # The condition coverage is only reported if the compiler supports it.
+            [(logging.ERROR, "Failed minimum condition coverage ")]
             if CONDITION_COVERAGE_POSSIBLE
             else []
         ),
-        "Failed minimum decision coverage ",
-    ]
-    messages = caplog.record_tuples
-    assert len(messages) == len(expected_messages)
-    for message, expected_message in zip(messages, expected_messages, strict=True):
-        assert message[1] == logging.ERROR
-        assert message[2].startswith(expected_message)
-    caplog.clear()
+        (logging.ERROR, "Failed minimum decision coverage "),
+        compare="startswith",
+    )
 
-    process = gcovr_test_exec.gcovr(
+    gcovr_exec.gcovr(
         "--fail-under-function=100",
         "--print-summary",
-        use_main=True,
+        exitcode_ok=16,
     )
-    assert process.returncode == 16  # noqa: PLR2004
-    messages = caplog.record_tuples
-    assert len(messages) == 1
-    assert messages[0][1] == logging.ERROR
-    assert messages[0][2].startswith("Failed minimum function coverage ")
-    caplog.clear()
+    gcovr_exec.check_log(
+        (logging.ERROR, "Failed minimum function coverage "),
+        compare="startswith",
+    )
 
-    process = gcovr_test_exec.gcovr(
+    gcovr_exec.gcovr(
         "--fail-under-line=80.1",
         "--fail-under-branch=50.1",
         "--decision",
         "--fail-under-condition-or-decision=50.1",
         "--fail-under-function=66.8",
         "--print-summary",
-        use_main=True,
+        exitcode_ok=30,
     )
-    assert process.returncode == 30  # noqa: PLR2004
-    expected_messages = [
-        "Failed minimum line coverage ",
-        "Failed minimum branch coverage ",
+    gcovr_exec.check_log(
         *(
-            ["Failed minimum condition coverage "]
-            if CONDITION_COVERAGE_POSSIBLE
-            else []
+            (logging.ERROR, "Failed minimum line coverage "),
+            (logging.ERROR, "Failed minimum branch coverage "),
+            *(
+                [(logging.ERROR, "Failed minimum condition coverage ")]
+                if CONDITION_COVERAGE_POSSIBLE
+                else []
+            ),
+            (logging.ERROR, "Failed minimum decision coverage "),
+            (logging.ERROR, "Failed minimum function coverage "),
         ),
-        "Failed minimum decision coverage ",
-        "Failed minimum function coverage ",
-    ]
-    messages = caplog.record_tuples
-    assert len(messages) == len(expected_messages)
-    for message, expected_message in zip(messages, expected_messages, strict=True):
-        assert message[1] == logging.ERROR
-        assert message[2].startswith(expected_message)
-    caplog.clear()
+        compare="startswith",
+    )
 
-    process = gcovr_test_exec.gcovr(
+    gcovr_exec.gcovr(
         "--fail-under-line",
-        "61.5" if gcovr_test_exec.is_llvm() else "63.6",
+        "61.5" if gcovr_exec.is_llvm() else "63.6",
         "--fail-under-branch=50.0",
         "--decision",
         "--fail-under-condition-or-decision=50.0",
         "--fail-under-function=66.7",
         "--print-summary",
-        use_main=True,
+        use_main=False,
     )
-    assert process.returncode == 0
-    assert "(ERROR) Failed minimum line coverage" not in process.stderr
-    assert "(ERROR) Failed minimum branch coverage" not in process.stderr
-    assert "(ERROR) Failed minimum condition coverage" not in process.stderr
-    assert "(ERROR) Failed minimum decision coverage" not in process.stderr
-    assert "(ERROR) Failed minimum function coverage" not in process.stderr
+    assert "(ERROR) Failed minimum line coverage" not in gcovr_exec.err
+    assert "(ERROR) Failed minimum branch coverage" not in gcovr_exec.err
+    assert "(ERROR) Failed minimum condition coverage" not in gcovr_exec.err
+    assert "(ERROR) Failed minimum decision coverage" not in gcovr_exec.err
+    assert "(ERROR) Failed minimum function coverage" not in gcovr_exec.err
