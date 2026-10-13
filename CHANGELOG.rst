@@ -29,6 +29,8 @@ New features and notable changes:
   - Show excluded lines, branches, ... in the summary only if there are any. (:issue:`1287`)
   - Remove the branches summary and columns if there are no branches in the report,
     e.g all branches are excluded by patterns or comments. (:issue:`1305`)
+  - Replace default theme with github theme which is the new default one. If the prefix ``github.``
+    isn't used a warning is printed which will turn into an error in a the next version. (:issue:`1313`)
 
 - Add compare mode for JSON, text and HTML reports. (:issue:`1240`, :issue:`1266`)
 - Stub missing line coverage for branches in LLVM source based code coverage format. (:issue:`1245`)

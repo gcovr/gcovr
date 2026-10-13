@@ -19,6 +19,7 @@
 
 from ...data_model.container import CoverageContainer
 from ...formats.base import BaseHandler
+from ...logging import LOGGER
 from ...options import (
     GcovrConfigOption,
     OutputOrDefault,
@@ -26,14 +27,17 @@ from ...options import (
 )
 
 THEMES = (
-    "green",
-    "blue",
-    "boost.blue",
-    "boost.green",
-    "github.blue",
     "github.green",
     "github.dark-green",
+    "github.blue",
     "github.dark-blue",
+    "boost.green",
+    "boost.blue",
+    # Deprecated legacy names
+    "green",
+    "blue",
+    "default.green",
+    "default.blue",
 )
 OPTION_GROUP_NAME = "GCOVR HTML options"
 OPTION_GROUP = OPTION_GROUP_NAME.casefold().replace(" ", "_")
@@ -181,7 +185,9 @@ class HtmlHandler(BaseHandler):
                 choices=THEMES,
                 metavar="THEME",
                 help=(
-                    "Override the default color theme for the HTML report. "
+                    "Override the default theme for the HTML report. "
+                    "The themes green, blue, default.green and default.blue are "
+                    "deprecated and shall be replaced with github.green or github.blue. "
                     "Default is {default!s}."
                 ),
                 default=THEMES[0],
@@ -236,6 +242,17 @@ class HtmlHandler(BaseHandler):
 
     def validate_options(self) -> None:
         """Validate options."""
+        html_theme = str(self.options.html_theme)
+        if "." not in html_theme or html_theme.startswith("default."):
+            new_name = f"github.{html_theme.split('.', maxsplit=1)[-1]}"
+            LOGGER.warning(
+                "Deprecated theme name %s used, replace with %s. "
+                "This will be an error in a next release.",
+                html_theme,
+                new_name,
+            )
+            self.options.html_theme = new_name
+
         if self.options.html_title == "":
             msg = "An empty --html-title= is not allowed."
             raise RuntimeError(msg)

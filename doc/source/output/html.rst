@@ -68,16 +68,6 @@ of some servers, especially Jenkins.
 
 The :option:`--html-theme` option controls the theme and color of HTML report.
 
-.. figure:: ../../images/screenshot-html-default-green-src.jpeg
-    :align: center
-
-    :option:`--html-theme green <--html-theme>`, :option:`--html-theme default.green <--html-theme>`
-
-.. figure:: ../../images/screenshot-html-default-blue-src.jpeg
-    :align: center
-
-    :option:`--html-theme blue <--html-theme>`, :option:`--html-theme default.blue <--html-theme>`
-
 .. figure:: ../../images/screenshot-html-github-green-src.jpeg
     :align: center
 

@@ -1,5 +1,5 @@
 .theme-green, .theme-blue, .theme-dark-blue, .theme-dark-green {
-  --unknown_color: var(--color-neutral-emphasis-plus);
+  --unknown_color: var(--color-neutral-emphasis);
   --low_color: var(--color-danger-emphasis);
   --low_color_fg: var(--color-danger-fg);
   --medium_color: var(--color-attention-emphasis);

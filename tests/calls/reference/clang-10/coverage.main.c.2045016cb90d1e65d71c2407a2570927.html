@@ -17,62 +17,46 @@
         </div>
         <hr class="block-separator"/>
         <header>
-<div id="summary-coverage.main.c.2045016cb90d1e65d71c2407a2570927.html" class="summary">
-  <div>
-    <table class="legend">
-      <tr>
-        <th scope="row">Directory:</th>
-        <td>.</td>
-      </tr>
-      <tr>
-        <th scope="row">Coverage:</th>
-        <td class="legend">
-          <span class="summary-coverage coverage-low">low: &ge; 0%</span>
-          <span class="summary-coverage coverage-medium">medium: &ge; 75.0%</span>
-          <span class="summary-coverage coverage-high">high: &ge; 90.0%</span>
-        </td>
-      </tr>
-    </table>
-  </div>
-  <div>
-    <table class="coverage">
-      <tr>
-        <th scope="row">Lines:</th>
-        <td class="coverage-medium">
-          <span class="stat-value">25</span>
-          <span class="stat-separator">/</span>
-          <span class="stat-value">33</span>
-          <span class="stat-separator"></span>
-          <span class="summary-coverage coverage-medium">75.8%</span>
-        </td>
-      </tr>
-      <tr>
-        <th scope="row">Branches:</th>
-        <td class="coverage-low">
-          <span class="stat-value">12</span>
-          <span class="stat-separator">/</span>
-          <span class="stat-value">20</span>
-          <span class="stat-separator"></span>
-          <span class="summary-coverage coverage-low">60.0%</span>
-        </td>
-      </tr>
-      <tr>
-        <th scope="row">Functions:</th>
-        <td>
-          <span class="stat-value">3</span>
-          <span class="stat-separator">/</span>
-          <span class="stat-value">4</span>
-          <span class="stat-separator"></span>
-          <span class="summary-coverage coverage-medium">75.0%</span>
-        </td>
-      </tr>
-      <tr>
-        <th scope="row">Calls:</th>
-        <td>
-          <span class="coverage-percent coverage-unknown">-</span>
-        </td>
-      </tr>
-    </table>
+<div id="summary-coverage.main.c.2045016cb90d1e65d71c2407a2570927.html">
+  <div class="containter-xl clearfix">
+    <div class="col-sm-12 col-lg-9 float-left d-flex flex-column pl-3">
+      <div class="d-flex">
+        <div class="mr-2 color-fg-accent transy-2">
+          <svg aria-label="Directory" aria-hidden="true" height="16" viewBox="0 0 16 16" version="1.1" width="16" data-view-component="true" class="octicon octicon-file-directory-fill hx_color-icon-directory">
+            <path d="M1.75 1A1.75 1.75 0 0 0 0 2.75v10.5C0 14.216.784 15 1.75 15h12.5A1.75 1.75 0 0 0 16 13.25v-8.5A1.75 1.75 0 0 0 14.25 3H7.5a.25.25 0 0 1-.2-.1l-.9-1.2C6.07 1.26 5.55 1 5 1H1.75Z"></path>
+          </svg>
+        </div>
+        <span>.</span>
+      </div>
+      <div class="d-flex flex-wrap" style="margin-bottom: 2px;">
+        <div class="mr-2" style="min-width: 70px;">Coverage:</div>
+        <div class="IssueLabel coverage-low color-fg-on-emphasis mr-1">low: &ge; 0%</div>
+        <div class="IssueLabel coverage-medium color-fg-on-emphasis mr-1">medium: &ge; 75.0%</div>
+        <div class="IssueLabel coverage-high color-fg-on-emphasis mr-1">high: &ge; 90.0%</div>
+      </div>
+    </div>
+    <div class="col-sm-12 col-lg-3 float-left d-flex flex-column text-right flex-justify-end pr-3">
+      <div class="d-flex">
+        <div class="mr-2">Lines:</div>
+        <div class="mr-2" style="margin: auto;">25 / 33</div>
+        <div class="Label--minw"><span class="coverage-medium IssueLabel color-fg-on-emphasis mr-1">75.8%</span></div>
+      </div>
+      <div class="d-flex">
+        <div class="mr-2">Branches:</div>
+        <div class="mr-2" style="margin: auto;">12 / 20</div>
+        <div class="Label--minw"><span class="coverage-low IssueLabel color-fg-on-emphasis mr-1">60.0%</span></div>
+      </div>
+      <div class="d-flex">
+        <div class="mr-2">Functions:</div>
+        <div class="mr-2" style="margin: auto;">3 / 4</div>
+        <div class="Label--minw"><span class="coverage-medium IssueLabel color-fg-on-emphasis mr-1">75.0%</span></div>
+      </div>
+      <div class="d-flex">
+        <div class="mr-2">Calls:</div>
+        <div class="mr-2" style="margin: auto;">-</div>
+        <div class="Label--minw"><span class="coverage-unknown IssueLabel color-fg-on-emphasis mr-1">-%</span></div>
+      </div>
+    </div>
   </div>
 </div>
         </header>
@@ -122,7 +106,7 @@
 
         </nav>
         <main>
-<div class="Box m-3 file-source">
+<div class="Box m-3">
   <div class="Box-header d-flex flex-space-between sticky">
     main.c
     <div class="toggle-buttons">
@@ -137,587 +121,534 @@
     </div>
   </div>
   <div class="source-table-container">
-    <table class="text-mono text-small">
+    <table class="text-mono text-small" style="width:100%;">
       <tr>
-        <th align="right">Line</th>
-        <th align="right">Branch</th>
-        <th align="right">Call</th>
-        <th align="right">Exec</th>
-        <th align="left" style="width: 100%;">Source</th>
+        <th class="p-2">Line</th>
+        <th class="p-2">Branch</th>
+        <th class="p-2">Call</th>
+        <th class="p-2">Exec</th>
+        <th class="p-2 text-left" style="width: 100%;">Source</th>
       </tr>
-      <tr class="source-line">
-        <td class="lineno"><a id="L1" href="#L1">1</a></td>
-        <td class="linebranch">
+      <tr>
+        <td class="text-right src linenos"><a class="normal" id="L1" href="#L1">1</a></td>
+        <td class="text-right src linenos ws-unset">
         </td>
-        <td class="linecall">
-          </details>
+        <td class="text-right src linenos ws-unset">
         </td>
-        <td class="linecount"></td>
+        <td class="linecount pr-2 pl-2 color-fg-muted text-right"></td>
         <td class="src"><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;stdio.h&gt;</span></td>
       </tr>
-      <tr class="source-line">
-        <td class="lineno"><a id="L2" href="#L2">2</a></td>
-        <td class="linebranch">
+      <tr>
+        <td class="text-right src linenos"><a class="normal" id="L2" href="#L2">2</a></td>
+        <td class="text-right src linenos ws-unset">
         </td>
-        <td class="linecall">
-          </details>
+        <td class="text-right src linenos ws-unset">
         </td>
-        <td class="linecount"></td>
+        <td class="linecount pr-2 pl-2 color-fg-muted text-right"></td>
         <td class="src"></td>
       </tr>
-      <tr class="source-line">
-        <td class="lineno"><a id="L3" href="#L3">3</a></td>
-        <td class="linebranch">
+      <tr>
+        <td class="text-right src linenos"><a class="normal" id="L3" href="#L3">3</a></td>
+        <td class="text-right src linenos ws-unset">
         </td>
-        <td class="linecall">
-          </details>
+        <td class="text-right src linenos ws-unset">
         </td>
-        <td class="linecount coveredLine show_coveredLine">33</td>
+        <td class="linecount coveredLine show_coveredLine pr-2 pl-2 color-fg-muted text-right">33</td>
         <td class="src coveredLine show_coveredLine"><span class="kt">int</span><span class="w"> </span><span class="nf">function1</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span></td>
       </tr>
-      <tr class="source-line">
-        <td class="lineno"><a id="L4" href="#L4">4</a></td>
-        <td class="linebranch">
+      <tr>
+        <td class="text-right src linenos"><a class="normal" id="L4" href="#L4">4</a></td>
+        <td class="text-right src linenos ws-unset">
         </td>
-        <td class="linecall">
-          </details>
+        <td class="text-right src linenos ws-unset">
         </td>
-        <td class="linecount"></td>
+        <td class="linecount pr-2 pl-2 color-fg-muted text-right"></td>
         <td class="src"><span class="p">{</span></td>
       </tr>
-      <tr class="source-line">
-        <td class="lineno"><a id="L5" href="#L5">5</a></td>
-        <td class="linebranch">
+      <tr>
+        <td class="text-right src linenos"><a class="normal" id="L5" href="#L5">5</a></td>
+        <td class="text-right src linenos ws-unset">
         </td>
-        <td class="linecall">
-          </details>
+        <td class="text-right src linenos ws-unset">
         </td>
-        <td class="linecount coveredLine show_coveredLine">33</td>
+        <td class="linecount coveredLine show_coveredLine pr-2 pl-2 color-fg-muted text-right">33</td>
         <td class="src coveredLine show_coveredLine"><span class="w">    </span><span class="n">printf</span><span class="p">(</span><span class="s">"Inside function()</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span></td>
       </tr>
-      <tr class="source-line">
-        <td class="lineno"><a id="L6" href="#L6">6</a></td>
-        <td class="linebranch">
+      <tr>
+        <td class="text-right src linenos"><a class="normal" id="L6" href="#L6">6</a></td>
+        <td class="text-right src linenos ws-unset">
         </td>
-        <td class="linecall">
-          </details>
+        <td class="text-right src linenos ws-unset">
         </td>
-        <td class="linecount coveredLine show_coveredLine">33</td>
+        <td class="linecount coveredLine show_coveredLine pr-2 pl-2 color-fg-muted text-right">33</td>
         <td class="src coveredLine show_coveredLine"><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span></td>
       </tr>
-      <tr class="source-line">
-        <td class="lineno"><a id="L7" href="#L7">7</a></td>
-        <td class="linebranch">
+      <tr>
+        <td class="text-right src linenos"><a class="normal" id="L7" href="#L7">7</a></td>
+        <td class="text-right src linenos ws-unset">
         </td>
-        <td class="linecall">
-          </details>
+        <td class="text-right src linenos ws-unset">
         </td>
-        <td class="linecount"></td>
+        <td class="linecount pr-2 pl-2 color-fg-muted text-right"></td>
         <td class="src"><span class="p">}</span></td>
       </tr>
-      <tr class="source-line">
-        <td class="lineno"><a id="L8" href="#L8">8</a></td>
-        <td class="linebranch">
+      <tr>
+        <td class="text-right src linenos"><a class="normal" id="L8" href="#L8">8</a></td>
+        <td class="text-right src linenos ws-unset">
         </td>
-        <td class="linecall">
-          </details>
+        <td class="text-right src linenos ws-unset">
         </td>
-        <td class="linecount"></td>
+        <td class="linecount pr-2 pl-2 color-fg-muted text-right"></td>
         <td class="src"></td>
       </tr>
-      <tr class="source-line">
-        <td class="lineno"><a id="L9" href="#L9">9</a></td>
-        <td class="linebranch">
+      <tr>
+        <td class="text-right src linenos"><a class="normal" id="L9" href="#L9">9</a></td>
+        <td class="text-right src linenos ws-unset">
         </td>
-        <td class="linecall">
-          </details>
+        <td class="text-right src linenos ws-unset">
         </td>
-        <td class="linecount coveredLine show_coveredLine">27</td>
+        <td class="linecount coveredLine show_coveredLine pr-2 pl-2 color-fg-muted text-right">27</td>
         <td class="src coveredLine show_coveredLine"><span class="kt">int</span><span class="w"> </span><span class="nf">function2</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span></td>
       </tr>
-      <tr class="source-line">
-        <td class="lineno"><a id="L10" href="#L10">10</a></td>
-        <td class="linebranch">
+      <tr>
+        <td class="text-right src linenos"><a class="normal" id="L10" href="#L10">10</a></td>
+        <td class="text-right src linenos ws-unset">
         </td>
-        <td class="linecall">
-          </details>
+        <td class="text-right src linenos ws-unset">
         </td>
-        <td class="linecount"></td>
+        <td class="linecount pr-2 pl-2 color-fg-muted text-right"></td>
         <td class="src"><span class="p">{</span></td>
       </tr>
-      <tr class="source-line">
-        <td class="lineno"><a id="L11" href="#L11">11</a></td>
-        <td class="linebranch">
+      <tr>
+        <td class="text-right src linenos"><a class="normal" id="L11" href="#L11">11</a></td>
+        <td class="text-right src linenos ws-unset">
         </td>
-        <td class="linecall">
-          </details>
+        <td class="text-right src linenos ws-unset">
         </td>
-        <td class="linecount coveredLine show_coveredLine">27</td>
+        <td class="linecount coveredLine show_coveredLine pr-2 pl-2 color-fg-muted text-right">27</td>
         <td class="src coveredLine show_coveredLine"><span class="w">    </span><span class="n">printf</span><span class="p">(</span><span class="s">"Inside function2()</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span></td>
       </tr>
-      <tr class="source-line">
-        <td class="lineno"><a id="L12" href="#L12">12</a></td>
-        <td class="linebranch">
+      <tr>
+        <td class="text-right src linenos"><a class="normal" id="L12" href="#L12">12</a></td>
+        <td class="text-right src linenos ws-unset">
         </td>
-        <td class="linecall">
-          </details>
+        <td class="text-right src linenos ws-unset">
         </td>
-        <td class="linecount coveredLine show_coveredLine">27</td>
+        <td class="linecount coveredLine show_coveredLine pr-2 pl-2 color-fg-muted text-right">27</td>
         <td class="src coveredLine show_coveredLine"><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span></td>
       </tr>
-      <tr class="source-line">
-        <td class="lineno"><a id="L13" href="#L13">13</a></td>
-        <td class="linebranch">
+      <tr>
+        <td class="text-right src linenos"><a class="normal" id="L13" href="#L13">13</a></td>
+        <td class="text-right src linenos ws-unset">
         </td>
-        <td class="linecall">
-          </details>
+        <td class="text-right src linenos ws-unset">
         </td>
-        <td class="linecount"></td>
+        <td class="linecount pr-2 pl-2 color-fg-muted text-right"></td>
         <td class="src"><span class="p">}</span></td>
       </tr>
-      <tr class="source-line">
-        <td class="lineno"><a id="L14" href="#L14">14</a></td>
-        <td class="linebranch">
+      <tr>
+        <td class="text-right src linenos"><a class="normal" id="L14" href="#L14">14</a></td>
+        <td class="text-right src linenos ws-unset">
         </td>
-        <td class="linecall">
-          </details>
+        <td class="text-right src linenos ws-unset">
         </td>
-        <td class="linecount"></td>
+        <td class="linecount pr-2 pl-2 color-fg-muted text-right"></td>
         <td class="src"></td>
       </tr>
-      <tr class="source-line">
-        <td class="lineno"><a id="L15" href="#L15">15</a></td>
-        <td class="linebranch">
+      <tr>
+        <td class="text-right src linenos"><a class="normal" id="L15" href="#L15">15</a></td>
+        <td class="text-right src linenos ws-unset">
         </td>
-        <td class="linecall">
-          </details>
+        <td class="text-right src linenos ws-unset">
         </td>
-        <td class="linecount uncoveredLine show_uncoveredLine">&cross;</td>
+        <td class="linecount uncoveredLine show_uncoveredLine pr-2 pl-2 color-fg-muted text-right">&cross;</td>
         <td class="src uncoveredLine show_uncoveredLine"><span class="kt">int</span><span class="w"> </span><span class="nf">function3</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">a</span><span class="p">)</span></td>
       </tr>
-      <tr class="source-line">
-        <td class="lineno"><a id="L16" href="#L16">16</a></td>
-        <td class="linebranch">
+      <tr>
+        <td class="text-right src linenos"><a class="normal" id="L16" href="#L16">16</a></td>
+        <td class="text-right src linenos ws-unset">
         </td>
-        <td class="linecall">
-          </details>
+        <td class="text-right src linenos ws-unset">
         </td>
-        <td class="linecount"></td>
+        <td class="linecount pr-2 pl-2 color-fg-muted text-right"></td>
         <td class="src"><span class="p">{</span></td>
       </tr>
-      <tr class="source-line">
-        <td class="lineno"><a id="L17" href="#L17">17</a></td>
-        <td class="linebranch">
+      <tr>
+        <td class="text-right src linenos"><a class="normal" id="L17" href="#L17">17</a></td>
+        <td class="text-right src linenos ws-unset">
         </td>
-        <td class="linecall">
-          </details>
+        <td class="text-right src linenos ws-unset">
         </td>
-        <td class="linecount uncoveredLine show_uncoveredLine">&cross;</td>
+        <td class="linecount uncoveredLine show_uncoveredLine pr-2 pl-2 color-fg-muted text-right">&cross;</td>
         <td class="src uncoveredLine show_uncoveredLine"><span class="w">    </span><span class="n">printf</span><span class="p">(</span><span class="s">"Inside function3()</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span></td>
       </tr>
-      <tr class="source-line">
-        <td class="lineno"><a id="L18" href="#L18">18</a></td>
-        <td class="linebranch">
+      <tr>
+        <td class="text-right src linenos"><a class="normal" id="L18" href="#L18">18</a></td>
+        <td class="text-right src linenos ws-unset">
         </td>
-        <td class="linecall">
-          </details>
+        <td class="text-right src linenos ws-unset">
         </td>
-        <td class="linecount uncoveredLine show_uncoveredLine">&cross;</td>
+        <td class="linecount uncoveredLine show_uncoveredLine pr-2 pl-2 color-fg-muted text-right">&cross;</td>
         <td class="src uncoveredLine show_uncoveredLine"><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span></td>
       </tr>
-      <tr class="source-line">
-        <td class="lineno"><a id="L19" href="#L19">19</a></td>
-        <td class="linebranch">
+      <tr>
+        <td class="text-right src linenos"><a class="normal" id="L19" href="#L19">19</a></td>
+        <td class="text-right src linenos ws-unset">
         </td>
-        <td class="linecall">
-          </details>
+        <td class="text-right src linenos ws-unset">
         </td>
-        <td class="linecount"></td>
+        <td class="linecount pr-2 pl-2 color-fg-muted text-right"></td>
         <td class="src"><span class="p">}</span></td>
       </tr>
-      <tr class="source-line">
-        <td class="lineno"><a id="L20" href="#L20">20</a></td>
-        <td class="linebranch">
+      <tr>
+        <td class="text-right src linenos"><a class="normal" id="L20" href="#L20">20</a></td>
+        <td class="text-right src linenos ws-unset">
         </td>
-        <td class="linecall">
-          </details>
+        <td class="text-right src linenos ws-unset">
         </td>
-        <td class="linecount"></td>
+        <td class="linecount pr-2 pl-2 color-fg-muted text-right"></td>
         <td class="src"></td>
       </tr>
-      <tr class="source-line">
-        <td class="lineno"><a id="L21" href="#L21">21</a></td>
-        <td class="linebranch">
+      <tr>
+        <td class="text-right src linenos"><a class="normal" id="L21" href="#L21">21</a></td>
+        <td class="text-right src linenos ws-unset">
         </td>
-        <td class="linecall">
-          </details>
+        <td class="text-right src linenos ws-unset">
         </td>
-        <td class="linecount coveredLine show_coveredLine">3</td>
+        <td class="linecount coveredLine show_coveredLine pr-2 pl-2 color-fg-muted text-right">3</td>
         <td class="src coveredLine show_coveredLine"><span class="kt">int</span><span class="w"> </span><span class="nf">main</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">argc</span><span class="p">,</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">**</span><span class="n">argv</span><span class="p">)</span></td>
       </tr>
-      <tr class="source-line">
-        <td class="lineno"><a id="L22" href="#L22">22</a></td>
-        <td class="linebranch">
+      <tr>
+        <td class="text-right src linenos"><a class="normal" id="L22" href="#L22">22</a></td>
+        <td class="text-right src linenos ws-unset">
         </td>
-        <td class="linecall">
-          </details>
+        <td class="text-right src linenos ws-unset">
         </td>
-        <td class="linecount"></td>
+        <td class="linecount pr-2 pl-2 color-fg-muted text-right"></td>
         <td class="src"><span class="p">{</span></td>
       </tr>
-      <tr class="source-line">
-        <td class="lineno"><a id="L23" href="#L23">23</a></td>
-        <td class="linebranch">
+      <tr>
+        <td class="text-right src linenos"><a class="normal" id="L23" href="#L23">23</a></td>
+        <td class="text-right src linenos ws-unset">
         </td>
-        <td class="linecall">
-          </details>
+        <td class="text-right src linenos ws-unset">
         </td>
-        <td class="linecount coveredLine show_coveredLine">3</td>
+        <td class="linecount coveredLine show_coveredLine pr-2 pl-2 color-fg-muted text-right">3</td>
         <td class="src coveredLine show_coveredLine"><span class="w">    </span><span class="n">printf</span><span class="p">(</span><span class="s">"test</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span></td>
       </tr>
-      <tr class="source-line">
-        <td class="lineno"><a id="L24" href="#L24">24</a></td>
-        <td class="linebranch">
+      <tr>
+        <td class="text-right src linenos"><a class="normal" id="L24" href="#L24">24</a></td>
+        <td class="text-right src linenos ws-unset">
         </td>
-        <td class="linecall">
-          </details>
+        <td class="text-right src linenos ws-unset">
         </td>
-        <td class="linecount coveredLine show_coveredLine">3</td>
+        <td class="linecount coveredLine show_coveredLine pr-2 pl-2 color-fg-muted text-right">3</td>
         <td class="src coveredLine show_coveredLine"><span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span></td>
       </tr>
-      <tr class="source-line">
-        <td class="lineno"><a id="L25" href="#L25">25</a></td>
-        <td class="linebranch">
+      <tr>
+        <td class="text-right src linenos"><a class="normal" id="L25" href="#L25">25</a></td>
+        <td class="text-right src linenos ws-unset">
         </td>
-        <td class="linecall">
-          </details>
+        <td class="text-right src linenos ws-unset">
         </td>
-        <td class="linecount coveredLine show_coveredLine">3</td>
+        <td class="linecount coveredLine show_coveredLine pr-2 pl-2 color-fg-muted text-right">3</td>
         <td class="src coveredLine show_coveredLine"><span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span></td>
       </tr>
-      <tr class="source-line">
-        <td class="lineno"><a id="L26" href="#L26">26</a></td>
-        <td class="linebranch">
+      <tr>
+        <td class="text-right src linenos"><a class="normal" id="L26" href="#L26">26</a></td>
+        <td class="text-right src linenos ws-unset">
         </td>
-        <td class="linecall">
-          </details>
+        <td class="text-right src linenos ws-unset">
         </td>
-        <td class="linecount coveredLine show_coveredLine">3</td>
+        <td class="linecount coveredLine show_coveredLine pr-2 pl-2 color-fg-muted text-right">3</td>
         <td class="src coveredLine show_coveredLine"><span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">c</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span></td>
       </tr>
-      <tr class="source-line">
-        <td class="lineno"><a id="L27" href="#L27">27</a></td>
-        <td class="linebranch">
+      <tr>
+        <td class="text-right src linenos"><a class="normal" id="L27" href="#L27">27</a></td>
+        <td class="text-right src linenos ws-unset">
         </td>
-        <td class="linecall">
-          </details>
+        <td class="text-right src linenos ws-unset">
         </td>
-        <td class="linecount"></td>
+        <td class="linecount pr-2 pl-2 color-fg-muted text-right"></td>
         <td class="src"></td>
       </tr>
-      <tr class="source-line">
-        <td class="lineno"><a id="L28" href="#L28">28</a></td>
-        <td class="linebranch">
-          <details class="linebranchDetails">
-            <summary class="linebranchSummary">2/2</summary>
-            <div class="linebranchContents">
-              <div class="takenBranch">&check; Branch 0 taken 6 times.</div>
-              <div class="takenBranch">&check; Branch 1 taken 3 times.</div>
+      <tr>
+        <td class="text-right src linenos"><a class="normal" id="L28" href="#L28">28</a></td>
+        <td class="text-right src linenos ws-unset">
+          <details class="normal details-overlay">
+            <summary>2/2</summary>
+            <div class="text-left position-absolute color-bg-subtle p-3 mt-2" style="z-index: 1;">
+              <div class="color-taken-branch">&check; Branch 0 taken 6 times.</div>
+              <div class="color-taken-branch">&check; Branch 1 taken 3 times.</div>
             </div>
           </details>
         </td>
-        <td class="linecall">
-          </details>
+        <td class="text-right src linenos ws-unset">
         </td>
-        <td class="linecount coveredLine show_coveredLine">9</td>
+        <td class="linecount coveredLine show_coveredLine pr-2 pl-2 color-fg-muted text-right">9</td>
         <td class="src coveredLine show_coveredLine"><span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="n">a</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">2</span><span class="p">;</span><span class="w"> </span><span class="n">a</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
       </tr>
-      <tr class="source-line">
-        <td class="lineno"><a id="L29" href="#L29">29</a></td>
-        <td class="linebranch">
-          <details class="linebranchDetails">
-            <summary class="linebranchSummary">2/2</summary>
-            <div class="linebranchContents">
-              <div class="takenBranch">&check; Branch 0 taken 12 times.</div>
-              <div class="takenBranch">&check; Branch 1 taken 6 times.</div>
+      <tr>
+        <td class="text-right src linenos"><a class="normal" id="L29" href="#L29">29</a></td>
+        <td class="text-right src linenos ws-unset">
+          <details class="normal details-overlay">
+            <summary>2/2</summary>
+            <div class="text-left position-absolute color-bg-subtle p-3 mt-2" style="z-index: 1;">
+              <div class="color-taken-branch">&check; Branch 0 taken 12 times.</div>
+              <div class="color-taken-branch">&check; Branch 1 taken 6 times.</div>
             </div>
           </details>
         </td>
-        <td class="linecall">
-          </details>
+        <td class="text-right src linenos ws-unset">
         </td>
-        <td class="linecount coveredLine show_coveredLine">18</td>
+        <td class="linecount coveredLine show_coveredLine pr-2 pl-2 color-fg-muted text-right">18</td>
         <td class="src coveredLine show_coveredLine"><span class="w">        </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="n">b</span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">2</span><span class="p">;</span><span class="w"> </span><span class="n">b</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
       </tr>
-      <tr class="source-line">
-        <td class="lineno"><a id="L30" href="#L30">30</a></td>
-        <td class="linebranch">
+      <tr>
+        <td class="text-right src linenos"><a class="normal" id="L30" href="#L30">30</a></td>
+        <td class="text-right src linenos ws-unset">
         </td>
-        <td class="linecall">
-          </details>
+        <td class="text-right src linenos ws-unset">
         </td>
-        <td class="linecount coveredLine show_coveredLine">12</td>
+        <td class="linecount coveredLine show_coveredLine pr-2 pl-2 color-fg-muted text-right">12</td>
         <td class="src coveredLine show_coveredLine"><span class="w">            </span><span class="n">c</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span></td>
       </tr>
-      <tr class="source-line">
-        <td class="lineno"><a id="L31" href="#L31">31</a></td>
-        <td class="linebranch">
-          <details class="linebranchDetails">
-            <summary class="linebranchSummary">5/6</summary>
-            <div class="linebranchContents">
-              <div class="takenBranch">&check; Branch 0 taken 6 times.</div>
-              <div class="takenBranch">&check; Branch 1 taken 6 times.</div>
-              <div class="takenBranch">&check; Branch 2 taken 3 times.</div>
-              <div class="takenBranch">&check; Branch 3 taken 3 times.</div>
-              <div class="notTakenBranch">&cross; Branch 4 not taken.</div>
-              <div class="takenBranch">&check; Branch 5 taken 9 times.</div>
+      <tr>
+        <td class="text-right src linenos"><a class="normal" id="L31" href="#L31">31</a></td>
+        <td class="text-right src linenos ws-unset">
+          <details class="normal details-overlay">
+            <summary>5/6</summary>
+            <div class="text-left position-absolute color-bg-subtle p-3 mt-2" style="z-index: 1;">
+              <div class="color-taken-branch">&check; Branch 0 taken 6 times.</div>
+              <div class="color-taken-branch">&check; Branch 1 taken 6 times.</div>
+              <div class="color-taken-branch">&check; Branch 2 taken 3 times.</div>
+              <div class="color-taken-branch">&check; Branch 3 taken 3 times.</div>
+              <div class="color-fg-danger">&cross; Branch 4 not taken.</div>
+              <div class="color-taken-branch">&check; Branch 5 taken 9 times.</div>
             </div>
           </details>
         </td>
-        <td class="linecall">
-          </details>
+        <td class="text-right src linenos ws-unset">
         </td>
-        <td class="linecount partialCoveredLine show_partialCoveredLine">12</td>
+        <td class="linecount partialCoveredLine show_partialCoveredLine pr-2 pl-2 color-fg-muted text-right">12</td>
         <td class="src partialCoveredLine show_partialCoveredLine"><span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">a</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="n">c</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
       </tr>
-      <tr class="source-line">
-        <td class="lineno"><a id="L32" href="#L32">32</a></td>
-        <td class="linebranch">
+      <tr>
+        <td class="text-right src linenos"><a class="normal" id="L32" href="#L32">32</a></td>
+        <td class="text-right src linenos ws-unset">
         </td>
-        <td class="linecall">
-          </details>
+        <td class="text-right src linenos ws-unset">
         </td>
-        <td class="linecount coveredLine show_coveredLine">3</td>
+        <td class="linecount coveredLine show_coveredLine pr-2 pl-2 color-fg-muted text-right">3</td>
         <td class="src coveredLine show_coveredLine"><span class="w">                </span><span class="n">function2</span><span class="p">();</span></td>
       </tr>
-      <tr class="source-line">
-        <td class="lineno"><a id="L33" href="#L33">33</a></td>
-        <td class="linebranch">
+      <tr>
+        <td class="text-right src linenos"><a class="normal" id="L33" href="#L33">33</a></td>
+        <td class="text-right src linenos ws-unset">
         </td>
-        <td class="linecall">
-          </details>
+        <td class="text-right src linenos ws-unset">
         </td>
-        <td class="linecount coveredLine show_coveredLine">3</td>
+        <td class="linecount coveredLine show_coveredLine pr-2 pl-2 color-fg-muted text-right">3</td>
         <td class="src coveredLine show_coveredLine"><span class="w">            </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span></td>
       </tr>
-      <tr class="source-line">
-        <td class="lineno"><a id="L34" href="#L34">34</a></td>
-        <td class="linebranch">
+      <tr>
+        <td class="text-right src linenos"><a class="normal" id="L34" href="#L34">34</a></td>
+        <td class="text-right src linenos ws-unset">
         </td>
-        <td class="linecall">
-          </details>
+        <td class="text-right src linenos ws-unset">
         </td>
-        <td class="linecount coveredLine show_coveredLine">9</td>
+        <td class="linecount coveredLine show_coveredLine pr-2 pl-2 color-fg-muted text-right">9</td>
         <td class="src coveredLine show_coveredLine"><span class="w">                </span><span class="n">function1</span><span class="p">();</span></td>
       </tr>
-      <tr class="source-line">
-        <td class="lineno"><a id="L35" href="#L35">35</a></td>
-        <td class="linebranch">
+      <tr>
+        <td class="text-right src linenos"><a class="normal" id="L35" href="#L35">35</a></td>
+        <td class="text-right src linenos ws-unset">
         </td>
-        <td class="linecall">
-          </details>
+        <td class="text-right src linenos ws-unset">
         </td>
-        <td class="linecount"></td>
+        <td class="linecount pr-2 pl-2 color-fg-muted text-right"></td>
         <td class="src"><span class="w">            </span><span class="p">}</span></td>
       </tr>
-      <tr class="source-line">
-        <td class="lineno"><a id="L36" href="#L36">36</a></td>
-        <td class="linebranch">
-          <details class="linebranchDetails">
-            <summary class="linebranchSummary">1/2</summary>
-            <div class="linebranchContents">
-              <div class="notTakenBranch">&cross; Branch 0 not taken.</div>
-              <div class="takenBranch">&check; Branch 1 taken 12 times.</div>
+      <tr>
+        <td class="text-right src linenos"><a class="normal" id="L36" href="#L36">36</a></td>
+        <td class="text-right src linenos ws-unset">
+          <details class="normal details-overlay">
+            <summary>1/2</summary>
+            <div class="text-left position-absolute color-bg-subtle p-3 mt-2" style="z-index: 1;">
+              <div class="color-fg-danger">&cross; Branch 0 not taken.</div>
+              <div class="color-taken-branch">&check; Branch 1 taken 12 times.</div>
             </div>
           </details>
         </td>
-        <td class="linecall">
-          </details>
+        <td class="text-right src linenos ws-unset">
         </td>
-        <td class="linecount partialCoveredLine show_partialCoveredLine">12</td>
+        <td class="linecount partialCoveredLine show_partialCoveredLine pr-2 pl-2 color-fg-muted text-right">12</td>
         <td class="src partialCoveredLine show_partialCoveredLine"><span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">c</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
       </tr>
-      <tr class="source-line">
-        <td class="lineno"><a id="L37" href="#L37">37</a></td>
-        <td class="linebranch">
+      <tr>
+        <td class="text-right src linenos"><a class="normal" id="L37" href="#L37">37</a></td>
+        <td class="text-right src linenos ws-unset">
         </td>
-        <td class="linecall">
-          </details>
+        <td class="text-right src linenos ws-unset">
         </td>
-        <td class="linecount"></td>
+        <td class="linecount pr-2 pl-2 color-fg-muted text-right"></td>
         <td class="src"><span class="w">                </span><span class="c1">// Never called</span></td>
       </tr>
-      <tr class="source-line">
-        <td class="lineno"><a id="L38" href="#L38">38</a></td>
-        <td class="linebranch">
+      <tr>
+        <td class="text-right src linenos"><a class="normal" id="L38" href="#L38">38</a></td>
+        <td class="text-right src linenos ws-unset">
         </td>
-        <td class="linecall">
-          </details>
+        <td class="text-right src linenos ws-unset">
         </td>
-        <td class="linecount uncoveredLine show_uncoveredLine">&cross;</td>
+        <td class="linecount uncoveredLine show_uncoveredLine pr-2 pl-2 color-fg-muted text-right">&cross;</td>
         <td class="src uncoveredLine show_uncoveredLine"><span class="w">                </span><span class="n">function3</span><span class="p">(</span><span class="n">function2</span><span class="p">());</span></td>
       </tr>
-      <tr class="source-line">
-        <td class="lineno"><a id="L39" href="#L39">39</a></td>
-        <td class="linebranch">
+      <tr>
+        <td class="text-right src linenos"><a class="normal" id="L39" href="#L39">39</a></td>
+        <td class="text-right src linenos ws-unset">
         </td>
-        <td class="linecall">
-          </details>
+        <td class="text-right src linenos ws-unset">
         </td>
-        <td class="linecount uncoveredLine show_uncoveredLine">&cross;</td>
+        <td class="linecount uncoveredLine show_uncoveredLine pr-2 pl-2 color-fg-muted text-right">&cross;</td>
         <td class="src uncoveredLine show_uncoveredLine"><span class="w">                </span><span class="n">function2</span><span class="p">();</span></td>
       </tr>
-      <tr class="source-line">
-        <td class="lineno"><a id="L40" href="#L40">40</a></td>
-        <td class="linebranch">
+      <tr>
+        <td class="text-right src linenos"><a class="normal" id="L40" href="#L40">40</a></td>
+        <td class="text-right src linenos ws-unset">
         </td>
-        <td class="linecall">
-          </details>
+        <td class="text-right src linenos ws-unset">
         </td>
-        <td class="linecount uncoveredLine show_uncoveredLine">&cross;</td>
+        <td class="linecount uncoveredLine show_uncoveredLine pr-2 pl-2 color-fg-muted text-right">&cross;</td>
         <td class="src uncoveredLine show_uncoveredLine"><span class="w">            </span><span class="p">}</span></td>
       </tr>
-      <tr class="source-line">
-        <td class="lineno"><a id="L41" href="#L41">41</a></td>
-        <td class="linebranch">
+      <tr>
+        <td class="text-right src linenos"><a class="normal" id="L41" href="#L41">41</a></td>
+        <td class="text-right src linenos ws-unset">
         </td>
-        <td class="linecall">
-          </details>
+        <td class="text-right src linenos ws-unset">
         </td>
-        <td class="linecount coveredLine show_coveredLine">12</td>
+        <td class="linecount coveredLine show_coveredLine pr-2 pl-2 color-fg-muted text-right">12</td>
         <td class="src coveredLine show_coveredLine"><span class="w">            </span><span class="n">function2</span><span class="p">();</span></td>
       </tr>
-      <tr class="source-line">
-        <td class="lineno"><a id="L42" href="#L42">42</a></td>
-        <td class="linebranch">
+      <tr>
+        <td class="text-right src linenos"><a class="normal" id="L42" href="#L42">42</a></td>
+        <td class="text-right src linenos ws-unset">
         </td>
-        <td class="linecall">
-          </details>
+        <td class="text-right src linenos ws-unset">
         </td>
-        <td class="linecount coveredLine show_coveredLine">12</td>
+        <td class="linecount coveredLine show_coveredLine pr-2 pl-2 color-fg-muted text-right">12</td>
         <td class="src coveredLine show_coveredLine"><span class="w">            </span><span class="n">function2</span><span class="p">();</span></td>
       </tr>
-      <tr class="source-line">
-        <td class="lineno"><a id="L43" href="#L43">43</a></td>
-        <td class="linebranch">
+      <tr>
+        <td class="text-right src linenos"><a class="normal" id="L43" href="#L43">43</a></td>
+        <td class="text-right src linenos ws-unset">
         </td>
-        <td class="linecall">
-          </details>
+        <td class="text-right src linenos ws-unset">
         </td>
-        <td class="linecount"></td>
+        <td class="linecount pr-2 pl-2 color-fg-muted text-right"></td>
         <td class="src"><span class="w">            </span><span class="c1">//    called                not called            called                not called</span></td>
       </tr>
-      <tr class="source-line">
-        <td class="lineno"><a id="L44" href="#L44">44</a></td>
-        <td class="linebranch">
-          <details class="linebranchDetails">
-            <summary class="linebranchSummary">2/8</summary>
-            <div class="linebranchContents">
-              <div class="notTakenBranch">&cross; Branch 0 not taken.</div>
-              <div class="takenBranch">&check; Branch 1 taken 12 times.</div>
-              <div class="notTakenBranch">&cross; Branch 2 not taken.</div>
-              <div class="notTakenBranch">&cross; Branch 3 not taken.</div>
-              <div class="notTakenBranch">&cross; Branch 4 not taken.</div>
-              <div class="takenBranch">&check; Branch 5 taken 12 times.</div>
-              <div class="notTakenBranch">&cross; Branch 6 not taken.</div>
-              <div class="notTakenBranch">&cross; Branch 7 not taken.</div>
+      <tr>
+        <td class="text-right src linenos"><a class="normal" id="L44" href="#L44">44</a></td>
+        <td class="text-right src linenos ws-unset">
+          <details class="normal details-overlay">
+            <summary>2/8</summary>
+            <div class="text-left position-absolute color-bg-subtle p-3 mt-2" style="z-index: 1;">
+              <div class="color-fg-danger">&cross; Branch 0 not taken.</div>
+              <div class="color-taken-branch">&check; Branch 1 taken 12 times.</div>
+              <div class="color-fg-danger">&cross; Branch 2 not taken.</div>
+              <div class="color-fg-danger">&cross; Branch 3 not taken.</div>
+              <div class="color-fg-danger">&cross; Branch 4 not taken.</div>
+              <div class="color-taken-branch">&check; Branch 5 taken 12 times.</div>
+              <div class="color-fg-danger">&cross; Branch 6 not taken.</div>
+              <div class="color-fg-danger">&cross; Branch 7 not taken.</div>
             </div>
           </details>
         </td>
-        <td class="linecall">
-          </details>
+        <td class="text-right src linenos ws-unset">
         </td>
-        <td class="linecount partialCoveredLine show_partialCoveredLine">12</td>
+        <td class="linecount partialCoveredLine show_partialCoveredLine pr-2 pl-2 color-fg-muted text-right">12</td>
         <td class="src partialCoveredLine show_partialCoveredLine"><span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="p">(((</span><span class="n">function1</span><span class="p">()</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="p">(</span><span class="n">function2</span><span class="p">()</span><span class="o">==</span><span class="mi">1</span><span class="p">))</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="p">((</span><span class="n">function1</span><span class="p">()</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="p">(</span><span class="n">function2</span><span class="p">()</span><span class="o">!=</span><span class="mi">1</span><span class="p">)))</span><span class="w"> </span><span class="p">{</span></td>
       </tr>
-      <tr class="source-line">
-        <td class="lineno"><a id="L45" href="#L45">45</a></td>
-        <td class="linebranch">
+      <tr>
+        <td class="text-right src linenos"><a class="normal" id="L45" href="#L45">45</a></td>
+        <td class="text-right src linenos ws-unset">
         </td>
-        <td class="linecall">
-          </details>
+        <td class="text-right src linenos ws-unset">
         </td>
-        <td class="linecount"></td>
+        <td class="linecount pr-2 pl-2 color-fg-muted text-right"></td>
         <td class="src"><span class="w">                </span><span class="c1">// never called</span></td>
       </tr>
-      <tr class="source-line">
-        <td class="lineno"><a id="L46" href="#L46">46</a></td>
-        <td class="linebranch">
+      <tr>
+        <td class="text-right src linenos"><a class="normal" id="L46" href="#L46">46</a></td>
+        <td class="text-right src linenos ws-unset">
         </td>
-        <td class="linecall">
-          </details>
+        <td class="text-right src linenos ws-unset">
         </td>
-        <td class="linecount uncoveredLine show_uncoveredLine">&cross;</td>
+        <td class="linecount uncoveredLine show_uncoveredLine pr-2 pl-2 color-fg-muted text-right">&cross;</td>
         <td class="src uncoveredLine show_uncoveredLine"><span class="w">                </span><span class="n">function2</span><span class="p">();</span></td>
       </tr>
-      <tr class="source-line">
-        <td class="lineno"><a id="L47" href="#L47">47</a></td>
-        <td class="linebranch">
+      <tr>
+        <td class="text-right src linenos"><a class="normal" id="L47" href="#L47">47</a></td>
+        <td class="text-right src linenos ws-unset">
         </td>
-        <td class="linecall">
-          </details>
+        <td class="text-right src linenos ws-unset">
         </td>
-        <td class="linecount uncoveredLine show_uncoveredLine">&cross;</td>
+        <td class="linecount uncoveredLine show_uncoveredLine pr-2 pl-2 color-fg-muted text-right">&cross;</td>
         <td class="src uncoveredLine show_uncoveredLine"><span class="w">            </span><span class="p">}</span></td>
       </tr>
-      <tr class="source-line">
-        <td class="lineno"><a id="L48" href="#L48">48</a></td>
-        <td class="linebranch">
+      <tr>
+        <td class="text-right src linenos"><a class="normal" id="L48" href="#L48">48</a></td>
+        <td class="text-right src linenos ws-unset">
         </td>
-        <td class="linecall">
-          </details>
+        <td class="text-right src linenos ws-unset">
         </td>
-        <td class="linecount coveredLine show_coveredLine">12</td>
+        <td class="linecount coveredLine show_coveredLine pr-2 pl-2 color-fg-muted text-right">12</td>
         <td class="src coveredLine show_coveredLine"><span class="w">        </span><span class="p">}</span></td>
       </tr>
-      <tr class="source-line">
-        <td class="lineno"><a id="L49" href="#L49">49</a></td>
-        <td class="linebranch">
+      <tr>
+        <td class="text-right src linenos"><a class="normal" id="L49" href="#L49">49</a></td>
+        <td class="text-right src linenos ws-unset">
         </td>
-        <td class="linecall">
-          </details>
+        <td class="text-right src linenos ws-unset">
         </td>
-        <td class="linecount coveredLine show_coveredLine">6</td>
+        <td class="linecount coveredLine show_coveredLine pr-2 pl-2 color-fg-muted text-right">6</td>
         <td class="src coveredLine show_coveredLine"><span class="w">    </span><span class="p">}</span></td>
       </tr>
-      <tr class="source-line">
-        <td class="lineno"><a id="L50" href="#L50">50</a></td>
-        <td class="linebranch">
+      <tr>
+        <td class="text-right src linenos"><a class="normal" id="L50" href="#L50">50</a></td>
+        <td class="text-right src linenos ws-unset">
         </td>
-        <td class="linecall">
-          </details>
+        <td class="text-right src linenos ws-unset">
         </td>
-        <td class="linecount"></td>
+        <td class="linecount pr-2 pl-2 color-fg-muted text-right"></td>
         <td class="src"></td>
       </tr>
-      <tr class="source-line">
-        <td class="lineno"><a id="L51" href="#L51">51</a></td>
-        <td class="linebranch">
+      <tr>
+        <td class="text-right src linenos"><a class="normal" id="L51" href="#L51">51</a></td>
+        <td class="text-right src linenos ws-unset">
         </td>
-        <td class="linecall">
-          </details>
+        <td class="text-right src linenos ws-unset">
         </td>
-        <td class="linecount coveredLine show_coveredLine">3</td>
+        <td class="linecount coveredLine show_coveredLine pr-2 pl-2 color-fg-muted text-right">3</td>
         <td class="src coveredLine show_coveredLine"><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span></td>
       </tr>
-      <tr class="source-line">
-        <td class="lineno"><a id="L52" href="#L52">52</a></td>
-        <td class="linebranch">
+      <tr>
+        <td class="text-right src linenos"><a class="normal" id="L52" href="#L52">52</a></td>
+        <td class="text-right src linenos ws-unset">
         </td>
-        <td class="linecall">
-          </details>
+        <td class="text-right src linenos ws-unset">
         </td>
-        <td class="linecount"></td>
+        <td class="linecount pr-2 pl-2 color-fg-muted text-right"></td>
         <td class="src"><span class="p">}</span></td>
       </tr>
-      <tr class="source-line">
-        <td class="lineno"><a id="L53" href="#L53">53</a></td>
-        <td class="linebranch">
+      <tr>
+        <td class="text-right src linenos"><a class="normal" id="L53" href="#L53">53</a></td>
+        <td class="text-right src linenos ws-unset">
         </td>
-        <td class="linecall">
-          </details>
+        <td class="text-right src linenos ws-unset">
         </td>
-        <td class="linecount"></td>
+        <td class="linecount pr-2 pl-2 color-fg-muted text-right"></td>
         <td class="src"></td>
       </tr>
     </table>

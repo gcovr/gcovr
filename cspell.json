@@ -8,6 +8,8 @@
         "/.gitbugtraq",
         "/admin/*.patch",
         "/AUTHORS.txt",
+        "/doc/examples/example_html.html",
+        "/doc/examples/example_html.details.*",
         "/doc/source/conf.py",
         "/src/gcovr/formats/html/github/primer.css",
         "/tests/*.dtd",

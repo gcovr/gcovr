@@ -76,12 +76,12 @@ PYGMENTS_CSS_MARKER = "/* Comment.Preproc */"
 # e.g. github.green github.blue or blue or green
 def get_theme_name(html_theme: str) -> str:
     """Get the theme name without the color."""
-    return html_theme.split(".", maxsplit=1)[0] if "." in html_theme else "default"
+    return html_theme.split(".", maxsplit=1)[0]
 
 
 def get_theme_color(html_theme: str) -> str:
     """Get the theme color from the theme name."""
-    return html_theme.split(".")[1] if "." in html_theme else html_theme
+    return html_theme.rsplit(".", maxsplit=1)[-1]
 
 
 @functools.lru_cache(maxsize=1)
@@ -97,10 +97,6 @@ def theme_environment(options: Options) -> Environment:
         PackageLoader(
             "gcovr.formats.html",
             package_path=get_theme_name(options.html_theme),
-        ),
-        PackageLoader(
-            "gcovr.formats.html",
-            package_path="common",
         ),
     ]
 

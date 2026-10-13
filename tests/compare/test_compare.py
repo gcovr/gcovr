@@ -110,11 +110,11 @@ def test(
     )
     gcovr_exec.compare_txt()
 
-    for theme in ["default", "github", "boost"]:
+    for theme in ["github", "boost"]:
         gcovr_exec.gcovr(
             "--json-add-tracefile=coverage_compare.json",
             "--html-nested",
-            f"--html-theme={'' if theme == 'default' else (theme + '.')}green",
+            f"--html-theme={theme}.green",
             f"--html=coverage.{theme}.html",
         )
     gcovr_exec.compare_html()
