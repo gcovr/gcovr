@@ -359,21 +359,28 @@ def doc(session: nox.Session) -> None:
     re_issue = re.compile(r"#(\d+)")
     job_summary_md = Path() / "doc" / "build" / "job_summary.md"
     session.log(f"Write {job_summary_md}...")
+    clone_url = str(
+        session.run("git", "remote", "get-url", "origin", external=True, silent=True)
+    ).strip()
+    commit_hash = str(
+        session.run("git", "rev-parse", "HEAD", external=True, silent=True)
+    ).strip()
     with job_summary_md.open("w", encoding="utf-8") as fh_out:
-        fh_out.write(f"# {gcovr_version}\n")
         fh_out.writelines(
-            re_issue.sub(r"[#\1](https://github.com/gcovr/gcovr/issues/\1)", out)
-            for out in out_lines
+            [
+                f"# {gcovr_version}\n",
+                "\n",
+                "> You can install this version for testing purpose by running the command:\n",
+                f"  `pip install git+{clone_url}@{commit_hash}`\n",
+                "\n",
+                *[
+                    re_issue.sub(
+                        r"[#\1](https://github.com/gcovr/gcovr/issues/\1)", out
+                    )
+                    for out in out_lines
+                ],
+            ]
         )
-
-    if not GCOVR_ISOLATED_TEST and not (
-        # Github actions on MacOs can't use Docker
-        CI_RUN and IS_DARWIN
-    ):
-        docker_build_compiler(session, "gcc-8")
-        # We need to inject the arguments
-        session._runner.posargs = ["-s", "tests", "--", "-k", "test_example"]  # pylint: disable=protected-access  # noqa: SLF001
-        docker_run_compiler(session, "gcc-8")
 
     # Build the Sphinx documentation
     with session.chdir("doc"):
