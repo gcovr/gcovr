@@ -5,15 +5,6 @@ __pycache__
 # Tool caches
 /*_cache/
 
-# GCOV files
-*.gcda
-*.gcno
-*.gcov
-*.gcov.json.gz
-*.gcov.json
-# Extracted .json.gz
-*##*.json
-
 # nox virtual environments
 /.nox*/
 # User virtual environment
