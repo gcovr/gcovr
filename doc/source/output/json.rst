@@ -31,7 +31,7 @@ See the :ref:`json_format` for a description of the file format.
 .. versionchanged:: 8.0
    Order of keys changed from alphabetical to logical.
 
-.. versionchanged:: NEXT
+.. versionchanged:: 8.7
    Order of keys changed back to alphabetical because
    of linter rule where the slots should be sorted.
 
@@ -633,7 +633,7 @@ Following results are possible:
 - ``Approximately equal``: The data is covered in both reports but with different hit counts.
 - ``Strictly equal``: The data has the exact same coverage in both reports.
 
-.. versionadded:: NEXT
+.. versionadded:: 8.7
 
   The :option:`--json-compare` option.
 

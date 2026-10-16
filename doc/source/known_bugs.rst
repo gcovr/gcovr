@@ -20,7 +20,7 @@ Branches and conditions are not visible for uncovered lines
      - :ref:`release_8_5`
 
    * - Fixed
-     - :ref:`next_release`, :issue:`1290`
+     - :ref:`release_8_7`, :issue:`1290`
 
 In the HTML report for uncovered lines no branches and conditions are shown.
 A line must be at least partial covered to show the branches and conditions
@@ -38,7 +38,7 @@ Link to lines in HTML single page report doesn't work
      - :ref:`release_8_2`
 
    * - Fixed
-     - :ref:`next_release`, :issue:`1285`
+     - :ref:`release_8_7`, :issue:`1285`
 
 In the HTML single page report the link to a line opens the root page or an empty page.
 
@@ -54,7 +54,7 @@ Alignment of summary table in HTML single page report is wrong
      - :ref:`release_8_2`
 
    * - Fixed
-     - :ref:`next_release`, :issue:`1284`
+     - :ref:`release_8_7`, :issue:`1284`
 
 In the HTML single page report with active JavaScript the summary table is not
 properly aligned except in the root page.
@@ -71,7 +71,7 @@ Significant performance regression with many functions in a single file
      - :ref:`release_8_4`
 
    * - Fixed
-     - :ref:`next_release`, :issue:`1270`
+     - :ref:`release_8_7`, :issue:`1270`
 
 The runtime of ``gcovr`` increased significant if a file has many lines and functions.
 
