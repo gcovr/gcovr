@@ -299,9 +299,11 @@ jobs:
           - os: macos-15
             gcc: gcc
             python-version: '3.10'
+            upload-app: true
           - os: macos-26
             gcc: gcc-15
             python-version: '3.14'
+            upload-app: true
 
 
   # -----------------------------------------------------------------------------------------------
