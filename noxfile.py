@@ -1,7 +1,7 @@
 #  ************************** Copyrights and license ***************************
 #
-# This file is part of gcovr 8.7, a parsing and reporting tool for gcov.
-# https://gcovr.com/en/8.7
+# This file is part of gcovr 8.7+main, a parsing and reporting tool for gcov.
+# https://gcovr.com/en/main
 #
 # _____________________________________________________________________________
 #
@@ -161,7 +161,7 @@ def prepare_release(session: nox.Session) -> None:
     else:
         session.error(f"Invalid input {release_type!r}")
 
-    session.run("admin/bump_version.py", f"{major}.{minor}")
+    session.run("admin/bump_version.py", f"{major}.{minor}", external=True)
     session.notify("html2jpeg")
 
 
@@ -206,7 +206,7 @@ def prepare_next_iteration(session: nox.Session) -> None:
 
     GCOVR_CHANGELOG_RST.write_text("\n".join(new_lines))
 
-    session.run("admin/bump_version.py", f"{last_version}+main")
+    session.run("admin/bump_version.py", f"{last_version}+main", external=True)
     session.notify("html2jpeg")
 
 

@@ -237,7 +237,7 @@ env = [
     "D:CC=gcc",
     "GCOVR_TEST_SUITE=1",
     "GCOVR_TEST_SUITE_NO_GIT_COMMAND=1",
-    "SOURCE_DATE_EPOCH=1792183400",
+    "SOURCE_DATE_EPOCH=1792186373",
 ]
 markers = [
     "csv",
