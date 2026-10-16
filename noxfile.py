@@ -725,16 +725,6 @@ def html2jpeg(session: nox.Session) -> None:
             (1150, 825),
         )
         screenshot(
-            "tests/html/reference/theme-default-green/gcc-5/coverage.main.cpp.118fcbaaba162ba17933c7893247df3a.html",
-            "doc/images/screenshot-html-default-green-src.jpeg",
-            (1150, 500),
-        )
-        screenshot(
-            "tests/html/reference/theme-default-blue/gcc-5/coverage.main.cpp.118fcbaaba162ba17933c7893247df3a.html",
-            "doc/images/screenshot-html-default-blue-src.jpeg",
-            (1150, 500),
-        )
-        screenshot(
             "tests/html/reference/theme-github-green/gcc-5/coverage.main.cpp.118fcbaaba162ba17933c7893247df3a.html",
             "doc/images/screenshot-html-github-green-src.jpeg",
             (1150, 480),

@@ -123,22 +123,6 @@ PARAMETERS = [
         ),
     ),
     (
-        "theme-default-green",
-        (
-            "--html-details",
-            "--html-block-ids",
-            "--html-theme=green",
-        ),
-    ),
-    (
-        "theme-default-blue",
-        (
-            "--html-details",
-            "--html-block-ids",
-            "--html-theme=blue",
-        ),
-    ),
-    (
         "theme-boost-green",
         (
             "--html-details",
@@ -375,26 +359,6 @@ PARAMETERS_NESTED = [
         ],
     ),
     (
-        "theme-default-static",
-        (
-            "--filter",
-            "subdir/A",
-            "--html-details=./",
-            "--html-single-page",
-            "--html-static-report",
-            "--no-html-self-contained",
-        ),
-    ),
-    (
-        "theme-default-js",
-        (
-            "--filter",
-            "subdir/A",
-            "--html-details=./",
-            "--html-single-page",
-        ),
-    ),
-    (
         "theme-github-static",
         (
             "--filter",
@@ -515,24 +479,6 @@ PARAMETERS_NESTED = [
             "uncovered-number",
             "--html-nested=coverage.html",
         ],
-    ),
-    (
-        "theme-default-static",
-        (
-            "--filter",
-            "subdir/A",
-            "--html-nested=./",
-            "--html-single-page",
-            "--html-static-report",
-            "--no-html-self-contained",
-        ),
-    ),
-    (
-        "theme-default-js",
-        (
-            "--html-nested=./",
-            "--html-single-page",
-        ),
     ),
     (
         "theme-github-static",
