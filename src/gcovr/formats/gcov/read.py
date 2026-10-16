@@ -896,8 +896,9 @@ class GcovProgram:
             raise self.GcovExecutionError(msg)
 
         if version_mismatch_re.search(err):
+            remove_generated_files()  # This is needed for the test. Real gcov wouldn't generate an output file.
             # gcov tossed errors: throw exception
-            msg = f"Version mismatch gcc/gcov.\nSTDERR >>{err}<< End of STDERR"
+            msg = f"Version mismatch gcc/gcov.\nSTDERR >>{err}<< End of STDERR\nSTDOUT >>{out}<< End of STDOUT"
             raise self.GcovExecutionError(msg)
 
         if activate_trace_logging:
@@ -1025,7 +1026,6 @@ def run_gcov_and_process_files(
             done = True
 
         except RuntimeError as exc:
-            # If we got an merge assertion error we must end the processing
             done = False
             error(
                 f"With working directory {chdir!r}.\n"
@@ -1038,7 +1038,8 @@ def run_gcov_and_process_files(
             error(
                 f"With working directory {chdir!r}.\n"
                 f"{exc!s}\n"
-                f"STDERR >>{err}<< End of STDERR"
+                f"STDERR >>{err}<< End of STDERR\n"
+                f"STDOUT >>{out}<< End of STDOUT"
             )
         except GcovProgram.GcovExecutionError as exc:
             done = False
