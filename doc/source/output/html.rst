@@ -97,9 +97,8 @@ The :option:`--html-template-dir` option allows you to use an
 alternate directory with Jinja2 templates to fully customize the HTML output in detail.
 If a template is missing from this directory the original is used. It is advised that you
 start by copying the part you want to modify from
-`the existing default theme templates <https://github.com/gcovr/gcovr/tree/main/src/gcovr/formats/html/default>`_
-, `the existing github theme templates <https://github.com/gcovr/gcovr/tree/main/src/gcovr/formats/html/github>`_.
-or  `the existing common templates <https://github.com/gcovr/gcovr/tree/main/src/gcovr/formats/html/common>`_.
+`the existing github theme templates <https://github.com/gcovr/gcovr/tree/main/src/gcovr/formats/html/github>`_.
+or  `the existing boost templates <https://github.com/gcovr/gcovr/tree/main/src/gcovr/formats/html/boost>`_.
 Keep in mind the template context data that is passed to these templates *MAY* change
 between release versions.
 
@@ -109,8 +108,9 @@ Following templates are referenced from the python code, all other files are ref
 - ``<theme>/function_page.html``: Template for functions overview page (used by :option:`--html-details`).
 - ``<theme>/source_page.html``: Template for source code details pages (used by :option:`--html-details`).
 - ``<theme>/style.css``: Template for CSS stylesheet (always used).
-- ``common/gcovr.js``: Template for javascript code (always used).
-- ``common/single_page.html``: Template for single page report (used by :option:`--html-single-page`).
+- ``<theme>/gcovr.js``: Template for javascript code (always used).
+- ``<theme>/single_page.html``: Template for single page report (used by :option:`--html-single-page`),
+  not available for boost theme.
 
 Note that you do not have to copy every single template and can copy and edit only the
 templates you wish to customize.

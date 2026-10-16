@@ -258,8 +258,8 @@ class HtmlHandler(BaseHandler):
             raise RuntimeError(msg)
 
         if self.options.html_tab_size < 1:
-            msg_0 = "Value of --html-tab-size should be greater 0."
-            raise RuntimeError(msg_0)
+            msg = "Value of --html-tab-size should be greater 0."
+            raise RuntimeError(msg)
 
         if self.options.html_details and self.options.html_nested:
             msg = "--html-details and --html-nested can not be used together."

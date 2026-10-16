@@ -20,7 +20,13 @@ import re
 import pytest
 from pytest_check import check
 
-from tests.conftest import IS_DARWIN, IS_GCC, IS_LINUX, GcovrExecFixture
+from tests.conftest import (
+    IS_DARWIN,
+    IS_GCC,
+    IS_LINUX,
+    USE_GCC_JSON_INTERMEDIATE_FORMAT,
+    GcovrExecFixture,
+)
 
 
 @pytest.mark.skipif(
@@ -958,7 +964,9 @@ def test_gcov_exclude(gcovr_exec: "GcovrExecFixture") -> None:
     )
 
     gcovr_exec.run("./subdir/testcase")
-    gcovr_exec.gcovr(
+    gcovr_options = [
+        "--verbose",
+        "--trace-include=.*",
         "--root=subdir",
         "--gcov-exclude-directory=.*/A/C(?:/.*)?",
         "--gcov-filter=.*",
@@ -966,5 +974,25 @@ def test_gcov_exclude(gcovr_exec: "GcovrExecFixture") -> None:
         "--gcov-exclude=[Ff]ile.\\.cpp##.*",
         "--json-pretty",
         "--json=coverage.json",
+    ]
+    if not USE_GCC_JSON_INTERMEDIATE_FORMAT:
+        gcovr_exec.gcovr(
+            *gcovr_options,
+            "--gcov-allowed-working-directory-root=subdir",
+            use_main=False,
+            exitcode_ok=64,
+        )
+        assert (
+            "To fix this error check your --gcov-allowed-working-directory-roots."
+            in gcovr_exec.err
+        )
+    gcovr_exec.gcovr(
+        *gcovr_options,
+        "--gcov-allowed-working-directory-root=.",
+        use_main=False,
+    )
+    assert (
+        "To fix this error check your --gcov-allowed-working-directory-roots."
+        not in gcovr_exec.err
     )
     gcovr_exec.compare_json()

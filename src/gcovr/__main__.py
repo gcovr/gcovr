@@ -302,9 +302,6 @@ def main(args: list[str] | None = None) -> int:  # pylint: disable=too-many-retu
         ]:
             msg = "The options --sort-branches without '--sort uncovered-number' or '--sort uncovered-percent' doesn't make sense."
             raise RuntimeError(msg)
-        if options.show_decision and options.json_compare:
-            msg = "Decision coverage in json compare mode is not supported."
-            raise RuntimeError(msg)
         gcovr_formats.validate_options(options)
     except RuntimeError as exc:
         LOGGER.error("%s", str(exc))
@@ -406,6 +403,13 @@ def main(args: list[str] | None = None) -> int:  # pylint: disable=too-many-retu
             "Attention, the decision analysis is experimental. "
             "It uses a fragile heuristic and depends on the code format."
         )
+
+    # Get data files
+    if not options.search_paths:
+        options.search_paths = [options.root]
+
+        if options.gcov_objdir is not None:
+            options.search_paths.append(options.gcov_objdir)
 
     LOGGER.info("Reading coverage data...")
     try:
