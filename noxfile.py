@@ -1,7 +1,7 @@
 #  ************************** Copyrights and license ***************************
 #
-# This file is part of gcovr 8.7, a parsing and reporting tool for gcov.
-# https://gcovr.com/en/8.7
+# This file is part of gcovr 8.7+main, a parsing and reporting tool for gcov.
+# https://gcovr.com/en/main
 #
 # _____________________________________________________________________________
 #
@@ -161,7 +161,7 @@ def prepare_release(session: nox.Session) -> None:
     else:
         session.error(f"Invalid input {release_type!r}")
 
-    session.run("admin/bump_version.py", f"{major}.{minor}")
+    session.run("admin/bump_version.py", f"{major}.{minor}", external=True)
     session.notify("html2jpeg")
 
 
@@ -206,7 +206,7 @@ def prepare_next_iteration(session: nox.Session) -> None:
 
     GCOVR_CHANGELOG_RST.write_text("\n".join(new_lines))
 
-    session.run("admin/bump_version.py", f"{last_version}+main")
+    session.run("admin/bump_version.py", f"{last_version}+main", external=True)
     session.notify("html2jpeg")
 
 
@@ -323,6 +323,7 @@ def doc(session: nox.Session) -> None:
         msg = f"Start of release changes not found in {changelog_rst}."
         raise RuntimeError(msg)
 
+    current_list_indention = "  "
     for line in iter_lines:
         if re.fullmatch(r"\d+\.\d+\s+\(.+\)", line.rstrip()):
             break
@@ -336,12 +337,13 @@ def doc(session: nox.Session) -> None:
             ),
         )
         # Remove the empty lines around sub lists
-        if (
-            line.lstrip().startswith("- ")
-            and out_lines[-1].rstrip() == ""
-            and out_lines[-2].lstrip().startswith("- ")
-        ):
-            out_lines.pop()
+        if line.lstrip().startswith("- "):
+            if out_lines[-1].rstrip() == "" and (
+                out_lines[-2].lstrip().startswith("- ")
+                or out_lines[-2].startswith(current_list_indention)
+            ):
+                out_lines.pop()
+            current_list_indention = line.split("-", maxsplit=1)[0] + "  "
         # Skip lines with link targets
         elif line.startswith(".. ") and line.rstrip().endswith(":"):
             continue
