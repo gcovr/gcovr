@@ -160,6 +160,7 @@
         "Quickstart",
         "realpath",
         "rstrip",
+        "sarif",
         "sdist",
         "selectattr",
         "setuptools",
@@ -183,7 +184,8 @@
         "virtualenv",
         "wordmark",
         "xdist",
-        "yaxmldiff"
+        "yaxmldiff",
+        "zizmor"
     ],
     "ignoreWords": [
         "addgroup",

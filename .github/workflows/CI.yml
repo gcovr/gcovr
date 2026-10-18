@@ -20,6 +20,23 @@ on:
 jobs:
 
   # -----------------------------------------------------------------------------------------------
+  zizmor:
+    name: Run zizmor 🌈
+    runs-on: ubuntu-latest
+    permissions:
+      security-events: write # Required for upload-sarif (used by zizmor-action) to upload SARIF files.
+      contents: read         # Only needed for private repos. Needed to clone the repo.
+      actions: read          # Only needed for private repos. Needed for upload-sarif to read workflow run info.
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Run zizmor 🌈
+        uses: zizmorcore/zizmor-action@85b2b9fb8e3325e7a23d7d0a9d7ba5ae0f999e3e # v0.7.1
+
+  # -----------------------------------------------------------------------------------------------
   changelog:
     runs-on: ubuntu-24.04
     permissions:
@@ -32,9 +49,10 @@ jobs:
       tag_message: ${{ steps.changelog.outputs.tag_message || '' }}
 
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 75
+          persist-credentials: false
       - run: git fetch --tags
         shell: bash
 
@@ -80,11 +98,14 @@ jobs:
       contents: read
 
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
       - name: Install spellchecker
         run: |
-          npm install -g cspell@8.19.4
-      - uses: tj-actions/changed-files@22103cc46bda19c2b464ffe86db46df6922fd323  # v47.0.5
+          cd admin/cspell
+          npm ci
+      - uses: tj-actions/changed-files@9426d40962ed5378910ee2e21d5f8c6fcbf2dd96  # v47.0.6
         id: changed-files
         with:
           separator: ","
@@ -92,12 +113,14 @@ jobs:
       - name: Run spellchecker
         run: |
           # Run spellchecker with changed files
-          if [ -z "${{ steps.changed-files.outputs.all_changed_files }}" ] ; then
+          if [ -z "${STEPS_CHANGED_FILES_OUTPUTS_ALL_CHANGED_FILES}" ] ; then
             echo "No files to check"
             exit 0
           fi
-          mapfile -d ',' -t added_modified_files < <(printf '%s,' '${{ steps.changed-files.outputs.all_changed_files }}')
-          cspell --config cspell.json --color --show-suggestions "${added_modified_files[@]}"
+          mapfile -d ',' -t added_modified_files < <(printf '%s,' "${STEPS_CHANGED_FILES_OUTPUTS_ALL_CHANGED_FILES}")
+          ./admin/cspell/node_modules/.bin/cspell --config cspell.json --color --show-suggestions "${added_modified_files[@]}"
+        env:
+          STEPS_CHANGED_FILES_OUTPUTS_ALL_CHANGED_FILES: ${{ steps.changed-files.outputs.all_changed_files }}
 
   # -----------------------------------------------------------------------------------------------
   upload-coverage:
@@ -106,7 +129,9 @@ jobs:
       contents: read
 
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
       - name: Copy coverage reports
         run: |
           mkdir -p /tmp/coverage-upload
@@ -116,7 +141,7 @@ jobs:
           # Patch the paths inside the coverage files
           find /tmp/coverage-upload -type f -name '*' -exec sed -e 's^output/^source/^g ; s^output^source^g ;' -i '' {} \;
       - name: Upload coverage
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: coverage-reference
           path: /tmp/coverage-upload/*.*
@@ -150,22 +175,20 @@ jobs:
     timeout-minutes: 10
 
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 75
-
-      - name: Print job variables
-        run: echo '''${{ toJSON(needs) }}'''
+          persist-credentials: false
 
       - name: Prepare package version
-        uses: "./.github/actions/prepare-package-version"
+        uses: "$/.github/actions/prepare-package-version"
         with:
           tag: ${{ needs.changelog.outputs.tag }}
           tag_message: ${{ needs.changelog.outputs.tag_message }}
           do_test_release: ${{ inputs.do_test_release || false }}
 
       - name: Set up runner
-        uses: "./.github/actions/setup-runner"
+        uses: "$/.github/actions/setup-runner"
         with:
           os: ubuntu-24.04
           python-version: 3.12
@@ -193,7 +216,7 @@ jobs:
             | tee --append $GITHUB_OUTPUT
 
       - name: Upload distribution 📦
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: python-package-distributions
           path: dist/**
@@ -209,21 +232,19 @@ jobs:
     timeout-minutes: 10
 
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 75
-
-      - name: Print job variables
-        run: echo '''${{ toJSON(needs) }}'''
+          persist-credentials: false
 
       - name: Prepare package version
-        uses: "./.github/actions/prepare-package-version"
+        uses: "$/.github/actions/prepare-package-version"
         with:
           tag: ${{ needs.build-package.outputs.tag }}
           tag_message: ${{ needs.build-package.outputs.tag_message }}
 
       - name: Set up runner
-        uses: "./.github/actions/setup-runner"
+        uses: "$/.github/actions/setup-runner"
         with:
           os: ubuntu-24.04
           python-version: 3.12
@@ -237,7 +258,7 @@ jobs:
           cat doc/build/job_summary.md >> $GITHUB_STEP_SUMMARY
 
       - name: Upload release notes
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: release-notes
           path: doc/build/release_notes.md
@@ -245,7 +266,7 @@ jobs:
   # -----------------------------------------------------------------------------------------------
   host:
     needs: [build-package]
-    uses: ./.github/workflows/gcovr-ci-job.yml
+    uses: $/.github/workflows/gcovr-ci-job.yml
     with:
       os: ${{ matrix.os }}
       gcc: ${{ matrix.gcc }}
@@ -309,7 +330,7 @@ jobs:
   # -----------------------------------------------------------------------------------------------
   docker:
     needs: [build-package]
-    uses: ./.github/workflows/gcovr-ci-job.yml
+    uses: $/.github/workflows/gcovr-ci-job.yml
     with:
       container: true
       gcc: ${{ matrix.gcc }}
@@ -335,10 +356,9 @@ jobs:
     timeout-minutes: 5
 
     steps:
-      - uses: actions/checkout@v6
-
-      - name: Print job variables
-        run: echo '''${{ toJSON(needs) }}'''
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
 
       - name: Check if all needed jobs succeed
         uses: re-actors/alls-green@05ac9388f0aebcb5727afa17fcccfecd6f8ec5fe
@@ -346,7 +366,7 @@ jobs:
           jobs: ${{ toJSON(needs) }}
 
       - name: Prepare package version
-        uses: "./.github/actions/prepare-package-version"
+        uses: "$/.github/actions/prepare-package-version"
         with:
           tag: ${{ needs.build-package.outputs.tag }}
           tag_message: ${{ needs.build-package.outputs.tag_message }}
@@ -370,19 +390,18 @@ jobs:
     timeout-minutes: 5
 
     steps:
-      - uses: actions/checkout@v6
-
-      - name: Print job variables
-        run: echo '''${{ toJSON(needs) }}'''
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
 
       - name: Set up runner
-        uses: "./.github/actions/setup-runner"
+        uses: "$/.github/actions/setup-runner"
         with:
           os: ubuntu-24.04
           python-version: 3.12
 
       - name: Download artifacts
-        uses: actions/download-artifact@v8
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333
         with:
           pattern: coverage-pytest-*
 
@@ -391,7 +410,7 @@ jobs:
           nox --non-interactive --session combine_coverage -- $(find . -name '.coverage_*')
 
       - name: Upload coverage
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: coverage-merged
           path: |
@@ -411,33 +430,29 @@ jobs:
     timeout-minutes: 5
 
     steps:
-      - name: Print job variables
-        run: echo '''${{ toJSON(needs) }}'''
-
       - name: Check if all needed jobs succeed
         uses: re-actors/alls-green@05ac9388f0aebcb5727afa17fcccfecd6f8ec5fe
         with:
           jobs: ${{ toJSON(needs) }}
 
       - name: Download all applications
-        uses: actions/download-artifact@v8
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333
         with:
           pattern: app-*
           path: build/
           merge-multiple: true
 
       - name: Download the release notes
-        uses: actions/download-artifact@v8
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333
         with:
           name: release-notes
 
       - name: Create release and upload build artifacts
         if: ${{ needs.build-package.outputs.publish_push_tag == 'true' }}
-        uses: softprops/action-gh-release@c062e08bd532815e2082a85e87e3ef29c3e6d191
-        with:
-          tag_name: ${{ needs.build-package.outputs.tag }}
-          body_path: release_notes.md
-          files: build/*
+        run: |
+          gh release create --notes-file release_notes.md ${TAG_NAME} build/*
+        env:
+          TAG_NAME: ${{ needs.build-package.outputs.tag }}
 
   # -----------------------------------------------------------------------------------------------
   publish-pypi:
@@ -454,16 +469,13 @@ jobs:
     timeout-minutes: 10
 
     steps:
-      - name: Print job variables
-        run: echo '''${{ toJSON(needs) }}'''
-
       - name: Check if all needed jobs succeed
         uses: re-actors/alls-green@05ac9388f0aebcb5727afa17fcccfecd6f8ec5fe
         with:
           jobs: ${{ toJSON(needs) }}
 
       - name: Download all the distribution 📦
-        uses: actions/download-artifact@v8
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333
         with:
           name: python-package-distributions
           path: dist/

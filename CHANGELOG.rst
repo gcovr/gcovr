@@ -18,6 +18,8 @@ Documentation:
 
 Internal changes:
 
+- Add zizmor to scan pipeline for security issues. (:issue:`1318`)
+
 .. _release_8_7:
 
 8.7 (16 October 2026)
