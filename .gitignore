@@ -46,3 +46,4 @@ src/gcovr/version.py
 
 # CI standalone app folder
 /artifacts
+/admin/cspell/node_modules/

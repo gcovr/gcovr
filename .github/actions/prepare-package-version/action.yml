@@ -1,6 +1,7 @@
 ---
-name: Prepare package version
 # Schema: https://json.schemastore.org/github-action.json
+name: Prepare package version
+description: Prepare the package version
 
 inputs:
   tag:
@@ -33,6 +34,7 @@ runs:
     - if: ${{ (inputs.do_test_release == 'true') }}
       # cspell:disable
       run: |
+        cat << 'EOF' read_pyproject_toml.py
         # Patch pyproject.toml to turn of local version part
         from pathlib import Path
 
@@ -45,7 +47,9 @@ runs:
         setuptools_scm_section['local_scheme'] = 'no-local-version'
         patched_pyproject_toml_txt = tomlkit.dumps(pyproject_toml)
         pyproject_toml_path.write_text(patched_pyproject_toml_txt)
-      shell: python
+        EOF
+        python3 read_pyproject_toml.py
+      shell: bash
       # cspell:enable
     - if: ${{ (inputs.do_test_release == 'true') }}
       run: git update-index --assume-unchanged pyproject.toml
@@ -60,6 +64,9 @@ runs:
         set -e
         git config --global user.email "noreply@gcovr.com"
         git config --global user.name "gcovr authors"
-        git tag -a "${{ inputs.tag }}" -m "${{ inputs.tag_message }}"
-        git tag --list -n ${{ inputs.tag }}
+        git tag -a "${INPUTS_TAG}" -m "${INPUTS_TAG_MESSAGE}"
+        git tag --list -n ${INPUTS_TAG}
       shell: bash
+      env:
+        INPUTS_TAG: ${{ inputs.tag }}
+        INPUTS_TAG_MESSAGE: ${{ inputs.tag_message }}

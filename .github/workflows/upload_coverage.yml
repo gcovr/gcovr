@@ -9,13 +9,11 @@ on:
 
 jobs:
   upload:
-    if: ${{ github.event.workflow_run.conclusion != 'cancelled' }}
+    if: ${{ (github.event.workflow_run.conclusion != 'cancelled') && (github.repository == 'gcovr/gcovr') }}
     runs-on: ubuntu-24.04
     permissions:
       contents: read
     steps:
-      - uses: actions/checkout@v6
-
       - name: Download artifacts
         uses: dawidd6/action-download-artifact@bf251b5aa9c2f7eeb574a96ee720e24f801b7c11
         with:
@@ -31,7 +29,6 @@ jobs:
           chmod +x ${{ runner.temp }}/artifacts/get.sh
 
       - name: Upload coverage files to Codacy
-        if: ${{ (github.repository == 'gcovr/gcovr') }}
         run: |
           # Search the coverage files and upload them
           partial_upload="${{ runner.temp }}/artifacts/get.sh report --partial"
@@ -44,7 +41,7 @@ jobs:
           CODACY_PROJECT_TOKEN: ${{ secrets.CODACY_PROJECT_TOKEN }}
 
       - name: Finalize the upload to Codacy
-        if: ${{ (!cancelled()) && (github.repository == 'gcovr/gcovr') }}
+        if: ${{ !cancelled() }}
         run: |
           ${{ runner.temp }}/artifacts/get.sh final
         env:
