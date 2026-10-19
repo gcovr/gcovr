@@ -32,7 +32,7 @@ runs:
 
     # ------------------------------ Windows ------------------------------
     - if: ${{ startsWith(inputs.os,'windows-') }}
-      uses: msys2/setup-msys2@cafece8e6baf9247cf9b1bf95097b0b983cc558d
+      uses: msys2/setup-msys2@ec48f7c5447b3140e2b088413ae3a55687bccb6e  # v2.33.0
       with:
         install: gcc make
         cache: true
@@ -49,11 +49,11 @@ runs:
       shell: bash
 
     # ------------------------------ Python, all OS ------------------------------
-    - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
+    - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97  # v7.0.0
       with:
         python-version: ${{ inputs.python-version }}
     - name: Restore pip cache
-      uses: re-actors/cache-python-deps@250500eea3c0986666ae8bbeba9b23f69ae6a7d3
+      uses: re-actors/cache-python-deps@cb5e4347cdcefa232fd1cc80cd4a0865d9d100da  # v1.0.1
       with:
         cache-key-for-dependency-files: ${{ hashFiles('noxfile.py', 'pyproject.toml', 'doc/requirements.txt') }}
     - run: python3 -m pip install --upgrade pip

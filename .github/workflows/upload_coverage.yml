@@ -15,7 +15,7 @@ jobs:
       contents: read
     steps:
       - name: Download artifacts
-        uses: dawidd6/action-download-artifact@bf251b5aa9c2f7eeb574a96ee720e24f801b7c11
+        uses: dawidd6/action-download-artifact@eab87c9830c39eff17e5a6eadb20bfb4bc880477  # v27
         with:
           name: "coverage-(merged|reference)"
           name_is_regexp: true
