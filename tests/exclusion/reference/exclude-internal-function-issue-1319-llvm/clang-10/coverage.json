@@ -1,0 +1,46 @@
+{
+    "gcovr/format_version": "0.15",
+    "files": [
+        {
+            "file": "main.c",
+            "lines": [
+                {
+                    "line_number": 4,
+                    "count": 1,
+                    "branches": [],
+                    "gcovr/md5": "f95b70fdc3088560732a5ac135644506"
+                },
+                {
+                    "line_number": 6,
+                    "count": 0,
+                    "branches": [],
+                    "gcovr/md5": "cbb184dd8e05c9709e5dcaedaa0495cf"
+                },
+                {
+                    "line_number": 9,
+                    "count": 1,
+                    "branches": [],
+                    "gcovr/md5": "f95b70fdc3088560732a5ac135644506"
+                },
+                {
+                    "line_number": 11,
+                    "count": 0,
+                    "branches": [],
+                    "gcovr/md5": "cbb184dd8e05c9709e5dcaedaa0495cf"
+                }
+            ],
+            "functions": [
+                {
+                    "name": "main",
+                    "lineno": 9,
+                    "execution_count": 1,
+                    "blocks_percent": 100.0,
+                    "pos": [
+                        "9:1",
+                        "11:2"
+                    ]
+                }
+            ]
+        }
+    ]
+}

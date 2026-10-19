@@ -14,6 +14,8 @@ New features and notable changes:
 
 Bug fixes and small improvements:
 
+- Fix removing coverage for internal functions in C sources. (:issue:`1320`)
+
 Documentation:
 
 Internal changes:
@@ -24,6 +26,10 @@ Internal changes:
 
 8.7 (16 October 2026)
 ---------------------
+
+Known bugs:
+
+- :ref:`fix_1320`
 
 Breaking changes:
 
