@@ -15,6 +15,7 @@ New features and notable changes:
 Bug fixes and small improvements:
 
 - Fix removing coverage for internal functions in C sources. (:issue:`1320`)
+- Fix release pipeline to upload standalone applications for MacOs again. (:issue:`1321`)
 
 Documentation:
 

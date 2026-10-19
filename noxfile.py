@@ -533,7 +533,8 @@ def get_executable_name() -> Path:
     if IS_WINDOWS:
         platform_suffix = "win"
     elif IS_DARWIN:
-        platform_suffix = "macos"
+        # Add OS main version to executable name
+        platform_suffix = f"macos{platform.release().split('.', maxsplit=1)[0]}"
     else:
         platform_suffix = "linux"
     return Path(
