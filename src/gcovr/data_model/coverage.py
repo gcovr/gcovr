@@ -2860,23 +2860,27 @@ class FileCoverage(CoverageBase):
         self, functioncov: FunctionCoverage
     ) -> Iterable[LineCoverage]:
         """Iterate over the lines of a function."""
+        # Use a local copy to count the function lines only once
+        lines = set[LineCoverage]()
         if (
             functioncov.demangled_name is not None
             and functioncov.demangled_name in self.__linecov_by_function
         ):
-            yield from self.__linecov_by_function[functioncov.demangled_name]
+            lines.update(self.__linecov_by_function[functioncov.demangled_name])
         if (
             functioncov.mangled_name is not None
             and functioncov.mangled_name in self.__linecov_by_function
         ):
-            yield from self.__linecov_by_function[functioncov.mangled_name]
+            lines.update(self.__linecov_by_function[functioncov.mangled_name])
+
+        yield from sorted(lines, key=lambda linecov: linecov.lineno)
 
     def remove_function_coverage(self, functioncov: FunctionCoverage) -> None:
         """Remove line coverage objects."""
         # Remove function and exclude the related lines
         del self._functions[functioncov.key]
         # Iterate over a shallow copy
-        for linecov in list(self.__linecov_of_function(functioncov)):
+        for linecov in self.__linecov_of_function(functioncov):
             self.remove_line_coverage(linecov)
 
     def filter_for_function(self, functioncov: FunctionCoverage) -> FileCoverage:

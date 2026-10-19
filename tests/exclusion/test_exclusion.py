@@ -25,6 +25,7 @@ from tests.conftest import (
     IS_GCC,
     IS_LINUX,
     USE_GCC_JSON_INTERMEDIATE_FORMAT,
+    USE_PROFDATA_POSSIBLE,
     GcovrExecFixture,
 )
 
@@ -941,6 +942,37 @@ def test_exclude_function(gcovr_exec: "GcovrExecFixture") -> None:
             assert_stderr(
                 f"Function exclude marker found on line {pos} but not supported for this compiler"
             )
+
+    gcovr_exec.compare_json()
+
+
+@pytest.mark.skipif(
+    not IS_LINUX,
+    reason="Exclusion markers are independent of OS and we do not want to have separate data for Windows and Darwin.",
+)
+@pytest.mark.json
+@pytest.mark.parametrize(
+    "input_format",
+    ["gcov", "llvm"] if USE_PROFDATA_POSSIBLE else ["gcov"],
+)
+def test_exclude_internal_function_issue_1319(
+    gcovr_exec: "GcovrExecFixture",
+    input_format: str,
+) -> None:
+    """Test excluding of functions."""
+    gcovr_exec.use_llvm_profdata = input_format == "llvm"
+    gcovr_exec.cc_link(
+        "testcase",
+        "main.c",
+    )
+
+    gcovr_exec.run("./testcase")
+    gcovr_exec.gcovr(
+        *(["--llvm-cov-binary=./testcase"] if gcovr_exec.use_llvm_profdata else []),
+        "--json-pretty",
+        "--json=coverage.json",
+        use_main=not gcovr_exec.use_llvm_profdata,
+    )
 
     gcovr_exec.compare_json()
 

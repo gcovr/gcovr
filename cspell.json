@@ -43,6 +43,7 @@
         "casefold",
         "ccache",
         "CFLAGS",
+        "chdir",
         "choco",
         "cobertura",
         "codacy",

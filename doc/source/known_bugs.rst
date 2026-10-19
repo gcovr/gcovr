@@ -9,6 +9,65 @@ Known bugs
 This list contains bugs for version 6.0 and newer, always check the latest
 version of this file available `here <https://gcovr.com/en/latest/known_bugs.html>`_.
 
+.. _fix_1320:
+
+Key error when removing coverage of internal functions
+------------------------------------------------------
+
+.. list-table::
+
+   * - Introduced
+     - :ref:`release_8_7`
+
+   * - Fixed
+     - :ref:`next_release`, :issue:`1320`
+
+When removing internal functions (starting with ``__``) in a C source from
+the data model an exception occur:
+
+.. code-block::
+  :caption: Traceback of exception
+
+    File "/gcovr/src/gcovr/formats/gcov/workers.py", line 92, in worker
+      work(*args, **kwargs)
+      ~~~~^^^^^^^^^^^^^^^^^
+    File "/gcovr/src/gcovr/formats/gcov/read.py", line 586, in process_datafile
+      done = run_gcov_and_process_files(
+          abs_filename,
+      ...<3 lines>...
+          chdir=wd,
+      )
+    File "/gcovr/src/gcovr/formats/gcov/read.py", line 1021, in run_gcov_and_process_files
+      process_gcov_json_data(gcov_filename, covdata, options)
+      ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    File "/gcovr/src/gcovr/formats/gcov/read.py", line 247, in process_gcov_json_data
+      apply_all_exclusions(
+      ~~~~~~~~~~~~~~~~~~~~^
+          filecov,
+          ^^^^^^^^
+      ...<2 lines>...
+          activate_trace_logging=activate_trace_logging,
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+      )
+      ^
+      File "/gcovr/src/gcovr/exclusions/__init__.py", line 105, in apply_all_exclusions
+      remove_internal_functions(
+      ~~~~~~~~~~~~~~~~~~~~~~~~~^
+          filecov, activate_trace_logging=activate_trace_logging
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+      )
+      ^
+    File "/gcovr/src/gcovr/exclusions/__init__.py", line 238, in remove_internal_functions
+      filecov.remove_function_coverage(functioncov)
+      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+    File "/gcovr/src/gcovr/data_model/coverage.py", line 2880, in remove_function_coverage
+      self.remove_line_coverage(linecov)
+      ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+    File "/gcovr/src/gcovr/data_model/coverage.py", line 2808, in remove_line_coverage
+      self._lines[linecov.parent.key].remove_line_coverage(linecov)
+      ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+  KeyError: 3
+
 .. _fix_1290:
 
 Branches and conditions are not visible for uncovered lines
