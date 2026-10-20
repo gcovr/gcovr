@@ -11,7 +11,7 @@ inputs:
   gcc:
     type: string
     description: "The GCC version to use"
-    required: true
+    required: false
   python-version:
     type: string
     description: "The python version to use"
