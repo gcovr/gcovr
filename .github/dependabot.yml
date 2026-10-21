@@ -9,11 +9,14 @@ updates:
     directory: "/" # Location of package manifests
     schedule:
       interval: "weekly"
+    cooldown:
+      default-days: 7
   - package-ecosystem: pip
     directory: "/"
     schedule:
       interval: daily
-    open-pull-requests-limit: 20
+    cooldown:
+      default-days: 7    open-pull-requests-limit: 20
     # Increase the version requirements for pip
     # only when required
     versioning-strategy: increase-if-necessary
