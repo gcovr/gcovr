@@ -2806,12 +2806,22 @@ class FileCoverage(CoverageBase):
     def remove_line_coverage(self, linecov: LineCoverage) -> None:
         """Remove line coverage objects."""
         self._lines[linecov.parent.key].remove_line_coverage(linecov)
-        if linecov.function_name is not None:
-            self.__linecov_by_function[linecov.function_name] = [
-                current_linecov
-                for current_linecov in self.__linecov_by_function[linecov.function_name]
-                if current_linecov != linecov
-            ]
+        # Remove the line coverage from the list of the function...
+        if (
+            linecov.function_name is not None
+            and linecov.function_name in self.__linecov_by_function
+        ):
+            # We remove the last line
+            if self.__linecov_by_function[linecov.function_name] == [linecov]:
+                del self.__linecov_by_function[linecov.function_name]
+            else:
+                self.__linecov_by_function[linecov.function_name] = [
+                    current_linecov
+                    for current_linecov in self.__linecov_by_function[
+                        linecov.function_name
+                    ]
+                    if current_linecov != linecov
+                ]
 
     def insert_function_coverage(
         self,
@@ -2860,28 +2870,31 @@ class FileCoverage(CoverageBase):
         self, functioncov: FunctionCoverage
     ) -> Iterable[LineCoverage]:
         """Iterate over the lines of a function."""
-        # Use a local copy to count the function lines only once
-        lines = set[LineCoverage]()
         if (
             functioncov.demangled_name is not None
             and functioncov.demangled_name in self.__linecov_by_function
         ):
-            lines.update(self.__linecov_by_function[functioncov.demangled_name])
+            yield from self.__linecov_by_function[functioncov.demangled_name]
         if (
             functioncov.mangled_name is not None
+            and functioncov.mangled_name != functioncov.demangled_name
             and functioncov.mangled_name in self.__linecov_by_function
         ):
-            lines.update(self.__linecov_by_function[functioncov.mangled_name])
-
-        yield from sorted(lines, key=lambda linecov: linecov.lineno)
+            yield from self.__linecov_by_function[functioncov.mangled_name]
 
     def remove_function_coverage(self, functioncov: FunctionCoverage) -> None:
         """Remove line coverage objects."""
         # Remove function and exclude the related lines
         del self._functions[functioncov.key]
-        # Iterate over a shallow copy
-        for linecov in self.__linecov_of_function(functioncov):
-            self.remove_line_coverage(linecov)
+        # Pop the line coverage of the function to prevent removing them one by one
+        # which will slow down the processing.
+        for function_name in [functioncov.demangled_name, functioncov.mangled_name]:
+            if (
+                function_name is not None
+                and function_name in self.__linecov_by_function
+            ):
+                for linecov in self.__linecov_by_function.pop(function_name):
+                    self.remove_line_coverage(linecov)
 
     def filter_for_function(self, functioncov: FunctionCoverage) -> FileCoverage:
         """Get a file coverage object reduced to a single function."""
