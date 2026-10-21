@@ -60,11 +60,10 @@ def get_functions_by_line(filecov: FileCoverage) -> FunctionListByLine:
     functions_by_line: FunctionListByLine = {}
     if filecov is not None:
         for functioncov in filecov.functioncov():
-            if functioncov.start is not None:
-                for lineno in functioncov.start:
-                    if lineno not in functions_by_line:
-                        functions_by_line[lineno] = []
-                    functions_by_line[lineno].append(functioncov)
+            for lineno in functioncov.pos:
+                if lineno not in functions_by_line:
+                    functions_by_line[lineno] = []
+                functions_by_line[lineno].append(functioncov)
 
     return functions_by_line
 
@@ -79,29 +78,27 @@ def get_function_exclude_ranges(
         function_iter = iter(functions_by_line.get(lineno, []))
         for function in function_iter:
             if (
-                function.start is not None
-                and function.end is not None
-                and columnno > function.start[lineno][1]
+                lineno in function.pos
+                and columnno > function.pos[lineno].column_start
                 and (
-                    lineno < function.end[lineno][0]
-                    or columnno < function.end[lineno][1]
+                    lineno < function.pos[lineno].line_end
+                    or columnno < function.pos[lineno].column_end
                 )
             ):
-                lineno_end = function.end[lineno][0]
                 # Now we need to check for nested functions which are included
                 included_ranges = [
-                    (lineno, function.end[lineno][0] + 1)
+                    (lineno, function.pos[lineno].line_end + 1)
                     for function in function_iter
-                    if function.end is not None
+                    if function.pos is not None
                 ]
-                for function_lineno in range(lineno + 1, lineno_end):
+
+                for function_lineno in range(lineno + 1, function.pos[lineno].line_end):
                     included_ranges.extend(
                         (
-                            function.start[function_lineno][0],
-                            function.end[function_lineno][0],
+                            function.pos[function_lineno].line_start,
+                            function.pos[function_lineno].line_end,
                         )
                         for function in functions_by_line.get(function_lineno, [])
-                        if function.start is not None and function.end is not None
                     )
                 if included_ranges:
                     last_include_end = lineno
@@ -110,9 +107,11 @@ def get_function_exclude_ranges(
                         exclude_ranges.append((last_include_end, include_start - 1))
                         # The next exclusion must start after the included line
                         last_include_end = include_end + 1
-                    exclude_ranges.append((last_include_end, lineno_end))
+                    exclude_ranges.append(
+                        (last_include_end, function.pos[lineno].line_end)
+                    )
                 else:
-                    exclude_ranges.append((lineno, lineno_end))
+                    exclude_ranges.append((lineno, function.pos[lineno].line_end))
                 break
         else:
             function_exclude_not_at_function_line(filename, lineno, columnno)

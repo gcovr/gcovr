@@ -189,17 +189,14 @@ def exclude_functions(
                         )
                         if name is not None
                     ):
-                        if (
-                            functioncov.start is None
-                            or functioncov.start[lineno] is None
-                        ):
+                        if lineno not in functioncov.pos:
                             function_exclude_not_supported()
                         else:
                             exclude_ranges += get_function_exclude_ranges(
                                 filecov.filename,
                                 lineno,
-                                functioncov.start[lineno][1]
-                                + 1,  # Cheat that the comment is after the definition
+                                # Cheat that the comment is after the definition
+                                functioncov.pos[lineno].column_start + 1,
                                 functions_by_line=functions_by_line,
                             )
                         break
