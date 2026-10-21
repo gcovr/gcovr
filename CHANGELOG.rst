@@ -22,6 +22,7 @@ Documentation:
 Internal changes:
 
 - Add zizmor to scan pipeline for security issues. (:issue:`1318`)
+- Add dependabot configuration for version updates. (:issue:`1325`)
 
 .. _release_8_7:
 
