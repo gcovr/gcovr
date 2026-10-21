@@ -19,10 +19,10 @@
 
 from typing import Callable, Iterable
 
-from ..data_model.coverage import FileCoverage, FunctionCoverage
+from ..data_model.coverage import CodeRegion, FileCoverage, FunctionCoverage
 from ..logging import LOGGER
 
-ExclusionPredicate = Callable[[int], bool]
+ExclusionPredicate = Callable[[CodeRegion], bool]
 FunctionListByLine = dict[int, list[FunctionCoverage]]
 
 
@@ -70,9 +70,9 @@ def get_functions_by_line(filecov: FileCoverage) -> FunctionListByLine:
 
 def get_function_exclude_ranges(
     filename: str, lineno: int, columnno: int, *, functions_by_line: FunctionListByLine
-) -> list[tuple[int, int]]:
+) -> list[CodeRegion]:
     """Get the exclude range for a given function."""
-    exclude_ranges = []
+    exclude_ranges = list[CodeRegion]()
     if functions_by_line:
         # Find the closest function definition in this line. Check end column if end line is on same line
         function_iter = iter(functions_by_line.get(lineno, []))
@@ -104,14 +104,24 @@ def get_function_exclude_ranges(
                     last_include_end = lineno
                     for include_start, include_end in included_ranges:
                         # The exclusion end must be in the line before
-                        exclude_ranges.append((last_include_end, include_start - 1))
+                        exclude_ranges.append(
+                            CodeRegion.from_line_range(
+                                last_include_end, include_start - 1
+                            )
+                        )
                         # The next exclusion must start after the included line
                         last_include_end = include_end + 1
                     exclude_ranges.append(
-                        (last_include_end, function.pos[lineno].line_end)
+                        CodeRegion.from_line_range(
+                            last_include_end, function.pos[lineno].line_end
+                        )
                     )
                 else:
-                    exclude_ranges.append((lineno, function.pos[lineno].line_end))
+                    exclude_ranges.append(
+                        CodeRegion.from_line_range(
+                            lineno, function.pos[lineno].line_end
+                        )
+                    )
                 break
         else:
             function_exclude_not_at_function_line(filename, lineno, columnno)
@@ -141,7 +151,7 @@ def apply_exclusion_ranges(
 
     """
     for linecov_collection in filecov.lines():
-        if line_is_excluded(linecov_collection.lineno):
+        if line_is_excluded(CodeRegion.from_lineno(linecov_collection.lineno)):
             if warn_excluded_lines_with_hits and linecov_collection.count:
                 LOGGER.warning(
                     "%s: Line with %d hit(s) excluded.",
@@ -150,17 +160,17 @@ def apply_exclusion_ranges(
                 )
             linecov_collection.exclude()
 
-        elif branch_is_excluded(linecov_collection.lineno):
+        elif branch_is_excluded(CodeRegion.from_lineno(linecov_collection.lineno)):
             linecov_collection.exclude_branches()
 
     for functioncov in filecov.functioncov():
         for lineno in functioncov.reportable_linenos:
-            if line_is_excluded(lineno):
+            if line_is_excluded(CodeRegion.from_lineno(lineno)):
                 functioncov.exclude(lineno)
 
 
 def make_is_in_any_range_inclusive(
-    ranges: list[tuple[int, int]],
+    regions: list[CodeRegion],
 ) -> ExclusionPredicate:
     """
     Create a function to check whether an input is in any range (inclusive).
@@ -169,42 +179,42 @@ def make_is_in_any_range_inclusive(
     if queries are mostly made in ascending order.
 
     Examples:
-    >>> select = make_is_in_any_range_inclusive([(3,3), (5,7)])
-    >>> select(0)
+    >>> select = make_is_in_any_range_inclusive([CodeRegion.from_lineno(3), CodeRegion.from_line_range(5, 7)])
+    >>> select(CodeRegion.from_lineno(0))
     False
-    >>> select(6)
+    >>> select(CodeRegion.from_lineno(6))
     True
-    >>> [x for x in range(10) if select(x)]
+    >>> [x for x in range(10) if select(CodeRegion.from_lineno(x))]
     [3, 5, 6, 7]
 
     """
     # values are likely queried in ascending order,
     # allowing the search to start with the first possible range
-    ranges = sorted(ranges)
-    hint_value = 0
+    regions = sorted(regions)
+    hint_region = CodeRegion.from_lineno(0)
     hint_index = 0
 
-    def is_in_any_range(value: int) -> bool:
-        nonlocal hint_value, hint_index
+    def is_in_any_range(check_region: CodeRegion) -> bool:
+        nonlocal hint_region, hint_index
 
         # if the heuristic failed, restart search from the beginning
-        if value < hint_value:
+        if check_region < hint_region:
             hint_index = 0
+        # Remember the current region
+        hint_region = check_region
 
-        hint_value = value
+        for current_index in range(hint_index, len(regions)):
+            current_region = regions[current_index]
+            hint_index = current_index
 
-        for i in range(hint_index, len(ranges)):
-            start, end = ranges[i]
-            hint_index = i
-
-            # stop as soon as a too-large range is seen
-            if value < start:
+            # stop as soon as a too-large start is seen
+            if check_region.line_start < current_region.line_start:
                 break
 
-            if start <= value <= end:
+            if check_region in current_region:
                 return True
         else:
-            hint_index = len(ranges)
+            hint_index = len(regions)
 
         return False
 

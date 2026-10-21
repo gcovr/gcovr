@@ -96,6 +96,7 @@ if TYPE_CHECKING:
 
 GCOVR_DATA_SOURCES = "gcovr/data_sources"
 GCOVR_EXCLUDED = "gcovr/excluded"
+CODE_REGION_MAX_COLUMN_MARKER = -1  # 1000000
 
 _T = TypeVar("_T")
 
@@ -118,7 +119,12 @@ def _presentable_filename(filename: str, root_filter: re.Pattern[str]) -> str:
 
 @dataclass
 class CodeRegion:
-    """Dataclass for a code region."""
+    """
+    Dataclass for a code region.
+
+    If a region is created you need to take car that the end is ALWAYS
+    after the start. This is never checked!
+    """
 
     line_start: int
     """The starting line number of the region."""
@@ -128,6 +134,40 @@ class CodeRegion:
     """The ending line number of the region."""
     column_end: int
     """The ending column number of the region."""
+
+    def __lt__(self, other: CodeRegion) -> bool:
+        """Compare operator used by sort method."""
+        return (
+            self.line_start,
+            self.line_end,
+            self.column_start,
+            self.column_end,
+        ) < (
+            other.line_start,
+            other.line_end,
+            other.column_start,
+            other.column_end,
+        )
+
+    def __contains__(self, other: CodeRegion) -> bool:
+        """Check if a other region is inside ourself."""
+        # The line is outside ourself
+        if (other.line_start < self.line_start) or (other.line_end > self.line_end):
+            return False
+
+        return (
+            # Start line is after our own
+            (other.line_start > self.line_start)
+            # OR start column is after our own
+            or (other.column_start >= self.column_start)
+        ) and (
+            # End line is before our own
+            (other.line_end < self.line_end)
+            # OR end column is before our own
+            or (other.column_end <= self.column_end)
+            # OR end column is undefined
+            or (other.column_end == CODE_REGION_MAX_COLUMN_MARKER)
+        )
 
     def serialize(self) -> tuple[str, str]:
         """Serialize the region."""
@@ -142,6 +182,16 @@ class CodeRegion:
         return CodeRegion(
             *[int(i) for i in [*data[0].split(":"), *data[1].split(":")]],
         )
+
+    @classmethod
+    def from_lineno(cls, lineno: int) -> CodeRegion:
+        """Serialize the region."""
+        return cls.from_line_range(lineno, lineno)
+
+    @classmethod
+    def from_line_range(cls, start: int, end: int) -> CodeRegion:
+        """Serialize the region."""
+        return CodeRegion(start, 0, end, CODE_REGION_MAX_COLUMN_MARKER)
 
 
 class CoverageDiff(Enum):

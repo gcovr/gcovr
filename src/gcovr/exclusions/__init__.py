@@ -28,10 +28,10 @@ import os
 import re
 from dataclasses import dataclass, field
 
-from ..data_model.coverage import FileCoverage
+from ..data_model.coverage import CodeRegion, FileCoverage
 from ..logging import LOGGER
 from ..options import Options
-from .markers import ExclusionPredicate, FunctionListByLine, apply_exclusion_markers
+from .markers import FunctionListByLine, apply_exclusion_markers
 from .noncode import remove_noncode_lines, remove_unreachable_branches
 from .utils import (
     apply_exclusion_ranges,
@@ -177,7 +177,7 @@ def exclude_functions(
     if filecov.functioncov():
         functions_by_line: FunctionListByLine = get_functions_by_line(filecov)
 
-        exclude_ranges = []
+        exclude_ranges = list[CodeRegion]()
         for lineno, functions in functions_by_line.items():
             for functioncov in functions:
                 for pattern in patterns:
@@ -206,9 +206,7 @@ def exclude_functions(
                     filecov.filename,
                     str(exclude_ranges),
                 )
-        exclusion_predicate: ExclusionPredicate = make_is_in_any_range_inclusive(
-            exclude_ranges
-        )
+        exclusion_predicate = make_is_in_any_range_inclusive(exclude_ranges)
         apply_exclusion_ranges(
             filecov,
             line_is_excluded=exclusion_predicate,
