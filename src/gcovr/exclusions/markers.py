@@ -20,7 +20,7 @@
 import re
 from typing import Callable
 
-from ..data_model.coverage import FileCoverage, FunctionCoverage
+from ..data_model.coverage import CodeRegion, FileCoverage, FunctionCoverage
 from ..logging import LOGGER
 from .utils import (
     apply_exclusion_ranges,
@@ -49,7 +49,7 @@ _EXCLUDE_PATTERN_SUFFIX_BRANCH_WITHOUT_HIT_EXCLUSION = (
     rf"{_EXCLUDE_FLAG}{_EXCLUDE_PATTERN_BRANCH}WITHOUT_HIT:\s+((\d+)/(\d+))"
 )
 
-ExclusionPredicate = Callable[[int], bool]
+ExclusionPredicate = Callable[[CodeRegion], bool]
 FunctionListByLine = dict[int, list[FunctionCoverage]]
 
 
@@ -332,7 +332,7 @@ def _process_exclusion_marker(
     exclude_word: str,
     warnings: _ExclusionRangeWarnings,
     functions_by_line: FunctionListByLine,
-    exclude_ranges: list[tuple[int, int]],
+    exclude_ranges: list[CodeRegion],
     exclusion_stack: list[tuple[str, int]],
 ) -> None:
     """
@@ -351,7 +351,7 @@ def _process_exclusion_marker(
                 exclusion_stack[-1][1],
             )
         else:
-            exclude_ranges.append((lineno, lineno))
+            exclude_ranges.append(CodeRegion.from_lineno(lineno))
     elif flag == _EXCLUDE_PATTERN_SUFFIX_FUNCTION:
         exclude_ranges += get_function_exclude_ranges(
             warnings.filename, lineno, columnno, functions_by_line=functions_by_line
@@ -375,7 +375,7 @@ def _process_exclusion_marker(
                     f"{header}{_EXCLUDE_FLAG}{exclude_word}{_EXCLUDE_PATTERN_SUFFIX_STOP}",
                 )
 
-            exclude_ranges.append((start_lineno, lineno - 1))
+            exclude_ranges.append(CodeRegion.from_line_range(start_lineno, lineno - 1))
 
 
 def _find_excluded_ranges(
@@ -405,9 +405,9 @@ def _find_excluded_ranges(
     ...     exclude_branches_by_custom_patterns=[re.compile('.*IGNORE_BR')],
     ...     exclude_pattern_prefix='PREFIX',
     ...     filecov=None)
-    >>> [lineno for lineno in range(30) if exclude_line(lineno)]
+    >>> [lineno for lineno in range(30) if exclude_line(CodeRegion.from_lineno(lineno))]
     [11, 13, 15, 16, 17]
-    >>> [lineno for lineno in range(30) if exclude_branch(lineno)]
+    >>> [lineno for lineno in range(30) if exclude_branch(CodeRegion.from_lineno(lineno))]
     [21, 23, 25, 26, 27]
 
     The stop marker line is NOT inclusive:
@@ -419,7 +419,7 @@ def _find_excluded_ranges(
     ...     exclude_pattern_prefix='PREFIX',
     ...     filecov=None)
     >>> for lineno in range(1, 10):
-    ...     print(f"{lineno}: {'excluded' if exclude_line(lineno) else 'code'}")
+    ...     print(f"{lineno}: {'excluded' if exclude_line(CodeRegion.from_lineno(lineno)) else 'code'}")
     1: code
     2: code
     3: excluded
@@ -441,7 +441,7 @@ def _find_excluded_ranges(
         excl_pattern_compiled = re.compile(excl_pattern)
 
         # possibly overlapping inclusive (closed) ranges that describe exclusions regions
-        exclude_ranges = list[tuple[int, int]]()
+        exclude_ranges = list[CodeRegion]()
         exclusion_stack = list[tuple[str, int]]()
 
         for lineno, code in enumerate(lines, 1):
@@ -463,7 +463,7 @@ def _find_excluded_ranges(
                     columnno += len(match)
 
             if any(p.match(code) for p in custom_patterns):
-                exclude_ranges.append((lineno, lineno))
+                exclude_ranges.append(CodeRegion.from_lineno(lineno))
 
         for header, lineno in exclusion_stack:
             warnings.start_without_stop(

@@ -23,6 +23,7 @@ Internal changes:
 
 - Add zizmor to scan pipeline for security issues. (:issue:`1318`)
 - Add dependabot configuration for version updates. (:issue:`1325`)
+- Change exclusion handling to use a data class instead of simple integers. (:issue:`1326`)
 
 .. _release_8_7:
 

@@ -130,10 +130,9 @@
                     "gcovr/diff": "Changed",
                     "gcovr/diff_details": {
                         "blocks_percent": "Changed",
-                        "end": "Strictly equal",
                         "excluded": "Strictly equal",
                         "execution_count": "Changed",
-                        "start": "Strictly equal"
+                        "pos": "Strictly equal"
                     }
                 }
             ],
@@ -263,10 +262,9 @@
                     "gcovr/diff": "Approximately equal",
                     "gcovr/diff_details": {
                         "blocks_percent": "Strictly equal",
-                        "end": "Strictly equal",
                         "excluded": "Strictly equal",
                         "execution_count": "Approximately equal",
-                        "start": "Strictly equal"
+                        "pos": "Strictly equal"
                     }
                 }
             ],
@@ -390,10 +388,9 @@
                     "gcovr/diff": "Approximately equal",
                     "gcovr/diff_details": {
                         "blocks_percent": "Strictly equal",
-                        "end": "Strictly equal",
                         "excluded": "Strictly equal",
                         "execution_count": "Approximately equal",
-                        "start": "Strictly equal"
+                        "pos": "Strictly equal"
                     }
                 },
                 {
@@ -535,10 +532,9 @@
                     "gcovr/diff": "Approximately equal",
                     "gcovr/diff_details": {
                         "blocks_percent": "Strictly equal",
-                        "end": "Strictly equal",
                         "excluded": "Strictly equal",
                         "execution_count": "Approximately equal",
-                        "start": "Strictly equal"
+                        "pos": "Strictly equal"
                     }
                 }
             ],
@@ -1192,10 +1188,9 @@
                     "gcovr/diff": "Changed",
                     "gcovr/diff_details": {
                         "blocks_percent": "Changed",
-                        "end": "Strictly equal",
                         "excluded": "Strictly equal",
                         "execution_count": "Approximately equal",
-                        "start": "Strictly equal"
+                        "pos": "Strictly equal"
                     }
                 }
             ],
