@@ -23,6 +23,7 @@ Internal changes:
 
 - Add zizmor to scan pipeline for security issues. (:issue:`1318`)
 - Add dependabot configuration for version updates. (:issue:`1325`)
+- Add nox session to cleanup duplicate reference data and notify session after import. (:issue:`1327`)
 
 .. _release_8_7:
 
