@@ -998,6 +998,7 @@ def import_reference(session: nox.Session) -> None:
             session.log(fh_zip.extract(entry, "tests"))
 
     for file in session.posargs:
+        session.log("Import file %s...", file)
         with zipfile.ZipFile(file) as fh_zip:
             try:
                 zip_info_diff_zip = fh_zip.getinfo("diff.zip")
@@ -1007,3 +1008,60 @@ def import_reference(session: nox.Session) -> None:
                         extract(fh_diff_zip)
             except KeyError:
                 extract(fh_zip)
+
+    session.notify("remove_duplicate_references")
+
+
+@nox.session(python=False)
+def remove_duplicate_references(session: nox.Session) -> None:
+    """Remove all duplicate reference data."""
+    reference_directories = sorted(Path("tests").rglob("reference"))
+    for compiler_versions in [ALL_GCC_VERSIONS, ALL_CLANG_VERSIONS]:
+        for os_suffix in ["", "-Windows", "-Darwin"]:
+            compiler_versions_os = list[str]()
+            if os_suffix:
+                for compiler_version in compiler_versions:
+                    compiler_versions_os.append(compiler_version)
+                    compiler_versions_os.append(f"{compiler_version}{os_suffix}")
+            else:
+                compiler_versions_os += compiler_versions
+            session.debug(
+                "Cleanup reference data for %s%s...",
+                compiler_versions_os[0].split("-", maxsplit=1)[0],
+                f" ({os_suffix[1:]})" if os_suffix else "",
+            )
+            data_by_test = dict[tuple[str, str], dict[str, bytes]]()
+            for compiler_version in compiler_versions_os:
+                for reference_directory in reference_directories:
+                    for compiler_reference_directory in reference_directory.rglob(
+                        compiler_version
+                    ):
+                        key = (
+                            reference_directory.parent.name,
+                            ""
+                            if compiler_reference_directory.parent.name == "reference"
+                            else compiler_reference_directory.parent.name,
+                        )
+                        if key not in data_by_test:
+                            session.debug(
+                                "   Init data from %s...", compiler_reference_directory
+                            )
+                            data_by_test[key] = dict[str, bytes](
+                                (e.name, e.read_bytes())
+                                for e in compiler_reference_directory.glob("*.*")
+                            )
+                        else:
+                            for file in compiler_reference_directory.glob("*.*"):
+                                if file.suffix not in (".js", ".css"):
+                                    content = file.read_bytes()
+                                    if (
+                                        file.parent.name.endswith(os_suffix)
+                                        and file.name in data_by_test[key]
+                                        and content == data_by_test[key][file.name]
+                                    ):
+                                        session.log("   Remove %s", file)
+                                        file.unlink()
+                                    else:
+                                        data_by_test[key][file.name] = content
+                            if not list(compiler_reference_directory.glob("*.*")):
+                                compiler_reference_directory.rmdir()
