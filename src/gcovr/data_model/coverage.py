@@ -67,6 +67,7 @@ from __future__ import annotations
 import os
 import re
 from abc import abstractmethod
+from dataclasses import dataclass
 from enum import Enum
 from typing import TYPE_CHECKING, Any, Callable, Iterable, NoReturn, TypeVar, cast
 
@@ -95,6 +96,7 @@ if TYPE_CHECKING:
 
 GCOVR_DATA_SOURCES = "gcovr/data_sources"
 GCOVR_EXCLUDED = "gcovr/excluded"
+CODE_REGION_MAX_COLUMN_MARKER = -1  # 1000000
 
 _T = TypeVar("_T")
 
@@ -113,6 +115,83 @@ def _presentable_filename(filename: str, root_filter: re.Pattern[str]) -> str:
         normalized = filename
 
     return force_unix_separator(normalized)
+
+
+@dataclass
+class CodeRegion:
+    """
+    Dataclass for a code region.
+
+    If a region is created you need to take car that the end is ALWAYS
+    after the start. This is never checked!
+    """
+
+    line_start: int
+    """The starting line number of the region."""
+    column_start: int
+    """The starting column number of the region."""
+    line_end: int
+    """The ending line number of the region."""
+    column_end: int
+    """The ending column number of the region."""
+
+    def __lt__(self, other: CodeRegion) -> bool:
+        """Compare operator used by sort method."""
+        return (
+            self.line_start,
+            self.line_end,
+            self.column_start,
+            self.column_end,
+        ) < (
+            other.line_start,
+            other.line_end,
+            other.column_start,
+            other.column_end,
+        )
+
+    def __contains__(self, other: CodeRegion) -> bool:
+        """Check if a other region is inside ourself."""
+        # The line is outside ourself
+        if (other.line_start < self.line_start) or (other.line_end > self.line_end):
+            return False
+
+        return (
+            # Start line is after our own
+            (other.line_start > self.line_start)
+            # OR start column is after our own
+            or (other.column_start >= self.column_start)
+        ) and (
+            # End line is before our own
+            (other.line_end < self.line_end)
+            # OR end column is before our own
+            or (other.column_end <= self.column_end)
+            # OR end column is undefined
+            or (other.column_end == CODE_REGION_MAX_COLUMN_MARKER)
+        )
+
+    def serialize(self) -> tuple[str, str]:
+        """Serialize the region."""
+        return (
+            ":".join([str(self.line_start), str(self.column_start)]),
+            ":".join([str(self.line_end), str(self.column_end)]),
+        )
+
+    @classmethod
+    def deserialize(cls, data: tuple[str, str]) -> CodeRegion:
+        """Serialize the region."""
+        return CodeRegion(
+            *[int(i) for i in [*data[0].split(":"), *data[1].split(":")]],
+        )
+
+    @classmethod
+    def from_lineno(cls, lineno: int) -> CodeRegion:
+        """Serialize the region."""
+        return cls.from_line_range(lineno, lineno)
+
+    @classmethod
+    def from_line_range(cls, start: int, end: int) -> CodeRegion:
+        """Serialize the region."""
+        return CodeRegion(start, 0, end, CODE_REGION_MAX_COLUMN_MARKER)
 
 
 class CoverageDiff(Enum):
@@ -244,6 +323,7 @@ class CoverageBase:
             and not slot.startswith("__")
             and (slot not in ("_conditions", "_calls") or getattr(self, slot))
             and (getattr(self, slot) is not None or getattr(other, slot) is not None)
+            and (slot != "pos" or getattr(self, slot) or getattr(other, slot))
         }
         self.set_diff(diff_details)
 
@@ -2134,12 +2214,11 @@ class FunctionCoverage(CoverageBase):
     __slots__ = (
         "blocks_percent",
         "demangled_name",
-        "end",
         "excluded",
         "execution_count",
         "mangled_name",
         "parent",
-        "start",
+        "pos",
     )
 
     def __init__(
@@ -2152,8 +2231,7 @@ class FunctionCoverage(CoverageBase):
         lineno: int,
         execution_count: int | None,
         blocks_percent: float | None,
-        start: tuple[int, int] | None = None,
-        end: tuple[int, int] | None = None,
+        pos: CodeRegion | None = None,
         excluded: bool = False,
     ) -> None:
         """
@@ -2176,10 +2254,8 @@ class FunctionCoverage(CoverageBase):
                 How often this function was executed.
             blocks_percent (float):
                 Block coverage of function.
-            start ((int, int)), optional):
-                Tuple with function start line and column.
-            end ((int, int)), optional):
-                Tuple with function end line and column.
+            pos (CodeRegion, optional):
+                Dataclass with the region of a code.
             excluded (bool, optional):
                 Whether this line is excluded by a marker.
 
@@ -2189,14 +2265,7 @@ class FunctionCoverage(CoverageBase):
         self.execution_count = CoverageDict[int, int | None]({lineno: execution_count})
         self.blocks_percent = CoverageDict[int, float | None]({lineno: blocks_percent})
         self.excluded = CoverageDict[int, bool]({lineno: excluded})
-        self.start: CoverageDict[int, tuple[int, int]] | None = (
-            None
-            if start is None
-            else CoverageDict[int, tuple[int, int]]({lineno: start})
-        )
-        self.end: CoverageDict[int, tuple[int, int]] | None = (
-            None if end is None else CoverageDict[int, tuple[int, int]]({lineno: end})
-        )
+        self.pos = CoverageDict[int, CodeRegion]({} if pos is None else {lineno: pos})
 
         # We have a demangled name as name -> demangled_name must be None and we need to change the values
         if (mangled_name is not None) and ("(" in mangled_name):
@@ -2233,16 +2302,8 @@ class FunctionCoverage(CoverageBase):
                 data_dict["execution_count"] = execution_count
             if self.blocks_percent[lineno] is not None:
                 data_dict["blocks_percent"] = self.blocks_percent[lineno]
-            if (
-                self.start is not None
-                and self.end is not None
-                and lineno in self.start
-                and lineno in self.end
-            ):
-                data_dict["pos"] = (
-                    ":".join([str(e) for e in self.start[lineno]]),
-                    ":".join([str(e) for e in self.end[lineno]]),
-                )
+            if lineno in self.pos:
+                data_dict["pos"] = self.pos[lineno].serialize()
             if self.excluded[lineno]:
                 data_dict[GCOVR_EXCLUDED] = True
             data_dict.update(self.serialize_base(get_data_sources))
@@ -2259,13 +2320,9 @@ class FunctionCoverage(CoverageBase):
         data_dict: dict[str, Any],
     ) -> FunctionCoverage:
         """Deserialize the object."""
-        start: tuple[int, int] | None = None
-        end: tuple[int, int] | None = None
+        pos: CodeRegion | None = None
         if "pos" in data_dict:
-            start_l_c = data_dict["pos"][0].split(":", maxsplit=1)
-            start = (int(start_l_c[0]), int(start_l_c[1]))
-            end_l_c = data_dict["pos"][1].split(":", maxsplit=1)
-            end = (int(end_l_c[0]), int(end_l_c[1]))
+            pos = CodeRegion.deserialize(data_dict["pos"])
 
         functioncov = filecov.insert_function_coverage(
             get_data_sources(data_dict),
@@ -2275,8 +2332,7 @@ class FunctionCoverage(CoverageBase):
             lineno=data_dict["lineno"],
             count=data_dict.get("execution_count"),
             blocks=data_dict.get("blocks_percent"),
-            start=start,
-            end=end,
+            pos=pos,
             excluded=data_dict.get(GCOVR_EXCLUDED, False),
         )
         functioncov.deserialize_base(data_dict)
@@ -2369,16 +2425,8 @@ class FunctionCoverage(CoverageBase):
                         self.blocks_percent[lineno] = blocks_percent
                 for lineno, excluded in other.excluded.items():
                     self.excluded[lineno] = excluded or self.excluded.get(lineno, False)
-                if other.start is not None:
-                    if self.start is None:
-                        self.start = CoverageDict[int, tuple[int, int]]()
-                    for lineno, start in other.start.items():
-                        self.start[lineno] = start
-                if other.end is not None:
-                    if self.end is None:
-                        self.end = CoverageDict[int, tuple[int, int]]()
-                    for lineno, end in other.end.items():
-                        self.end[lineno] = end
+                if other.pos:
+                    self.pos.update(other.pos)
             # Merge the counters into a single line number
             else:
                 right_lineno = next(iter(other.execution_count.keys()))
@@ -2437,28 +2485,23 @@ class FunctionCoverage(CoverageBase):
                     }
                 )
 
-                # Overwrite data with the minimum start
-                starts = list[tuple[int, int]]()
-                if self.start is not None:
-                    starts.extend(self.start.values())
-                if other.start is not None:
-                    starts.extend(other.start.values())
-                self.start = (
-                    CoverageDict[int, tuple[int, int]]({lineno: min(starts)})
-                    if starts
-                    else None
+                positions = list[CodeRegion](
+                    [
+                        *self.pos.values(),
+                        *other.pos.values(),
+                    ]
                 )
-                # Overwrite data with the maximum end
-                ends = list[tuple[int, int]]()
-                if self.end is not None:
-                    ends.extend(self.end.values())
-                if other.end is not None:
-                    ends.extend(other.end.values())
-                self.end = (
-                    CoverageDict[int, tuple[int, int]]({lineno: max(ends)})
-                    if ends
-                    else None
-                )
+                # Overwrite data with the minimum start and maximum end
+                if positions:
+                    self.pos.clear()
+                    self.pos.update(
+                        {
+                            lineno: CodeRegion(
+                                *min((r.line_start, r.column_start) for r in positions),
+                                *max((r.line_end, r.column_end) for r in positions),
+                            )
+                        }
+                    )
 
         self.merge_base_data(other)
 
@@ -2833,8 +2876,7 @@ class FileCoverage(CoverageBase):
         lineno: int,
         count: int | None,
         blocks: float | None,
-        start: tuple[int, int] | None = None,
-        end: tuple[int, int] | None = None,
+        pos: CodeRegion | None = None,
         excluded: bool = False,
     ) -> FunctionCoverage:
         """Add a function coverage item, merge if needed."""
@@ -2846,8 +2888,7 @@ class FileCoverage(CoverageBase):
             lineno=lineno,
             execution_count=count,
             blocks_percent=blocks,
-            start=start,
-            end=end,
+            pos=pos,
             excluded=excluded,
         )
         key = functioncov.key

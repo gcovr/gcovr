@@ -38,7 +38,7 @@ from enum import Enum
 from typing import Any
 
 from ...data_model.container import CoverageContainer
-from ...data_model.coverage import FileCoverage
+from ...data_model.coverage import CodeRegion, FileCoverage
 from ...data_model.merging import (
     FUNCTION_MAX_LINE_MERGE_OPTIONS,
     MergeOptions,
@@ -426,11 +426,9 @@ def read_json_functions(
             lineno=function_regions[0].line_start,
             count=function_regions[0].execution_count,
             blocks=blocks,
-            start=(
+            pos=CodeRegion(
                 function_regions[0].line_start,
                 function_regions[0].column_start,
-            ),
-            end=(
                 function_regions[-1].line_end,
                 function_regions[-1].column_end,
             ),
