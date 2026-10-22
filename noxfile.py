@@ -473,6 +473,16 @@ def tests(session: nox.Session) -> None:
             session.run("coverage", "xml")
             if not CI_RUN:
                 session.run("coverage", "html")
+        # Remove all output directories with empty subdirectories
+        for entry in Path("tests").rglob("output"):
+            for file in entry.rglob(".DS_Store"):
+                file.unlink()
+            for subentry in [f for f in reversed(list(entry.rglob("*"))) if f.is_dir()]:
+                if not list(subentry.glob("*")):
+                    subentry.rmdir()
+            if not list(entry.glob("*")):
+                session.debug("Removing empty Directory %s", entry)
+                entry.rmdir()
 
 
 @nox.session
