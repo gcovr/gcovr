@@ -1043,9 +1043,6 @@ def remove_duplicate_references(session: nox.Session) -> None:
                             else compiler_reference_directory.parent.name,
                         )
                         if key not in data_by_test:
-                            session.debug(
-                                "   Init data from %s...", compiler_reference_directory
-                            )
                             data_by_test[key] = dict[str, bytes](
                                 (e.name, e.read_bytes())
                                 for e in compiler_reference_directory.glob("*.*")
