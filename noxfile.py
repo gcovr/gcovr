@@ -474,15 +474,19 @@ def tests(session: nox.Session) -> None:
             if not CI_RUN:
                 session.run("coverage", "html")
         # Remove all output directories with empty subdirectories
-        for entry in Path("tests").rglob("output"):
-            for file in entry.rglob(".DS_Store"):
+        for output_directory in [
+            f for f in Path("tests").rglob("output") if f.is_dir()
+        ]:
+            # Hidden files from MacOS
+            for file in output_directory.rglob(".DS_Store"):
                 file.unlink()
-            for subentry in [f for f in reversed(list(entry.rglob("*"))) if f.is_dir()]:
-                if not list(subentry.glob("*")):
-                    subentry.rmdir()
-            if not list(entry.glob("*")):
-                session.debug("Removing empty Directory %s", entry)
-                entry.rmdir()
+            # Remove all empty directories starting with the longest name (deepest)
+            for directory in [
+                f for f in reversed(list(output_directory.rglob("*"))) if f.is_dir()
+            ] + [output_directory]:
+                if list(directory.glob("*")):
+                    break
+                directory.rmdir()
 
 
 @nox.session
@@ -1025,7 +1029,7 @@ def remove_duplicate_references(session: nox.Session) -> None:
                     compiler_versions_os.append(f"{compiler_version}{os_suffix}")
             else:
                 compiler_versions_os += compiler_versions
-            session.debug(
+            session.log(
                 "Cleanup reference data for %s%s...",
                 compiler_versions_os[0].split("-", maxsplit=1)[0],
                 f" ({os_suffix[1:]})" if os_suffix else "",
