@@ -40,10 +40,9 @@
       <button type="button" class="btn btn-sm col-toggle show-col" data-col="tla" title="Toggle TLA column">TLA</button>
       <button type="button" class="btn btn-sm col-toggle show-col" data-col="count" title="Toggle Hits column">Hits</button>
     </div>
-    {% if info.navigation is defined and fname in info.navigation %}
     <div class="source-nav-links">
-      {% if info.navigation[fname][0] %}
-      <a class="nav-link nav-prev" href="{% if info.single_page %}#{% endif %}{{info.navigation[fname][0]}}" title="Previous file">
+      {% if info.navigation[fname].previous %}
+      <a class="nav-link nav-prev" href="{% if info.single_page %}#{% endif %}{{info.navigation[fname].previous}}" title="Previous file">
         <svg viewBox="0 0 16 16" width="16" height="16"><path fill="currentColor" d="M8 2a.75.75 0 01.75.75v8.69l3.22-3.22a.75.75 0 111.06 1.06l-4.5 4.5a.75.75 0 01-1.06 0l-4.5-4.5a.75.75 0 011.06-1.06l3.22 3.22V2.75A.75.75 0 018 2z" transform="rotate(180 8 8)"/></svg>
       </a>
       {% else %}
@@ -51,8 +50,8 @@
         <svg viewBox="0 0 16 16" width="16" height="16"><path fill="currentColor" d="M8 2a.75.75 0 01.75.75v8.69l3.22-3.22a.75.75 0 111.06 1.06l-4.5 4.5a.75.75 0 01-1.06 0l-4.5-4.5a.75.75 0 011.06-1.06l3.22 3.22V2.75A.75.75 0 018 2z" transform="rotate(180 8 8)"/></svg>
       </span>
       {% endif %}
-      {% if info.navigation[fname][1] %}
-      <a class="nav-link nav-next" href="{% if info.single_page %}#{% endif %}{{info.navigation[fname][1]}}" title="Next file">
+      {% if info.navigation[fname].next %}
+      <a class="nav-link nav-next" href="{% if info.single_page %}#{% endif %}{{info.navigation[fname].next}}" title="Next file">
         <svg viewBox="0 0 16 16" width="16" height="16"><path fill="currentColor" d="M8 2a.75.75 0 01.75.75v8.69l3.22-3.22a.75.75 0 111.06 1.06l-4.5 4.5a.75.75 0 01-1.06 0l-4.5-4.5a.75.75 0 011.06-1.06l3.22 3.22V2.75A.75.75 0 018 2z"/></svg>
       </a>
       {% else %}
@@ -61,7 +60,6 @@
       </span>
       {% endif %}
     </div>
-    {% endif %}
     {% if uncovered_total > 0 %}
     {% if info.navigation is defined and fname in info.navigation %}<span class="source-header-sep"></span>{% endif %}
     <div id="coverage-nav">

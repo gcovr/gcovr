@@ -19,6 +19,7 @@
 
 # cspell:ignore xmlcharrefreplace
 
+from dataclasses import dataclass
 import functools
 import os
 import re
@@ -279,6 +280,17 @@ def coverage_to_class(
 class RootInfo:
     """Class holding the information used in Jinja2 template."""
 
+    @dataclass
+    class Navigation:
+        """Info for the breadcrumb navigation."""
+
+        previous: str | None
+        """Link to the previous site."""
+        parent: str
+        """Link to the parent site."""
+        next: str | None
+        """Link to the next site."""
+
     def __init__(self, options: Options, *, diff_report: bool) -> None:
         """Initialize the root information."""
         self.sort_by = (
@@ -317,7 +329,7 @@ class RootInfo:
         self.calls = dict[str, Any]()
         self.functions = dict[str, Any]()
         self.lines = dict[str, Any]()
-        self.navigation = dict[str, tuple[str | None, str | None]]()
+        self.navigation = dict[str, RootInfo.Navigation]()
 
     def set_directory(self, directory: str) -> None:
         """Set the directory for the report."""
@@ -470,7 +482,6 @@ def write_report(
         else:
             cdata.properties["sourcefile"] = None
 
-    # Generate the coverage output (on a per-package basis)
     filecov_list = sorted(
         covdata.filecov(recurse=True), key=lambda x: x.filename.lower()
     )
@@ -502,17 +513,18 @@ def write_report(
     previous_link_report: str | None = None
     for filecov in filecov_list:
         fname = filecov.properties["filtered_name"]
-        root_info.navigation[fname] = (previous_link_report, None)
+        root_info.navigation[fname] = RootInfo.Navigation(
+            previous_link_report,
+            data["ROOT_FNAME"],
+            None,
+        )
         link_report = filecov.properties["sourcefile"]
         if link_report is not None and (
             root_info.relative_anchors or root_info.single_page
         ):
             link_report = os.path.basename(link_report)
         if previous_fname is not None:
-            root_info.navigation[previous_fname] = (
-                root_info.navigation[previous_fname][0],
-                link_report,
-            )
+            root_info.navigation[previous_fname].next = link_report
         previous_fname = fname
         previous_link_report = link_report
 
