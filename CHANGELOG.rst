@@ -12,6 +12,8 @@ Breaking changes:
 
 New features and notable changes:
 
+- Change the breadcrumbs of in the source view of the GitHub theme. (:issue:`1328`)
+
 Bug fixes and small improvements:
 
 - Fix removing coverage for internal functions in C sources. (:issue:`1320`)
