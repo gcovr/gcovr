@@ -20,7 +20,7 @@ Key error when removing coverage of internal functions
      - :ref:`release_8_7`
 
    * - Fixed
-     - :ref:`next_release`, :issue:`1320`
+     - :ref:`release_8_8`, :issue:`1320`
 
 When removing internal functions (starting with ``__``) in a C source from
 the data model an exception occur:
