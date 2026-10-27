@@ -19,10 +19,10 @@
 
 # cspell:ignore xmlcharrefreplace
 
-from dataclasses import dataclass
 import functools
 import os
 import re
+from dataclasses import dataclass
 from typing import Any, Callable, Iterable, Iterator
 
 import pygments
