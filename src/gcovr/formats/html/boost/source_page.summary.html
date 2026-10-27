@@ -34,9 +34,7 @@
     </div>
   </div>
   <div class="nav-hint">
-    {% if info.navigation is defined and fname in info.navigation %}
     <span><kbd>[</kbd> <kbd>]</kbd> prev/next file</span>
-    {% endif %}
     {% if uncovered_total > 0 %}
     <span><kbd>n</kbd> <kbd>p</kbd> prev/next uncovered line</span>
     {% endif %}

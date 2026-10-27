@@ -158,15 +158,21 @@ a.nav:hover {
 }
 
 a.nav.prev::after {
-  content: "« prev";
+  content: "prev «";
 }
 
 a.nav.index::after {
-  content: "^ index";
+  content: "parent";
 }
 
 a.nav.next::after {
   content: "» next";
+}
+
+a.nav.disabled {
+  opacity: 0.4;
+  cursor: default;
+  text-decoration: none;
 }
 
 span.diff {

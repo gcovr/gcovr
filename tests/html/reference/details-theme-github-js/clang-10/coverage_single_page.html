@@ -195,15 +195,21 @@ a.nav:hover {
 }
 
 a.nav.prev::after {
-  content: "« prev";
+  content: "prev «";
 }
 
 a.nav.index::after {
-  content: "^ index";
+  content: "parent";
 }
 
 a.nav.next::after {
   content: "» next";
+}
+
+a.nav.disabled {
+  opacity: 0.4;
+  cursor: default;
+  text-decoration: none;
 }
 
 span.diff {
@@ -723,7 +729,11 @@ document.addEventListener("DOMContentLoaded", () => {
     <div class="Layout-main">
       <div class="Layout-main-centered-lg" style="max-width: 1280px;">
         <div class="d-flex flex-justify-center">
-          <h1>GCC Code Coverage Report</h1>
+          <h1>
+            <a href="coverage_single_page.html" style="cursor: default; text-decoration: none">
+              GCC Code Coverage Report
+            </a>
+          </h1>
         </div>
         <hr class="block-separator"/>
         <header>
@@ -1145,7 +1155,7 @@ document.addEventListener("DOMContentLoaded", () => {
       <button type="button" class="button_toggle_uncoveredLine show_uncoveredLine" value="uncoveredLine" title="Toggle uncovered lines">5 uncovered</button>
     </div>
     <div class="nav">
-      <a class="nav prev" href="#coverage_single_page.html"></a>
+      <a class="nav prev disabled" href="#"></a>
       <a class="nav index" href="#"></a>
       <a class="nav next" href="#file5.cpp.4f0be33a4dcfe398ba897b87f58ca7ce.html"></a>
     </div>
@@ -2107,7 +2117,7 @@ document.addEventListener("DOMContentLoaded", () => {
     <div class="nav">
       <a class="nav prev" href="#file7.cpp.fa9d180b71a3402bed7d24bb1966eaf5.html"></a>
       <a class="nav index" href="#"></a>
-      <a class="nav next" href="#coverage_single_page.html"></a>
+      <a class="nav next disabled" href="#"></a>
     </div>
   </div>
   <div class="source-table-container">

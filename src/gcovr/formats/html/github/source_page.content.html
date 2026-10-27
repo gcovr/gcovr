@@ -38,9 +38,17 @@
       {% endif %}
     </div>
     <div class="nav">
-      <a class="nav prev" href="{% if info.single_page %}#{% endif %}{{info.navigation[fname][0] or ROOT_FNAME}}"></a>
-      <a class="nav index" href="{% if info.single_page %}#{% else %}{{ROOT_FNAME}}{% endif %}"></a>
-      <a class="nav next" href="{% if info.single_page %}#{% endif %}{{info.navigation[fname][1] or ROOT_FNAME}}"></a>
+      {% if info.navigation[fname].previous %}
+      <a class="nav prev" href="{% if info.single_page %}#{% endif %}{{info.navigation[fname].previous}}"></a>
+      {% else %}
+      <a class="nav prev disabled" href="#"></a>
+      {% endif %}
+      <a class="nav index" href="{% if info.single_page %}#{% else %}{{info.navigation[fname].parent}}{% endif %}"></a>
+      {% if info.navigation[fname].next %}
+      <a class="nav next" href="{% if info.single_page %}#{% endif %}{{info.navigation[fname].next}}"></a>
+      {% else %}
+      <a class="nav next disabled" href="#"></a>
+      {% endif %}
     </div>
   </div>
   <div class="source-table-container">

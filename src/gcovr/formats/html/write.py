@@ -22,6 +22,7 @@
 import functools
 import os
 import re
+from dataclasses import dataclass
 from typing import Any, Callable, Iterable, Iterator
 
 import pygments
@@ -279,6 +280,17 @@ def coverage_to_class(
 class RootInfo:
     """Class holding the information used in Jinja2 template."""
 
+    @dataclass
+    class Navigation:
+        """Info for the breadcrumb navigation."""
+
+        previous: str | None
+        """Link to the previous site."""
+        parent: str
+        """Link to the parent site."""
+        next: str | None
+        """Link to the next site."""
+
     def __init__(self, options: Options, *, diff_report: bool) -> None:
         """Initialize the root information."""
         self.sort_by = (
@@ -296,6 +308,9 @@ class RootInfo:
         self.high_threshold_line = options.high_threshold_line
         self.medium_threshold_branch = options.medium_threshold_branch
         self.high_threshold_branch = options.high_threshold_branch
+        self.link_sourcefiles = (
+            options.html_details or options.html_nested or options.html_single_page
+        )
         self.link_function_list = (
             options.html_details or options.html_nested
         ) and not (options.html_single_page and options.html_static_report)
@@ -317,7 +332,7 @@ class RootInfo:
         self.calls = dict[str, Any]()
         self.functions = dict[str, Any]()
         self.lines = dict[str, Any]()
-        self.navigation = dict[str, tuple[str | None, str | None]]()
+        self.navigation = dict[str, RootInfo.Navigation]()
 
     def set_directory(self, directory: str) -> None:
         """Set the directory for the report."""
@@ -426,9 +441,9 @@ def write_report(
             output_file += "coverage_details.html"
         else:
             output_file += "coverage.html"
+    data["ROOT_FNAME"] = os.path.basename(output_file)
 
     if options.html_details or options.html_nested:
-        data["ROOT_FNAME"] = os.path.basename(output_file)
         (output_prefix, output_suffix) = _get_prefix_and_suffix(output_file)
         functions_output_file = f"{output_prefix}.functions{output_suffix}"
         data["FUNCTIONS_FNAME"] = os.path.basename(functions_output_file)
@@ -446,31 +461,51 @@ def write_report(
 
     LOGGER.debug("Store additional properties...")
 
+    previous_filecov: FileCoverage | None = None
+
     def _update_properties(cdata: CoverageContainer | FileCoverage) -> None:
         """Store the filenames and the source file links for the report."""
         filtered_name = options.root_filter.sub("", cdata.filename)
         cdata.properties["filtered_name"] = force_unix_separator(filtered_name)
-        if options.html_details or options.html_nested or options.html_single_page:
-            if cdata == covdata:
-                _, cdata.properties["sourcefile"] = os.path.split(
-                    output_file.removesuffix(GZIP_SUFFIX)
-                )
-            else:
-                cdata.properties["sourcefile"] = _make_short_source_filename(
-                    output_file, filtered_name.rstrip(os.sep)
-                )
-                if (
-                    options.html_single_page
-                    and cdata.properties["sourcefile"] is not None
-                ):
-                    # Remove the prefix to get shorter links
-                    cdata.properties["sourcefile"] = str(
-                        cdata.properties["sourcefile"]
-                    ).split(".", maxsplit=1)[1]
+        if cdata == covdata:
+            _, cdata.properties["sourcefile"] = os.path.split(
+                output_file.removesuffix(GZIP_SUFFIX)
+            )
         else:
-            cdata.properties["sourcefile"] = None
+            cdata.properties["sourcefile"] = _make_short_source_filename(
+                output_file, filtered_name.rstrip(os.sep)
+            )
+            if options.html_single_page and cdata.properties["sourcefile"] is not None:
+                # Remove the prefix to get shorter links
+                cdata.properties["sourcefile"] = str(
+                    cdata.properties["sourcefile"]
+                ).split(".", maxsplit=1)[1]
+        link_report = cdata.properties["sourcefile"]
+        if link_report is not None and (
+            root_info.relative_anchors or root_info.single_page
+        ):
+            link_report = os.path.basename(link_report)
+        cdata.properties["link_report"] = link_report
 
-    # Generate the coverage output (on a per-package basis)
+        if isinstance(cdata, FileCoverage):
+            nonlocal previous_filecov
+            if previous_filecov is not None:
+                previous_filecov.properties["link_report_next"] = cdata.properties[
+                    "link_report"
+                ]
+            cdata.properties["link_report_previous"] = (
+                None
+                if previous_filecov is None
+                else previous_filecov.properties["link_report"]
+            )
+            cdata.properties["link_report_next"] = None
+            previous_filecov = cdata
+        else:
+            for filecov in cdata.filecov():
+                filecov.properties["link_report_parent"] = cdata.properties[
+                    "link_report"
+                ]
+
     filecov_list = sorted(
         covdata.filecov(recurse=True), key=lambda x: x.filename.lower()
     )
@@ -478,6 +513,14 @@ def write_report(
         _update_properties(filecov)
     for dircov in covdata.dircov(recurse=True):
         _update_properties(dircov)
+
+    for filecov in filecov_list:
+        fname = filecov.properties["filtered_name"]
+        root_info.navigation[fname] = RootInfo.Navigation(
+            filecov.properties["link_report_previous"],
+            filecov.properties["link_report_parent"],
+            filecov.properties["link_report_next"],
+        )
 
     # Define the common root directory, which may differ from options.root_dir
     # when source files share a common prefix.
@@ -497,24 +540,6 @@ def write_report(
             root_directory = str(directory) + os.sep
     root_directory = force_unix_separator(root_directory)
     root_info.set_directory(root_directory)
-
-    previous_fname: str | None = None
-    previous_link_report: str | None = None
-    for filecov in filecov_list:
-        fname = filecov.properties["filtered_name"]
-        root_info.navigation[fname] = (previous_link_report, None)
-        link_report = filecov.properties["sourcefile"]
-        if link_report is not None and (
-            root_info.relative_anchors or root_info.single_page
-        ):
-            link_report = os.path.basename(link_report)
-        if previous_fname is not None:
-            root_info.navigation[previous_fname] = (
-                root_info.navigation[previous_fname][0],
-                link_report,
-            )
-        previous_fname = fname
-        previous_link_report = link_report
 
     if options.html_nested:
         LOGGER.debug("Processing tree data...")
@@ -903,16 +928,13 @@ def get_coverage_data(
         )
     )
 
-    link_report = None
-    if cdata.properties["sourcefile"] is not None and (
-        root_info.relative_anchors or root_info.single_page
-    ):
-        link_report = os.path.basename(cdata.properties["sourcefile"])
-
     return {
         "filename": display_filename,
         "diff": cdata.diff.name if cdata.is_compare_info_available() else None,
-        "link": link_report,
+        "link": cdata.properties["link_report"]
+        if root_info.link_sourcefiles
+        and (root_info.relative_anchors or root_info.single_page)
+        else None,
         "lines": lines,
         "branches": branches,
         "conditions": conditions,
