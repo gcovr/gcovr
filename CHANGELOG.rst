@@ -3,12 +3,10 @@
 .. program is needed to resolve option links
 .. program::  gcovr
 
-.. _next_release:
+.. _release_8_8:
 
-Next Release
-------------
-
-Breaking changes:
+8.8 (27 October 2026)
+---------------------
 
 New features and notable changes:
 
@@ -18,8 +16,6 @@ Bug fixes and small improvements:
 
 - Fix removing coverage for internal functions in C sources. (:issue:`1320`)
 - Fix release pipeline to upload standalone applications for MacOs again. (:issue:`1321`)
-
-Documentation:
 
 Internal changes:
 
