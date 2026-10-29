@@ -19,9 +19,11 @@
 # cspell:ignore getpreferredencoding
 
 import logging
+import os
 import re
 import textwrap
 from locale import getpreferredencoding
+from pathlib import Path
 from threading import Event
 from unittest import mock
 
@@ -782,6 +784,67 @@ def test_negative_branch_count_ignored_json(
         assert message[2] == "Ignored 2 negative hits overall."
     else:
         assert len(messages) == number_of_warnings
+
+
+def _json_with_working_directory(working_directory: str, filename: str) -> dict:
+    return {
+        "format_version": "2",
+        "current_working_directory": working_directory,
+        "files": [
+            {
+                "file": filename,
+                "functions": [],
+                "lines": [
+                    {
+                        "line_number": 1,
+                        "count": 1,
+                        "function_name": "main",
+                        "block_ids": [],
+                        "branches": [],
+                    },
+                ],
+            }
+        ],
+    }
+
+
+def test_relative_working_directory_json() -> None:
+    """A clear error shall be raised if the file name stays relative."""
+    source = _json_with_working_directory(".", "../src/example.c")
+
+    with pytest.raises(RuntimeError, match=r"-fprofile-abs-path"):
+        list(
+            json.parse_coverage(
+                "example.gcov.json.gz",
+                source,
+                source_encoding=DEFAULT_SOURCE_ENCODING,
+                include_filter=(AlwaysMatchFilter(),),
+                exclude_filter=(),
+                ignore_parse_errors=set(),
+            )
+        )
+
+
+def test_relative_working_directory_absolute_file_json(tmp_path: Path) -> None:
+    """Absolute file names are fine, even if the working directory is relative."""
+    source_file = tmp_path / "example.c"
+    source_file.write_text("int main(void) { return 0; }\n", encoding="utf-8")
+    source = _json_with_working_directory(".", str(source_file))
+
+    result = list(
+        json.parse_coverage(
+            "example.gcov.json.gz",
+            source,
+            source_encoding=DEFAULT_SOURCE_ENCODING,
+            include_filter=(AlwaysMatchFilter(),),
+            exclude_filter=(),
+            ignore_parse_errors=set(),
+        )
+    )
+
+    assert [filecov.filename for filecov, _ in result] == [
+        os.path.normpath(str(source_file))
+    ]
 
 
 @pytest.mark.parametrize(
