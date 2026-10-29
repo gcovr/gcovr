@@ -77,6 +77,15 @@ def parse_coverage(
         if is_file_excluded("source file", fname, include_filter, exclude_filter):
             continue
 
+        if gcov_json_data["current_working_directory"] and not os.path.isabs(fname):
+            msg = (
+                f"The file {file['file']!r} in {data_fname!r} resolves to the relative path {fname!r}, "
+                f"because the working directory {gcov_json_data['current_working_directory']!r} is relative. "
+                "This happens if the compiler remaps the working directory, for example with -ffile-prefix-map. "
+                "Compile with -fprofile-abs-path to get absolute file names in the coverage data."
+            )
+            raise RuntimeError(msg)
+
         LOGGER.debug("Parsing coverage data for file %s", fname)
 
         max_line_number = (
