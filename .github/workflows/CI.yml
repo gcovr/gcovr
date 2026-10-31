@@ -344,39 +344,6 @@ jobs:
       matrix:
         gcc: ${{ fromJson(needs.build-package.outputs.gcovr_compiler_list) }}
 
-  # -----------------------------------------------------------------------------------------------
-  publish-push-tag:
-    needs: [build-package, documentation, host, docker]
-    if: ${{ needs.build-package.outputs.publish_run_job == 'true' }}
-    runs-on: ubuntu-24.04
-    permissions:
-      contents: write
-    env:
-      FORCE_COLOR: "1"
-    timeout-minutes: 5
-
-    steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-        with:
-          persist-credentials: false
-
-      - name: Check if all needed jobs succeed
-        uses: re-actors/alls-green@b5b5b37504aa4183270bd3d855c52a67f212be35  # v1.3.0
-        with:
-          jobs: ${{ toJSON(needs) }}
-
-      - name: Prepare package version
-        uses: "$/.github/actions/prepare-package-version"
-        with:
-          tag: ${{ needs.build-package.outputs.tag }}
-          tag_message: ${{ needs.build-package.outputs.tag_message }}
-
-      - name: Push new tag
-        if: ${{ needs.build-package.outputs.publish_push_tag == 'true' }}
-        run: |
-          git push origin "refs/tags/$TAG"
-        env:
-          TAG: ${{ needs.build-package.outputs.tag }}
 
   # -----------------------------------------------------------------------------------------------
   merge_coverage:
@@ -416,6 +383,41 @@ jobs:
           path: |
             coverage.xml
             htmlcov
+
+
+  # -----------------------------------------------------------------------------------------------
+  publish-push-tag:
+    needs: [build-package, documentation, host, docker]
+    if: ${{ needs.build-package.outputs.publish_run_job == 'true' }}
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+    env:
+      FORCE_COLOR: "1"
+    timeout-minutes: 5
+
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: true
+
+      - name: Check if all needed jobs succeed
+        uses: re-actors/alls-green@b5b5b37504aa4183270bd3d855c52a67f212be35  # v1.3.0
+        with:
+          jobs: ${{ toJSON(needs) }}
+
+      - name: Prepare package version
+        uses: "$/.github/actions/prepare-package-version"
+        with:
+          tag: ${{ needs.build-package.outputs.tag }}
+          tag_message: ${{ needs.build-package.outputs.tag_message }}
+
+      - name: Push new tag
+        if: ${{ needs.build-package.outputs.publish_push_tag == 'true' }}
+        run: |
+          git push origin "refs/tags/$TAG"
+        env:
+          TAG: ${{ needs.build-package.outputs.tag }}
 
 
   # -----------------------------------------------------------------------------------------------
