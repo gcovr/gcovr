@@ -18,6 +18,8 @@ Documentation:
 
 Internal changes:
 
+- Test lambdas also for clang compiler. (:issue:`1333`)
+
 .. _release_8_8:
 
 8.8 (27 October 2026)

@@ -120,7 +120,7 @@ USE_GCC_JSON_INTERMEDIATE_FORMAT = (
     IS_GCC and f"JSON format version: {GCOV_JSON_VERSION}" in _GCOV_VERSION_OUTPUT
 )
 USE_PROFDATA_POSSIBLE = IS_LINUX and not IS_GCC
-GCOVR_TEST_USE_CXX_LAMBDA_EXPRESSIONS = "c++20" in _CC_HELP_OUTPUT
+GCOVR_TEST_USE_CXX_LAMBDA_EXPRESSIONS = (CC_VERSION >= 10 and IS_GCC) or not IS_GCC  # noqa: PLR2004
 CONDITION_COVERAGE_POSSIBLE = "condition-coverage" in _CC_HELP_OUTPUT
 
 _CFLAGS = [
@@ -160,7 +160,7 @@ def pytest_report_header(config: pytest.Config) -> tuple[str, ...]:  # noqa: ARG
             text=True,
         ).splitlines()[0]
     else:
-        cmake_version = "No CMake found"
+        cmake_version = "No cmake found"
     if make := shutil.which("make"):
         make_version = subprocess.check_output(  # nosec: B603  # noqa: S603
             [make, "--version"],
@@ -189,6 +189,10 @@ def pytest_report_header(config: pytest.Config) -> tuple[str, ...]:  # noqa: ARG
         f"   {cmake_version}",
         f"   {make_version}",
         f"   {ninja_version}",
+        f"   Gcc JSON intermediate format used: {USE_GCC_JSON_INTERMEDIATE_FORMAT}",
+        f"   Clang profdata possible: {USE_PROFDATA_POSSIBLE}",
+        f"   Lambda expressions supported: {GCOVR_TEST_USE_CXX_LAMBDA_EXPRESSIONS}",
+        f"   Condition coverage possible: {CONDITION_COVERAGE_POSSIBLE}",
         f"   Reference directories: {', '.join(REFERENCE_DIRS)}",
     )
 

@@ -32,9 +32,7 @@ from tests.conftest import (
     GcovrExecFixture,
 )
 
-CHMOD_IS_WORKING = (
-    not GCOVR_ISOLATED_TEST or IS_DARWIN_HOST or USE_GCC_JSON_INTERMEDIATE_FORMAT
-)
+CHMOD_IS_NOT_WORKING = not GCOVR_ISOLATED_TEST or IS_DARWIN_HOST
 
 
 @contextmanager
@@ -144,8 +142,8 @@ def test_wrong_version(gcovr_exec: "GcovrExecFixture") -> None:
 
 
 @pytest.mark.skipif(
-    CHMOD_IS_WORKING,
-    reason="Only available in docker on hosts != MacOs",
+    CHMOD_IS_NOT_WORKING or USE_GCC_JSON_INTERMEDIATE_FORMAT,
+    reason="Needs a working chmod gcov text format",
 )
 def test_wd_not_found(gcovr_exec: "GcovrExecFixture") -> None:
     """Test working directory not found."""
@@ -195,8 +193,8 @@ def test_wd_not_found(gcovr_exec: "GcovrExecFixture") -> None:
 
 
 @pytest.mark.skipif(
-    CHMOD_IS_WORKING,
-    reason="Only available in docker on hosts != MacOs",
+    CHMOD_IS_NOT_WORKING or USE_GCC_JSON_INTERMEDIATE_FORMAT,
+    reason="Needs a working chmod gcov text format",
 )
 @pytest.mark.json
 def test_ignore_output_error(gcovr_exec: "GcovrExecFixture") -> None:
@@ -240,8 +238,8 @@ def test_ignore_output_error(gcovr_exec: "GcovrExecFixture") -> None:
 
 
 @pytest.mark.skipif(
-    CHMOD_IS_WORKING,
-    reason="Only available in docker on hosts != MacOs",
+    CHMOD_IS_NOT_WORKING or USE_GCC_JSON_INTERMEDIATE_FORMAT,
+    reason="Needs a working chmod gcov text format",
 )
 @pytest.mark.json
 def test_ignore_source_not_found(gcovr_exec: "GcovrExecFixture") -> None:
@@ -286,8 +284,8 @@ def test_ignore_source_not_found(gcovr_exec: "GcovrExecFixture") -> None:
 
 
 @pytest.mark.skipif(
-    CHMOD_IS_WORKING,
-    reason="Only available in docker on hosts != MacOs",
+    CHMOD_IS_NOT_WORKING or USE_GCC_JSON_INTERMEDIATE_FORMAT,
+    reason="Needs a working chmod gcov text format",
 )
 @pytest.mark.json
 def test_ignore_no_working_dir_found(gcovr_exec: "GcovrExecFixture") -> None:
