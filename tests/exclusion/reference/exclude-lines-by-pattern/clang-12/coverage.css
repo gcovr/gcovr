@@ -32,14 +32,8 @@
   top: 0;
 }
 
-a:link
-{
-  color: navy;
-  text-decoration: underline;
-}
-a:visited
-{
-  color: maroon;
+a:link, a:visited {
+  color: var(--color-accent-fg);
   text-decoration: underline;
 }
 
