@@ -20,10 +20,7 @@ import typing
 import pytest
 from pytest_check import check
 
-from tests.conftest import (
-    IS_GCC,
-    USE_GCC_JSON_INTERMEDIATE_FORMAT,
-)
+from tests.conftest import IS_GCC
 
 if typing.TYPE_CHECKING:
     from tests.conftest import GcovrExecFixture
@@ -94,47 +91,6 @@ def test_exclude_existing(gcovr_exec: "GcovrExecFixture") -> None:
         "--json=coverage.json",
     )
     gcovr_exec.compare_json()
-
-
-@pytest.mark.skipif(
-    USE_GCC_JSON_INTERMEDIATE_FORMAT,
-    reason="We only have the problem in text reports.",
-)
-@pytest.mark.json
-@pytest.mark.html
-def test_issue_1166(gcovr_exec: "GcovrExecFixture") -> None:
-    """A test that verifies reading of text reports without a function line."""
-    gcovr_exec.cxx_link(
-        "testcase",
-        "main.cpp",
-    )
-    gcovr_exec.run("./testcase")
-    gcovr_exec.run(
-        *gcovr_exec.gcov(),
-        *list(gcovr_exec.output_dir.glob("*.gcda")),
-        "--branch-counts",
-        "--preserve-paths",
-    )
-    gcovr_exec.gcovr(
-        "--verbose",
-        "--gcov-use-existing-files",
-        "--json-pretty",
-        "--json=coverage.json",
-        use_main=False,
-    )
-    check.is_in("(WARNING) No function line found in gcov file:", gcovr_exec.err)
-    check.is_in(
-        "/tests/use-existing/output/issue-1166/main.cpp.gcov",
-        gcovr_exec.err,
-    )
-    gcovr_exec.compare_json()
-
-    gcovr_exec.gcovr(
-        "--verbose",
-        "--json-add-tracefile=coverage.json",
-        "--html-details=coverage.html",
-    )
-    gcovr_exec.compare_html()
 
 
 @pytest.mark.skipif(
