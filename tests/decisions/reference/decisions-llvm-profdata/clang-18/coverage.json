@@ -2121,97 +2121,37 @@
                     "gcovr/md5": "cbb184dd8e05c9709e5dcaedaa0495cf"
                 },
                 {
-                    "line_number": 365,
-                    "count": 2,
-                    "branches": [],
-                    "gcovr/md5": "78cbf5dc7f0e6f7d02476603c791b3fd"
-                },
-                {
                     "line_number": 366,
-                    "count": 2,
-                    "branches": [
-                        {
-                            "branchno": 0,
-                            "count": 1,
-                            "fallthrough": false,
-                            "throw": false
-                        },
-                        {
-                            "branchno": 1,
-                            "count": 1,
-                            "fallthrough": false,
-                            "throw": false
-                        }
-                    ],
-                    "gcovr/decision": {
-                        "type": "conditional",
-                        "count_true": 1,
-                        "count_false": 1
-                    },
-                    "gcovr/md5": "ea7f2e78805e85d9aa20a2bec77cee2e"
-                },
-                {
-                    "line_number": 367,
-                    "count": 11,
-                    "branches": [
-                        {
-                            "branchno": 0,
-                            "count": 10,
-                            "fallthrough": false,
-                            "throw": false
-                        },
-                        {
-                            "branchno": 1,
-                            "count": 1,
-                            "fallthrough": false,
-                            "throw": false
-                        }
-                    ],
-                    "gcovr/decision": {
-                        "type": "conditional",
-                        "count_true": 10,
-                        "count_false": 1
-                    },
-                    "gcovr/md5": "3e2cc082cb7c4086fe2acf4d52b8819b"
-                },
-                {
-                    "line_number": 368,
-                    "count": 1,
-                    "branches": [],
-                    "gcovr/md5": "ea5a1cbe764918679997181a3ea281d3"
-                },
-                {
-                    "line_number": 369,
-                    "count": 2,
-                    "branches": [],
-                    "gcovr/md5": "7eefb90de6682989ef933bcadcbb7de9"
-                },
-                {
-                    "line_number": 370,
-                    "count": 0,
-                    "branches": [],
-                    "gcovr/md5": "cbb184dd8e05c9709e5dcaedaa0495cf"
-                },
-                {
-                    "line_number": 373,
                     "count": 1,
                     "branches": [],
                     "gcovr/md5": "f95b70fdc3088560732a5ac135644506"
                 },
                 {
-                    "line_number": 378,
+                    "line_number": 371,
                     "count": 1,
                     "branches": [],
                     "gcovr/md5": "d41d8cd98f00b204e9800998ecf8427e"
                 },
                 {
-                    "line_number": 381,
+                    "line_number": 374,
                     "count": 1,
                     "branches": [],
                     "gcovr/md5": "d41d8cd98f00b204e9800998ecf8427e"
                 },
                 {
-                    "line_number": 384,
+                    "line_number": 377,
+                    "count": 1,
+                    "branches": [],
+                    "gcovr/md5": "d41d8cd98f00b204e9800998ecf8427e"
+                },
+                {
+                    "line_number": 380,
+                    "count": 1,
+                    "branches": [],
+                    "gcovr/md5": "d41d8cd98f00b204e9800998ecf8427e"
+                },
+                {
+                    "line_number": 383,
                     "count": 1,
                     "branches": [],
                     "gcovr/md5": "d41d8cd98f00b204e9800998ecf8427e"
@@ -2223,13 +2163,13 @@
                     "gcovr/md5": "d41d8cd98f00b204e9800998ecf8427e"
                 },
                 {
-                    "line_number": 390,
+                    "line_number": 391,
                     "count": 1,
                     "branches": [],
                     "gcovr/md5": "d41d8cd98f00b204e9800998ecf8427e"
                 },
                 {
-                    "line_number": 394,
+                    "line_number": 395,
                     "count": 1,
                     "branches": [],
                     "gcovr/md5": "d41d8cd98f00b204e9800998ecf8427e"
@@ -2241,31 +2181,31 @@
                     "gcovr/md5": "d41d8cd98f00b204e9800998ecf8427e"
                 },
                 {
-                    "line_number": 402,
+                    "line_number": 401,
                     "count": 1,
                     "branches": [],
                     "gcovr/md5": "d41d8cd98f00b204e9800998ecf8427e"
                 },
                 {
-                    "line_number": 405,
+                    "line_number": 404,
                     "count": 1,
                     "branches": [],
                     "gcovr/md5": "d41d8cd98f00b204e9800998ecf8427e"
                 },
                 {
-                    "line_number": 408,
+                    "line_number": 407,
                     "count": 1,
                     "branches": [],
                     "gcovr/md5": "d41d8cd98f00b204e9800998ecf8427e"
                 },
                 {
-                    "line_number": 411,
+                    "line_number": 410,
                     "count": 1,
                     "branches": [],
                     "gcovr/md5": "d41d8cd98f00b204e9800998ecf8427e"
                 },
                 {
-                    "line_number": 414,
+                    "line_number": 415,
                     "count": 1,
                     "branches": [],
                     "gcovr/md5": "d41d8cd98f00b204e9800998ecf8427e"
@@ -2277,25 +2217,7 @@
                     "gcovr/md5": "d41d8cd98f00b204e9800998ecf8427e"
                 },
                 {
-                    "line_number": 422,
-                    "count": 1,
-                    "branches": [],
-                    "gcovr/md5": "d41d8cd98f00b204e9800998ecf8427e"
-                },
-                {
-                    "line_number": 424,
-                    "count": 1,
-                    "branches": [],
-                    "gcovr/md5": "d41d8cd98f00b204e9800998ecf8427e"
-                },
-                {
-                    "line_number": 427,
-                    "count": 1,
-                    "branches": [],
-                    "gcovr/md5": "d41d8cd98f00b204e9800998ecf8427e"
-                },
-                {
-                    "line_number": 429,
+                    "line_number": 419,
                     "count": 0,
                     "branches": [],
                     "gcovr/md5": "cbb184dd8e05c9709e5dcaedaa0495cf"
@@ -2623,23 +2545,13 @@
                     ]
                 },
                 {
-                    "name": "_Z16verify_issue_679b",
-                    "lineno": 365,
-                    "execution_count": 2,
-                    "blocks_percent": 100.0,
-                    "pos": [
-                        "365:37",
-                        "368:6"
-                    ]
-                },
-                {
                     "name": "main",
-                    "lineno": 373,
+                    "lineno": 366,
                     "execution_count": 1,
-                    "blocks_percent": 5.9,
+                    "blocks_percent": 6.2,
                     "pos": [
-                        "373:1",
-                        "427:1"
+                        "366:1",
+                        "417:1"
                     ]
                 }
             ]

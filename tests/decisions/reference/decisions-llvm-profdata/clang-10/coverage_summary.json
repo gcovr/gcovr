@@ -4,11 +4,11 @@
     "files": [
         {
             "filename": "main.cpp",
-            "line_total": 206,
-            "line_covered": 122,
-            "line_percent": 59.2,
-            "function_total": 34,
-            "function_covered": 34,
+            "line_total": 200,
+            "line_covered": 117,
+            "line_percent": 58.5,
+            "function_total": 33,
+            "function_covered": 33,
             "function_percent": 100.0,
             "branch_total": 0,
             "branch_covered": 0,
@@ -48,11 +48,11 @@
             "decision_percent": 33.3
         }
     ],
-    "line_total": 216,
-    "line_covered": 126,
-    "line_percent": 58.3,
-    "function_total": 37,
-    "function_covered": 37,
+    "line_total": 210,
+    "line_covered": 121,
+    "line_percent": 57.6,
+    "function_total": 36,
+    "function_covered": 36,
     "function_percent": 100.0,
     "branch_total": 0,
     "branch_covered": 0,
