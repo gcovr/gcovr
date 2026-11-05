@@ -129,3 +129,34 @@ def test_issue_1168(gcovr_exec: "GcovrExecFixture") -> None:
         ".",
     )
     gcovr_exec.compare_json()
+
+
+@pytest.mark.skipif(
+    not IS_LINUX,
+    reason="Exclusion markers are independent of OS and we do not want to have separate data for Windows and Darwin.",
+)
+@pytest.mark.json
+@pytest.mark.parametrize(
+    "input_format",
+    ["gcov", "llvm"] if USE_PROFDATA_POSSIBLE else ["gcov"],
+)
+def test_issue_1319(
+    gcovr_exec: "GcovrExecFixture",
+    input_format: str,
+) -> None:
+    """Test excluding of functions."""
+    gcovr_exec.use_llvm_profdata = input_format == "llvm"
+    gcovr_exec.cc_link(
+        "testcase",
+        "main.c",
+    )
+
+    gcovr_exec.run("./testcase")
+    gcovr_exec.gcovr(
+        *(["--llvm-cov-binary=./testcase"] if gcovr_exec.use_llvm_profdata else []),
+        "--json-pretty",
+        "--json=coverage.json",
+        use_main=not gcovr_exec.use_llvm_profdata,
+    )
+
+    gcovr_exec.compare_json()
