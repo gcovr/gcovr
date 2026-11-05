@@ -44,7 +44,7 @@ from ....logging import LOGGER
 from ....utils import get_md5_hexdigest
 from .common import (
     SUSPICIOUS_COUNTER,
-    check_hits,
+    check_gcov_integer,
 )
 
 UNKNOWN_FUNCTION_NAME_FORMAT_STRING = "<unknown function {}>"
@@ -70,12 +70,12 @@ def _line_pattern(pattern: str) -> Pattern[str]:
 
 
 _RE_FUNCTION_LINE = _line_pattern(
-    r"function (.*?) called (INT) returned (VALUE) blocks executed (VALUE)"
+    r"function (.*?) called (-?INT) returned (VALUE) blocks executed (VALUE)"
 )
 _RE_BRANCH_LINE = _line_pattern(
     r"branch (INT) (?:taken (VALUE)|never executed)(?: \((\w+)\))?"
 )
-_RE_CALL_LINE = _line_pattern(r"call (INT) (?:returned (VALUE)|never executed)")
+_RE_CALL_LINE = _line_pattern(r"call (-?INT) (?:returned (VALUE)|never executed)")
 _RE_UNCONDITIONAL_LINE = _line_pattern(
     r"unconditional (INT) (?:taken (VALUE)|never executed)"
 )
@@ -749,6 +749,27 @@ def _parse_line(
     _CallLine(callno=17, returned=1)
     >>> _parse_line("file", 'call  17 returned 9')
     _CallLine(callno=17, returned=9)
+    >>> _parse_line("file", 'call  20 returned -9')
+    Traceback (most recent call last):
+    ...
+    gcovr.formats.gcov.parser.common.NegativeHitsError: file:0 Got negative hit value in: call  20 returned -9
+    This is caused by a bug in gcov tool, see
+    https://gcc.gnu.org/bugzilla/show_bug.cgi?id=68080. Use option
+    --gcov-ignore-parse-errors with a value of negative_hits.warn,
+    or negative_hits.warn_once_per_file.
+    >>> _parse_line("file", 'call  20 returned -9', ignore_parse_errors=("negative_hits.warn",))
+    _CallLine(callno=20, returned=0)
+    >>> _parse_line("file", 'call  20 returned 4294967296')
+    Traceback (most recent call last):
+    ...
+    gcovr.formats.gcov.parser.common.SuspiciousHitsError: file:0 Got suspicious hit value in: call  20 returned 4294967296
+    This is caused by a bug in gcov tool, see
+    https://gcc.gnu.org/bugzilla/show_bug.cgi?id=68080. Use option
+    --gcov-ignore-parse-errors with a value of suspicious_hits.warn,
+    or suspicious_hits.warn_once_per_file or change the threshold
+    for the detection with option --gcov-suspicious-hits-threshold.
+    >>> _parse_line("file", 'call  20 returned 4294967296', ignore_parse_errors=("suspicious_hits.warn",))
+    _CallLine(callno=20, returned=0)
     >>> _parse_line("file", 'call 2 with some unknown format')
     Traceback (most recent call last):
     gcovr.formats.gcov.parser.text.UnknownLineTypeError: call 2 with some unknown format
@@ -769,6 +790,27 @@ def _parse_line(
     Examples, can parse function tags:
     >>> _parse_line("file", 'function foo called 2 returned 1 blocks executed 85%')
     _FunctionLine(name='foo', call_count=2, blocks_covered=85.0)
+    >>> _parse_line("file", 'function foo called -2 returned 1 blocks executed 85%')
+    Traceback (most recent call last):
+    ...
+    gcovr.formats.gcov.parser.common.NegativeHitsError: file:0 Got negative hit value in: function foo called -2 returned 1 blocks executed 85%
+    This is caused by a bug in gcov tool, see
+    https://gcc.gnu.org/bugzilla/show_bug.cgi?id=68080. Use option
+    --gcov-ignore-parse-errors with a value of negative_hits.warn,
+    or negative_hits.warn_once_per_file.
+    >>> _parse_line("file", 'function foo called -2 returned 1 blocks executed 85%', ignore_parse_errors=set(['negative_hits.warn']))
+    _FunctionLine(name='foo', call_count=0, blocks_covered=85.0)
+    >>> _parse_line("file", 'function foo called 4294967296 returned 1 blocks executed 85%')
+    Traceback (most recent call last):
+    ...
+    gcovr.formats.gcov.parser.common.SuspiciousHitsError: file:0 Got suspicious hit value in: function foo called 4294967296 returned 1 blocks executed 85%
+    This is caused by a bug in gcov tool, see
+    https://gcc.gnu.org/bugzilla/show_bug.cgi?id=68080. Use option
+    --gcov-ignore-parse-errors with a value of suspicious_hits.warn,
+    or suspicious_hits.warn_once_per_file or change the threshold
+    for the detection with option --gcov-suspicious-hits-threshold.
+    >>> _parse_line("file", 'function foo called 4294967296 returned 1 blocks executed 85%', ignore_parse_errors=set(['suspicious_hits.warn']))
+    _FunctionLine(name='foo', call_count=0, blocks_covered=85.0)
     >>> _parse_line("file", 'function foo called 2 returned 50% blocks executed 85%')
     _FunctionLine(name='foo', call_count=2, blocks_covered=85.0)
     >>> _parse_line("file", 'function foo called 2 returned 100% blocks executed 85%')
@@ -812,7 +854,7 @@ def _parse_line(
     >>> _parse_line("file", 'nonexistent_tag foo bar')
     Traceback (most recent call last):
     gcovr.formats.gcov.parser.text.UnknownLineTypeError: nonexistent_tag foo bar
-    """
+    """  # noqa: E501
     # pylint: disable=too-many-branches
     if ignore_parse_errors is None:
         ignore_parse_errors = set()
@@ -871,7 +913,7 @@ def _parse_line(
             hits = _int_from_gcov_unit(hits_str)
             extra_info = _ExtraInfo.NONE
 
-        hits = check_hits(
+        hits = check_gcov_integer(
             hits,
             line,
             ignore_parse_errors,
@@ -900,7 +942,7 @@ def _parse_line(
                 hits = _int_from_gcov_unit(hits_str)
                 extra_info = _ExtraInfo.NONE
 
-            hits = check_hits(
+            hits = check_gcov_integer(
                 hits,
                 line,
                 ignore_parse_errors,
@@ -955,7 +997,7 @@ def _parse_tag_line(  # pylint: disable=too-many-return-statements
             branch_id, taken_str, annotation = match.groups()
             hits = 0 if taken_str is None else _int_from_gcov_unit(taken_str)
 
-            hits = check_hits(
+            hits = check_gcov_integer(
                 hits,
                 line,
                 ignore_parse_errors,
@@ -975,6 +1017,13 @@ def _parse_tag_line(  # pylint: disable=too-many-return-statements
         if match is not None:
             call_id, returned_str = match.groups()
             returned = 0 if returned_str is None else _int_from_gcov_unit(returned_str)
+            returned = check_gcov_integer(
+                returned,
+                line,
+                ignore_parse_errors,
+                suspicious_hits_threshold,
+                persistent_states,
+            )
             return _CallLine(int(call_id), returned)
 
     # UNCONDITIONAL
@@ -988,7 +1037,7 @@ def _parse_tag_line(  # pylint: disable=too-many-return-statements
             branch_id, taken_str = match.groups()
             hits = 0 if taken_str is None else _int_from_gcov_unit(taken_str)
 
-            hits = check_hits(
+            hits = check_gcov_integer(
                 hits,
                 line,
                 ignore_parse_errors,
@@ -1006,9 +1055,16 @@ def _parse_tag_line(  # pylint: disable=too-many-return-statements
         match = _RE_FUNCTION_LINE.match(line)
         if match is not None:
             name, count, _, blocks = match.groups()
-            return _FunctionLine(
-                name, _int_from_gcov_unit(count), _float_from_gcov_percent(blocks)
+
+            count = check_gcov_integer(
+                _int_from_gcov_unit(count),
+                line,
+                ignore_parse_errors,
+                suspicious_hits_threshold,
+                persistent_states,
             )
+
+            return _FunctionLine(name, count, _float_from_gcov_percent(blocks))
 
     # Function separator line,
     # see https://github.com/gcc-mirror/gcc/blob/50bc9185c2821350f0b785d6e23a6e9dcde58466/gcc/gcov.c#L3100C23-L3100C41
