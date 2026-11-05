@@ -44,7 +44,7 @@ from ....logging import LOGGER
 from ....utils import get_md5_hexdigest
 from .common import (
     SUSPICIOUS_COUNTER,
-    check_hits,
+    check_gcov_integer,
 )
 
 UNKNOWN_FUNCTION_NAME_FORMAT_STRING = "<unknown function {}>"
@@ -749,6 +749,27 @@ def _parse_line(
     _CallLine(callno=17, returned=1)
     >>> _parse_line("file", 'call  17 returned 9')
     _CallLine(callno=17, returned=9)
+    >>> _parse_line("file", 'call  20 returned -9')
+    Traceback (most recent call last):
+    ...
+    gcovr.formats.gcov.parser.common.NegativeHitsError: file:0 Got negative hit value in: call  20 returned -9
+    This is caused by a bug in gcov tool, see
+    https://gcc.gnu.org/bugzilla/show_bug.cgi?id=68080. Use option
+    --gcov-ignore-parse-errors with a value of negative_hits.warn,
+    or negative_hits.warn_once_per_file.
+    >>> _parse_line("file", 'call  20 returned -9', ignore_parse_errors=("negative_hits.warn",))
+    _CallLine(callno=20, returned=0)
+    >>> _parse_line("file", 'call  20 returned 4294967296')
+    Traceback (most recent call last):
+    ...
+    gcovr.formats.gcov.parser.common.SuspiciousHitsError: file:0 Got suspicious hit value in: call  20 returned 4294967296
+    This is caused by a bug in gcov tool, see
+    https://gcc.gnu.org/bugzilla/show_bug.cgi?id=68080. Use option
+    --gcov-ignore-parse-errors with a value of suspicious_hits.warn,
+    or suspicious_hits.warn_once_per_file or change the threshold
+    for the detection with option --gcov-suspicious-hits-threshold.
+    >>> _parse_line("file", 'call  20 returned 4294967296', ignore_parse_errors=("suspicious_hits.warn",))
+    _CallLine(callno=20, returned=0)
     >>> _parse_line("file", 'call 2 with some unknown format')
     Traceback (most recent call last):
     gcovr.formats.gcov.parser.text.UnknownLineTypeError: call 2 with some unknown format
@@ -871,7 +892,7 @@ def _parse_line(
             hits = _int_from_gcov_unit(hits_str)
             extra_info = _ExtraInfo.NONE
 
-        hits = check_hits(
+        hits = check_gcov_integer(
             hits,
             line,
             ignore_parse_errors,
@@ -900,7 +921,7 @@ def _parse_line(
                 hits = _int_from_gcov_unit(hits_str)
                 extra_info = _ExtraInfo.NONE
 
-            hits = check_hits(
+            hits = check_gcov_integer(
                 hits,
                 line,
                 ignore_parse_errors,
@@ -955,7 +976,7 @@ def _parse_tag_line(  # pylint: disable=too-many-return-statements
             branch_id, taken_str, annotation = match.groups()
             hits = 0 if taken_str is None else _int_from_gcov_unit(taken_str)
 
-            hits = check_hits(
+            hits = check_gcov_integer(
                 hits,
                 line,
                 ignore_parse_errors,
@@ -975,6 +996,13 @@ def _parse_tag_line(  # pylint: disable=too-many-return-statements
         if match is not None:
             call_id, returned_str = match.groups()
             returned = 0 if returned_str is None else _int_from_gcov_unit(returned_str)
+            returned = check_gcov_integer(
+                returned,
+                line,
+                ignore_parse_errors,
+                suspicious_hits_threshold,
+                persistent_states,
+            )
             return _CallLine(int(call_id), returned)
 
     # UNCONDITIONAL
@@ -988,7 +1016,7 @@ def _parse_tag_line(  # pylint: disable=too-many-return-statements
             branch_id, taken_str = match.groups()
             hits = 0 if taken_str is None else _int_from_gcov_unit(taken_str)
 
-            hits = check_hits(
+            hits = check_gcov_integer(
                 hits,
                 line,
                 ignore_parse_errors,

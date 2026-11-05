@@ -1215,6 +1215,8 @@ class CallCoverage(CoverageBase):
             self.raise_data_error("Either callno or destination_block_id must be set.")
         if callno is not None and destination_block_id is not None:
             self.raise_data_error("One of callno or destination_block_id must be set.")
+        if returned < 0:
+            self.raise_data_error("call returned count must not be a negative value.")
 
     def serialize(
         self,

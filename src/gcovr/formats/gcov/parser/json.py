@@ -38,7 +38,7 @@ from ....logging import LOGGER
 from ....utils import get_md5_hexdigest, read_source_file
 from .common import (
     SUSPICIOUS_COUNTER,
-    check_hits,
+    check_gcov_integer,
 )
 
 GCOV_JSON_VERSION = "2"
@@ -148,7 +148,7 @@ def _parse_file_node(
         linecov = filecov.insert_line_coverage(
             str(data_fname),
             lineno=line["line_number"],
-            count=check_hits(
+            count=check_gcov_integer(
                 line["count"],
                 source_lines[line["line_number"] - 1],
                 ignore_parse_errors,
@@ -165,7 +165,7 @@ def _parse_file_node(
             linecov.insert_branch_coverage(
                 str(data_fname),
                 branchno=None,
-                count=check_hits(
+                count=check_gcov_integer(
                     branch["count"],
                     source_lines[line["line_number"] - 1],
                     ignore_parse_errors,
@@ -181,7 +181,7 @@ def _parse_file_node(
             linecov.insert_condition_coverage(
                 str(data_fname),
                 conditionno=index,
-                count=check_hits(
+                count=check_gcov_integer(
                     condition["count"],
                     source_lines[line["line_number"] - 1],
                     ignore_parse_errors,
@@ -198,7 +198,13 @@ def _parse_file_node(
                 callno=None,
                 source_block_id=call["source_block_id"],
                 destination_block_id=call["destination_block_id"],
-                returned=call["returned"],
+                returned=check_gcov_integer(
+                    call["returned"],
+                    source_lines[line["line_number"] - 1],
+                    ignore_parse_errors,
+                    suspicious_hits_threshold,
+                    persistent_states,
+                ),
             )
 
     for function in gcov_file_node["functions"]:

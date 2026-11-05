@@ -156,7 +156,7 @@ class SuspiciousHitsError(Exception):
             raise SuspiciousHitsError(line, persistent_states)
 
 
-def check_hits(
+def check_gcov_integer(
     hits: int,
     line: str,
     ignore_parse_errors: set[str],
@@ -167,9 +167,9 @@ def check_hits(
     Check if hits count is negative or suspicious, if the issue is ignored returns 0.
 
     Examples:
-    >>> check_hits(1, "code", {}, 10, {})
+    >>> check_gcov_integer(1, "code", {}, 10, {})
     1
-    >>> check_hits(-1, "code with space", {}, 10, {"location": ("file", 5)})
+    >>> check_gcov_integer(-1, "code with space", {}, 10, {"location": ("file", 5)})
     Traceback (most recent call last):
         ...
     gcovr.formats.gcov.parser.common.NegativeHitsError: file:5 Got negative hit value in: code with space
@@ -177,7 +177,7 @@ def check_hits(
     https://gcc.gnu.org/bugzilla/show_bug.cgi?id=68080. Use option
     --gcov-ignore-parse-errors with a value of negative_hits.warn,
     or negative_hits.warn_once_per_file.
-    >>> check_hits(1000, "code with space", {}, 10, {"location": ("file", 5)})
+    >>> check_gcov_integer(1000, "code with space", {}, 10, {"location": ("file", 5)})
     Traceback (most recent call last):
         ...
     gcovr.formats.gcov.parser.common.SuspiciousHitsError: file:5 Got suspicious hit value in: code with space
@@ -186,9 +186,9 @@ def check_hits(
     --gcov-ignore-parse-errors with a value of suspicious_hits.warn,
     or suspicious_hits.warn_once_per_file or change the threshold
     for the detection with option --gcov-suspicious-hits-threshold.
-    >>> check_hits(-1, "code", {"all"}, 10, {"location": ("file", 5)})
+    >>> check_gcov_integer(-1, "code", {"all"}, 10, {"location": ("file", 5)})
     0
-    >>> check_hits(1000, "code", {"all"}, 10, {"location": ("file", 5)})
+    >>> check_gcov_integer(1000, "code", {"all"}, 10, {"location": ("file", 5)})
     0
 
     """
