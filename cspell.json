@@ -16,6 +16,7 @@
         "/tests/*.xsd",
         "/**/reference/**",
         "/tests/html*-encoding-*/main.cpp",
+        "/tests/issues/source/issue-1168/ParamWithIntArray_test.cpp.gcda.ParamWithValue.h.gcov",
         "/tests/bazel/**/BUILD",
         "/tests/bazel/Makefile",
         "/**/requirements.txt"

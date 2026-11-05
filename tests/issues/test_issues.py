@@ -21,6 +21,7 @@ import pytest
 from pytest_check import check
 
 from tests.conftest import (
+    IS_GCC,
     IS_LINUX,
     USE_GCC_JSON_INTERMEDIATE_FORMAT,
     USE_PROFDATA_POSSIBLE,
@@ -104,4 +105,27 @@ def test_issue_1166(gcovr_exec: "GcovrExecFixture") -> None:
     gcovr_exec.compare_html()
 
 
-
+@pytest.mark.skipif(
+    not IS_GCC,
+    reason="We use an existing file and this is independent from compiler",
+)
+@pytest.mark.json
+def test_issue_1168(gcovr_exec: "GcovrExecFixture") -> None:
+    """A test that verifies correct parsing of template functions (specializations)."""
+    gcov_file = (
+        gcovr_exec.output_dir / "ParamWithIntArray_test.cpp.gcda.ParamWithValue.h.gcov"
+    )
+    gcov_file_content = gcov_file.read_text().replace(
+        "/home/abrown/Catena/sdks/cpp/common/include",  # cspell:disable-line
+        str(gcovr_exec.output_dir),
+    )
+    gcov_file.write_text(gcov_file_content)
+    gcovr_exec.gcovr(
+        "--gcov-use-existing-files",
+        "--filter=.*ParamWithValue.*",
+        "--trace-include=.*ParamWithValue.*",
+        "--json-pretty",
+        "--json=coverage.json",
+        ".",
+    )
+    gcovr_exec.compare_json()
