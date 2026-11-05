@@ -15,6 +15,8 @@
 #
 # ****************************************************************************
 
+import typing
+
 import pytest
 
 from tests.conftest import (
@@ -22,8 +24,11 @@ from tests.conftest import (
     IS_DARWIN,
     IS_GCC,
     IS_LINUX,
-    GcovrExecFixture,
 )
+
+if typing.TYPE_CHECKING:
+    from tests.conftest import GcovrExecFixture
+
 
 SKIP_TEST = not IS_LINUX and not (IS_DARWIN and not IS_GCC and CC_VERSION == 17)  # noqa: PLR2004
 

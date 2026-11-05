@@ -18,13 +18,18 @@
 import logging
 import re
 import shutil
+import typing
 from pathlib import Path
 from unittest import mock
 
 import pytest
 from pytest_check import check
 
-from tests.conftest import GCOVR_ISOLATED_TEST, USE_PROFDATA_POSSIBLE, GcovrExecFixture
+from tests.conftest import GCOVR_ISOLATED_TEST, USE_PROFDATA_POSSIBLE
+
+if typing.TYPE_CHECKING:
+    from tests.conftest import GcovrExecFixture
+
 
 LOGGER = logging.getLogger(__name__)
 

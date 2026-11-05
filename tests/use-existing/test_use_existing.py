@@ -15,14 +15,18 @@
 #
 # ****************************************************************************
 
+import typing
+
 import pytest
 from pytest_check import check
 
 from tests.conftest import (
     IS_GCC,
     USE_GCC_JSON_INTERMEDIATE_FORMAT,
-    GcovrExecFixture,
 )
+
+if typing.TYPE_CHECKING:
+    from tests.conftest import GcovrExecFixture
 
 
 @pytest.mark.json

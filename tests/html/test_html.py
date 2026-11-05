@@ -17,12 +17,17 @@
 
 import logging
 import os
+import typing
 
 import pytest
 from pytest_check import check
 
 from gcovr.formats.html.write import _make_short_source_filename
-from tests.conftest import IS_LINUX, IS_WINDOWS, GcovrExecFixture
+from tests.conftest import CC_VERSION, IS_GCC, IS_LINUX, IS_WINDOWS
+
+if typing.TYPE_CHECKING:
+    from tests.conftest import GcovrExecFixture
+
 
 LOGGER = logging.getLogger(__name__)
 
@@ -194,7 +199,7 @@ def test(gcovr_exec: "GcovrExecFixture", _test_id: str, options: list[str]) -> N
 
 
 @pytest.mark.skipif(
-    GcovrExecFixture.cc_version() >= (8 if GcovrExecFixture.is_gcc() else 12),
+    (8 if IS_GCC else 12) <= CC_VERSION,
     reason="Newer versions stub the missing lines",
 )
 @pytest.mark.html

@@ -18,10 +18,14 @@
 import contextlib
 import os
 import shutil
+import typing
 
 import pytest
 
-from tests.conftest import IS_DARWIN, IS_GCC, IS_WINDOWS, GcovrExecFixture
+from tests.conftest import IS_DARWIN, IS_GCC, IS_WINDOWS
+
+if typing.TYPE_CHECKING:
+    from tests.conftest import GcovrExecFixture
 
 BAZEL = shutil.which("bazel")
 

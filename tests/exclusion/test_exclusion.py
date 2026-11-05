@@ -16,6 +16,7 @@
 # ****************************************************************************
 
 import re
+import typing
 
 import pytest
 from pytest_check import check
@@ -26,8 +27,10 @@ from tests.conftest import (
     IS_LINUX,
     USE_GCC_JSON_INTERMEDIATE_FORMAT,
     USE_PROFDATA_POSSIBLE,
-    GcovrExecFixture,
 )
+
+if typing.TYPE_CHECKING:
+    from tests.conftest import GcovrExecFixture
 
 
 @pytest.mark.skipif(
@@ -206,11 +209,6 @@ PARAMETERS = [
     not IS_LINUX,
     reason="Exclusion markers are independent of OS and we do not want to have separate data for Windows and Darwin.",
 )
-@pytest.mark.parametrize(
-    ("_test_id", "options"),
-    PARAMETERS,
-    ids=[p[0] for p in PARAMETERS],
-)
 @pytest.mark.html
 @pytest.mark.clover
 @pytest.mark.cobertura
@@ -220,6 +218,11 @@ PARAMETERS = [
 @pytest.mark.lcov
 @pytest.mark.sonarqube
 @pytest.mark.txt
+@pytest.mark.parametrize(
+    ("_test_id", "options"),
+    PARAMETERS,
+    ids=[p[0] for p in PARAMETERS],
+)
 def test_exclude_line_branch(
     gcovr_exec: "GcovrExecFixture", _test_id: str, options: list[str]
 ) -> None:

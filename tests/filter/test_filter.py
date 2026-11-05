@@ -15,11 +15,15 @@
 #
 # ****************************************************************************
 
+import typing
 from pathlib import Path
 
 import pytest
 
-from tests.conftest import CXX, IS_LINUX, GcovrExecFixture
+from tests.conftest import CXX, IS_LINUX
+
+if typing.TYPE_CHECKING:
+    from tests.conftest import GcovrExecFixture
 
 
 @pytest.mark.html

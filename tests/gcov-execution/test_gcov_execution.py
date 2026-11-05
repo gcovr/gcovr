@@ -17,6 +17,7 @@
 
 import os
 import re
+import typing
 from contextlib import contextmanager
 from pathlib import Path
 from typing import Generator
@@ -29,8 +30,11 @@ from tests.conftest import (
     IS_DARWIN_HOST,
     IS_WINDOWS,
     USE_GCC_JSON_INTERMEDIATE_FORMAT,
-    GcovrExecFixture,
 )
+
+if typing.TYPE_CHECKING:
+    from tests.conftest import GcovrExecFixture
+
 
 CHMOD_IS_NOT_WORKING = not GCOVR_ISOLATED_TEST or IS_DARWIN_HOST
 
