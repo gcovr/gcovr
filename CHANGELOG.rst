@@ -14,6 +14,8 @@ New features and notable changes:
 
 Bug fixes and small improvements:
 
+- Change link color in GitHub theme from fixed color to accent color. (:issue:`1335`)
+
 Documentation:
 
 Internal changes:
