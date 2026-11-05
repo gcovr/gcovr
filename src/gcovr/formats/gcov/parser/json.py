@@ -223,7 +223,13 @@ def _parse_file_node(
             mangled_name=function["name"],
             demangled_name=function["demangled_name"],
             lineno=function["start_line"],
-            count=function["execution_count"],
+            count=check_gcov_integer(
+                function["execution_count"],
+                source_lines[function["start_line"] - 1],
+                ignore_parse_errors,
+                suspicious_hits_threshold,
+                persistent_states,
+            ),
             blocks=blocks,
             pos=CodeRegion(
                 function["start_line"],
