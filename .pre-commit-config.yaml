@@ -60,3 +60,8 @@ repos:
         types: [python]
         pass_filenames: true
         require_serial: true
+      - id: forbidden-files
+        name: Do not allow to commit gcov files
+        entry: exit 1
+        language: unsupported
+        files: ".+\\.gcov.*"
