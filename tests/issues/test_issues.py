@@ -16,11 +16,13 @@
 # ****************************************************************************
 
 import typing
+from pathlib import Path
 
 import pytest
 from pytest_check import check
 
 from tests.conftest import (
+    CC_VERSION,
     IS_GCC,
     IS_LINUX,
     USE_GCC_JSON_INTERMEDIATE_FORMAT,
@@ -158,5 +160,83 @@ def test_issue_1319(
         "--json=coverage.json",
         use_main=not gcovr_exec.use_llvm_profdata,
     )
+
+    gcovr_exec.compare_json()
+
+
+@pytest.mark.skipif(
+    not IS_LINUX or not IS_GCC or CC_VERSION < 8,  # noqa: PLR2004
+    reason="Test is independent of OS and needs at least GCC 8.",
+)
+@pytest.mark.json
+def test_issue_1331(gcovr_exec: "GcovrExecFixture") -> None:
+    """
+    Test for relative working directory.
+
+    Test is based on reproduce.sh from https://github.com/gcovr/gcovr/issues/1331#issue-6070779196.
+    """
+    source_dir = gcovr_exec.output_dir / "source"
+    source_dir.mkdir(parents=True)
+    (gcovr_exec.output_dir / "main.c").rename(source_dir / "main.c")
+
+    build_dir = gcovr_exec.output_dir / "build"
+    build_dir.mkdir(parents=True)
+    gcovr_exec.cc_link(
+        "testcase",
+        gcovr_exec.cc_compile(
+            source_dir / "main.c",
+            target=str(build_dir / "main.o"),
+            options=[f"-ffile-prefix-map={gcovr_exec.output_dir}=."],
+            cwd=build_dir,
+        ),
+        cwd=build_dir,
+    )
+
+    gcovr_exec.run("./testcase", cwd=build_dir)
+
+    exitcode_ok = 64 if CC_VERSION >= 15 else 0  # noqa: PLR2004
+
+    def __check_json(file: Path) -> None:
+        if exitcode_ok:
+            check.is_in(
+                "Cannot resolve filenames in '",
+                gcovr_exec.err,
+            )
+            check.is_in(
+                "' because current_working_directory is relative ('./build').",
+                gcovr_exec.err,
+            )
+            check.is_false(file.exists())
+            file.write_text(
+                "{}",
+                encoding="UTF-8",
+            )
+        else:
+            check.is_true(file.exists())
+
+    gcovr_exec.gcovr(
+        "--keep-intermediate-files",
+        "--verbose",
+        "--json-pretty",
+        "--json=../coverage.build.json",
+        "--gcov-filter=.*",
+        "--filter=.*",
+        f"--root={gcovr_exec.output_dir}",
+        ".",
+        cwd=build_dir,
+        exitcode_ok=exitcode_ok,
+        use_main=False,
+    )
+    __check_json(gcovr_exec.output_dir / "coverage.build.json")
+
+    gcovr_exec.gcovr(
+        "--keep-intermediate-files",
+        "--verbose",
+        "--json-pretty",
+        "--json=coverage.root.json",
+        use_main=False,
+        exitcode_ok=exitcode_ok,
+    )
+    __check_json(gcovr_exec.output_dir / "coverage.root.json")
 
     gcovr_exec.compare_json()
