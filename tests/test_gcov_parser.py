@@ -788,7 +788,9 @@ def test_negative_branch_count_ignored_json(
         assert len(messages) == number_of_warnings
 
 
-def _json_with_working_directory(working_directory: str, filename: str) -> dict[str, Any]:
+def _json_with_working_directory(
+    working_directory: str, filename: str
+) -> dict[str, Any]:
     return {
         "format_version": "2",
         "current_working_directory": working_directory,
