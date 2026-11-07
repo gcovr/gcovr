@@ -81,6 +81,7 @@
         "filecov",
         "filelist",
         "FIPS",
+        "ffile",
         "FNDA",
         "fprofile",
         "fstring",
