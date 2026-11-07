@@ -16,7 +16,8 @@ Bug fixes and small improvements:
 
 - Change link color in GitHub theme from fixed color to accent color. (:issue:`1335`)
 - Ignore negative and suspicious counters also for call and function coverage. (:issue:`1336`)
-- Report a clear error if the gcov data only has relative file names, for example when compiling with ``-ffile-prefix-map``, instead of failing with a recursion error. (:issue:`1331`)
+- Report a clear error if the gcov data only has relative file names, for example when
+  compiling with ``-ffile-prefix-map``, instead of failing with a recursion error. (:issue:`1332`)
 
 Documentation:
 
