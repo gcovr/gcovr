@@ -61,14 +61,17 @@ def parse_coverage(
         msg = f"Got wrong JSON format version {gcov_json_data['format_version']}, expected {GCOV_JSON_VERSION}"
         raise RuntimeError(msg)
 
-    if not os.path.isabs(gcov_json_data["current_working_directory"]):
-        msg = (
-            f"Cannot resolve filenames in {data_fname!r} because current_working_directory is "
-            f"relative ({gcov_json_data['current_working_directory']!r}).\n"
-            "This happens if the compiler remaps the working directory, for example with -ffile-prefix-map.\n"
-            "Compile with -fprofile-abs-path to get absolute file names in the coverage data."
-        )
-        raise RuntimeError(msg)
+    gcov_cwd = gcov_json_data["current_working_directory"]
+    if not os.path.isabs(gcov_cwd):
+        if os.path.exists(gcov_cwd):
+            gcov_cwd = os.path.abspath(gcov_cwd)
+        else:
+            msg = (
+                f"Cannot resolve filenames in {data_fname!r} because current_working_directory={gcov_cwd!r} is relative and not accessible.\n"
+                "This happens if the compiler remaps the working directory, for example with -ffile-prefix-map.\n"
+                "Run gcovr in the mapped directory or compile with -fprofile-abs-path to get absolute file names in the coverage data."
+            )
+            raise RuntimeError(msg)
 
     for file in gcov_json_data["files"]:
         if not file["lines"] and not file["functions"]:
@@ -79,9 +82,16 @@ def parse_coverage(
                 )
             continue
 
-        fname = os.path.normpath(
-            os.path.join(gcov_json_data["current_working_directory"], file["file"])
-        )
+        fname = file["file"]
+        if not os.path.isabs(fname):
+            for current_fname in [
+                os.path.abspath(fname),
+            ]:
+                if os.path.exists(current_fname):
+                    fname = current_fname
+                    break
+            else:
+                fname = os.path.normpath(os.path.join(gcov_cwd, fname))
 
         if is_file_excluded("source file", fname, include_filter, exclude_filter):
             continue

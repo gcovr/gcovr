@@ -199,11 +199,11 @@ def test_issue_1331(gcovr_exec: "GcovrExecFixture") -> None:
     def __check_json(file: Path) -> None:
         if exitcode_ok:
             check.is_in(
-                "Cannot resolve filenames in '",
+                "Cannot resolve filenames in '/",
                 gcovr_exec.err,
             )
             check.is_in(
-                "' because current_working_directory is relative ('./build').",
+                ".gcov.json.gz' because current_working_directory='./build' is relative and not accessible.",
                 gcovr_exec.err,
             )
             check.is_false(file.exists())
@@ -229,6 +229,8 @@ def test_issue_1331(gcovr_exec: "GcovrExecFixture") -> None:
     )
     __check_json(gcovr_exec.output_dir / "coverage.build.json")
 
+    if CC_VERSION >= 15:  # noqa: PLR2004
+        exitcode_ok = 0
     gcovr_exec.gcovr(
         "--keep-intermediate-files",
         "--verbose",
