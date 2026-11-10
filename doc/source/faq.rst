@@ -165,7 +165,7 @@ Which options must not be used if you want to run gcov on your own?
 -------------------------------------------------------------------
 
 You must not use the following options when invoking ``gcov`` on your own,
-because the produce output lines which gcovr can't parse.
+because the produce output lines which gcovr cannot parse.
 
 - ``--conditions`` (if not used together with ``--json-format``)
 - ``--prime-paths``

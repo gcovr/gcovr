@@ -1092,8 +1092,8 @@ def get_file_data(
                 file_not_found = False
                 file_info = "!!! File from stdin !!!"
             else:
-                file_info = f"!!! Can't read file: {e.strerror} !!!"
-                LOGGER.warning("Can't read file: %s", e)
+                file_info = f"!!! Cannot read file: {e.strerror} !!!"
+                LOGGER.warning("Cannot read file: %s", e)
             # Python ranges are exclusive. We want to iterate over all lines, including
             # that last line. Thus, we have to add a +1 to include that line.
             for lineno in range(1, max_line_from_cdata + 1):

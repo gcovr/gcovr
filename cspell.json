@@ -243,6 +243,11 @@
         // Jinja2 instructions
         "\\{%\\s*[^\\s]+\\s*%\\}"
     ],
+    "flagWords": [
+        // cspell:disable
+        "can't: cannot"
+        // cspell:enabled
+    ],
     "import": [],
     "languageSettings": [
         {

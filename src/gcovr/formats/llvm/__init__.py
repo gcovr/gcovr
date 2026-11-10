@@ -107,7 +107,7 @@ class LlvmHandler(BaseHandler):
             read_report,
         )
 
-        # This can't be checked during validation of arguments because it's not needed together with the
+        # This cannot be checked during validation of arguments because it's not needed together with the
         # tracefiles
         if not self.options.llvm_cov_binaries:
             msg = "Missing --llvm-cov-binary, needed for llvm-cov execution."

@@ -393,7 +393,7 @@ with the differences as an artifact.
 Run tests with Docker
 ~~~~~~~~~~~~~~~~~~~~~
 
-If you can't set up a toolchain locally, you can run the QA process via Docker.
+If you cannot set up a toolchain locally, you can run the QA process via Docker.
 First, build the container images:
 
 .. code:: bash

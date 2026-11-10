@@ -91,7 +91,7 @@ def test_run_on_our_own(gcovr_exec: "GcovrExecFixture") -> None:
         )
         break
     else:
-        msg = "Can't resolve directory bazel-out/*-fastbuild."
+        msg = "Cannot resolve directory bazel-out/*-fastbuild."
         raise AssertionError(msg)
 
     gcovr_exec.compare_json()
@@ -141,7 +141,7 @@ def test_bazel_coverage(gcovr_exec: "GcovrExecFixture") -> None:
 
         break
     else:
-        msg = "Can't resolve directory bazel-out/*-fastbuild."
+        msg = "Cannot resolve directory bazel-out/*-fastbuild."
         raise AssertionError(msg)
 
     gcovr_exec.compare_json()

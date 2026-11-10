@@ -63,9 +63,9 @@ def parse_coverage(
 
     if not os.path.isabs(gcov_json_data["current_working_directory"]):
         msg = (
-            f"The working directory {gcov_json_data['current_working_directory']!r} in {data_fname!r} is relative, "
-            "so the file names in the coverage data can not be resolved. "
-            "This happens if the compiler remaps the working directory, for example with -ffile-prefix-map. "
+            f"Cannot resolve filenames in {data_fname!r} because current_working_directory is "
+            f"relative ({gcov_json_data['current_working_directory']!r}).\n"
+            "This happens if the compiler remaps the working directory, for example with -ffile-prefix-map.\n"
             "Compile with -fprofile-abs-path to get absolute file names in the coverage data."
         )
         raise RuntimeError(msg)
