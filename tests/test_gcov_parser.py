@@ -814,7 +814,7 @@ def _json_with_working_directory(
 
 def test_relative_working_directory_json() -> None:
     """A clear error shall be raised if the working directory is relative."""
-    source = _json_with_working_directory(".", "../src/example.c")
+    source = _json_with_working_directory("./does_not_exist", "../src/example.c")
 
     with pytest.raises(RuntimeError, match=r"-fprofile-abs-path"):
         list(

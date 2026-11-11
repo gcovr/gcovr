@@ -79,15 +79,14 @@ def test_run_on_our_own(gcovr_exec: "GcovrExecFixture") -> None:
 
     for directory in (gcovr_exec.output_dir / "bazel-out").glob("*-fastbuild"):
         gcovr_exec.run(directory / "bin" / "test" / "testcase")
-        additional_options = []
-        if gcovr_exec.use_gcc_json_format():
-            additional_options += ["--root", "/proc/self/cwd"]
 
         gcovr_exec.gcovr(
+            "--keep-intermediate-files",
+            "--verbose",
             "--json-pretty",
             "--json=coverage.json",
-            *additional_options,
             directory / "bin",
+            use_main=False,
         )
         break
     else:
@@ -126,8 +125,6 @@ def test_bazel_coverage(gcovr_exec: "GcovrExecFixture") -> None:
         additional_options = []
         if gcovr_exec.use_gcc_json_format():
             additional_options += [
-                "--root",
-                "/proc/self/cwd",
                 "--gcov-use-existing",
                 "--keep-intermediate-files",
             ]
