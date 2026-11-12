@@ -64,7 +64,7 @@ def parse_coverage(
     gcov_cwd = gcov_json_data["current_working_directory"]
     if not os.path.isabs(gcov_cwd):
         if os.path.exists(gcov_cwd):
-            gcov_cwd = os.path.abspath(gcov_cwd)
+            gcov_cwd = os.path.abspath(os.path.normpath(gcov_cwd))
         else:
             msg = (
                 f"Cannot resolve filenames in {data_fname!r} because current_working_directory={gcov_cwd!r} is relative and not accessible.\n"
@@ -82,7 +82,7 @@ def parse_coverage(
                 )
             continue
 
-        fname = file["file"]
+        fname = os.path.normpath(file["file"])
         if not os.path.isabs(fname):
             for current_fname in [
                 os.path.abspath(fname),
