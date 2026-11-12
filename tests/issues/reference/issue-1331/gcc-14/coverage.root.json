@@ -1,0 +1,85 @@
+{
+    "gcovr/format_version": "0.15",
+    "files": [
+        {
+            "file": "source/main.c",
+            "lines": [
+                {
+                    "line_number": 3,
+                    "function_name": "add",
+                    "block_ids": [
+                        2
+                    ],
+                    "count": 1,
+                    "branches": [],
+                    "gcovr/md5": "13b1fd4b9870258228893cc0f990fc93"
+                },
+                {
+                    "line_number": 5,
+                    "function_name": "main",
+                    "block_ids": [],
+                    "count": 1,
+                    "branches": [],
+                    "gcovr/md5": "292c0e6b39db3dfbb3f8b5eb2999de72"
+                },
+                {
+                    "line_number": 6,
+                    "function_name": "main",
+                    "block_ids": [
+                        2,
+                        3
+                    ],
+                    "count": 1,
+                    "branches": [],
+                    "calls": [
+                        {
+                            "source_block_id": 2,
+                            "destination_block_id": 1,
+                            "returned": 1
+                        },
+                        {
+                            "source_block_id": 3,
+                            "destination_block_id": 1,
+                            "returned": 1
+                        }
+                    ],
+                    "gcovr/md5": "3d6ce7eb629b0438b4488aa981a57ed4"
+                },
+                {
+                    "line_number": 7,
+                    "function_name": "main",
+                    "block_ids": [
+                        4
+                    ],
+                    "count": 1,
+                    "branches": [],
+                    "gcovr/md5": "cf14be7c6e90c6c921e4302a50bd61e8"
+                }
+            ],
+            "functions": [
+                {
+                    "name": "add",
+                    "demangled_name": "add",
+                    "lineno": 3,
+                    "execution_count": 1,
+                    "blocks_percent": 100.0,
+                    "pos": [
+                        "3:5",
+                        "3:39"
+                    ]
+                },
+                {
+                    "name": "main",
+                    "demangled_name": "main",
+                    "lineno": 5,
+                    "execution_count": 1,
+                    "blocks_percent": 100.0,
+                    "pos": [
+                        "5:5",
+                        "8:1"
+                    ]
+                }
+            ]
+        }
+    ]
+}

@@ -223,8 +223,8 @@ The created postfix for ``FNDA`` entry always contains the last line of the func
 
 .. _fix_1197:
 
-Nested HTML report without data can't be generated
---------------------------------------------------
+Nested HTML report without data cannot be generated
+---------------------------------------------------
 
 .. list-table::
 
@@ -554,7 +554,7 @@ Wrong handling of functions with specialization
   has coverage data (of all functions). A debug message is printed for
   each function which will not contain any line coverage.
 
-  **This can't be changed on our side because of missing information.**
+  **This cannot be changed on our side because of missing information.**
 
 .. code-block::
   :caption: Template specialization for gcc-5, gcc-6 and clang

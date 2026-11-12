@@ -18,10 +18,14 @@
 import contextlib
 import os
 import shutil
+import typing
 
 import pytest
 
-from tests.conftest import IS_DARWIN, IS_GCC, IS_WINDOWS, GcovrExecFixture
+from tests.conftest import IS_DARWIN, IS_GCC, IS_WINDOWS
+
+if typing.TYPE_CHECKING:
+    from tests.conftest import GcovrExecFixture
 
 BAZEL = shutil.which("bazel")
 
@@ -75,19 +79,18 @@ def test_run_on_our_own(gcovr_exec: "GcovrExecFixture") -> None:
 
     for directory in (gcovr_exec.output_dir / "bazel-out").glob("*-fastbuild"):
         gcovr_exec.run(directory / "bin" / "test" / "testcase")
-        additional_options = []
-        if gcovr_exec.use_gcc_json_format():
-            additional_options += ["--root", "/proc/self/cwd"]
 
         gcovr_exec.gcovr(
+            "--keep-intermediate-files",
+            "--verbose",
             "--json-pretty",
             "--json=coverage.json",
-            *additional_options,
             directory / "bin",
+            use_main=False,
         )
         break
     else:
-        msg = "Can't resolve directory bazel-out/*-fastbuild."
+        msg = "Cannot resolve directory bazel-out/*-fastbuild."
         raise AssertionError(msg)
 
     gcovr_exec.compare_json()
@@ -122,8 +125,6 @@ def test_bazel_coverage(gcovr_exec: "GcovrExecFixture") -> None:
         additional_options = []
         if gcovr_exec.use_gcc_json_format():
             additional_options += [
-                "--root",
-                "/proc/self/cwd",
                 "--gcov-use-existing",
                 "--keep-intermediate-files",
             ]
@@ -137,7 +138,7 @@ def test_bazel_coverage(gcovr_exec: "GcovrExecFixture") -> None:
 
         break
     else:
-        msg = "Can't resolve directory bazel-out/*-fastbuild."
+        msg = "Cannot resolve directory bazel-out/*-fastbuild."
         raise AssertionError(msg)
 
     gcovr_exec.compare_json()

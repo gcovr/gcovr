@@ -1,0 +1,80 @@
+{
+    "gcovr/format_version": "0.15",
+    "files": [
+        {
+            "file": "main.cpp",
+            "lines": [
+                {
+                    "line_number": 2,
+                    "count": 2,
+                    "branches": [],
+                    "gcovr/md5": "f189cfe8e573d5ca8d330f22527c925b"
+                },
+                {
+                    "line_number": 3,
+                    "count": 2,
+                    "branches": [],
+                    "gcovr/md5": "ea7f2e78805e85d9aa20a2bec77cee2e"
+                },
+                {
+                    "line_number": 4,
+                    "count": 11,
+                    "branches": [],
+                    "gcovr/md5": "3e2cc082cb7c4086fe2acf4d52b8819b"
+                },
+                {
+                    "line_number": 5,
+                    "count": 1,
+                    "branches": [],
+                    "gcovr/md5": "ea5a1cbe764918679997181a3ea281d3"
+                },
+                {
+                    "line_number": 6,
+                    "count": 2,
+                    "branches": [],
+                    "gcovr/md5": "7eefb90de6682989ef933bcadcbb7de9"
+                },
+                {
+                    "line_number": 7,
+                    "count": 0,
+                    "branches": [],
+                    "gcovr/md5": "cbb184dd8e05c9709e5dcaedaa0495cf"
+                },
+                {
+                    "line_number": 10,
+                    "count": 1,
+                    "branches": [],
+                    "gcovr/md5": "f95b70fdc3088560732a5ac135644506"
+                },
+                {
+                    "line_number": 15,
+                    "count": 0,
+                    "branches": [],
+                    "gcovr/md5": "cbb184dd8e05c9709e5dcaedaa0495cf"
+                }
+            ],
+            "functions": [
+                {
+                    "name": "_Z4testb",
+                    "lineno": 2,
+                    "execution_count": 2,
+                    "blocks_percent": 100.0,
+                    "pos": [
+                        "2:25",
+                        "5:6"
+                    ]
+                },
+                {
+                    "name": "main",
+                    "lineno": 10,
+                    "execution_count": 1,
+                    "blocks_percent": 100.0,
+                    "pos": [
+                        "10:1",
+                        "15:2"
+                    ]
+                }
+            ]
+        }
+    ]
+}

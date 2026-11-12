@@ -1578,7 +1578,7 @@ class LineCoverage(CoverageBase):
         The DecisionCoverage has different states:
 
         - None (no known decision)
-        - Uncheckable (there was a decision, but it can't be analyzed properly)
+        - Uncheckable (there was a decision, but it cannot be analyzed properly)
         - Conditional
         - Switch
 
@@ -2569,7 +2569,7 @@ class FunctionCoverage(CoverageBase):
                 break
         else:
             self.raise_data_error(
-                f"Can't split function {self.demangled_name!r} into name and signature."
+                f"Cannot split function {self.demangled_name!r} into name and signature."
             )
 
         return (self.demangled_name[: -len(signature)], signature)

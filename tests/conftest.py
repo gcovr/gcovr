@@ -911,7 +911,7 @@ class GcovrExecFixture:
         target = str(Path(source).with_suffix(".o")) if target is None else target
         if options is None:
             options = []
-        self.cc("-c", "-o", *options, target, source, cwd=cwd, launcher=launcher)
+        self.cc("-c", "-o", target, *options, source, cwd=cwd, launcher=launcher)
         return target
 
     def cxx_compile(

@@ -15,6 +15,7 @@
 #
 # ****************************************************************************
 
+import typing
 from pathlib import Path
 
 import pytest
@@ -24,8 +25,10 @@ from tests.conftest import (
     CONDITION_COVERAGE_POSSIBLE,
     IS_LINUX,
     USE_PROFDATA_POSSIBLE,
-    GcovrExecFixture,
 )
+
+if typing.TYPE_CHECKING:
+    from tests.conftest import GcovrExecFixture
 
 
 @pytest.mark.skipif(

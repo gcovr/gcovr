@@ -15,10 +15,15 @@
 #
 # ****************************************************************************
 
+import typing
+
 import pytest
 from pytest_check import check
 
-from tests.conftest import USE_PROFDATA_POSSIBLE, GcovrExecFixture
+from tests.conftest import USE_PROFDATA_POSSIBLE
+
+if typing.TYPE_CHECKING:
+    from tests.conftest import GcovrExecFixture
 
 
 @pytest.mark.json

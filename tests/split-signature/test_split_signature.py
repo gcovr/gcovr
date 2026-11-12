@@ -15,9 +15,14 @@
 #
 # ****************************************************************************
 
+import typing
+
 import pytest
 
-from tests.conftest import IS_LINUX, GcovrExecFixture
+from tests.conftest import IS_LINUX
+
+if typing.TYPE_CHECKING:
+    from tests.conftest import GcovrExecFixture
 
 
 @pytest.mark.skipif(

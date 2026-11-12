@@ -31,6 +31,7 @@ from typing import Any, BinaryIO, Callable, Generator, Iterator, TextIO
 
 from lxml import etree  # nosec # We only write XML files
 
+from .exceptions import SanityCheckError
 from .logging import LOGGER
 from .version import __version__
 
@@ -78,7 +79,7 @@ def is_fs_case_insensitive() -> bool:
 
 @functools.cache
 def fix_case_of_path(path: str) -> str:
-    """Fix casing of filenames for cas insensitive file systems."""
+    """Fix casing of filenames for case insensitive file systems."""
     rest, cur = os.path.split(path)
     # e.g path = ".." happens if original path is like "../dir/subdir/file.cpp"
     if not rest:
@@ -90,13 +91,13 @@ def fix_case_of_path(path: str) -> str:
         cur_lower = cur.lower()
         matched_filename = [f for f in os.listdir(rest) if f.lower() == cur_lower]
         if len(matched_filename) > 1:
-            msg = "Seems that we have a case sensitive filesystem, can't fix file case"
-            raise RuntimeError(msg)
+            msg = "Seems that we have a case sensitive filesystem, cannot fix file case"
+            raise SanityCheckError(msg)
 
         if len(matched_filename) == 1:
             path = os.path.join(fix_case_of_path(rest), matched_filename[0])
     except FileNotFoundError:
-        LOGGER.warning("Can not fix case of path because %s not found.", rest)
+        LOGGER.warning("Cannot fix case of path because %s not found.", rest)
 
     return path.replace("\\", "/")
 
@@ -350,9 +351,9 @@ def read_source_file(
         else:
             # The exception contains the source file name,
             # e.g. [Errno 2] No such file or directory: 'xy.txt'
-            message = f"Can't read file, using empty lines: {e}"
+            message = f"Cannot read file, using empty lines: {e}"
             LOGGER.warning(message)
-            # If we can't read the file we use as first line the error
+            # If we cannot read the file we use as first line the error
             # and use empty lines for the rest of the lines.
         source_lines = [b""] * max_line_number
         source_lines[0] = f"/* {message} */".encode()

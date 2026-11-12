@@ -15,11 +15,16 @@
 #
 # ****************************************************************************
 
+import typing
 from pathlib import Path
 
 import pytest
 
-from tests.conftest import GCOVR_ISOLATED_TEST, IS_GCC, GcovrExecFixture
+from tests.conftest import GCOVR_ISOLATED_TEST, IS_GCC
+
+if typing.TYPE_CHECKING:
+    from tests.conftest import GcovrExecFixture
+
 
 EXAMPLES_DIRECTORY = Path(__file__).parent.parent / "doc" / "examples"
 SHELL_SCRIPTS = [

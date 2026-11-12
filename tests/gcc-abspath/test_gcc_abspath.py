@@ -15,9 +15,15 @@
 #
 # ****************************************************************************
 
+import typing
+
 import pytest
 
-from tests.conftest import _CC_HELP_OUTPUT, GcovrExecFixture
+from tests.conftest import _CC_HELP_OUTPUT
+
+if typing.TYPE_CHECKING:
+    from tests.conftest import GcovrExecFixture
+
 
 PROFILE_ABS_PATH = "-fprofile-abs-path"
 

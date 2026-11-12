@@ -16,10 +16,15 @@
 # ****************************************************************************
 
 import logging
+import typing
 
 import pytest
 
-from tests.conftest import CONDITION_COVERAGE_POSSIBLE, IS_LINUX, GcovrExecFixture
+from tests.conftest import CONDITION_COVERAGE_POSSIBLE, IS_LINUX
+
+if typing.TYPE_CHECKING:
+    from tests.conftest import GcovrExecFixture
+
 
 pytestmark = [
     pytest.mark.skipif(

@@ -164,7 +164,7 @@ class _FunctionSpecializationSeparatorLine(NamedTuple):
     """A gcov line that delimits function specializations (no fields)."""
 
 
-# NamedTuples can't inherit from a common base,
+# NamedTuples cannot inherit from a common base,
 # so we use a Union type as the _parse_line() return type.
 #
 # Why NamedTuples? Better type safety than tuples, but very low memory overhead.
@@ -1094,7 +1094,7 @@ def _int_from_gcov_unit(formatted: str) -> int:
     * ``-c`` enables counts instead of percentages
     * ``-H`` enables human-readable numbers (SI units)
 
-    Note that percentages destroy information: the original value can't be recovered,
+    Note that percentages destroy information: the original value cannot be recovered,
     so we must map to zero/one.
     Of course, counts are not that useful either because we don't know the max value.
 

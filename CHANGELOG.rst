@@ -12,12 +12,17 @@ Breaking changes:
 
 New features and notable changes:
 
+- Add support for coverage data created with ``-ffile-prefix-map`` and ``gcc-15`` or newer:
+
+  - Report a clear error if the gcov data is relative and does not exist in current working
+    directory instead of failing with a recursion error. (:issue:`1332`)
+  - Search relative files in current working directory of GCOVR and fall back to the working
+    directory in JSON file. (:issue:`1337`)`
+
 Bug fixes and small improvements:
 
 - Change link color in GitHub theme from fixed color to accent color. (:issue:`1335`)
 - Ignore negative and suspicious counters also for call and function coverage. (:issue:`1336`)
-- Report a clear error if the gcov data only has relative file names, for example when
-  compiling with ``-ffile-prefix-map``, instead of failing with a recursion error. (:issue:`1332`)
 
 Documentation:
 

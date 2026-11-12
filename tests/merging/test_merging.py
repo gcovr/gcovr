@@ -23,7 +23,10 @@ from pathlib import Path
 import pytest
 from pytest_check import check
 
-from tests.conftest import IS_LINUX, GcovrExecFixture
+from tests.conftest import IS_LINUX
+
+if typing.TYPE_CHECKING:
+    from tests.conftest import GcovrExecFixture
 
 
 @pytest.mark.skipif(
@@ -121,6 +124,13 @@ def test_different_functions_strict(
     not IS_LINUX,
     reason="Merging of functions is independent of OS and we do not want to have separate data for Windows and Darwin.",
 )
+@pytest.mark.json
+@pytest.mark.html
+@pytest.mark.txt
+@pytest.mark.cobertura
+@pytest.mark.coveralls
+@pytest.mark.lcov
+@pytest.mark.sonarqube
 @pytest.mark.parametrize(
     "merge_mode_function",
     [
@@ -130,13 +140,6 @@ def test_different_functions_strict(
         "separate",
     ],
 )
-@pytest.mark.json
-@pytest.mark.html
-@pytest.mark.txt
-@pytest.mark.cobertura
-@pytest.mark.coveralls
-@pytest.mark.lcov
-@pytest.mark.sonarqube
 def test_different_functions(
     gcovr_exec: "GcovrExecFixture",
     merge_mode_function: str,

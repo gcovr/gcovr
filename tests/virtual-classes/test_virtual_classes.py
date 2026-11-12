@@ -15,13 +15,18 @@
 #
 # ****************************************************************************
 
+import typing
+
 import pytest
 
-from tests.conftest import GcovrExecFixture
+from tests.conftest import CC_VERSION, IS_GCC
+
+if typing.TYPE_CHECKING:
+    from tests.conftest import GcovrExecFixture
 
 
 @pytest.mark.skipif(
-    GcovrExecFixture.is_gcc() and GcovrExecFixture.cc_version() in [5, 6],
+    IS_GCC and CC_VERSION in [5, 6],
     reason="The branch and call numbers differ in locale execution and CI",
 )
 @pytest.mark.html

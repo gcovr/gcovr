@@ -18,12 +18,16 @@
 import logging
 import re
 import shutil
+import typing
 from unittest import mock
 
 import pytest
 from pytest_check import check
 
-from tests.conftest import GCOVR_ISOLATED_TEST, GcovrExecFixture
+from tests.conftest import GCOVR_ISOLATED_TEST
+
+if typing.TYPE_CHECKING:
+    from tests.conftest import GcovrExecFixture
 
 LOGGER = logging.getLogger(__name__)
 
