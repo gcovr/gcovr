@@ -31,6 +31,7 @@ from typing import Any, BinaryIO, Callable, Generator, Iterator, TextIO
 
 from lxml import etree  # nosec # We only write XML files
 
+from .exceptions import SanityCheckError
 from .logging import LOGGER
 from .version import __version__
 
@@ -78,7 +79,7 @@ def is_fs_case_insensitive() -> bool:
 
 @functools.cache
 def fix_case_of_path(path: str) -> str:
-    """Fix casing of filenames for cas insensitive file systems."""
+    """Fix casing of filenames for case insensitive file systems."""
     rest, cur = os.path.split(path)
     # e.g path = ".." happens if original path is like "../dir/subdir/file.cpp"
     if not rest:
@@ -91,7 +92,7 @@ def fix_case_of_path(path: str) -> str:
         matched_filename = [f for f in os.listdir(rest) if f.lower() == cur_lower]
         if len(matched_filename) > 1:
             msg = "Seems that we have a case sensitive filesystem, cannot fix file case"
-            raise RuntimeError(msg)
+            raise SanityCheckError(msg)
 
         if len(matched_filename) == 1:
             path = os.path.join(fix_case_of_path(rest), matched_filename[0])
