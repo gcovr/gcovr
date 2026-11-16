@@ -43,12 +43,18 @@ def test(gcovr_exec: "GcovrExecFixture") -> None:
 
     gcovr_exec.run("./testcase_foo")
     gcovr_exec.gcovr(
-        "--delete-input-files", "--json-pretty", "--json", "coverage_foo.json"
+        "--delete-input-files",
+        "--json-pretty",
+        "--json",
+        "coverage_foo.json",
     )
 
     gcovr_exec.run("./testcase_bar")
     gcovr_exec.gcovr(
-        "--delete-input-files", "--json-pretty", "--json", "coverage_bar.json"
+        "--delete-input-files",
+        "--json-pretty",
+        "--json",
+        "coverage_bar.json",
     )
 
     gcovr_exec.gcovr(

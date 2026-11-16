@@ -35,6 +35,7 @@ The behavior of this parser was informed by the following sources:
 
 import enum
 import re
+from pathlib import Path
 from typing import Any, Iterable, NamedTuple, Pattern
 
 from ....data_model.coverage import FileCoverage, LineCoverage
@@ -191,7 +192,7 @@ class UnknownLineTypeError(Exception):
 
 
 def parse_metadata(
-    filename: str,
+    filename: Path,
     lines: list[str],
     *,
     suspicious_hits_threshold: int = SUSPICIOUS_COUNTER,
@@ -248,10 +249,10 @@ _LineWithError = tuple[str, Exception]
 
 
 def parse_coverage(
-    data_filename: str | set[tuple[str, ...]],
+    data_filename: Path | set[tuple[Path, ...]],
     lines: list[str],
     *,
-    filename: str,
+    filename: Path,
     ignore_parse_errors: set[str] | None,
     suspicious_hits_threshold: int = SUSPICIOUS_COUNTER,
     activate_trace_logging: bool = False,
@@ -313,7 +314,8 @@ def parse_coverage(
     ):
         files_for_message = (
             "\n   ".join(
-                " -> ".join(file_tuple) for file_tuple in sorted(data_filename)
+                " -> ".join(str(f) for f in file_tuple)
+                for file_tuple in sorted(data_filename)
             )
             if isinstance(data_filename, set)
             else data_filename
@@ -366,7 +368,7 @@ def parse_coverage(
     for function in state.deferred_functions:
         name, count, blocks = function
         filecov.insert_function_coverage(
-            str(data_filename),
+            data_filename,
             MergeOptions(func_opts=FUNCTION_MAX_LINE_MERGE_OPTIONS),
             mangled_name=name,
             demangled_name=None,
@@ -377,7 +379,7 @@ def parse_coverage(
 
     if state.unknown_function is not None:
         filecov.insert_function_coverage(
-            str(data_filename),
+            data_filename,
             MergeOptions(func_opts=FUNCTION_MAX_LINE_MERGE_OPTIONS),
             mangled_name=state.unknown_function[0],
             demangled_name=None,
@@ -651,7 +653,7 @@ def _gather_coverage_from_line(
 def _report_lines_with_errors(
     lines_with_errors: list[_LineWithError],
     *,
-    filename: str,
+    filename: Path,
     ignore_parse_errors: set[str] | None,
 ) -> None:
     """Log warnings and potentially re-throw exceptions."""
@@ -688,7 +690,7 @@ def _report_lines_with_errors(
 
 
 def _parse_line(
-    filename: str,
+    filename: Path,
     line: str,
     suspicious_hits_threshold: int = SUSPICIOUS_COUNTER,
     ignore_parse_errors: set[str] | None = None,

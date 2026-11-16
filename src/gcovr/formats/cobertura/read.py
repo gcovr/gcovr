@@ -17,8 +17,8 @@
 
 """GCOVR Cobertura report."""
 
-import os
 from glob import glob
+from pathlib import Path
 
 from lxml import etree  # nosec # We only write XML files
 
@@ -39,14 +39,24 @@ from ...options import Options
 #
 def read_report(options: Options) -> CoverageContainer:
     """Merge a coverage from multiple reports in the format compatible with Cobertura."""
-    covdata = CoverageContainer(options.root)
+    covdata = CoverageContainer(options.root_dir)
     if len(options.cobertura_tracefile) == 0:
         return covdata
 
-    datafiles = list[str]()
+    datafiles = list[Path]()
 
-    for trace_files_regex in options.cobertura_tracefile:
-        trace_files = glob(trace_files_regex, recursive=True)
+    for trace_file_glob in options.cobertura_tracefile:
+        root_dir = trace_file_glob.parent
+        trace_files = [
+            (root_dir / e)
+            for e in sorted(
+                glob(  # noqa: PTH207
+                    trace_file_glob.name,
+                    root_dir=str(root_dir),
+                    recursive=True,
+                )
+            )
+        ]
         if not trace_files:
             msg = (
                 "Bad --covertura-add-tracefile option.\n"
@@ -54,47 +64,47 @@ def read_report(options: Options) -> CoverageContainer:
             )
             raise RuntimeError(msg)
 
-        for trace_file in [os.path.normpath(trace_file) for trace_file in trace_files]:
+        for trace_file in trace_files:
             if trace_file not in datafiles:
                 datafiles.append(trace_file)
 
-    for data_sources in datafiles:
-        LOGGER.debug("Processing XML file: %s", data_sources)
+    for data_source in datafiles:
+        LOGGER.debug("Processing XML file: %s", data_source)
 
         try:
-            root: etree._Element = etree.parse(data_sources).getroot()  # nosec # We parse the file given by the user
+            root: etree._Element = etree.parse(data_source).getroot()  # nosec # We parse the file given by the user
         except Exception as e:  # noqa: BLE001
             msg = f"Bad --cobertura-add-tracefile option.\n{e}"
             raise RuntimeError(msg) from None
 
         source_elem = root.find("./sources/source")
         if source_elem is None:
-            msg = f"No source directory defined in file {data_sources}"
+            msg = f"No source directory defined in file {data_source}"
             raise AssertionError(msg)
-        source_dir = str(source_elem.text)
+        source_dir = Path(str(source_elem.text))
 
         gcovr_file: etree._Element
         for gcovr_file in root.xpath("./packages//class"):  # type: ignore [assignment, union-attr]
-            filename = gcovr_file.get("filename")
-            if filename is None:  # pragma: no cover
+            filename_str = gcovr_file.get("filename")
+            if filename_str is None:  # pragma: no cover
                 LOGGER.warning(
                     "Missing filename attribute in class element at %s:%s",
-                    data_sources,
+                    data_source,
                     gcovr_file.sourceline,
                 )
                 continue
 
-            filename = str(os.path.normpath(os.path.join(source_dir, filename)))
+            filename = source_dir / filename_str
             if is_file_excluded(
                 "source file", filename, options.include_filter, options.exclude_filter
             ):
                 continue
 
-            filecov = FileCoverage(data_sources, filename=filename)
+            filecov = FileCoverage(data_source, filename=filename)
             merge_options = get_merge_mode_from_options(options)
             xml_line: etree._Element
             for xml_line in gcovr_file.xpath("./lines//line"):  # type: ignore [assignment, union-attr]
-                _insert_line_from_xml(filecov, data_sources, merge_options, xml_line)
+                _insert_line_from_xml(filecov, data_source, merge_options, xml_line)
 
             covdata.insert_file_coverage(filecov, merge_options)
 
@@ -103,7 +113,7 @@ def read_report(options: Options) -> CoverageContainer:
 
 def _insert_line_from_xml(
     filecov: FileCoverage,
-    data_sources: str,
+    data_sources: Path,
     merge_options: MergeOptions,
     xml_line: etree._Element,
 ) -> None:
@@ -143,7 +153,7 @@ def _insert_line_from_xml(
 
 
 def _branch_from_json(
-    linecov: LineCoverage, data_sources: str, branchno: int, *, is_covered: bool
+    linecov: LineCoverage, data_sources: Path, branchno: int, *, is_covered: bool
 ) -> BranchCoverage:
     return linecov.insert_branch_coverage(
         data_sources,

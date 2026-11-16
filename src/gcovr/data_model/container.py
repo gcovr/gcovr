@@ -19,13 +19,13 @@
 
 from __future__ import annotations
 
-import os
 import re
+from pathlib import Path
 from typing import TYPE_CHECKING, Any, Iterator, Literal, ValuesView, overload
 
 from ..filter import is_file_excluded
 from ..logging import LOGGER
-from ..utils import commonpath, force_unix_separator
+from ..utils import commonpath, relpath
 from .coverage import CoverageDiff, FileCoverage, summarize_coverage_diff
 from .coverage_dict import CoverageDict
 from .stats import CoverageStat, DecisionCoverageStat, SummarizedStats
@@ -38,27 +38,27 @@ if TYPE_CHECKING:
 class CoverageContainer:
     """Coverage container holding all the coverage data."""
 
-    def __init__(self, dirname: str, parent: CoverageContainer | None = None) -> None:
+    def __init__(self, dirname: Path, parent: CoverageContainer | None = None) -> None:
         """Initialize a coverage container."""
-        self.data = CoverageDict[str, CoverageContainer | FileCoverage]()
-        self.dirname = os.path.abspath(dirname) + os.path.sep
+        self.data = CoverageDict[Path, CoverageContainer | FileCoverage]()
+        self.dirname = dirname.absolute()
         self.parent = parent
         self.diff: CoverageDiff = CoverageDiff.UNDEFINED
         self._properties = dict[str, Any]()
         self._stats: SummarizedStats | None = None
 
-    def __getitem__(self, key: str) -> CoverageContainer | FileCoverage:
+    def __getitem__(self, key: Path) -> CoverageContainer | FileCoverage:
         """Get item."""
         return self.data[key]
 
     def __setitem__(
-        self, key: str, value: CoverageContainer | FileCoverage
+        self, key: Path, value: CoverageContainer | FileCoverage
     ) -> CoverageContainer | FileCoverage:
         """Set item."""
         self.data[key] = value
         return value
 
-    def __delitem__(self, key: str) -> None:
+    def __delitem__(self, key: Path) -> None:
         """Delete item."""
         del self.data[key]
 
@@ -66,7 +66,7 @@ class CoverageContainer:
         """Get number of items."""
         return len(self.data)
 
-    def __contains__(self, key: str) -> bool:
+    def __contains__(self, key: Path) -> bool:
         """Check if item exists."""
         return key in self.data
 
@@ -140,13 +140,13 @@ class CoverageContainer:
     @classmethod
     def deserialize(
         cls,
-        data_sources: str,
+        data_sources: Path,
         data_dicts_files: list[dict[str, Any]],
         options: Options,
         merge_options: MergeOptions,
     ) -> CoverageContainer:
         """Serialize the object."""
-        covdata = CoverageContainer(options.root)
+        covdata = CoverageContainer(options.root_dir)
         for gcovr_file in data_dicts_files:
             if (
                 filecov := FileCoverage.deserialize(
@@ -251,6 +251,9 @@ class CoverageContainer:
             filename_uses_relative_pathname,
         )
 
+        if not covdata_list:
+            return []
+
         basedir = commonpath([covdata.filename for covdata in covdata_list])
 
         def key_filename(covdata: CoverageContainer | FileCoverage) -> list[int | str]:
@@ -258,14 +261,14 @@ class CoverageContainer:
                 return int(text) if text.isdigit() else text
 
             key = (
-                force_unix_separator(
-                    os.path.relpath(
-                        os.path.realpath(covdata.filename), os.path.realpath(basedir)
-                    )
+                Path(
+                    relpath(Path(covdata.filename).resolve(), Path(basedir).resolve())
+                    if filename_uses_relative_pathname
+                    else covdata.filename
                 )
-                if filename_uses_relative_pathname
-                else covdata.filename
-            ).casefold()
+                .as_posix()
+                .casefold()
+            )
 
             return [
                 convert_to_int_if_possible(part) for part in re.split(r"([0-9]+)", key)
@@ -366,7 +369,7 @@ class CoverageContainer:
         )
 
     @property
-    def filename(self) -> str:
+    def filename(self) -> Path:
         """Helpful function for when we use this DirectoryCoverage in a union with FileCoverage."""
         return self.dirname
 
@@ -405,7 +408,7 @@ class CoverageContainer:
     ) -> None:
         """Add a file coverage item."""
         self._stats = None
-        dirname = os.path.dirname(filecov.filename) + os.path.sep
+        dirname = filecov.filename.parent
         if dirname == self.dirname:
             key = filecov.filename
             if key in self.data:
@@ -417,15 +420,7 @@ class CoverageContainer:
             else:
                 self.data[key] = filecov
         else:
-            covdata_dirname = (
-                os.path.join(
-                    self.dirname,
-                    os.path.relpath(dirname, self.dirname).split(
-                        os.path.sep, maxsplit=1
-                    )[0],
-                )
-                + os.path.sep
-            )
+            covdata_dirname = self.dirname / dirname.relative_to(self.dirname).parts[0]
             if covdata_dirname in self.data:
                 covdata = self[covdata_dirname]
             else:

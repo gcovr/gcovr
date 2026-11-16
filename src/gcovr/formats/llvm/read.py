@@ -35,6 +35,7 @@ import shlex
 import subprocess  # nosec
 from dataclasses import dataclass
 from enum import Enum
+from pathlib import Path
 from typing import Any
 
 from ...data_model.container import CoverageContainer
@@ -46,7 +47,7 @@ from ...data_model.merging import (
 )
 from ...decision_analysis import DecisionParser
 from ...exclusions import apply_all_exclusions, get_exclusion_options_from_options
-from ...filter import is_file_excluded
+from ...filter import Filter, is_file_excluded
 from ...logging import LOGGER
 from ...options import Options
 from ...utils import get_md5_hexdigest, read_source_file, search_file, write_json_output
@@ -63,7 +64,7 @@ EXPECTED_MAJOR_VERSIONS = [
 #
 def read_report(options: Options) -> CoverageContainer:
     """Read trace files into internal data model."""
-    profraw_files = list[str]()
+    profraw_files = list[Path]()
 
     # Get data files
     for search_path in options.search_paths:
@@ -71,7 +72,7 @@ def read_report(options: Options) -> CoverageContainer:
             if profraw_file not in profraw_files:
                 profraw_files.append(profraw_file)
 
-    covdata = CoverageContainer(options.root)
+    covdata = CoverageContainer(options.root_dir)
 
     merge_options = get_merge_mode_from_options(options)
     for profraw_file in profraw_files:
@@ -115,7 +116,7 @@ def read_report(options: Options) -> CoverageContainer:
 
     if options.delete_input_files:
         for profraw_file in profraw_files:
-            os.unlink(profraw_file)
+            profraw_file.unlink()
 
     for filecov in covdata.filecov(recurse=True):
         source_lines = read_source_file(
@@ -149,8 +150,8 @@ def read_report(options: Options) -> CoverageContainer:
 
 
 def find_datafiles(
-    search_path: str, exclude_directory: list[re.Pattern[str]]
-) -> list[str]:
+    search_path: Path, exclude_directory: tuple[Filter, ...]
+) -> list[Path]:
     """
     Find .gcda and .gcno files under the given search path.
 
@@ -159,16 +160,14 @@ def find_datafiles(
     is never actually exercised by the test code.
     So we ONLY return them if there's no corresponding .gcda file.
     """
-    if os.path.isfile(search_path):
-        LOGGER.debug(
-            "Using given %s file %s", os.path.splitext(search_path)[1][1:], search_path
-        )
+    if search_path.is_file():
+        LOGGER.debug("Using given %s file %s", search_path.suffix[1:], search_path)
         files = [search_path]
     else:
         LOGGER.debug("Scanning directory %s for profraw files...", search_path)
         files = list(
             search_file(
-                lambda fname: re.compile(r".*\.profraw$").match(fname) is not None,
+                lambda fname: re.compile(r".*\.profraw$").match(fname.name) is not None,
                 search_path,
                 exclude_directory=exclude_directory,
             )
@@ -177,7 +176,7 @@ def find_datafiles(
     return files
 
 
-def _llvm_profraw_to_json(options: Options, profraw: str) -> dict[str, Any]:
+def _llvm_profraw_to_json(options: Options, profraw: Path) -> dict[str, Any]:
     """Transform the profraw file to to JSON and load it."""
     env = dict(os.environ)
     env["LC_ALL"] = "C"
@@ -214,7 +213,7 @@ def _llvm_profraw_to_json(options: Options, profraw: str) -> dict[str, Any]:
                 raise RuntimeError(msg)
             return out, err
 
-    profdata = os.path.splitext(profraw)[0] + ".profdata"
+    profdata = profraw.with_suffix(".profdata")
     try:
         run_cmd(
             [
@@ -222,7 +221,7 @@ def _llvm_profraw_to_json(options: Options, profraw: str) -> dict[str, Any]:
                 "merge",
                 "--sparse",
                 f"--output={profdata}",
-                profraw,
+                str(profraw),
             ]
         )
         json_string, _ = run_cmd(
@@ -234,29 +233,29 @@ def _llvm_profraw_to_json(options: Options, profraw: str) -> dict[str, Any]:
             ]
         )
     finally:
-        if not options.keep_intermediate_files and os.path.exists(profdata):
-            os.remove(profdata)
+        if not options.keep_intermediate_files and profdata.exists():
+            profdata.unlink()
 
     llvm_json_data: dict[str, Any] = json.loads(json_string)
     if options.keep_intermediate_files:
         write_json_output(
             llvm_json_data,
             pretty=True,
-            filename=profdata + ".json",
+            filename=profdata.with_suffix(profdata.suffix + ".json"),
             default_filename="",
         )
     return llvm_json_data
 
 
 def read_json(
-    data_source: str,
+    data_source: Path,
     json_data: dict[str, Any],
     options: Options,
     merge_options: MergeOptions,
     version: tuple[int, ...],
 ) -> CoverageContainer:
     """Read one clang JSON coverage report."""
-    covdata = CoverageContainer(options.root)
+    covdata = CoverageContainer(options.root_dir)
     for data in json_data["data"]:
         if any(
             "mcdc_records" in entry
@@ -289,7 +288,7 @@ def read_json(
 
 
 def read_json_files(
-    data_source: str,
+    data_source: Path,
     json_data: dict[str, Any],
     options: Options,
     merge_options: MergeOptions,
@@ -300,7 +299,7 @@ def read_json_files(
     file_data: dict[str, Any]
     branches_found = False
     for file_data in json_data["files"]:
-        filename = file_data["filename"]
+        filename = Path(file_data["filename"])
         if is_file_excluded(
             "source file", filename, options.include_filter, options.exclude_filter
         ):
@@ -384,7 +383,7 @@ def read_json_files(
 
 
 def read_json_functions(
-    data_source: str,
+    data_source: Path,
     json_data: dict[str, Any],
     options: Options,
     merge_options: MergeOptions,
@@ -393,7 +392,7 @@ def read_json_functions(
     """Read the functions from clang JSON coverage report."""
     function_data: dict[str, Any]
     for function_data in json_data["functions"]:
-        filenames: list[str] = function_data["filenames"]
+        filenames = [Path(e) for e in function_data["filenames"]]
         if is_file_excluded(
             "source file", filenames[0], options.include_filter, options.exclude_filter
         ):

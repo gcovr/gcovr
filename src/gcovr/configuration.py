@@ -28,7 +28,7 @@ from argparse import SUPPRESS, ArgumentParser, ArgumentTypeError, _ArgumentGroup
 from dataclasses import dataclass
 from inspect import isclass
 from locale import getpreferredencoding
-from typing import Any, Callable, Iterable, TextIO
+from typing import TYPE_CHECKING, Any, Callable, Iterable, TextIO
 
 from . import formats
 from .exceptions import SanityCheckError
@@ -46,6 +46,9 @@ from .options import (
     relative_path,
 )
 from .timestamps import parse_timestamp
+
+if TYPE_CHECKING:
+    from pathlib import Path
 
 
 def timestamp(value: str) -> datetime.datetime:
@@ -227,7 +230,7 @@ def _get_value_from_config_entry(
         if cfg_entry.filename is None:
             msg = "Conversion function must derive base directory from filename"
             raise AssertionError(msg)
-        basedir = os.path.dirname(cfg_entry.filename)
+        basedir = cfg_entry.filename.parent
         converter = _get_converter_function(option.type, basedir=basedir)
 
         try:
@@ -235,12 +238,15 @@ def _get_value_from_config_entry(
         except (ValueError, ArgumentTypeError) as err:
             raise cfg_entry.error(str(err)) from None
 
-    elif option.name == "json_tracefile":  # Special case for patterns
+    elif option.name in (
+        "cobertura_tracefile",
+        "json_tracefile",
+    ):  # Special case for patterns
         if cfg_entry.filename is None:
             msg = "Conversion function must derive base directory from filename"
             raise AssertionError(msg)
-        basedir = os.path.dirname(cfg_entry.filename)
-        value = os.path.join(basedir, cfg_entry.value)
+        basedir = cfg_entry.filename.parent
+        value = basedir / cfg_entry.value
     else:
         value = cfg_entry.value
 
@@ -255,7 +261,7 @@ def _get_value_from_config_entry(
 def _get_converter_function(
     option_type: Callable[[str], Any],
     *,
-    basedir: str,
+    basedir: Path,
 ) -> Callable[[str], Any]:
     """
     Obtain a converter function that corresponds to `option.type`.
@@ -972,7 +978,7 @@ CONFIG_POSSIBLE_VARIABLE = re.compile(r"[$][\w{(]")
 
 def parse_config_file(
     open_file: TextIO,
-    filename: str,
+    filename: Path,
     first_lineno: int = 1,
 ) -> Iterable[ConfigEntry]:
     r"""
@@ -1049,7 +1055,7 @@ def parse_config_file(
 
 def config_entries_from_dict(
     config: dict[str, Any],
-    filename: str,
+    filename: Path,
 ) -> Iterable[ConfigEntry]:
     r"""
     Generate config entries from a dictionary.
@@ -1089,7 +1095,7 @@ class ConfigEntry:
     value: str
     """The un-parsed value."""
 
-    filename: str | None = None
+    filename: Path | None = None
     """Path of the config file, for error messages."""
 
     lineno: int | None = None

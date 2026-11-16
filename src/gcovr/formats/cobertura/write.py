@@ -17,8 +17,8 @@
 
 """GCOVR Coveralls report."""
 
-import os
 from dataclasses import dataclass
+from pathlib import Path
 
 from lxml import etree  # nosec # We only write XML files
 
@@ -26,11 +26,11 @@ from ...data_model.container import CoverageContainer
 from ...data_model.coverage import LineCoverage
 from ...data_model.stats import CoverageStat, SummarizedStats
 from ...options import Options
-from ...utils import force_unix_separator, get_version_for_report, write_xml_output
+from ...utils import get_version_for_report, write_xml_output
 
 
 def write_report(
-    covdata: CoverageContainer, output_file: str, options: Options
+    covdata: CoverageContainer, output_file: Path, options: Options
 ) -> None:
     """Produce an XML report in the Cobertura format."""
     root_elem = etree.Element("coverage")
@@ -116,9 +116,7 @@ def write_report(
         package_elem.set("complexity", "0.0")
 
     # Populate the <sources> element: this is the root directory
-    etree.SubElement(sources, "source").text = force_unix_separator(
-        os.path.abspath(options.root)
-    )
+    etree.SubElement(sources, "source").text = options.root_dir.as_posix()
 
     write_xml_output(
         root_elem,

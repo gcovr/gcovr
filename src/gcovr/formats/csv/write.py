@@ -18,6 +18,7 @@
 """GCOVR CSV report."""
 
 import csv
+from pathlib import Path
 
 from ...data_model.container import CoverageContainer
 from ...data_model.stats import CoverageStat
@@ -26,7 +27,7 @@ from ...utils import open_text_for_writing
 
 
 def write_report(
-    covdata: CoverageContainer, output_file: str, options: Options
+    covdata: CoverageContainer, output_file: Path, options: Options
 ) -> None:
     """GCOVR CSV report."""
     # Open output without translation of line endings.

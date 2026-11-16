@@ -18,6 +18,7 @@
 """GCOVR JaCoCo report."""
 
 from dataclasses import dataclass
+from pathlib import Path
 
 from lxml import etree  # nosec # We only write XML files
 
@@ -28,7 +29,7 @@ from ...utils import write_xml_output
 
 
 def write_report(
-    covdata: CoverageContainer, output_file: str, options: Options
+    covdata: CoverageContainer, output_file: Path, options: Options
 ) -> None:
     """Write an XML report in the JaCoCo format."""
     root_elem = etree.Element("report")

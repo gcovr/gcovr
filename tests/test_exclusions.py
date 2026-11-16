@@ -15,16 +15,18 @@
 #
 # ****************************************************************************
 
+from pathlib import Path
+
 from gcovr.data_model.coverage import FileCoverage
 from gcovr.exclusions import remove_internal_functions
 
 
 def test_keep_fortran_module_function() -> None:
     """Fortran module procedures are not compiler-generated functions."""
-    filecov = FileCoverage("test.gcov", filename="module_help.F90")
+    filecov = FileCoverage(Path("test.gcov"), filename=Path("module_help.F90"))
     for name in ("__module_help_MOD_help_convert", "__compiler_internal"):
         filecov.insert_function_coverage(
-            "test.gcov",
+            Path("test.gcov"),
             mangled_name=name,
             demangled_name=None,
             lineno=1,
@@ -41,9 +43,9 @@ def test_keep_fortran_module_function() -> None:
 
 def test_remove_fortran_shaped_function_from_cpp_file() -> None:
     """The Fortran exception must not weaken filtering for other languages."""
-    filecov = FileCoverage("test.gcov", filename="module_help.cpp")
+    filecov = FileCoverage(Path("test.gcov"), filename=Path("module_help.cpp"))
     filecov.insert_function_coverage(
-        "test.gcov",
+        Path("test.gcov"),
         mangled_name="__module_help_MOD_help_convert",
         demangled_name=None,
         lineno=1,

@@ -17,13 +17,13 @@
 
 """GCOVR JSON report."""
 
-import os
+from pathlib import Path
 from typing import Any
 
 from ...data_model import version
 from ...data_model.container import CoverageContainer
 from ...options import Options
-from ...utils import force_unix_separator, write_json_output
+from ...utils import relpath, write_json_output
 
 SUMMARY_FORMAT_VERSION = (
     # BEGIN summary version
@@ -34,7 +34,7 @@ KEY_SUMMARY_FORMAT_VERSION = "gcovr/summary_format_version"
 
 
 def write_report(
-    covdata: CoverageContainer, output_file: str, options: Options
+    covdata: CoverageContainer, output_file: Path, options: Options
 ) -> None:
     """
     Write JSON report.
@@ -53,17 +53,16 @@ def write_report(
 
 
 def write_summary_report(
-    covdata: CoverageContainer, output_file: str, options: Options
+    covdata: CoverageContainer, output_file: Path, options: Options
 ) -> None:
     """Produce gcovr JSON summary report."""
     json_dict = dict[str, Any]()
 
-    json_dict["root"] = force_unix_separator(
-        os.path.relpath(
-            options.root,
-            os.getcwd() if output_file == "-" else os.path.dirname(output_file),
-        )
-    )
+    json_dict["root"] = relpath(
+        options.root,
+        Path.cwd() if output_file.name == "-" else Path(output_file).parent,
+    ).as_posix()
+
     json_dict["gcovr/summary_format_version"] = SUMMARY_FORMAT_VERSION
     files = list[dict[str, Any]]()
     json_dict["files"] = files
@@ -79,7 +78,7 @@ def write_summary_report(
     for filecov in filecov_list:
         filename = filecov.presentable_filename(options.root_filter)
         if options.json_base:
-            filename = f"{options.json_base}/{filename}"
+            filename = str(options.json_base / filename)
 
         files.append(
             {

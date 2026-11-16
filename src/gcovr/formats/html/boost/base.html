@@ -95,7 +95,7 @@
           <div class="breadcrumb">
             {% block breadcrumb %}
             {% if display_name %}
-            <a href="{{ROOT_FNAME}}" class="breadcrumb-home">{{info.head}}</a><span class="separator">/</span><span class="current" title="{{display_name}}">{{display_name | replace("/", " / ")}}</span>
+            <a href="{{ROOT_FNAME}}" class="breadcrumb-home">{{info.head}}</a><span class="separator">/</span><span class="current" title="{{display_name}}">{{display_name | replace('/', ' / ')}}</span>
             {% else %}
             <span class="breadcrumb-title">{{info.head}}</span><span class="breadcrumb-label"></span>
             {% endif %}

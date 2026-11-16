@@ -17,6 +17,8 @@
 
 """GCOVR CSV report interface."""
 
+from pathlib import Path
+
 from ...data_model.container import CoverageContainer
 from ...formats.base import BaseHandler
 from ...options import GcovrConfigOption, OutputOrDefault
@@ -65,7 +67,7 @@ class CsvHandler(BaseHandler):
             msg = "A CSV report is not possible with --json-compare."
             raise RuntimeError(msg)
 
-    def write_report(self, covdata: CoverageContainer, output_file: str) -> None:
+    def write_report(self, covdata: CoverageContainer, output_file: Path) -> None:
         """Write report."""
         # Lazy loading is intended here
         from .write import (  # pylint: disable=import-outside-toplevel  # noqa: PLC0415

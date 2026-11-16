@@ -18,6 +18,7 @@
 """GCOVR report definition base class."""
 
 from abc import abstractmethod
+from pathlib import Path
 
 from ..data_model.container import CoverageContainer
 from ..options import GcovrConfigOption, Options
@@ -73,7 +74,7 @@ class BaseHandler:
     def write_report(
         self,
         covdata: CoverageContainer,  # pylint: disable=unused-argument # noqa: ARG002
-        output_file: str,  # pylint: disable=unused-argument # noqa: ARG002
+        output_file: Path,  # pylint: disable=unused-argument # noqa: ARG002
     ) -> None:
         """Write report."""
         msg = "Function 'write_report' not implemented."
@@ -82,7 +83,7 @@ class BaseHandler:
     def write_summary_report(
         self,
         covdata: CoverageContainer,  # pylint: disable=unused-argument # noqa: ARG002
-        output_file: str,  # pylint: disable=unused-argument # noqa: ARG002
+        output_file: Path,  # pylint: disable=unused-argument # noqa: ARG002
     ) -> None:
         """Write summary report."""
         msg = "Function 'write_summary_report' not implemented."

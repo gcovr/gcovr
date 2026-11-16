@@ -19,10 +19,11 @@
 
 # cspell:ignore xmlcharrefreplace
 
+import contextlib
 import functools
-import os
 import re
 from dataclasses import dataclass
+from pathlib import Path
 from typing import Any, Callable, Iterable, Iterator
 
 import pygments
@@ -64,10 +65,10 @@ from ...utils import (
     GZIP_SUFFIX,
     chdir,
     commonpath,
-    force_unix_separator,
     get_md5_hexdigest,
     get_version_for_report,
     open_text_for_writing,
+    relpath,
 )
 
 PYGMENTS_CSS_MARKER = "/* Comment.Preproc */"
@@ -116,12 +117,9 @@ def file_environment() -> Environment:
 
     def load_file(template: str) -> str | None:
         contents = None
-        try:
-            with open(template, "rb") as f:
-                contents = f.read().decode("UTF-8")
         # This exception can only occur if the file gets inaccessible while gcovr is running.
-        except FileNotFoundError:  # pragma: no cover
-            pass
+        with contextlib.suppress(FileNotFoundError):
+            contents = Path(template).read_bytes().decode("UTF-8")
 
         return contents
 
@@ -141,7 +139,7 @@ class CssRenderer:
     def __load_css_template(options: Options) -> Template:
         """Load the CSS template."""
         if options.html_css is not None:
-            template_path = os.path.relpath(options.html_css)
+            template_path = relpath(options.html_css, Path.cwd()).as_posix()
             return file_environment().get_template(template_path)
 
         return theme_environment(options).get_template("style.css")
@@ -160,13 +158,12 @@ class NullHighlighting:
         """Get the empty CSS."""
         return ""
 
-    @staticmethod
-    def highlighter_for_file(_: str) -> Callable[[str], list[str]]:
+    def highlighter_for_file(self, filename: Path) -> Callable[[str], list[str]]:  # pylint: disable=unused-argument # noqa: ARG002
         """Get the default highlighter which only returns the content as raw text lines."""
         return lambda code: [line.rstrip() for line in code.split("\n")]
 
 
-class PygmentsHighlighting:
+class PygmentsHighlighting(NullHighlighting):
     """Class for syntax highlighting in report."""
 
     class DefaultStyle(Style):
@@ -189,7 +186,7 @@ class PygmentsHighlighting:
 
         def filter(
             self,
-            lexer: Lexer | None,  # noqa: ARG002
+            lexer: Lexer | None,  # pylint: disable=unused-argument # noqa: ARG002
             stream: Iterable[tuple[_TokenType, str]],
         ) -> Iterator[tuple[_TokenType, str]]:
             """Filter the given stream."""
@@ -229,10 +226,10 @@ class PygmentsHighlighting:
             f"\n\n/* pygments syntax highlighting */\n{self.formatter.get_style_defs()}"  # type: ignore [no-untyped-call]
         )
 
-    def highlighter_for_file(self, filename: str) -> Callable[[str], list[str]]:
+    def highlighter_for_file(self, filename: Path) -> Callable[[str], list[str]]:
         """Get the highlighter for the given filename."""
         if self.formatter is None:  # pragma: no cover
-            return NullHighlighting.highlighter_for_file(filename)
+            return super().highlighter_for_file(filename)
 
         try:
             lexer = get_lexer_for_filename(filename, None, stripnl=False)
@@ -243,7 +240,7 @@ class PygmentsHighlighting:
                 for line in pygments.highlight(code, lexer, formatter).split("\n")
             ]
         except pygments.util.ClassNotFound:  # pragma: no cover
-            return NullHighlighting.highlighter_for_file(filename)
+            return super().highlighter_for_file(filename)
 
 
 @functools.lru_cache(maxsize=1)
@@ -334,15 +331,13 @@ class RootInfo:
         self.lines = dict[str, Any]()
         self.navigation = dict[str, RootInfo.Navigation]()
 
-    def set_directory(self, directory: str) -> None:
+    def set_directory(self, directory: Path) -> None:
         """Set the directory for the report."""
-        self.directory = directory
+        self.directory = directory.as_posix() + "/"
 
     def get_directory(self) -> str:
         """Get the directory for the report."""
-        return (
-            "." if self.directory == "" else force_unix_separator(str(self.directory))
-        )
+        return self.directory
 
     def set_coverage(self, covdata: CoverageContainer) -> None:
         """Update this RootInfo with a summary of the CoverageContainer."""
@@ -384,7 +379,7 @@ class RootInfo:
 # Produce an HTML report
 #
 def write_report(
-    covdata: CoverageContainer, output_file: str, options: Options
+    covdata: CoverageContainer, output_file: Path, options: Options
 ) -> None:
     """Write the HTML report."""
     medium_threshold = options.medium_threshold
@@ -432,31 +427,31 @@ def write_report(
             or options.html_single_page
         )
 
-    if output_file.endswith(os.sep):
+    if output_file.is_dir():
         if options.html_single_page:
-            output_file += "coverage_single_page.html"
+            output_file /= "coverage_single_page.html"
         elif options.html_nested:
-            output_file += "coverage_nested.html"
+            output_file /= "coverage_nested.html"
         elif options.html_details:
-            output_file += "coverage_details.html"
+            output_file /= "coverage_details.html"
         else:
-            output_file += "coverage.html"
+            output_file /= "coverage.html"
     data["LINK_ROOT"] = (
-        os.path.basename(output_file)
+        output_file.name
         if root_info.relative_anchors or root_info.single_page
         else output_file
     )
-    data["ROOT_FNAME"] = os.path.basename(output_file)
+    data["ROOT_FNAME"] = output_file.name
 
     if options.html_details or options.html_nested:
         (output_prefix, output_suffix) = _get_prefix_and_suffix(output_file)
-        functions_output_file = f"{output_prefix}.functions{output_suffix}"
-        data["FUNCTIONS_FNAME"] = os.path.basename(functions_output_file)
+        functions_output_file = Path(f"{output_prefix}.functions{output_suffix}")
+        data["FUNCTIONS_FNAME"] = functions_output_file.name
         if options.html_single_page:
             # Remove the prefix to get shorter links
             data["FUNCTIONS_FNAME"] = data["FUNCTIONS_FNAME"].split(".", maxsplit=1)[1]
     else:
-        functions_output_file = "NOT USED"
+        functions_output_file = None
 
     data["theme"] = get_theme_color(options.html_theme)
 
@@ -466,60 +461,61 @@ def write_report(
 
     LOGGER.debug("Store additional properties...")
 
-    previous_filecov: FileCoverage | None = None
-
     def _update_properties(cdata: CoverageContainer | FileCoverage) -> None:
         """Store the filenames and the source file links for the report."""
-        filtered_name = options.root_filter.sub("", cdata.filename)
-        cdata.properties["filtered_name"] = force_unix_separator(filtered_name)
+        filtered_name = Path(
+            options.root_filter.sub(
+                "",
+                f"{cdata.filename}/"
+                if isinstance(cdata, CoverageContainer)
+                else str(cdata.filename),
+            )
+        )
+        cdata.properties["filtered_name"] = filtered_name.as_posix()
         if cdata == covdata:
-            _, cdata.properties["sourcefile"] = os.path.split(
-                output_file.removesuffix(GZIP_SUFFIX)
+            cdata.properties["sourcefile"] = Path(
+                output_file.name.removesuffix(GZIP_SUFFIX)
             )
         else:
             cdata.properties["sourcefile"] = _make_short_source_filename(
-                output_file, filtered_name.rstrip(os.sep)
+                output_file, filtered_name
             )
             if options.html_single_page and cdata.properties["sourcefile"] is not None:
                 # Remove the prefix to get shorter links
-                cdata.properties["sourcefile"] = str(
-                    cdata.properties["sourcefile"]
-                ).split(".", maxsplit=1)[1]
-        link_report = cdata.properties["sourcefile"]
-        if link_report is not None and (
-            root_info.relative_anchors or root_info.single_page
-        ):
-            link_report = os.path.basename(link_report)
-        cdata.properties["link_report"] = link_report
-
-        if isinstance(cdata, FileCoverage):
-            nonlocal previous_filecov
-            if previous_filecov is not None:
-                previous_filecov.properties["link_report_next"] = cdata.properties[
-                    "link_report"
-                ]
-            cdata.properties["link_report_previous"] = (
-                None
-                if previous_filecov is None
-                else previous_filecov.properties["link_report"]
-            )
-            cdata.properties["link_report_next"] = None
-            previous_filecov = cdata
-        else:
-            for filecov in cdata.filecov():
-                filecov.properties["link_report_parent"] = (
-                    cdata.properties["link_report"]
-                    if options.html_nested
-                    else data["LINK_ROOT"]
+                cdata.properties["sourcefile"] = Path(
+                    cdata.properties["sourcefile"].name.split(".", maxsplit=1)[1]
                 )
+        cdata.properties["link_report"] = (
+            cdata.properties["sourcefile"].name
+            if root_info.relative_anchors or root_info.single_page
+            else cdata.properties["sourcefile"]
+        )
 
     filecov_list = sorted(
-        covdata.filecov(recurse=True), key=lambda x: x.filename.lower()
+        covdata.filecov(recurse=True), key=lambda x: str(x.filename).lower()
     )
+    previous_filecov: FileCoverage | None = None
     for filecov in filecov_list:
         _update_properties(filecov)
+        if previous_filecov is not None:
+            previous_filecov.properties["link_report_next"] = filecov.properties[
+                "link_report"
+            ]
+        filecov.properties["link_report_previous"] = (
+            None
+            if previous_filecov is None
+            else previous_filecov.properties["link_report"]
+        )
+        filecov.properties["link_report_next"] = None
+        previous_filecov = filecov
     for dircov in covdata.dircov(recurse=True):
         _update_properties(dircov)
+        for filecov in dircov.filecov():
+            filecov.properties["link_report_parent"] = (
+                dircov.properties["link_report"]
+                if options.html_nested
+                else data["LINK_ROOT"]
+            )
 
     for filecov in filecov_list:
         filename = filecov.properties["filtered_name"]
@@ -531,22 +527,21 @@ def write_report(
 
     # Define the common root directory, which may differ from options.root_dir
     # when source files share a common prefix.
-    filtered_name = [cdata.properties["filtered_name"] for cdata in filecov_list]
-    root_directory = ""
-    if len(filtered_name) > 1:
-        common_dir = commonpath(filtered_name)
-        if common_dir != "":
-            root_directory = common_dir
+    filtered_names = [Path(cdata.properties["filtered_name"]) for cdata in filecov_list]
+    root_dir = Path.cwd()
+    if len(filtered_names) > 1:
+        common_dir = commonpath(filtered_names)
+        if common_dir is not None:
+            root_dir = common_dir
     else:
-        directory, _ = os.path.split(
-            filtered_name[0]
-            if filtered_name
-            else options.root_filter.sub("", covdata.dirname)
+        directory = (
+            str(filtered_names[0].parent)
+            if filtered_names
+            else options.root_filter.sub("", str(covdata.dirname))
         )
         if directory != "":
-            root_directory = str(directory) + os.sep
-    root_directory = force_unix_separator(root_directory)
-    root_info.set_directory(root_directory)
+            root_dir = Path(directory)
+    root_info.set_directory(root_dir)
 
     if options.html_nested:
         LOGGER.debug("Processing tree data...")
@@ -577,19 +572,21 @@ def write_report(
                     # Sort directories first, then files alphabetically by filename.
                     key=lambda cdata: (
                         0 if cdata.properties["tree_data"]["isDirectory"] else 1,
-                        cdata.filename.lower(),
+                        str(cdata.filename).lower(),
                     ),
                 ):
-                    c.properties["tree_data"]["name"] = c.filename.removeprefix(
-                        cdata.filename
-                    ).removesuffix(os.sep)
+                    c.properties["tree_data"]["name"] = (
+                        c.filename.as_posix().removeprefix(
+                            cdata.filename.as_posix() + "/"
+                        )
+                    )
                     children.append(c.properties["tree_data"])
         root_filtered_name = covdata.properties["filtered_name"]
-        if root_filtered_name:
-            covdata.properties["tree_data"]["name"] = root_filtered_name.rstrip("/")
-            data["GCOVR_TREE_DATA"] = [covdata.properties["tree_data"]]
-        else:
+        if root_filtered_name == ".":
             data["GCOVR_TREE_DATA"] = covdata.properties["tree_data"]["children"]
+        else:
+            covdata.properties["tree_data"]["name"] = root_filtered_name
+            data["GCOVR_TREE_DATA"] = [covdata.properties["tree_data"]]
 
     LOGGER.debug("Render CSS file...")
     css_data = CssRenderer.render(options, **data).strip()
@@ -617,25 +614,23 @@ def write_report(
         if javascript_data is not None:
             data["javascript"] = javascript_data
     else:
-        css_output = os.path.splitext(output_file)[0] + ".css"
+        css_output = output_file.with_suffix(".css")
         with open_text_for_writing(css_output, encoding="utf-8") as fh_out:
             fh_out.write(css_data)
             fh_out.write("\n")
 
         data["css_link"] = (
-            os.path.basename(css_output)
-            if options.html_relative_anchors
-            else css_output
+            css_output.name if options.html_relative_anchors else css_output
         )
 
         if javascript_data is not None:
-            javascript_output = os.path.splitext(output_file)[0] + ".js"
+            javascript_output = output_file.with_suffix(".js")
             with open_text_for_writing(javascript_output, encoding="utf-8") as fh_out:
                 fh_out.write(javascript_data)
                 fh_out.write("\n")
 
             data["javascript_link"] = (
-                os.path.basename(javascript_output)
+                javascript_output.name
                 if options.html_relative_anchors
                 else javascript_output
             )
@@ -671,7 +666,7 @@ def write_report(
 def write_root_page(
     options: Options,
     root_info: RootInfo,
-    output_file: str,
+    output_file: Path,
     covdata: CoverageContainer,
     data: dict[str, Any],
 ) -> None:
@@ -693,7 +688,7 @@ def write_root_page(
 def write_directory_pages(
     options: Options,
     root_info: RootInfo,
-    output_file: str,
+    output_file: Path,
     covdata: CoverageContainer,
     data: dict[str, Any],
 ) -> None:
@@ -728,7 +723,7 @@ def write_directory_pages(
 def write_source_pages(
     options: Options,
     root_info: RootInfo,
-    functions_output_file: str,
+    functions_output_file: Path | None,
     covdata: CoverageContainer,
     data: dict[str, Any],
 ) -> None:
@@ -765,12 +760,14 @@ def write_source_pages(
             all_functions=[all_functions[k] for k in sorted(all_functions)],
         )
     )
-    with open_text_for_writing(
-        functions_output_file,
-        encoding=options.html_encoding,
-        errors="xmlcharrefreplace",
-    ) as fh:
-        fh.write(html_string + "\n")
+
+    if functions_output_file is not None:
+        with open_text_for_writing(
+            functions_output_file,
+            encoding=options.html_encoding,
+            errors="xmlcharrefreplace",
+        ) as fh:
+            fh.write(html_string + "\n")
 
     if error_no_files_not_found != 0:
         msg = f"{error_no_files_not_found} source file(s) not found."
@@ -780,7 +777,7 @@ def write_source_pages(
 def write_single_page(
     options: Options,
     root_info: RootInfo,
-    output_file: str,
+    output_file: Path,
     covdata: CoverageContainer,
     data: dict[str, Any],
 ) -> None:
@@ -924,23 +921,33 @@ def get_coverage_data(
         "class": coverage_class(stats.call.percent),
         "sort": sort_value(stats.call),
     }
-    display_name = force_unix_separator(
-        os.path.relpath(
-            os.path.realpath(cdata.properties["filtered_name"]),
-            os.path.realpath(
-                os.path.join(root_info.directory, relative_path)
+    display_filename = Path(
+        Path(cdata.properties["filtered_name"])
+        .resolve()
+        .relative_to(
+            (
+                Path(root_info.directory, relative_path)
                 if relative_path
-                else root_info.directory
-            ),
+                else Path(root_info.directory)
+            ).resolve()
         )
-    )
+    ).as_posix()
+
+    if "/" in display_filename:
+        display_dirname, display_basename = display_filename.rsplit("/", maxsplit=1)
+        display_dirname += "/"
+    else:
+        display_dirname, display_basename = ("", display_filename)
+
+    is_dir = isinstance(cdata, CoverageContainer)
+    directory_suffix = "/" if is_dir else ""
 
     return {
-        "is_dir": isinstance(cdata, CoverageContainer),
-        "filename": cdata.properties["filtered_name"],
-        "display_name": display_name,
-        "dirname": (os.path.dirname(display_name) + "/") if "/" in display_name else "",
-        "basename": os.path.basename(display_name),
+        "is_dir": is_dir,
+        "filename": f"{cdata.properties['filtered_name']}{directory_suffix}",
+        "display_name": display_filename,
+        "dirname": display_dirname,
+        "basename": display_basename,
         "diff": cdata.diff.name if cdata.is_compare_info_available() else None,
         "link": cdata.properties["link_report"]
         if root_info.link_sourcefiles
@@ -966,15 +973,17 @@ def get_directory_data(
     if covdata.parent is None:
         relative_path = ""
     else:
-        relative_path = covdata.properties["filtered_name"]
+        relative_path = str(covdata.properties["filtered_name"])
         if relative_path == ".":
             relative_path = ""
         elif relative_path.startswith(root_info.directory):
-            relative_path = relative_path[len(root_info.directory) :]
+            relative_path = relative_path[len(root_info.directory) :].lstrip("/")
+            if relative_path == ".":
+                relative_path = ""
     directory_data = dict[str, Any](
         {
             "id": covdata.properties["sourcefile"],
-            "display_name": relative_path,
+            "display_name": "" if relative_path == "" else f"{relative_path}/",
         }
     )
 
@@ -1018,7 +1027,7 @@ def get_file_data(
 
     file_data = dict[str, Any](
         {
-            "html_filename": os.path.basename(filecov.properties["sourcefile"]),
+            "html_filename": Path(filecov.properties["sourcefile"]).name,
             "source_lines": [],
             "function_list": [],
         }
@@ -1038,7 +1047,7 @@ def get_file_data(
             f_data = dict[str, Any]()
             f_data["name"] = functioncov.name
             f_data["filename"] = filecov.properties["filtered_name"]
-            f_data["html_filename"] = os.path.basename(filecov.properties["sourcefile"])
+            f_data["html_filename"] = filecov.properties["sourcefile"].name
             f_data["line"] = lineno
             f_data["execution_count"] = functioncov.execution_count[lineno]
             f_data["blocks_percent"] = functioncov.blocks_percent[lineno]
@@ -1070,8 +1079,7 @@ def get_file_data(
         )
         file_not_found = True
         try:
-            with open(
-                filecov.filename,
+            with filecov.filename.open(
                 encoding=options.source_encoding,
                 errors="replace",
             ) as source_file:
@@ -1097,7 +1105,7 @@ def get_file_data(
                         max_line_from_cdata,
                     )
         except OSError as e:
-            if filecov.filename.endswith("<stdin>"):
+            if filecov.filename.name == "<stdin>":
                 file_not_found = False
                 file_info = "!!! File from stdin !!!"
             else:
@@ -1379,16 +1387,15 @@ def source_row_call(linecov: LineCoverage) -> dict[str, Any]:
     }
 
 
-def _get_prefix_and_suffix(output_file: str) -> tuple[str, str]:
+def _get_prefix_and_suffix(output_file: Path) -> tuple[Path, str]:
     """Split into prefix and suffix, ignoring the last suffix for GZIP."""
-    (output_prefix, output_suffix) = os.path.splitext(os.path.abspath(output_file))
-    if output_suffix == GZIP_SUFFIX:
-        return _get_prefix_and_suffix(output_prefix)
+    if output_file.suffix == GZIP_SUFFIX:
+        return _get_prefix_and_suffix(output_file.with_suffix(""))
 
-    return (output_prefix, output_suffix)
+    return (output_file.with_suffix(""), output_file.suffix)
 
 
-def _make_short_source_filename(output_file: str, filename: str) -> str:
+def _make_short_source_filename(output_file: Path, filename: Path) -> Path:
     r"""
     Make a short-ish file path for --html-detail output.
 
@@ -1398,13 +1405,13 @@ def _make_short_source_filename(output_file: str, filename: str) -> str:
 
     """
     (output_prefix, output_suffix) = _get_prefix_and_suffix(output_file)
-    filename = filename.replace(os.sep, "/").replace("<stdin>", "stdin")
-    return (
+    posix_filename = filename.as_posix().replace("<stdin>", "stdin")
+    return Path(
         ".".join(
             (
-                output_prefix,
-                os.path.basename(filename),
-                get_md5_hexdigest(filename.encode("UTF-8")),
+                str(output_prefix),
+                filename.name,
+                get_md5_hexdigest(posix_filename.encode("UTF-8")),
             )
         )
         + output_suffix

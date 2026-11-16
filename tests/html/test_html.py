@@ -16,8 +16,8 @@
 # ****************************************************************************
 
 import logging
-import os
 import typing
+from pathlib import Path
 
 import pytest
 from pytest_check import check
@@ -64,20 +64,21 @@ LOGGER = logging.getLogger(__name__)
 )
 @pytest.mark.skipif(not IS_WINDOWS, reason="Only for Windows")
 def test_windows_make_short_source_filename(outfile: str, source_filename: str) -> None:
-    current_drive = os.getcwd()[0:1]
-    outfile = outfile.replace("C:", current_drive)
-    source_filename = source_filename.replace("C:", current_drive)
+    current_drive = Path.cwd().absolute().drive
 
-    result = _make_short_source_filename(outfile, source_filename)
+    result = _make_short_source_filename(
+        Path(outfile.replace("C:", current_drive)),
+        Path(source_filename.replace("C:", current_drive)),
+    )
     LOGGER.info("=" * 100)
     LOGGER.info(outfile)
     LOGGER.info(source_filename)
     LOGGER.info(result)
-    assert ":" not in result or (
-        result.startswith(current_drive) and ":" not in result[2:]
+    assert ":" not in str(result) or (
+        result.startswith(current_drive) and ":" not in str(result)[2:]
     )
 
-    assert len(result) < 256  # noqa: PLR2004
+    assert len(str(result)) < 256  # noqa: PLR2004
 
 
 PARAMETERS = [

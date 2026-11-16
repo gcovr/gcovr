@@ -216,7 +216,7 @@ def pytest_addoption(parser: pytest.Parser) -> None:  # pragma: no cover
 @contextmanager
 def _chdir(directory: Path) -> Generator[None, None, None]:
     """Context manager for changing the working directory."""
-    current_dir = Path(os.getcwd())
+    current_dir = Path.cwd()
     os.chdir(directory)
     try:
         yield
@@ -391,9 +391,7 @@ class GcovrTestCompare:
     ) -> Path:
         reference_file = self.main_reference / reference_file.name
         reference_file.parent.mkdir(parents=True, exist_ok=True)
-
-        with open(reference_file, "w", newline="", encoding=encoding) as out:
-            out.write(content)
+        reference_file.write_text(content, newline="", encoding=encoding)
 
         return reference_file
 
@@ -429,13 +427,13 @@ class GcovrTestCompare:
                 ):
                     with other_reference_file.open(encoding=encoding, newline="") as f:
                         if coverage == f.read():
-                            os.unlink(reference_file)
+                            Path(reference_file).unlink()
                 break
 
         for reference_dir in self.reference_dirs():  # pragma: no cover
             # Check if folder is empty
             if reference_dir.exists() and len(list(reference_dir.glob("*"))) == 0:
-                os.rmdir(str(reference_dir))
+                Path(reference_dir).rmdir()
 
     @staticmethod
     def assert_equals(
@@ -846,7 +844,7 @@ class GcovrExecFixture:
             try:
                 for index, current_cwd in enumerate(cwd, start=1):
                     self.print(
-                        f"\n[{index}] Starting in {current_cwd.relative_to(Path.cwd())}: {' '.join(args)}",
+                        f"\n[{index}] Starting in {current_cwd}: {' '.join(args)}",
                     )
                     processes.append(
                         subprocess.Popen(  # nosec: B603  # noqa: S603

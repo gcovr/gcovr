@@ -27,6 +27,7 @@ import re
 import subprocess  # nosec # Commands are trusted.
 import sys
 import time
+from pathlib import Path
 from typing import Callable, Iterator
 
 LOGGER = logging.getLogger(__name__)
@@ -88,7 +89,7 @@ def get_copyright_header(version: str, comment_char: str = "#") -> Iterator[str]
 
 
 def add_copyright_header_to_python_file(
-    _filename: str, lines: list[str], version: str
+    _fullname: Path, lines: list[str], version: str
 ) -> list[str]:
     """Add the copyright header to the python file."""
     # Empty file should be kept empty
@@ -133,7 +134,7 @@ def add_copyright_header_to_python_file(
 
 
 def update_copyright_string(
-    filename: str, lines: list[str], _version: str
+    fullname: Path, lines: list[str], _version: str
 ) -> list[str]:
     """Update the copyright."""
     new_lines = []
@@ -144,7 +145,7 @@ def update_copyright_string(
         if line == "COPYRIGHT = (":
             break
     else:
-        msg = f"Start of copyright not found in {filename!r}."
+        msg = f"Start of copyright not found in {fullname!r}."
         raise RuntimeError(msg)
 
     new_lines.extend(f'    "{line}\\n"' for line in COPYRIGHT)
@@ -154,7 +155,7 @@ def update_copyright_string(
             new_lines.append(line)
             break
     else:
-        msg_0 = f"End of copyright not found in {filename!r}."
+        msg_0 = f"End of copyright not found in {fullname!r}."
         raise RuntimeError(msg_0)
 
     new_lines.extend(iter_lines)
@@ -162,7 +163,7 @@ def update_copyright_string(
     return new_lines
 
 
-def update_changelog(filename: str, lines: list[str], version: str) -> list[str]:
+def update_changelog(fullname: Path, lines: list[str], version: str) -> list[str]:
     """Update the version in the CHANGELOG."""
     new_lines = []
 
@@ -189,7 +190,7 @@ def update_changelog(filename: str, lines: list[str], version: str) -> list[str]
             break
         new_lines.append(line)
     else:
-        msg = f"Call of {next_release_link_target!r} not found in {filename!r}."
+        msg = f"Call of {next_release_link_target!r} not found in {fullname!r}."
         raise RuntimeError(msg)
 
     next_release = "Next Release"
@@ -201,7 +202,7 @@ def update_changelog(filename: str, lines: list[str], version: str) -> list[str]
             break
         new_lines.append(line)
     else:
-        msg_0 = f"Call of {next_release!r} not found in {filename!r}."
+        msg_0 = f"Call of {next_release!r} not found in {fullname!r}."
         raise RuntimeError(msg_0)
 
     new_lines += list(iter_lines)
@@ -209,7 +210,7 @@ def update_changelog(filename: str, lines: list[str], version: str) -> list[str]
     return new_lines
 
 
-def update_documentation(_filename: str, lines: list[str], version: str) -> list[str]:
+def update_documentation(_fullname: Path, lines: list[str], version: str) -> list[str]:
     """Update the references to the next version in the documentation."""
     new_lines = []
 
@@ -234,7 +235,7 @@ def update_documentation(_filename: str, lines: list[str], version: str) -> list
     return new_lines
 
 
-def update_reference_data(_filename: str, lines: list[str], version: str) -> list[str]:
+def update_reference_data(_fullname: Path, lines: list[str], version: str) -> list[str]:
     """Update the version in the reference data."""
     new_lines = []
 
@@ -284,7 +285,7 @@ def update_reference_data(_filename: str, lines: list[str], version: str) -> lis
     return new_lines
 
 
-def update_license(filename: str, lines: list[str], _version: str) -> list[str]:
+def update_license(fullname: Path, lines: list[str], _version: str) -> list[str]:
     """Update the license file."""
     new_lines = [
         "BSD 3-Clause License",
@@ -300,7 +301,7 @@ def update_license(filename: str, lines: list[str], _version: str) -> list[str]:
             new_lines.append(line)
             break
     else:
-        msg = f"Start of license not found in {filename!r}."
+        msg = f"Start of license not found in {fullname!r}."
         raise RuntimeError(msg)
 
     new_lines.extend(iter_lines)
@@ -309,7 +310,7 @@ def update_license(filename: str, lines: list[str], _version: str) -> list[str]:
 
 
 def update_source_date_epoch_for_pytest(
-    filename: str, lines: list[str], _version: str
+    fullname: Path, lines: list[str], _version: str
 ) -> list[str]:
     """Update the timestamp in the test."""
     new_lines = []
@@ -322,7 +323,7 @@ def update_source_date_epoch_for_pytest(
             break
         new_lines.append(line)
     else:
-        msg = f"Call of {env_source_date_epoch!r} not found in {filename!r}."
+        msg = f"Call of {env_source_date_epoch!r} not found in {fullname!r}."
         raise RuntimeError(msg)
 
     new_lines.extend(iter_lines)
@@ -340,12 +341,9 @@ def main(version: str, for_file: str | None = None) -> None:
         dirs[:] = [directory for directory in dirs if not skip_dir(directory)]
 
         for filename in files:
-            handlers = list[Callable[[str, list[str], str], list[str]]]()
-            _, extension = os.path.splitext(filename)
-            fullname = os.path.join(root, filename)
-            if for_file is not None and os.path.abspath(for_file) != os.path.abspath(
-                fullname
-            ):
+            handlers = list[Callable[[Path, list[str], str], list[str]]]()
+            fullname = Path(root, filename)
+            if for_file is not None and Path(for_file).samefile(fullname):
                 continue
             if filename.endswith(".py") and filename != "version.py":
                 handlers.append(add_copyright_header_to_python_file)
@@ -353,10 +351,10 @@ def main(version: str, for_file: str | None = None) -> None:
                 handlers.append(update_copyright_string)
             if filename == "LICENSE.txt":
                 handlers.append(update_license)
-            if filename == "pyproject.toml" and "config" not in fullname:
+            if filename == "pyproject.toml" and "config" not in fullname.parts:
                 handlers.append(update_source_date_epoch_for_pytest)
-            if extension in [".xml", ".html", ".json"] and (
-                "reference" in fullname or "examples" in fullname
+            if fullname.suffix in [".xml", ".html", ".json"] and any(
+                p in fullname.parts for p in ["reference", "examples"]
             ):
                 handlers.append(update_reference_data)
 
@@ -368,15 +366,13 @@ def main(version: str, for_file: str | None = None) -> None:
 
             if handlers:
                 encoding = "UTF-8"
-                if "encoding-report-" in fullname:
+                if "encoding-report-" in fullname.parts:
                     encoding = (
-                        fullname.replace("\\", "/")
-                        .split("encoding-report-")[1]
-                        .split("/")[0]
+                        fullname.as_posix().split("encoding-report-")[1].split("/")[0]
                     )
                 if filename == "main.cp1252.cpp":
                     encoding = "cp1252"
-                with open(fullname, encoding=encoding) as fh_in:
+                with fullname.open(encoding=encoding) as fh_in:
                     lines = fh_in.readlines()
                     trailing_newline = lines and lines[-1][-1] == "\n"
                     lines = [line.rstrip() for line in lines]
@@ -390,7 +386,7 @@ def main(version: str, for_file: str | None = None) -> None:
                     new_lines = [f"{line}\n" for line in new_lines]
                     if not trailing_newline:
                         new_lines[-1] = new_lines[-1][:-1]
-                    with open(fullname, "w", encoding=encoding) as fh_out:
+                    with fullname.open("w", encoding=encoding) as fh_out:
                         fh_out.writelines(new_lines)
 
 
