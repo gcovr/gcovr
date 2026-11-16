@@ -999,6 +999,6 @@ def test_coveralls_outside_git_work_tree(
     """Test that the Coveralls report is written when the root is not in a git work tree."""
     monkeypatch.delenv("GCOVR_TEST_SUITE_NO_GIT_COMMAND")
     gcovr_exec.gcovr(
-        "--root", tmp_path, "--coveralls", tmp_path / "coveralls.json", "--txt"
+        "--root", ".", "--coveralls", "coveralls.json", "--txt", cwd=tmp_path
     )
     assert (tmp_path / "coveralls.json").is_file()
