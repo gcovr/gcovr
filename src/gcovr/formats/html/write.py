@@ -441,6 +441,11 @@ def write_report(
             output_file += "coverage_details.html"
         else:
             output_file += "coverage.html"
+    data["LINK_ROOT"] = (
+        os.path.basename(output_file)
+        if root_info.relative_anchors or root_info.single_page
+        else output_file
+    )
     data["ROOT_FNAME"] = os.path.basename(output_file)
 
     if options.html_details or options.html_nested:
@@ -502,9 +507,11 @@ def write_report(
             previous_filecov = cdata
         else:
             for filecov in cdata.filecov():
-                filecov.properties["link_report_parent"] = cdata.properties[
-                    "link_report"
-                ]
+                filecov.properties["link_report_parent"] = (
+                    cdata.properties["link_report"]
+                    if options.html_nested
+                    else data["LINK_ROOT"]
+                )
 
     filecov_list = sorted(
         covdata.filecov(recurse=True), key=lambda x: x.filename.lower()

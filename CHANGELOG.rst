@@ -19,6 +19,8 @@ New features and notable changes:
   - Search relative files in current working directory of GCOVR and fall back to the working
     directory in JSON file. (:issue:`1337`)`
 
+- Fix link to parent page in detailed HTML report. (:issue:`1339`)
+
 Bug fixes and small improvements:
 
 - Change link color in GitHub theme from fixed color to accent color. (:issue:`1335`)
@@ -34,6 +36,10 @@ Internal changes:
 
 8.8 (27 October 2026)
 ---------------------
+
+Known bgs:
+
+- :ref:`_fix_1339`
 
 New features and notable changes:
 
