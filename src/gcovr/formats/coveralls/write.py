@@ -119,7 +119,7 @@ def write_report(
         else None
     )
 
-    def run_git_cmd(*args: str) -> str:
+    def run_git_cmd(*args: str, check: bool = True) -> str:
         if git is None:
             msg = "Function must only be executed if git is found."
             raise SanityCheckError(msg)
@@ -129,14 +129,15 @@ def write_report(
             stdout=subprocess.PIPE,
             cwd=options.root_dir,
             encoding="utf-8",
-            check=True,
+            check=check,
         )
         return process.stdout.rstrip()
 
     def run_git_log_cmd(arg: str) -> str:
         return run_git_cmd("--no-pager", "log", "-1", f"--pretty=format:{arg}")
 
-    if git and "true" in run_git_cmd("rev-parse", "--is-inside-work-tree"):
+    # git exits with 128 outside of a work tree
+    if git and "true" in run_git_cmd("rev-parse", "--is-inside-work-tree", check=False):
         if current_branch is None:
             current_branch = run_git_cmd("rev-parse", "--abbrev-ref", "HEAD")
         if current_commit is None:

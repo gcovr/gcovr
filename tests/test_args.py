@@ -991,3 +991,12 @@ def test_json_tracefile_with_useless_option(
             "All coverage data is filtered out. Please check your paths and filters.",
         ),
     )
+
+
+def test_coveralls_outside_git_work_tree(
+    gcovr_exec: "GcovrExecFixture", tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Test that the Coveralls report is written when the root is not in a git work tree."""
+    monkeypatch.delenv("GCOVR_TEST_SUITE_NO_GIT_COMMAND")
+    gcovr_exec.gcovr("--root", ".", "--coveralls", "coveralls.json", cwd=tmp_path)
+    assert (tmp_path / "coveralls.json").is_file()
