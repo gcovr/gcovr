@@ -39,7 +39,7 @@ Internal changes:
 
 Known bgs:
 
-- :ref:`_fix_1339`
+- :ref:`fix_1339`
 
 New features and notable changes:
 
