@@ -9,6 +9,22 @@ Known bugs
 This list contains bugs for version 6.0 and newer, always check the latest
 version of this file available `here <https://gcovr.com/en/latest/known_bugs.html>`_.
 
+.. _fix_1339:
+
+In detailed HTML report the link to parent does't work
+------------------------------------------------------
+
+.. list-table::
+
+   * - Introduced
+     - :ref:`release_8_8`
+
+   * - Fixed
+     - :ref:`next_release`, :issue:`1339`
+
+The link always contains the filename of the parent folder but
+the page is only generated in nested reports.
+
 .. _fix_1320:
 
 Key error when removing coverage of internal functions
