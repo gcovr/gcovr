@@ -2,6 +2,7 @@
 {% extends "base.html" %}
 
 {% block summary %}
+{% set display_name = "" %}
 {% include "directory_page.summary.html" | indent(2) %}
 
 {% endblock %}
@@ -25,7 +26,7 @@
 </div>
 
 {%  for directory in directories %}
-<div id="{{ directory.id }}" class="js-enabled-hidden{% if not loop.first %} js-disabled-hidden{% endif %}" data-title="{{ directory.relative_path }}">
+<div id="{{ directory.id }}" class="js-enabled-hidden{% if not loop.first %} js-disabled-hidden{% endif %}" data-title="{{ directory.display_name }}">
   <nav>
     {% include "directory_page.navigation.html" | indent(2) %}
   </nav>
@@ -38,8 +39,10 @@
 {%  for file in files %}
 <div id="{{ file.link }}" class="js-enabled-hidden" data-title="{{ file.filename }}">
   {# If javascript is enabled this summary is moved to the summary block at the top #}
-  {% set fname = file.fname %}
   {% set filename = file.filename %}
+  {% set display_name = file.display_name %}
+  {% set dirname = file.dirname %}
+  {% set basename = file.basename %}
   {% set html_filename = file.html_filename %}
   {% set link = file.link %}
   {% set diff = file.diff %}

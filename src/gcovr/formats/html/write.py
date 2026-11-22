@@ -522,8 +522,8 @@ def write_report(
         _update_properties(dircov)
 
     for filecov in filecov_list:
-        fname = filecov.properties["filtered_name"]
-        root_info.navigation[fname] = RootInfo.Navigation(
+        filename = filecov.properties["filtered_name"]
+        root_info.navigation[filename] = RootInfo.Navigation(
             filecov.properties["link_report_previous"],
             filecov.properties["link_report_parent"],
             filecov.properties["link_report_next"],
@@ -924,7 +924,7 @@ def get_coverage_data(
         "class": coverage_class(stats.call.percent),
         "sort": sort_value(stats.call),
     }
-    display_filename = force_unix_separator(
+    display_name = force_unix_separator(
         os.path.relpath(
             os.path.realpath(cdata.properties["filtered_name"]),
             os.path.realpath(
@@ -936,7 +936,11 @@ def get_coverage_data(
     )
 
     return {
-        "filename": display_filename,
+        "is_dir": isinstance(cdata, CoverageContainer),
+        "filename": cdata.properties["filtered_name"],
+        "display_name": display_name,
+        "dirname": (os.path.dirname(display_name) + "/") if "/" in display_name else "",
+        "basename": os.path.basename(display_name),
         "diff": cdata.diff.name if cdata.is_compare_info_available() else None,
         "link": cdata.properties["link_report"]
         if root_info.link_sourcefiles
@@ -970,7 +974,7 @@ def get_directory_data(
     directory_data = dict[str, Any](
         {
             "id": covdata.properties["sourcefile"],
-            "relative_path": relative_path,
+            "display_name": relative_path,
         }
     )
 
@@ -1014,8 +1018,6 @@ def get_file_data(
 
     file_data = dict[str, Any](
         {
-            "fname": filecov.properties["filtered_name"],
-            "filename": filecov.properties["filtered_name"],
             "html_filename": os.path.basename(filecov.properties["sourcefile"]),
             "source_lines": [],
             "function_list": [],

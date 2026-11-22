@@ -26,7 +26,6 @@
 <script>
 window.GCOVR_FUNCTION_DATA = [
   {% for entry in function_list %}
-  {% if not loop.first %},{% endif %}
   {
     "name": {{ entry.name | tojson }},
     "filename": {{ entry.filename | tojson }},
@@ -39,7 +38,7 @@ window.GCOVR_FUNCTION_DATA = [
     "condition_coverage": "{{ entry.condition_coverage }}",
     "decision_coverage": "{{ entry.decision_coverage }}",
     "call_coverage": "{{ entry.call_coverage }}"
-  }
+  }{% if not loop.last %},{% endif +%}
   {% endfor %}
 ]
 </script>

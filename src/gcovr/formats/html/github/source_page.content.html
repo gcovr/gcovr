@@ -1,7 +1,7 @@
 {# -*- engine: jinja -*- #}
 <div class="Box m-3">
   <div class="Box-header d-flex flex-space-between sticky">
-    {{filename}}
+    {{basename}}
     <div class="toggle-buttons">
       {% if (lines.exec - lines.partial) > 0 %}
       <button type="button" class="button_toggle_coveredLine show_coveredLine" value="coveredLine" title="Toggle covered lines">{{lines.exec - lines.partial}} covered</button>
@@ -38,14 +38,14 @@
       {% endif %}
     </div>
     <div class="nav">
-      {% if info.navigation[fname].previous %}
-      <a class="nav prev" href="{% if info.single_page %}#{% endif %}{{info.navigation[fname].previous}}"></a>
+      {% if info.navigation[filename].previous %}
+      <a class="nav prev" href="{% if info.single_page %}#{% endif %}{{info.navigation[filename].previous}}"></a>
       {% else %}
       <a class="nav prev disabled" href="#"></a>
       {% endif %}
-      <a class="nav index" href="{% if info.single_page %}#{% else %}{{info.navigation[fname].parent}}{% endif %}"></a>
-      {% if info.navigation[fname].next %}
-      <a class="nav next" href="{% if info.single_page %}#{% endif %}{{info.navigation[fname].next}}"></a>
+      <a class="nav index" href="{% if info.single_page %}#{% else %}{{info.navigation[filename].parent}}{% endif %}"></a>
+      {% if info.navigation[filename].next %}
+      <a class="nav next" href="{% if info.single_page %}#{% endif %}{{info.navigation[filename].next}}"></a>
       {% else %}
       <a class="nav next disabled" href="#"></a>
       {% endif %}

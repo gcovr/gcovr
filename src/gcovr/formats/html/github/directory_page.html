@@ -1,7 +1,7 @@
 {# -*- engine: jinja -*- #}
 {% extends "base.html" %}
 
-{% block html_title %}{%if relative_path %}{{relative_path}} - {% endif %}{{info.head}}{% endblock %}
+{% block html_title %}{%if display_name %}{{display_name}} - {% endif %}{{info.head}}{% endblock %}
 
 {% block summary %}
 {% include "directory_page.summary.html" %}

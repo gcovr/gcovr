@@ -20,6 +20,15 @@ New features and notable changes:
     directory in JSON file. (:issue:`1337`)`
 
 - Fix link to parent page in detailed HTML report. (:issue:`1339`)
+- Improve HTML reports (:issue:`1341``):
+
+  - Show only filename in source details of GitHub theme, the path is
+    added to the directory at the top of the summary.
+  - Change dict entries of row entries for Jinja2 template.
+  - Add additional information if the item is a directory. This info was
+    generated in boost theme, everything with a dot was treated as file.
+  - Update breadcrumbs of index.html in boost theme.
+  - Fix color of coverage none in GitHub theme to be the same as low.
 
 Bug fixes and small improvements:
 
