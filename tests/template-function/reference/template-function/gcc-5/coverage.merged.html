@@ -336,11 +336,7 @@ td.linenos .normal {
   min-width: 43px;
 }
 
-.coverage-none {
-  background-color: var(--unknown_color) !important;
-}
-
-.coverage-low {
+.coverage-none, .coverage-low {
   background-color: var(--low_color) !important;
 }
 
@@ -366,12 +362,7 @@ td.linenos .normal {
   visibility: hidden;
 }
 
-.Label--coverage-none {
-  border-color: var(--color-fg-muted) !important;
-  color: var(--color-fg-muted) !important;
-}
-
-.Label--coverage-low {
+.Label--coverage-none, .Label--coverage-low {
   border-color: var(--low_color);
   color: var(--low_color_fg);
 }
@@ -724,9 +715,7 @@ document.addEventListener("DOMContentLoaded", () => {
       <div class="Layout-main-centered-lg" style="max-width: 1280px;">
         <div class="d-flex flex-justify-center">
           <h1>
-            <a href="coverage.merged.html" style="cursor: default; text-decoration: none">
-              GCC Code Coverage Report
-            </a>
+            <a href="coverage.merged.html" style="cursor: default; text-decoration: none">GCC Code Coverage Report</a>
           </h1>
         </div>
         <hr class="block-separator"/>
