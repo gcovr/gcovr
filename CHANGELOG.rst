@@ -20,7 +20,7 @@ New features and notable changes:
     directory in JSON file. (:issue:`1337`)`
 
 - Fix link to parent page in detailed HTML report. (:issue:`1339`)
-- Improve HTML reports (:issue:`1341``):
+- Improve HTML reports (:issue:`1341`):
 
   - Show only filename in source details of GitHub theme, the path is
     added to the directory at the top of the summary.
