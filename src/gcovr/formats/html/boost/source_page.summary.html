@@ -3,7 +3,7 @@
 {% set uncovered_total = (lines.total - lines.exec) + partial_count %}
 <div class="source-summary">
   <div class="source-info">
-    <h2 class="source-filename">{{filename}}</h2>
+    <h2 class="source-filename">{{display_name}}</h2>
     <div class="source-stats">
       <span class="stat {{lines.class}}">
         <strong>{{lines.coverage}}%</strong> Lines ({{lines.exec}} / {{lines.total}}{% if lines.excluded %}, {{lines.excluded}} excl{% endif %})

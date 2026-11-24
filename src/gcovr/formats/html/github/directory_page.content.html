@@ -29,9 +29,9 @@
       </span>
       <span class="css-truncate css-truncate-target d-block width-fit">
         {% if row.link is not none %}
-        <a class="" title="{{row.filename}}" href="{% if info.single_page %}#{% endif %}{{row.link}}">{{row.filename}}</a>
+        <a class="" title="{{row.filename}}" href="{% if info.single_page %}#{% endif %}{{row.link}}">{{row.basename if info.html_nested else row.display_name}}</a>
         {% else %}
-        {{row.filename}}
+        {{row.basename if info.html_nested else row.display_name}}
         {% endif %}
       </span>
     </div>

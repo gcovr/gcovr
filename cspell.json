@@ -287,7 +287,8 @@
             "languageId": "html",
             "ignoreWords": [
                 // cspell:disable
-                "functionslist"
+                "functionslist",
+                "maxsplit"
                 // cspell:enable
             ]
         }
