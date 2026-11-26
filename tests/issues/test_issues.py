@@ -199,11 +199,11 @@ def test_issue_1331(gcovr_exec: "GcovrExecFixture") -> None:
     def __check_json(file: Path) -> None:
         if exitcode_ok:
             check.is_in(
-                "Cannot resolve filenames in '/",
+                "Cannot resolve filenames in /",
                 gcovr_exec.err,
             )
             check.is_in(
-                ".gcov.json.gz' because current_working_directory='./build' is relative and not accessible.",
+                ".gcov.json.gz because current working directory ./build is relative and not accessible.",
                 gcovr_exec.err,
             )
             check.is_false(file.exists())

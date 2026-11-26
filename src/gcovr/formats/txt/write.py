@@ -18,6 +18,7 @@
 """GCOVR classic text report."""
 
 import re
+from pathlib import Path
 from typing import Iterable, Literal
 
 from ...data_model.container import CoverageContainer
@@ -25,7 +26,7 @@ from ...data_model.coverage import CoverageDiff, FileCoverage
 from ...data_model.stats import CoverageStat
 from ...exceptions import SanityCheckError
 from ...options import Options
-from ...utils import force_unix_separator, open_text_for_writing
+from ...utils import open_text_for_writing
 
 # Widths of the various columns
 COL_FILE_WIDTH = 40
@@ -37,7 +38,7 @@ SEPARATOR = "   "
 
 
 def write_report(
-    covdata: CoverageContainer, output_file: str, options: Options
+    covdata: CoverageContainer, output_file: Path, options: Options
 ) -> None:
     """GCOVR classic text report."""
     all_metrics: list[Literal["line", "branch", "condition", "decision"]] = (
@@ -78,7 +79,7 @@ def write_report(
             ).rstrip()
             + "\n"
         )
-        fh.write("Directory: " + force_unix_separator(options.root) + "\n")
+        fh.write("Directory: " + options.root + "\n")
 
         fh.write("-" * line_width + "\n")
         fh.write("File".ljust(COL_FILE_WIDTH))
@@ -154,7 +155,7 @@ def write_report(
 
 
 def write_summary_report(
-    covdata: CoverageContainer, output_file: str, options: Options
+    covdata: CoverageContainer, output_file: Path, options: Options
 ) -> None:
     """
     Print a small report to the standard output.

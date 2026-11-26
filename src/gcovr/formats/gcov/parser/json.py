@@ -28,14 +28,14 @@ The behavior of this parser was informed by the following sources:
 """
 # pylint: disable=too-many-lines
 
-import os
+from pathlib import Path
 from typing import Any, Iterator
 
 from ....data_model.coverage import CodeRegion, FileCoverage
 from ....data_model.merging import FUNCTION_MAX_LINE_MERGE_OPTIONS, MergeOptions
 from ....filter import Filter, is_file_excluded
 from ....logging import LOGGER
-from ....utils import get_md5_hexdigest, read_source_file
+from ....utils import get_md5_hexdigest, normpath, read_source_file
 from .common import (
     SUSPICIOUS_COUNTER,
     check_gcov_integer,
@@ -45,7 +45,7 @@ GCOV_JSON_VERSION = "2"
 
 
 def parse_coverage(
-    data_fname: str,
+    data_fname: Path,
     gcov_json_data: dict[str, Any],
     *,
     include_filter: tuple[Filter, ...],
@@ -61,15 +61,19 @@ def parse_coverage(
         msg = f"Got wrong JSON format version {gcov_json_data['format_version']}, expected {GCOV_JSON_VERSION}"
         raise RuntimeError(msg)
 
-    gcov_cwd = gcov_json_data["current_working_directory"]
-    if not os.path.isabs(gcov_cwd):
-        if os.path.exists(gcov_cwd):
-            gcov_cwd = os.path.abspath(os.path.normpath(gcov_cwd))
+    gcov_cwd_raw = gcov_json_data["current_working_directory"]
+    gcov_cwd = Path(gcov_cwd_raw)
+    if not gcov_cwd.is_absolute():
+        if gcov_cwd.exists():
+            gcov_cwd = normpath(gcov_cwd.absolute())
         else:
             msg = (
-                f"Cannot resolve filenames in {data_fname!r} because current_working_directory={gcov_cwd!r} is relative and not accessible.\n"
-                "This happens if the compiler remaps the working directory, for example with -ffile-prefix-map.\n"
-                "Run gcovr in the mapped directory or compile with -fprofile-abs-path to get absolute file names in the coverage data."
+                f"Cannot resolve filenames in {data_fname} because current working "
+                f"directory {gcov_cwd_raw} is relative and not accessible.\n"
+                "This happens if the compiler remaps the working directory, for "
+                "example with -ffile-prefix-map.\n"
+                "Run gcovr in the mapped directory or compile with -fprofile-abs-path "
+                "to get absolute file names in the coverage data."
             )
             raise RuntimeError(msg)
 
@@ -82,16 +86,10 @@ def parse_coverage(
                 )
             continue
 
-        fname = os.path.normpath(file["file"])
-        if not os.path.isabs(fname):
-            for current_fname in [
-                os.path.abspath(fname),
-            ]:
-                if os.path.exists(current_fname):
-                    fname = current_fname
-                    break
-            else:
-                fname = os.path.normpath(os.path.join(gcov_cwd, fname))
+        fname = Path(file["file"])
+        if not fname.is_absolute():
+            fname = fname.absolute() if fname.exists() else (gcov_cwd / fname)
+        fname = normpath(fname)
 
         if is_file_excluded("source file", fname, include_filter, exclude_filter):
             continue
@@ -118,10 +116,10 @@ def parse_coverage(
 
 
 def _parse_file_node(
-    data_fname: str,
+    data_fname: Path,
     *,
     gcov_file_node: dict[str, Any],
-    filename: str,
+    filename: Path,
     source_lines: list[str],
     ignore_parse_errors: set[str] | None,
     suspicious_hits_threshold: int = SUSPICIOUS_COUNTER,
@@ -165,7 +163,7 @@ def _parse_file_node(
                 line.get("function_name"),
             )
         linecov = filecov.insert_line_coverage(
-            str(data_fname),
+            data_fname,
             lineno=line["line_number"],
             count=check_gcov_integer(
                 line["count"],
@@ -182,7 +180,7 @@ def _parse_file_node(
         )
         for branch in line["branches"]:
             linecov.insert_branch_coverage(
-                str(data_fname),
+                data_fname,
                 branchno=None,
                 count=check_gcov_integer(
                     branch["count"],
@@ -198,7 +196,7 @@ def _parse_file_node(
             )
         for index, condition in enumerate(line.get("conditions", [])):
             linecov.insert_condition_coverage(
-                str(data_fname),
+                data_fname,
                 conditionno=index,
                 count=check_gcov_integer(
                     condition["count"],
@@ -213,7 +211,7 @@ def _parse_file_node(
             )
         for call in line.get("calls", []):
             linecov.insert_call_coverage(
-                str(data_fname),
+                data_fname,
                 callno=None,
                 source_block_id=call["source_block_id"],
                 destination_block_id=call["destination_block_id"],
@@ -237,7 +235,7 @@ def _parse_file_node(
             blocks = min(99.9, round(ratio * 100.0, 1))
 
         filecov.insert_function_coverage(
-            str(data_fname),
+            data_fname,
             MergeOptions(func_opts=FUNCTION_MAX_LINE_MERGE_OPTIONS),
             mangled_name=function["name"],
             demangled_name=function["demangled_name"],

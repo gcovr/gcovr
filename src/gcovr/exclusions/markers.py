@@ -18,6 +18,7 @@
 """Handle explicit exclusion markers in source code, e.g. ``GCOVR_EXCL_LINE``."""
 
 import re
+from pathlib import Path
 from typing import Callable
 
 from ..data_model.coverage import CodeRegion, FileCoverage, FunctionCoverage
@@ -244,6 +245,7 @@ class _ExclusionRangeWarnings:
     Log warnings related to exclusion marker processing.
 
     Examples:
+    >>> from pathlib import Path
     >>> source = '''\
     ... some code
     ... foo // LCOV_EXCL_STOP
@@ -255,7 +257,7 @@ class _ExclusionRangeWarnings:
     >>> caplog = getfixture("caplog")
     >>> caplog.clear()
     >>> _ = apply_exclusion_markers(  # doctest: +NORMALIZE_WHITESPACE
-    ...     FileCoverage("", filename="example.cpp"),
+    ...     FileCoverage(Path(""), filename=Path("example.cpp")),
     ...     lines=source.strip().splitlines(),
     ...     exclude_lines_by_pattern=[],
     ...     exclude_branches_by_pattern=[],
@@ -274,7 +276,7 @@ class _ExclusionRangeWarnings:
 
     """
 
-    def __init__(self, filename: str) -> None:
+    def __init__(self, filename: Path) -> None:
         self.filename = filename
 
     def mismatched_start_stop(

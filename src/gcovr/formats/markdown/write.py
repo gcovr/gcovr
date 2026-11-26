@@ -17,6 +17,7 @@
 
 """Gcovr Markdown report."""
 
+from pathlib import Path
 from typing import Any
 
 from jinja2 import (
@@ -48,7 +49,7 @@ def templates() -> Environment:
 
 
 def write_report(
-    covdata: CoverageContainer, output_file: str, options: Options
+    covdata: CoverageContainer, output_file: Path, options: Options
 ) -> None:
     """Produce the gcovr report in Markdown."""
     data = {
@@ -77,7 +78,7 @@ def write_report(
 
 
 def write_summary_report(
-    covdata: CoverageContainer, output_file: str, options: Options
+    covdata: CoverageContainer, output_file: Path, options: Options
 ) -> None:
     """Produce the gcovr summary report in Markdown."""
     data = {

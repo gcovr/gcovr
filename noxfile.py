@@ -352,14 +352,14 @@ def doc(session: nox.Session) -> None:
         msg = f"End of release changes not found in {changelog_rst}."
         raise RuntimeError(msg)
 
-    release_notes_md = Path() / "doc" / "build" / "release_notes.md"
+    release_notes_md = Path.cwd() / "doc" / "build" / "release_notes.md"
     session.log(f"Write {release_notes_md}...")
     release_notes_md.parent.mkdir(exist_ok=True)
     with release_notes_md.open("w", encoding="utf-8") as fh_out:
         fh_out.writelines(out_lines)
 
     re_issue = re.compile(r"#(\d+)")
-    job_summary_md = Path() / "doc" / "build" / "job_summary.md"
+    job_summary_md = Path.cwd() / "doc" / "build" / "job_summary.md"
     session.log(f"Write {job_summary_md}...")
     clone_url = str(
         session.run("git", "remote", "get-url", "origin", external=True, silent=True)
@@ -386,7 +386,7 @@ def doc(session: nox.Session) -> None:
 
     # Build the Sphinx documentation
     with session.chdir("doc"):
-        with open("examples/gcovr.out", "w", encoding="utf-8") as fh_out:
+        with Path("examples/gcovr.out").open("w", encoding="utf-8") as fh_out:
             session.run("gcovr", "-h", stdout=fh_out)
         for builder in ("linkcheck", "html", "latex", "epub"):
             if (
@@ -493,7 +493,7 @@ def tests(session: nox.Session) -> None:
 def combine_coverage(session: nox.Session) -> None:
     """Merge coverage reports to a single report."""
     install_dev_requirements(session, "coverage", "pytest-cov")
-    args = session.posargs or [str(p) for p in Path().glob(".coverage_*")]
+    args = session.posargs or [str(p) for p in Path.cwd().glob(".coverage_*")]
     session.run("coverage", "combine", *args)
     session.run("coverage", "xml")
     session.run("coverage", "html")
@@ -518,7 +518,7 @@ def check_distribution(session: nox.Session) -> None:
     with ci_log_group("Check and install"), session.chdir("dist"):
         session.run("twine", "check", "*", external=True)
         session.run("pip", "uninstall", "--yes", "gcovr")
-        session.install(str(next(iter(Path().glob("*.whl")))))
+        session.install(str(next(iter(Path.cwd().glob("*.whl")))))
     with ci_log_group("Test help output when used as module"):
         session.run("python", "-m", "gcovr", "--help", external=True)
     with ci_log_group("Test help output of entrypoint script"):
@@ -567,7 +567,7 @@ def bundle_app(session: nox.Session) -> None:
         # with the needed data
         session.install(".")
     with ci_log_group("Build application"):
-        os.makedirs("build", exist_ok=True)
+        Path("build").mkdir(exist_ok=True)
         with session.chdir("build"):
             session.run(
                 "pyinstaller",
@@ -687,15 +687,14 @@ def html2jpeg(session: nox.Session) -> None:
         defer.callback(docker_stop)
         url = f"http://localhost:{port}/1/screenshot"
 
-        def screenshot(html: str, jpeg: str, size: tuple[int, int]) -> None:
-            def read_file(file: str) -> str:
-                with open(file, encoding="utf-8") as fh_in:
-                    return " ".join(fh_in.readlines()).replace("\n", "")
+        def screenshot(html: Path, jpeg: Path, size: tuple[int, int]) -> None:
+            def read_file(file: Path) -> str:
+                return " ".join(file.read_text(encoding="utf-8")).replace("\n", "")
 
             content = re.sub(
                 r'<link rel="stylesheet" href="([^"]+)"/>',
                 lambda match: (
-                    f'<style type="text/css">{read_file(os.path.join(os.path.dirname(html), match[1]))}</style>'
+                    f'<style type="text/css">{read_file(html.parent / match[1])}</style>'
                 ),
                 read_file(html),
             )
@@ -719,8 +718,7 @@ def html2jpeg(session: nox.Session) -> None:
                         timeout=10,
                     )
                     response.raise_for_status()
-                    with open(jpeg, mode="bw") as fh_out:
-                        fh_out.write(response.content)
+                    jpeg.write_bytes(response.content)
                     break
                 except requests.exceptions.ConnectionError:
                     retries += 1
@@ -732,38 +730,50 @@ def html2jpeg(session: nox.Session) -> None:
                     )
 
         screenshot(
-            "doc/examples/example_html.html",
-            "doc/images/screenshot-html.jpeg",
+            Path("doc/examples/example_html.html"),
+            Path("doc/images/screenshot-html.jpeg"),
             (1150, 375),
         )
         screenshot(
-            "doc/examples/example_html.details.example.cpp.9597a7a3397b8e3a48116e2a3afb4154.html",
-            "doc/images/screenshot-html-details.example.cpp.jpeg",
+            Path(
+                "doc/examples/example_html.details.example.cpp.9597a7a3397b8e3a48116e2a3afb4154.html"
+            ),
+            Path("doc/images/screenshot-html-details.example.cpp.jpeg"),
             (1150, 825),
         )
         screenshot(
-            "tests/html/reference/theme-github-green/gcc-5/coverage.main.cpp.118fcbaaba162ba17933c7893247df3a.html",
-            "doc/images/screenshot-html-github-green-src.jpeg",
+            Path(
+                "tests/html/reference/theme-github-green/gcc-5/coverage.main.cpp.118fcbaaba162ba17933c7893247df3a.html"
+            ),
+            Path("doc/images/screenshot-html-github-green-src.jpeg"),
             (1150, 480),
         )
         screenshot(
-            "tests/html/reference/theme-github-blue/gcc-5/coverage.main.cpp.118fcbaaba162ba17933c7893247df3a.html",
-            "doc/images/screenshot-html-github-blue-src.jpeg",
+            Path(
+                "tests/html/reference/theme-github-blue/gcc-5/coverage.main.cpp.118fcbaaba162ba17933c7893247df3a.html"
+            ),
+            Path("doc/images/screenshot-html-github-blue-src.jpeg"),
             (1150, 480),
         )
         screenshot(
-            "tests/html/reference/theme-github-dark-green/gcc-5/coverage.main.cpp.118fcbaaba162ba17933c7893247df3a.html",
-            "doc/images/screenshot-html-github-dark-green-src.jpeg",
+            Path(
+                "tests/html/reference/theme-github-dark-green/gcc-5/coverage.main.cpp.118fcbaaba162ba17933c7893247df3a.html"
+            ),
+            Path("doc/images/screenshot-html-github-dark-green-src.jpeg"),
             (1150, 480),
         )
         screenshot(
-            "tests/html/reference/theme-github-dark-blue/gcc-5/coverage.main.cpp.118fcbaaba162ba17933c7893247df3a.html",
-            "doc/images/screenshot-html-github-dark-blue-src.jpeg",
+            Path(
+                "tests/html/reference/theme-github-dark-blue/gcc-5/coverage.main.cpp.118fcbaaba162ba17933c7893247df3a.html"
+            ),
+            Path("doc/images/screenshot-html-github-dark-blue-src.jpeg"),
             (1150, 480),
         )
         screenshot(
-            "tests/html/reference/theme-boost-green/gcc-5/coverage.main.cpp.118fcbaaba162ba17933c7893247df3a.html",
-            "doc/images/screenshot-html-boost-green-src.jpeg",
+            Path(
+                "tests/html/reference/theme-boost-green/gcc-5/coverage.main.cpp.118fcbaaba162ba17933c7893247df3a.html"
+            ),
+            Path("doc/images/screenshot-html-boost-green-src.jpeg"),
             (1150, 480),
         )
 
@@ -935,7 +945,7 @@ def docker_run_compiler(session: nox.Session, cc: str) -> None:
         "-e",
         "SPHINX_SKIP_CHECK_LINKS",
         "-v",
-        f"{os.getcwd()}:/gcovr",
+        f"{Path.cwd()}:/gcovr",
         docker_container_tag(cc),
         *nox_options,
         external=True,

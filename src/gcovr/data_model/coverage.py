@@ -69,6 +69,7 @@ import re
 from abc import abstractmethod
 from dataclasses import dataclass
 from enum import Enum
+from pathlib import Path
 from typing import TYPE_CHECKING, Any, Callable, Iterable, NoReturn, TypeVar, cast
 
 from ..exceptions import (
@@ -78,7 +79,6 @@ from ..exceptions import (
 )
 from ..filter import is_file_excluded
 from ..logging import LOGGER
-from ..utils import force_unix_separator
 from .coverage_dict import (
     BranchcovKeyType,
     CallcovKeyType,
@@ -101,20 +101,21 @@ CODE_REGION_MAX_COLUMN_MARKER = -1  # 1000000
 _T = TypeVar("_T")
 
 
-def _presentable_filename(filename: str, root_filter: re.Pattern[str]) -> str:
+def _presentable_filename(filename: Path, root_filter: re.Pattern[str]) -> str:
     """Mangle a filename so that it is suitable for a report."""
-    normalized = root_filter.sub("", filename)
-    if filename.endswith(normalized):
+    str_filename = str(filename)
+    normalized = root_filter.sub("", str_filename)
+    if str_filename.endswith(normalized):
         # remove any slashes between the removed prefix and the normalized name
-        if filename != normalized:
+        if str_filename != normalized:
             while normalized.startswith(os.path.sep):
                 normalized = normalized[len(os.path.sep) :]
     else:
         # Do no truncation if the filter does not start matching
         # at the beginning of the string
-        normalized = filename
+        normalized = str_filename
 
-    return force_unix_separator(normalized)
+    return Path(normalized).as_posix()
 
 
 @dataclass
@@ -230,10 +231,10 @@ class CoverageBase:
 
     __slots__ = "data_sources", "diff", "diff_details"
 
-    def __init__(self, data_sources: str | set[tuple[str, ...]]) -> None:
+    def __init__(self, data_sources: Path | set[tuple[Path, ...]]) -> None:
         """Initialize the base class for a coverage object."""
-        if isinstance(data_sources, str):
-            self.data_sources = set[tuple[str, ...]]([(data_sources,)])
+        if isinstance(data_sources, (Path, str)):
+            self.data_sources = set[tuple[Path, ...]]([(data_sources,)])
         else:
             self.data_sources = data_sources.copy()
         self.diff_details: dict[str, CoverageDiff] | None = None
@@ -360,9 +361,15 @@ class CoverageBase:
                     "GCOV data file of merge source is:"
                     if len(other.data_sources) == 1
                     else "GCOV data files of merge source are:",
-                    *[f"   {' -> '.join(e)}" for e in sorted(other.data_sources)],
+                    *[
+                        f"   {' -> '.join(str(e) for e in data_sources)}"
+                        for data_sources in sorted(other.data_sources)
+                    ],
                     f"and of merge target {'is' if len(self.data_sources) == 1 else 'are'}:",
-                    *[f"   {' -> '.join(e)}" for e in sorted(self.data_sources)],
+                    *[
+                        f"   {' -> '.join(str(e) for e in data_sources)}"
+                        for data_sources in sorted(self.data_sources)
+                    ],
                 ]
             )
         )
@@ -375,7 +382,10 @@ class CoverageBase:
                 [
                     msg if location is None else f"{location} {msg}",
                     f"GCOV data file{' is' if len(self.data_sources) == 1 else 's are'}:",
-                    *[f"   {' -> '.join(e)}" for e in sorted(self.data_sources)],
+                    *[
+                        f"   {' -> '.join(str(p) for p in e)}"
+                        for e in sorted(self.data_sources)
+                    ],
                 ]
             )
         )
@@ -413,7 +423,8 @@ class BranchCoverage(CoverageBase):
     Represent coverage information about a branch.
 
     Examples:
-        >>> filecov = FileCoverage("file.c", filename="file.c")
+        >>> from pathlib import Path
+        >>> filecov = FileCoverage(Path("file.c"), filename=Path("file.c"))
         >>> linecov_list = LineCoverageCollection(filecov, "not_used.gcov", lineno=11)
         >>> linecov = LineCoverage(linecov_list, "line.gcov", count=0, function_name="function")
         >>> BranchCoverage(linecov, "call.gcov", branchno=None, count=-1)
@@ -453,7 +464,7 @@ class BranchCoverage(CoverageBase):
     def __init__(
         self,
         parent: LineCoverage,
-        data_sources: str | set[tuple[str, ...]],
+        data_sources: Path | set[tuple[Path, ...]],
         *,
         branchno: int | None,
         count: int,
@@ -527,7 +538,7 @@ class BranchCoverage(CoverageBase):
     def deserialize(
         cls,
         linecov: LineCoverage,
-        get_data_sources: Callable[[dict[str, Any]], set[tuple[str, ...]]],
+        get_data_sources: Callable[[dict[str, Any]], set[tuple[Path, ...]]],
         data_dict: dict[str, Any],
     ) -> BranchCoverage:
         """Deserialize the object."""
@@ -555,7 +566,8 @@ class BranchCoverage(CoverageBase):
         Do not use 'other' objects afterwards!
 
         Examples:
-        >>> filecov = FileCoverage("file.gcov", filename="file.cpp")
+        >>> from pathlib import Path
+        >>> filecov = FileCoverage(Path("file.gcov"), filename=Path("file.cpp"))
         >>> linecov_list = LineCoverageCollection(filecov, "not_used.gcov", lineno=100)
         >>> linecov = LineCoverage(linecov_list, "line.gcov", count=2, function_name="function")
         >>> left = BranchCoverage(linecov, "left.gcov", branchno=0, count=1, source_block_id=2)
@@ -657,7 +669,8 @@ class ConditionCoverage(CoverageBase):
     Represent coverage information about a condition.
 
     Examples:
-        >>> filecov = FileCoverage("file.c", filename="file.c")
+        >>> from pathlib import Path
+        >>> filecov = FileCoverage(Path("file.c"), filename=Path("file.c"))
         >>> linecov_list = LineCoverageCollection(filecov, "not_used.gcov", lineno=11)
         >>> linecov = LineCoverage(linecov_list, "line.gcov", count=0, function_name="function")
         >>> ConditionCoverage(linecov, "call.gcov", conditionno=1, count=-1, covered=2, not_covered_true=[1], not_covered_false=[2])
@@ -695,7 +708,7 @@ class ConditionCoverage(CoverageBase):
     def __init__(
         self,
         parent: LineCoverage,
-        data_sources: str | set[tuple[str, ...]],
+        data_sources: Path | set[tuple[Path, ...]],
         *,
         conditionno: int,
         count: int,
@@ -767,7 +780,7 @@ class ConditionCoverage(CoverageBase):
     def deserialize(
         cls,
         linecov: LineCoverage,
-        get_data_sources: Callable[[dict[str, Any]], set[tuple[str, ...]]],
+        get_data_sources: Callable[[dict[str, Any]], set[tuple[Path, ...]]],
         data_dict: dict[str, Any],
     ) -> ConditionCoverage:
         """Deserialize the object."""
@@ -794,7 +807,8 @@ class ConditionCoverage(CoverageBase):
         Do not use 'other' objects afterwards!
 
         Examples:
-        >>> filecov = FileCoverage("file.gcov", filename="file.c")
+        >>> from pathlib import Path
+        >>> filecov = FileCoverage(Path("file.gcov"), filename=Path("file.c"))
         >>> linecov_list = LineCoverageCollection(filecov, "not_used.gcov", lineno=10)
         >>> linecov = LineCoverage(linecov_list, "line.gcov", count=2, function_name="function")
         >>> left = ConditionCoverage(linecov, "left.gcov", conditionno=1, count=4, covered=2, not_covered_true=[1, 2], not_covered_false=[])
@@ -887,7 +901,7 @@ class DecisionCoverageUncheckable(CoverageBase):
     def __init__(
         self,
         parent: LineCoverage | None,
-        data_sources: str | set[tuple[str, ...]],
+        data_sources: Path | set[tuple[Path, ...]],
     ) -> None:
         """
         Initialize a uncheckable decision coverage.
@@ -914,7 +928,7 @@ class DecisionCoverageUncheckable(CoverageBase):
     def deserialize(
         cls,
         linecov: LineCoverage,
-        get_data_sources: Callable[[dict[str, Any]], set[tuple[str, ...]]],
+        get_data_sources: Callable[[dict[str, Any]], set[tuple[Path, ...]]],
         data_dict: dict[str, Any],
     ) -> None:
         """Deserialize the object."""
@@ -957,7 +971,7 @@ class DecisionCoverageConditional(CoverageBase):
     def __init__(
         self,
         parent: LineCoverage | None,
-        data_sources: str | set[tuple[str, ...]],
+        data_sources: Path | set[tuple[Path, ...]],
         *,
         count_true: int,
         count_false: int,
@@ -1003,7 +1017,7 @@ class DecisionCoverageConditional(CoverageBase):
     def deserialize(
         cls,
         linecov: LineCoverage,
-        get_data_sources: Callable[[dict[str, Any]], set[tuple[str, ...]]],
+        get_data_sources: Callable[[dict[str, Any]], set[tuple[Path, ...]]],
         data_dict: dict[str, Any],
     ) -> None:
         """Deserialize the object."""
@@ -1056,7 +1070,7 @@ class DecisionCoverageSwitch(CoverageBase):
     def __init__(
         self,
         parent: LineCoverage | None,
-        data_sources: str | set[tuple[str, ...]],
+        data_sources: Path | set[tuple[Path, ...]],
         *,
         count: int,
     ) -> None:
@@ -1095,7 +1109,7 @@ class DecisionCoverageSwitch(CoverageBase):
     def deserialize(
         cls,
         linecov: LineCoverage,
-        get_data_sources: Callable[[dict[str, Any]], set[tuple[str, ...]]],
+        get_data_sources: Callable[[dict[str, Any]], set[tuple[Path, ...]]],
         data_dict: dict[str, Any],
     ) -> None:
         """Deserialize the object."""
@@ -1146,7 +1160,8 @@ class CallCoverage(CoverageBase):
     Represent coverage information about a call.
 
     Examples:
-        >>> filecov = FileCoverage("file.c", filename="file.c")
+        >>> from pathlib import Path
+        >>> filecov = FileCoverage(Path("file.c"), filename=Path("file.c"))
         >>> linecov_list = LineCoverageCollection(filecov, "not_used.gcov", lineno=11)
         >>> linecov = LineCoverage(linecov_list, "line.gcov", count=0, function_name="function")
         >>> CallCoverage(linecov, "call.gcov", callno=None, destination_block_id=None, returned=0, source_block_id=12)
@@ -1177,7 +1192,7 @@ class CallCoverage(CoverageBase):
     def __init__(
         self,
         parent: LineCoverage,
-        data_sources: str | set[tuple[str, ...]],
+        data_sources: Path | set[tuple[Path, ...]],
         *,
         callno: int | None,
         source_block_id: int,
@@ -1240,7 +1255,7 @@ class CallCoverage(CoverageBase):
     def deserialize(
         cls,
         linecov: LineCoverage,
-        get_data_sources: Callable[[dict[str, Any]], set[tuple[str, ...]]],
+        get_data_sources: Callable[[dict[str, Any]], set[tuple[Path, ...]]],
         data_dict: dict[str, Any],
     ) -> CallCoverage:
         """Deserialize the object."""
@@ -1265,7 +1280,8 @@ class CallCoverage(CoverageBase):
 
         Do not use 'left' or 'right' objects afterwards!
 
-        >>> filecov = FileCoverage("file.gcov", filename="file.c")
+        >>> from pathlib import Path
+        >>> filecov = FileCoverage(Path("file.gcov"), filename=Path("file.c"))
         >>> linecov_list = LineCoverageCollection(filecov, "not_used.gcov", lineno=10)
         >>> linecov = LineCoverage(linecov_list, "line.gcov", count=2, function_name="function")
         >>> left = CallCoverage(linecov, "left.gcov", callno=1, source_block_id=1, destination_block_id=None, returned=2)
@@ -1373,7 +1389,8 @@ class LineCoverage(CoverageBase):
 
     The default state of a line is *coverable*/*reportable*/*uncovered*.
 
-    >>> filecov = FileCoverage("file.gcov", filename="file.c")
+    >>> from pathlib import Path
+    >>> filecov = FileCoverage(Path("file.gcov"), filename=Path("file.c"))
     >>> linecov_list = LineCoverageCollection(filecov, "not_used.gcov", lineno=1)
     >>> linecov = LineCoverage(linecov_list, "line.gcov", count=-1, function_name=None)
     Traceback (most recent call last):
@@ -1399,7 +1416,7 @@ class LineCoverage(CoverageBase):
     def __init__(
         self,
         parent: LineCoverageCollection,
-        data_sources: str | set[tuple[str, ...]],
+        data_sources: Path | set[tuple[Path, ...]],
         *,
         count: int,
         function_name: str | None,
@@ -1485,7 +1502,7 @@ class LineCoverage(CoverageBase):
     def deserialize(
         cls,
         filecov: FileCoverage,
-        get_data_sources: Callable[[dict[str, Any]], set[tuple[str, ...]]],
+        get_data_sources: Callable[[dict[str, Any]], set[tuple[Path, ...]]],
         data_dict: dict[str, Any],
     ) -> LineCoverage:
         """Deserialize the object."""
@@ -1597,7 +1614,7 @@ class LineCoverage(CoverageBase):
             else:
                 self.decision = DecisionCoverageUncheckable(
                     self,
-                    set[tuple[str, ...]](
+                    set[tuple[Path, ...]](
                         [*self.decision.data_sources, *decisioncov.data_sources]
                     ),
                 )
@@ -1606,7 +1623,7 @@ class LineCoverage(CoverageBase):
 
     def insert_branch_coverage(
         self,
-        data_sources: str | set[tuple[str, ...]],
+        data_sources: Path | set[tuple[Path, ...]],
         *,
         branchno: int | None,
         count: int,
@@ -1647,7 +1664,7 @@ class LineCoverage(CoverageBase):
 
     def insert_condition_coverage(
         self,
-        data_sources: str | set[tuple[str, ...]],
+        data_sources: Path | set[tuple[Path, ...]],
         *,
         conditionno: int,
         count: int,
@@ -1687,7 +1704,7 @@ class LineCoverage(CoverageBase):
 
     def insert_call_coverage(
         self,
-        data_sources: str | set[tuple[str, ...]],
+        data_sources: Path | set[tuple[Path, ...]],
         *,
         callno: int | None,
         source_block_id: int,
@@ -1916,7 +1933,8 @@ class LineCoverageCollection(CoverageBase):
     The default state of a line is *coverable*/*reportable*/*uncovered*.
 
     Examples:
-    >>> filecov = FileCoverage("file.gcov", filename="file.c")
+    >>> from pathlib import Path
+    >>> filecov = FileCoverage(Path("file.gcov"), filename=Path("file.c"))
     >>> linecov_list = LineCoverageCollection(filecov, "line.gcov", lineno=0)
     Traceback (most recent call last):
       ...
@@ -1931,7 +1949,7 @@ class LineCoverageCollection(CoverageBase):
     def __init__(
         self,
         parent: FileCoverage,
-        data_sources: str | set[tuple[str, ...]],
+        data_sources: Path | set[tuple[Path, ...]],
         *,
         lineno: int,
         md5: str | None = None,
@@ -1993,7 +2011,7 @@ class LineCoverageCollection(CoverageBase):
             return self
 
         # Merge the information, needed for line coverage
-        data_sources = set[tuple[str, ...]]()
+        data_sources = set[tuple[Path, ...]]()
         block_ids = set[int]()
         for linecov in self.linecov():
             data_sources.update(linecov.data_sources)
@@ -2131,7 +2149,7 @@ class LineCoverageCollection(CoverageBase):
 
     def insert_line_coverage(
         self,
-        data_sources: str | set[tuple[str, ...]],
+        data_sources: Path | set[tuple[Path, ...]],
         options: MergeOptions = DEFAULT_MERGE_OPTIONS,
         *,
         count: int,
@@ -2191,7 +2209,8 @@ class FunctionCoverage(CoverageBase):
     to merge function coverage in different ways.
 
     Examples:
-        >>> filecov = FileCoverage("file.c", filename="file.c")
+        >>> from pathlib import Path
+        >>> filecov = FileCoverage(Path("file.c"), filename=Path("file.c"))
         >>> FunctionCoverage(filecov, "func.gcov", mangled_name="foo()", demangled_name="bar()", lineno=5, execution_count=3, blocks_percent=0.5)
         Traceback (most recent call last):
           ...
@@ -2226,7 +2245,7 @@ class FunctionCoverage(CoverageBase):
     def __init__(
         self,
         parent: FileCoverage,
-        data_sources: str | set[tuple[str, ...]],
+        data_sources: Path | set[tuple[Path, ...]],
         *,
         mangled_name: str | None,
         demangled_name: str | None,
@@ -2318,7 +2337,7 @@ class FunctionCoverage(CoverageBase):
         cls,
         filecov: FileCoverage,
         merge_options: MergeOptions,
-        get_data_sources: Callable[[dict[str, Any]], set[tuple[str, ...]]],
+        get_data_sources: Callable[[dict[str, Any]], set[tuple[Path, ...]]],
         data_dict: dict[str, Any],
     ) -> FunctionCoverage:
         """Deserialize the object."""
@@ -2588,13 +2607,13 @@ class FileCoverage(CoverageBase):
 
     def __init__(
         self,
-        data_sources: str | set[tuple[str, ...]],
+        data_sources: Path | set[tuple[Path, ...]],
         *,
-        filename: str,
+        filename: Path,
     ) -> None:
         """Initialize a file coverage object."""
         super().__init__(data_sources)
-        self.filename: str = filename
+        self.filename = filename
         self._functions = CoverageDict[FunctioncovKeyType, FunctionCoverage]()
         self._lines = CoverageDict[LinecovCollectionKeyType, LineCoverageCollection]()
         self.__properties = dict[str, Any]()
@@ -2629,7 +2648,7 @@ class FileCoverage(CoverageBase):
 
         filename = self.presentable_filename(options.root_filter)
         if options.json_base:
-            filename = f"{options.json_base}/{filename}"
+            filename = str(options.json_base / filename)
         data_dict = {
             "file": filename,
             "lines": [
@@ -2649,22 +2668,20 @@ class FileCoverage(CoverageBase):
     @classmethod
     def deserialize(
         cls,
-        data_sources: str,
+        data_sources: Path,
         data_dict: dict[str, Any],
         merge_options: MergeOptions,
         options: Options,
     ) -> FileCoverage | None:
         """Deserialize the object."""
-        filename = os.path.join(
-            os.path.abspath(options.root), os.path.normpath(data_dict["file"])
-        )
+        filename = options.root_dir / str(data_dict["file"])
 
         if is_file_excluded(
             "source file", filename, options.include_filter, options.exclude_filter
         ):
             return None
 
-        def get_data_sources(data_dict: dict[str, Any]) -> set[tuple[str, ...]]:
+        def get_data_sources(data_dict: dict[str, Any]) -> set[tuple[Path, ...]]:
             """Return the set for data sources."""
             return {(*e,) for e in data_dict.get(GCOVR_DATA_SOURCES, [[data_sources]])}
 
@@ -2712,7 +2729,7 @@ class FileCoverage(CoverageBase):
     @property
     def location(self) -> str | None:
         """Get the source location of the coverage data."""
-        return self.filename
+        return str(self.filename)
 
     def presentable_filename(self, root_filter: re.Pattern[str]) -> str:
         """Mangle a filename so that it is suitable for a report."""
@@ -2812,7 +2829,7 @@ class FileCoverage(CoverageBase):
 
     def insert_line_coverage(
         self,
-        data_sources: str | set[tuple[str, ...]],
+        data_sources: Path | set[tuple[Path, ...]],
         options: MergeOptions = DEFAULT_MERGE_OPTIONS,
         *,
         lineno: int,
@@ -2870,7 +2887,7 @@ class FileCoverage(CoverageBase):
 
     def insert_function_coverage(
         self,
-        data_sources: str | set[tuple[str, ...]],
+        data_sources: Path | set[tuple[Path, ...]],
         options: MergeOptions = DEFAULT_MERGE_OPTIONS,
         *,
         mangled_name: str | None,

@@ -17,12 +17,12 @@
 
 """GCOVR JSON report interface."""
 
-import os
+from pathlib import Path
 
 from ...data_model.container import CoverageContainer
 from ...formats.base import BaseHandler
 from ...options import GcovrConfigOption, OutputOrDefault
-from ...utils import force_unix_separator
+from ...utils import normpath
 
 OPTION_GROUP_NAME = "GCOVR JSON options"
 OPTION_GROUP = OPTION_GROUP_NAME.casefold().replace(" ", "_")
@@ -99,7 +99,7 @@ class JsonHandler(BaseHandler):
                 group=OPTION_GROUP,
                 metavar="PATH",
                 help="Prepend the given path to all file paths in JSON report.",
-                type=lambda p: force_unix_separator(os.path.normpath(p)),
+                type=lambda p: normpath(Path(p)),
                 default=None,
             ),
             GcovrConfigOption(
@@ -162,7 +162,7 @@ class JsonHandler(BaseHandler):
 
         return read_report(self.options)
 
-    def write_report(self, covdata: CoverageContainer, output_file: str) -> None:
+    def write_report(self, covdata: CoverageContainer, output_file: Path) -> None:
         """Write report."""
         # Lazy loading is intended here
         from .write import (  # pylint: disable=import-outside-toplevel  # noqa: PLC0415
@@ -172,7 +172,7 @@ class JsonHandler(BaseHandler):
         write_report(covdata, output_file, self.options)
 
     def write_summary_report(
-        self, covdata: CoverageContainer, output_file: str
+        self, covdata: CoverageContainer, output_file: Path
     ) -> None:
         """Write summary report."""
         # Lazy loading is intended here

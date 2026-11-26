@@ -20,6 +20,7 @@
 # cspell:ignore ault
 
 import re
+from pathlib import Path
 
 from .data_model.coverage import (
     DecisionCoverageConditional,
@@ -292,13 +293,14 @@ class DecisionParser:
             if delta_count >= 0:
                 last_decision_linecov.decision = DecisionCoverageConditional(
                     linecov,
-                    "unknown" if linecov is None else linecov.data_sources,
+                    Path("unknown") if linecov is None else linecov.data_sources,
                     count_true=exec_count,
                     count_false=delta_count,
                 )
             else:
                 last_decision_linecov.decision = DecisionCoverageUncheckable(
-                    linecov, "unknown" if linecov is None else linecov.data_sources
+                    linecov,
+                    Path("unknown") if linecov is None else linecov.data_sources,
                 )
                 LOGGER.debug(
                     "Uncheckable decision at line %d. (Delta = %d)", lineno, delta_count

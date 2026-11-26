@@ -22,6 +22,7 @@ import os
 import re
 import shutil
 import subprocess  # nosec # Commands are trusted.
+from pathlib import Path
 from typing import Any
 
 from ...data_model.container import CoverageContainer
@@ -32,7 +33,7 @@ from ...utils import get_md5_hexdigest, write_json_output
 
 
 def write_report(
-    covdata: CoverageContainer, output_file: str, options: Options
+    covdata: CoverageContainer, output_file: Path, options: Options
 ) -> None:
     """
     Write a JSON report in the Coveralls API coverage format.
@@ -187,12 +188,10 @@ def _make_source_file(filecov: FileCoverage, options: Options) -> dict[str, Any]
     source_file["name"] = relative_file_path
 
     # Generate md5 hash of file contents
-    if filecov.filename.endswith("<stdin>"):
+    if filecov.filename.name == "<stdin>":
         total_line_count = None
     else:
-        with open(filecov.filename, "rb") as file_handle:
-            contents = file_handle.read()
-
+        contents = filecov.filename.read_bytes()
         source_file["source_digest"] = get_md5_hexdigest(contents)
         total_line_count = len(contents.splitlines())
 

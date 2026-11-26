@@ -29,6 +29,7 @@ import pytest
 
 from gcovr.data_model.coverage import FileCoverage
 from gcovr.data_model.version import FORMAT_VERSION
+from gcovr.filter import AlwaysMatchFilter
 from gcovr.version import __version__
 from tests.conftest import GCOVR_ISOLATED_TEST
 
@@ -89,7 +90,8 @@ def helper_test_non_existing_directory_output(
     gcovr_exec.gcovr(option, "not-existing-dir/file.txt", exitcode_ok=1)
     assert gcovr_exec.out == ""
     assert (
-        "Could not create output file 'not-existing-dir/file.txt': " in gcovr_exec.err
+        f"Could not create output file {(gcovr_exec.output_dir / 'not-existing-dir' / 'file.txt').absolute()}: "
+        in gcovr_exec.err
     )
 
 
@@ -139,7 +141,7 @@ def helper_test_non_existing_directory_2_output(
     gcovr_exec.gcovr(option, "not-existing-dir/subdir/", exitcode_ok=1)
     assert gcovr_exec.out == ""
     assert (
-        "Could not create output directory 'not-existing-dir/subdir/': "
+        f"Could not create output directory {(gcovr_exec.output_dir / 'not-existing-dir' / 'subdir').absolute()}: "
         in gcovr_exec.err
     )
 
@@ -191,7 +193,7 @@ def helper_test_non_writable_directory_output(
 ) -> None:
     gcovr_exec.gcovr(option, "/file.txt", exitcode_ok=1)
     assert gcovr_exec.out == ""
-    assert "Could not create output file '/file.txt': " in gcovr_exec.err
+    assert "Could not create output file /file.txt: " in gcovr_exec.err
 
 
 @pytest.mark.skipif(not GCOVR_ISOLATED_TEST, reason="Only for docker")
@@ -394,17 +396,17 @@ def test_filter_backslashes_are_detected(
 def test_html_css_not_exists(gcovr_exec: "GcovrExecFixture") -> None:
     gcovr_exec.gcovr("--html-css", "/File/does/not/\texist", exitcode_ok=1)
     if platform.system() == "Windows":
-        pattern = r"\\\\File\\\\does\\\\not\\\\\\texist"
+        pattern = r"\\File\\does\\not\\texist"
         # Starting with 3.13 a path starting with a leading (back)slash isn't considered
         # as absolute anymore by os.path.isabs and we add the current working directory
         if sys.version_info >= (3, 13):
-            pattern = rf"[A-Z]:(?:\\\\[^\\]+)*?{pattern}"
+            pattern = rf"[A-Z]:(?:\\[^\\]+)*?{pattern}"
     else:
-        pattern = r"/File/does/not/\\texist"
+        pattern = r"/File/does/not/\texist"
     assert gcovr_exec.out == ""
     assert (
         re.search(
-            rf"Should be a file that already exists: '{pattern}'",
+            rf"Should be a file that already exists: {pattern}",
             gcovr_exec.err,
         )
         is not None
@@ -569,7 +571,7 @@ def test_html_injection_via_json(
 
     import markupsafe  # noqa: PLC0415
 
-    script = '<script>alert("pwned")</script>'
+    script = '<script>alert("pwned")<script>'
     json_data = {
         "gcovr/format_version": FORMAT_VERSION,
         "files": [
@@ -583,7 +585,7 @@ def test_html_injection_via_json(
     with tempfile.open("w+") as json_file:
         json.dump(json_data, json_file)
 
-    gcovr_exec.gcovr("-a", str(tempfile), "--html")
+    gcovr_exec.gcovr("--verbose", "-a", str(tempfile), "--html")
 
     assert script not in gcovr_exec.out
     assert str(markupsafe.escape(script)) in gcovr_exec.out, (
@@ -595,7 +597,7 @@ def test_import_valid_cobertura_file(tmp_path: Path) -> None:
     from gcovr.configuration import merge_options_and_set_defaults  # noqa: PLC0415
     from gcovr.formats import read_reports  # noqa: PLC0415
 
-    testfile = "code.cpp"
+    testfile = Path("code.cpp")
     xml_data = f"""<?xml version='1.0' encoding='UTF-8'?>
 <!DOCTYPE coverage SYSTEM 'https://github.com/cobertura/cobertura/blob/e5eea8679ebce047ec6ccdfdbf6cf2c14b376875/cobertura/src/site/htdocs/xml/coverage-04.dtd'>
 <coverage
@@ -614,7 +616,7 @@ def test_import_valid_cobertura_file(tmp_path: Path) -> None:
   <packages>
     <package name="source" line-rate="0.9" branch-rate="0.75" complexity="0.0">
       <classes>
-        <class name="code_cpp" filename="code.cpp" line-rate="0.9" branch-rate="0.75" complexity="0.0">
+        <class name="{testfile.name.replace(".", "_")}" filename="{testfile.name}" line-rate="0.9" branch-rate="0.75" complexity="0.0">
           <methods/>
           <lines>
             <line number="3" hits="3" branch="false"/>
@@ -646,20 +648,20 @@ def test_import_valid_cobertura_file(tmp_path: Path) -> None:
     with tempfile.open("w+") as fp:
         fp.write(xml_data)
 
-    filename = str(tempfile)
     opts = merge_options_and_set_defaults(
         [
             {
-                "cobertura_tracefile": [filename],
-                "include_filter": [re.compile(".")],
-                "root": str(tmp_path),
+                "cobertura_tracefile": [tempfile],
+                "include_filter": [AlwaysMatchFilter()],
+                "root": tmp_path,
             }
         ]
     )
     opts.include_filter = tuple(opts.include_filter)
+    opts.root_dir = Path(tmp_path)
     covdata = read_reports(opts)
     assert covdata is not None
-    testfile = str(Path(tmp_path, testfile))
+    testfile = Path(tmp_path, testfile)
     assert testfile in covdata
     cov = covdata[testfile]
     assert isinstance(cov, FileCoverage)

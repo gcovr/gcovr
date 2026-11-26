@@ -18,12 +18,12 @@
 """GCOVR filter definitions."""
 
 import functools
-import os
 import platform
 import re
+from pathlib import Path
 
 from .logging import LOGGER
-from .utils import force_unix_separator, is_fs_case_insensitive
+from .utils import is_fs_case_insensitive, relpath
 
 
 class Filter:
@@ -34,9 +34,9 @@ class Filter:
         flags = re.IGNORECASE if is_fs_case_insensitive() else 0
         self.pattern = re.compile(pattern, flags)
 
-    def match(self, path: str) -> bool:
+    def match(self, path: Path) -> bool:
         """Return True if the given path (always with /) matches the regular expression."""
-        os_independent_path = force_unix_separator(path)
+        os_independent_path = path.as_posix()
         if self.pattern.match(os_independent_path):
             LOGGER.debug("  Filter %s matched for path %s.", self, os_independent_path)
             return True
@@ -50,34 +50,32 @@ class Filter:
 class AbsoluteFilter(Filter):
     """Class for a filename filter which matches against the real path of a file."""
 
-    def match(self, path: str) -> bool:
+    def match(self, path: Path) -> bool:
         """Return True if the given path with all symlinks resolved matches the filter."""
-        path = os.path.realpath(path)
-        return super().match(path)
+        return super().match(path.resolve())
 
 
 class RelativeFilter(Filter):
     """Class for a filename filter which matches against the relative paths of a file."""
 
-    def __init__(self, root: str, pattern: str) -> None:
+    def __init__(self, root: Path, pattern: str) -> None:
         """Initialize the filter."""
         super().__init__(pattern)
-        self.root = os.path.realpath(root)
+        self.root = root.resolve()
 
-    def match(self, path: str) -> bool:
+    def match(self, path: Path) -> bool:
         """Return True if the given path with all symlinks resolved matches the filter."""
-        path = os.path.realpath(path)
+        path = path.resolve()
 
         # On Windows, a relative path can never cross drive boundaries.
         # If so, the relative filter cannot match.
         if platform.system() == "Windows":
-            path_drive, _ = os.path.splitdrive(path)
-            root_drive, _ = os.path.splitdrive(self.root)
+            path_drive = path.drive
+            root_drive = self.root.drive
             if path_drive != root_drive:  # pragma: no cover
                 return False
 
-        relpath = os.path.relpath(path, self.root)
-        return super().match(relpath)
+        return super().match(relpath(path, self.root))
 
     def __str__(self) -> str:
         """Get string representation of the filter."""
@@ -91,7 +89,7 @@ class AlwaysMatchFilter(Filter):
         """Initialize the filter."""
         super().__init__("")
 
-    def match(self, path: str) -> bool:  # noqa: ARG002
+    def match(self, path: Path) -> bool:  # pylint: disable=unused-argument # noqa: ARG002
         """Return always True."""
         LOGGER.debug("  Filter %s matched.", self)
         return True
@@ -100,20 +98,15 @@ class AlwaysMatchFilter(Filter):
 class DirectoryPrefixFilter(Filter):
     """Class for a filename filter which matches for all files in a directory."""
 
-    def __init__(self, directory: str) -> None:
+    def __init__(self, directory: Path) -> None:
         """Initialize the filter."""
-        os_independent_path = force_unix_separator(directory)
+        os_independent_path = directory.as_posix()
         pattern = re.escape(f"{os_independent_path}/")
         super().__init__(pattern)
 
-    def match(self, path: str) -> bool:
-        """Return True if the given path matches the filter."""
-        path = os.path.normpath(path)
-        return super().match(path)
-
 
 @functools.cache
-def __is_file_matching_any(filename: str, filters: tuple[Filter, ...]) -> bool:
+def __is_file_matching_any(filename: Path, filters: tuple[Filter, ...]) -> bool:
     """
     Check if filename matches any of the given filters.
 
@@ -137,7 +130,7 @@ def __is_file_matching_any(filename: str, filters: tuple[Filter, ...]) -> bool:
 
 def is_file_excluded(
     filter_type: str,
-    filename: str,
+    filename: Path,
     include_filter: tuple[Filter, ...],
     exclude_filter: tuple[Filter, ...],
 ) -> bool:

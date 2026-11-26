@@ -37,6 +37,7 @@ Bug fixes and small improvements:
 - Fix :option:`--coveralls` failing outside of a git work tree. (:issue:`1338`)
 - Fix relative filters for :option:`--gcov-filter` if :option:`--root` isn't
   current working directory. (:issue:`1342`)
+- Replace ``os.path`` with ``pathlib.Path``. (:issue:`1343`)
 
 Documentation:
 

@@ -19,6 +19,7 @@
 
 from __future__ import annotations
 
+from pathlib import Path
 from typing import TYPE_CHECKING, TypeVar
 
 if TYPE_CHECKING:
@@ -30,6 +31,7 @@ BranchcovKeyType = tuple[int, int, int]
 ConditioncovKeyType = tuple[int, int]
 CallcovKeyType = tuple[int, int, int]
 FunctioncovKeyType = str
+FilecovKeyType = Path
 _Key = TypeVar(
     "_Key",
     LinecovCollectionKeyType,
@@ -38,6 +40,7 @@ _Key = TypeVar(
     ConditioncovKeyType,
     CallcovKeyType,
     FunctioncovKeyType,
+    FilecovKeyType,
 )
 _T = TypeVar("_T")
 

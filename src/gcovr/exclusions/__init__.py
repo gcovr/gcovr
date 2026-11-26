@@ -24,9 +24,9 @@ Alternatively, they full suite of exclusion rules can be invoked
 via ``apply_all_exclusions()``, which is configured via the usual options object.
 """
 
-import os
 import re
 from dataclasses import dataclass, field
+from pathlib import Path
 
 from ..data_model.coverage import CodeRegion, FileCoverage
 from ..logging import LOGGER
@@ -233,11 +233,9 @@ def remove_internal_functions(
             filecov.remove_function_coverage(functioncov)
 
 
-def _function_can_be_excluded(filename: str, *names: str | None) -> bool:
+def _function_can_be_excluded(filename: Path, *names: str | None) -> bool:
     """Ignore special names for construction/destruction of static objects."""
-    is_fortran_source = (
-        os.path.splitext(filename)[1].casefold() in _FORTRAN_SOURCE_SUFFIXES
-    )
+    is_fortran_source = filename.suffix.casefold() in _FORTRAN_SOURCE_SUFFIXES
     return any(
         name is not None
         and (

@@ -25,10 +25,12 @@ import platform
 import re
 from abc import abstractmethod
 from argparse import ArgumentParser, ArgumentTypeError, Namespace
+from pathlib import Path
 from typing import Any, Callable
 
 from .filter import AbsoluteFilter, Filter, RelativeFilter
 from .logging import LOGGER
+from .utils import relpath
 
 
 def check_percentage(value: str) -> float:
@@ -46,44 +48,45 @@ def check_percentage(value: str) -> float:
     return x
 
 
-def check_input_file(value: str, basedir: str | None = None) -> str:
+def check_input_file(value: str, basedir: Path | None = None) -> Path:
     r"""Check that the input file is present. Return the full path."""
     if basedir is None:
-        basedir = os.getcwd()
+        basedir = Path.cwd()
 
-    if not os.path.isabs(value):
-        value = os.path.join(basedir, value)
-    value = os.path.normpath(value)
+    path_value = Path(value)
+    if not path_value.is_absolute():
+        path_value = basedir / value
 
-    if not os.path.isfile(value):
-        msg = f"Should be a file that already exists: {value!r}"
+    if not path_value.is_file():
+        msg = f"Should be a file that already exists: {path_value}"
         raise ArgumentTypeError(msg) from None
 
-    return os.path.abspath(value)
+    return path_value
 
 
-def relative_path(value: str, basedir: str | None = None) -> str:
-    r"""Make a absolute path if value is a relative path."""
+def relative_path(value: str, basedir: Path | None = None) -> Path:
+    r"""Make a relative path to basedir or cwd."""
     if not value:
         msg = "Should not be set to an empty string."
         raise ArgumentTypeError(msg) from None
 
     if basedir is None:
-        basedir = os.getcwd()
+        basedir = Path.cwd()
 
-    if not os.path.isabs(value):
-        value = os.path.join(basedir, value)
-    value = os.path.normpath(value)
-    return os.path.relpath(value, os.getcwd())
+    path_value = Path(value)
+    if not path_value.is_absolute():
+        path_value = basedir / value
+
+    return relpath(path_value, Path.cwd())
 
 
 class FilterOption:
     """Argparse type for filter options."""
 
-    def __init__(self, regex: str, path_context: str | None = None) -> None:
+    def __init__(self, regex: str, path_context: Path | None = None) -> None:
         """Initialize the FilterOption instance."""
         self.regex = regex
-        self.path_context = os.getcwd() if path_context is None else path_context
+        self.path_context = Path.cwd() if path_context is None else path_context
 
     def build_filter(self) -> Filter:
         """Return the filter object depending on the given RegEx."""
@@ -112,7 +115,7 @@ class FilterOption:
 class NonEmptyFilterOption(FilterOption):
     """Argparse type to check filters."""
 
-    def __init__(self, regex: str, path_context: str | None = None) -> None:
+    def __init__(self, regex: str, path_context: Path | None = None) -> None:
         """Initialize the NonEmptyFilterOption instance."""
         if not regex:
             msg = "filter cannot be empty"
@@ -129,10 +132,12 @@ class OutputOrDefault:
     - ``OutputOrDefault(path)``: use that path
     """
 
-    def __init__(self, value: str | None, basedir: str | None = None) -> None:
+    def __init__(self, value: str | None, basedir: Path | None = None) -> None:
         """Initialize the OutputOrDefault instance."""
         self.value = value
-        self._check_output_and_make_abspath(os.getcwd() if basedir is None else basedir)
+        self.abspath = self._check_output_and_make_abspath(
+            Path.cwd() if basedir is None else basedir
+        )
 
     def __repr__(self) -> str:
         """Get a string representation of the OutputOrDefault instance."""
@@ -140,40 +145,37 @@ class OutputOrDefault:
         value = self.value
         return f"{name}({value!r})"
 
-    def _check_output_and_make_abspath(self, basedir: str) -> None:
+    def _check_output_and_make_abspath(self, basedir: Path) -> Path:
         r"""Check if the output file can be created."""
         if self.value in (None, "-"):
-            self.abspath = "-"
             self.is_dir = False
+            path_value = Path("-")
         else:
             # Replace / and \ with the os path separator.
-            value = str(self.value).replace("\\", os.sep).replace("/", os.sep)
+            value = self.value.replace("\\", os.sep).replace("/", os.sep)
             # Save if it is a directory
-            self.is_dir = value.endswith(os.sep)
-            value = os.path.normpath(value)
-            if self.is_dir:
-                value += os.sep
-
-            if not os.path.isabs(value):
-                value = os.path.join(basedir, value)
-            self.abspath = value
+            path_value = Path(value)
+            if not path_value.is_absolute():
+                path_value = basedir / path_value
+            self.is_dir = value.endswith(os.sep) or path_value.is_dir()
+            value = str(path_value)
 
             if self.is_dir:
-                # Now normalize and add the trailing slash after creating the directory.
-                if not os.path.isdir(value):
+                if not path_value.is_dir():
                     try:
-                        os.mkdir(value)
+                        path_value.mkdir()
                     except OSError as e:
-                        msg = f"Could not create output directory {self.value!r}: {e.strerror}"
+                        msg = f"Could not create output directory {path_value}: {e.strerror}"
                         raise ArgumentTypeError(msg) from None
             else:
                 try:
-                    with open(value, "w", encoding="utf-8") as _:
-                        pass
+                    path_value.write_bytes(b"")
                 except OSError as e:
-                    msg = f"Could not create output file {self.value!r}: {e.strerror}"
+                    msg = f"Could not create output file {path_value}: {e.strerror}"
                     raise ArgumentTypeError(msg) from None
-                os.unlink(value)
+                path_value.unlink()
+
+        return path_value
 
     @classmethod
     def choose(
@@ -185,8 +187,8 @@ class OutputOrDefault:
         Select the first choice that contains a value.
 
         Examples, chooses a truthy value over None:
-        >>> OutputOrDefault.choose([None, OutputOrDefault(42)])
-        OutputOrDefault(42)
+        >>> OutputOrDefault.choose([None, OutputOrDefault('42')])
+        OutputOrDefault('42')
 
         Examples, chooses a truthy value over empty value:
         >>> OutputOrDefault.choose([OutputOrDefault(None), OutputOrDefault('x')])

@@ -17,7 +17,8 @@
 
 """GCOVR report formats."""
 
-from typing import Callable
+from pathlib import Path
+from typing import Callable, cast
 
 from ..data_model.container import CoverageContainer
 from ..data_model.coverage import FileCoverage
@@ -143,7 +144,7 @@ def read_reports(options: Options) -> CoverageContainer:
         raise SanityCheckError(msg)
 
     if options.include_search_filter:
-        for search_path in options.search_paths or [options.root]:
+        for search_path in options.search_paths:
             LOGGER.debug("Search for included files in %s", search_path)
             for fname in search_file(
                 lambda fname: any(
@@ -159,7 +160,7 @@ def read_reports(options: Options) -> CoverageContainer:
                 ):
                     continue
 
-                filecov = FileCoverage("option --include", filename=fname)
+                filecov = FileCoverage(Path("option --include"), filename=fname)
                 LOGGER.debug("Merge empty coverage data for %s", fname)
                 covdata.insert_file_coverage(
                     filecov, get_merge_mode_from_options(options)
@@ -186,7 +187,7 @@ def write_reports(covdata: CoverageContainer, options: Options) -> None:
     generators: list[
         tuple[
             list[OutputOrDefault | None],
-            Callable[[CoverageContainer, str], None],
+            Callable[[CoverageContainer, Path], None],
             Callable[[], None],
         ]
     ] = []
@@ -350,7 +351,11 @@ def write_reports(covdata: CoverageContainer, options: Options) -> None:
     writer_errors = []
     reports_were_written = False
     default_output_used = False
-    default_output = OutputOrDefault(None) if options.output is None else options.output
+    default_output: OutputOrDefault | None = (
+        OutputOrDefault(None)
+        if options.output is None
+        else cast("OutputOrDefault", options.output)
+    )
 
     for output_choices, format_writer, on_no_output in generators:
         output = OutputOrDefault.choose(output_choices, default=default_output)
@@ -371,7 +376,7 @@ def write_reports(covdata: CoverageContainer, options: Options) -> None:
             on_no_output()
 
     if not reports_were_written:
-        output_path = "-" if default_output is None else default_output.abspath
+        output_path = Path("-") if default_output is None else default_output.abspath
         default_output = None
         try:
             TxtHandler(options).write_report(covdata, output_path)
@@ -389,7 +394,7 @@ def write_reports(covdata: CoverageContainer, options: Options) -> None:
 
     if options.txt_summary:
         try:
-            TxtHandler(options).write_summary_report(covdata, "-")
+            TxtHandler(options).write_summary_report(covdata, Path("-"))
         except RuntimeError as e:
             writer_errors.append(str(e))
 

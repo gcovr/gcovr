@@ -17,6 +17,7 @@
 
 """GCOVR SonarQube report."""
 
+from pathlib import Path
 from typing import TYPE_CHECKING
 
 from lxml import etree  # nosec # We only write XML files
@@ -31,7 +32,7 @@ if TYPE_CHECKING:
 
 
 def write_report(
-    covdata: CoverageContainer, output_file: str, options: Options
+    covdata: CoverageContainer, output_file: Path, options: Options
 ) -> None:
     """Write an XML report in the SonarQube generic coverage format."""
     if not any(

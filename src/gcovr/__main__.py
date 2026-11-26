@@ -22,6 +22,7 @@ import re
 import sys
 import traceback
 from argparse import ArgumentError, ArgumentParser, Namespace
+from pathlib import Path
 from typing import Any
 
 # formats
@@ -44,6 +45,7 @@ from .formats.gcov.read import GcovProgram
 from .formats.gcov.workers import Workers
 from .logging import LOGGER, configure_logging, update_logging
 from .options import FilterOption
+from .utils import normpath
 from .version import __version__
 
 if sys.version_info >= (3, 11):
@@ -187,13 +189,13 @@ COPYRIGHT = (
 )
 
 
-def find_config_name(root: str, *filenames: str) -> str | None:
+def find_config_name(root: Path, filenames: list[Path]) -> Path | None:
     """Find the configuration to use."""
     for filename in filenames:
         if root:
-            filename = os.path.join(root, filename)  # noqa: PLW2901
+            filename = root / filename  # noqa: PLW2901
 
-        if os.path.isfile(filename):
+        if filename.is_file():
             return filename
 
     return None
@@ -201,21 +203,23 @@ def find_config_name(root: str, *filenames: str) -> str | None:
 
 def load_config(partial_options: Namespace) -> dict[str, Any]:
     """Load a config file if configured or found by default names."""
-    root = getattr(partial_options, "root", "")
+    root = Path(getattr(partial_options, "root", ""))
     filename = getattr(partial_options, "config", None)
     if filename is None:
-        filename = find_config_name(root, "gcovr.cfg", "gcovr.toml", "pyproject.toml")
+        filename = find_config_name(
+            root, [Path(e) for e in ["gcovr.cfg", "gcovr.toml", "pyproject.toml"]]
+        )
         if filename is None:
             return {}
 
-    if filename.endswith(".toml"):
-        with open(filename, "rb") as buf:
+    if filename.suffix == ".toml":
+        with filename.open("rb") as buf:
             data = tomllib.load(buf)
             if os.path.split(filename)[1] == "pyproject.toml":
                 data = data.get("tool", {}).get("gcovr", {})
             return parse_config_into_dict(config_entries_from_dict(data, filename))
     else:
-        with open(filename, encoding="utf-8") as buf:
+        with filename.open(encoding="utf-8") as buf:
             return parse_config_into_dict(parse_config_file(buf, filename))
 
 
@@ -307,15 +311,23 @@ def main(args: list[str] | None = None) -> int:  # pylint: disable=too-many-retu
         LOGGER.error("%s", str(exc))
         return EXIT_CMDLINE_ERROR
 
-    options.starting_dir = os.path.abspath(os.getcwd())
-    options.root_dir = os.path.abspath(options.root)
+    options.starting_dir = Path.cwd().absolute()
+    options.root_dir = normpath(Path(options.root).absolute())
+    options.root = str(options.root)
+
+    for name in (
+        "cobertura_tracefile",
+        "json_tracefile",
+    ):
+        if value := getattr(options, name):
+            setattr(options, name, [Path(e) for e in value])
 
     #
     # Setup filters
     #
     # The root filter isn't technically a filter,
     # but is used to turn absolute paths into relative paths
-    options.root_filter = re.compile("^" + re.escape(options.root_dir + os.sep))
+    options.root_filter = re.compile("^" + re.escape(str(options.root_dir) + os.sep))
 
     def _setup_filter(
         option: str,
@@ -404,12 +416,20 @@ def main(args: list[str] | None = None) -> int:  # pylint: disable=too-many-retu
             "It uses a fragile heuristic and depends on the code format."
         )
 
-    # Get data files
-    if not options.search_paths:
-        options.search_paths = [options.root]
+    if options.gcov_objdir is not None:
+        options.gcov_objdir = Path(options.gcov_objdir).absolute()
+
+    if options.search_paths:
+        options.search_paths = [Path(p).absolute() for p in options.search_paths]
+    else:
+        options.search_paths = [options.root_dir]
 
         if options.gcov_objdir is not None:
             options.search_paths.append(options.gcov_objdir)
+
+    options.gcov_allowed_working_directory_roots = [
+        Path(p).absolute() for p in options.gcov_allowed_working_directory_roots
+    ]
 
     LOGGER.info("Reading coverage data...")
     try:

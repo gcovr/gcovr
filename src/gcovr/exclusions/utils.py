@@ -17,6 +17,7 @@
 
 """Utils for exclusion of lines and branches."""
 
+from pathlib import Path
 from typing import Callable, Iterable
 
 from ..data_model.coverage import CodeRegion, FileCoverage, FunctionCoverage
@@ -27,7 +28,7 @@ FunctionListByLine = dict[int, list[FunctionCoverage]]
 
 
 def function_exclude_not_supported(
-    filename: str | None = None,
+    filename: Path | None = None,
     lineno: int | None = None,
     columnno: int | None = None,
 ) -> None:
@@ -44,7 +45,7 @@ def function_exclude_not_supported(
 
 
 def function_exclude_not_at_function_line(
-    filename: str, lineno: int, columnno: int
+    filename: Path, lineno: int, columnno: int
 ) -> None:
     """Warn that a function exclude is found at a line where no function is defined."""
     LOGGER.warning(
@@ -69,7 +70,7 @@ def get_functions_by_line(filecov: FileCoverage) -> FunctionListByLine:
 
 
 def get_function_exclude_ranges(
-    filename: str, lineno: int, columnno: int, *, functions_by_line: FunctionListByLine
+    filename: Path, lineno: int, columnno: int, *, functions_by_line: FunctionListByLine
 ) -> list[CodeRegion]:
     """Get the exclude range for a given function."""
     exclude_ranges = list[CodeRegion]()

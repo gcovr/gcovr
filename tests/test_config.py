@@ -22,6 +22,7 @@ import io
 import re
 import textwrap
 from collections.abc import Iterable
+from pathlib import Path
 from typing import Any
 
 import pytest
@@ -35,7 +36,7 @@ from gcovr.configuration import (
     parse_config_into_dict,
 )
 
-TEST_CONFIG_FILE = "test.cfg"
+TEST_CONFIG_FILE = Path("test.cfg")
 
 
 def run_cfg_test(contents: str) -> Iterable[ConfigEntry]:

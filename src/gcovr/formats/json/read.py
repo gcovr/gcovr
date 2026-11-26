@@ -19,8 +19,8 @@
 
 import gzip
 import json
-import os
 from glob import glob
+from pathlib import Path
 
 from ...data_model import version
 from ...data_model.container import CoverageContainer
@@ -40,22 +40,31 @@ from ...utils import GZIP_SUFFIX
 #
 def read_report(options: Options) -> CoverageContainer:
     """Read trace files into internal data model."""
-    covdata = CoverageContainer(options.root)
+    covdata = CoverageContainer(options.root_dir)
     if len(options.json_tracefile) != 0:
-        datafiles = list[str]()
+        datafiles = list[Path]()
 
-        for trace_file_pattern in options.json_tracefile:
-            trace_files = glob(trace_file_pattern, recursive=True)
+        for trace_file_glob in options.json_tracefile:
+            root_dir = trace_file_glob.parent
+            trace_files = [
+                (root_dir / e)
+                for e in sorted(
+                    glob(  # noqa: PTH207
+                        trace_file_glob.name,
+                        root_dir=str(root_dir),
+                        recursive=True,
+                    )
+                )
+            ]
             if not trace_files:
                 msg = (
-                    f"Bad --json-add-tracefile={trace_file_pattern} option.\n"
+                    f"Bad --json-add-tracefile={trace_file_glob} option.\n"
                     "\tThe specified file does not exist."
                 )
                 raise RuntimeError(msg)
 
-            for trace_file in [
-                os.path.normpath(trace_file) for trace_file in trace_files
-            ]:
+            # Do not use a set to keep the order
+            for trace_file in trace_files:
                 if trace_file not in datafiles:
                     datafiles.append(trace_file)
 
@@ -81,11 +90,11 @@ def read_report(options: Options) -> CoverageContainer:
             if activate_trace_logging:
                 LOGGER.trace("Processing file: %s", data_source)
 
-            if data_source.casefold().endswith(GZIP_SUFFIX):
+            if data_source.suffix.casefold() == GZIP_SUFFIX:
                 with gzip.open(data_source, "rt", encoding="utf-8") as fh:
                     gcovr_json_data = json.loads(fh.read())
             else:
-                with open(data_source, encoding="utf-8") as json_file:
+                with data_source.open(encoding="utf-8") as json_file:
                     gcovr_json_data = json.load(json_file)
 
             format_version = str(gcovr_json_data["gcovr/format_version"])

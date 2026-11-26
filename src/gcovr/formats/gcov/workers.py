@@ -19,6 +19,7 @@
 
 from contextlib import contextmanager
 from multiprocessing import cpu_count
+from pathlib import Path
 from queue import Empty, Queue
 from sys import exc_info
 from threading import Condition, RLock, Thread
@@ -40,10 +41,10 @@ class LockedDirectories:
 
     def __init__(self) -> None:
         """Initialize locked directories."""
-        self.dirs = set[str]()
+        self.dirs = set[Path]()
         self.cv = Condition()
 
-    def run_in(self, directory: str) -> None:
+    def run_in(self, directory: Path) -> None:
         """Start running in the directory and lock it."""
         self.cv.acquire()
         while directory in self.dirs:
@@ -51,7 +52,7 @@ class LockedDirectories:
         self.dirs.add(directory)
         self.cv.release()
 
-    def done(self, directory: str) -> None:
+    def done(self, directory: Path) -> None:
         """Finished with the directory, unlock it."""
         self.cv.acquire()
         self.dirs.remove(directory)
@@ -63,7 +64,7 @@ locked_directory_global_object = LockedDirectories()
 
 
 @contextmanager
-def locked_directory(directory: str) -> Iterator[None]:
+def locked_directory(directory: Path) -> Iterator[None]:
     """Context for doing something in a locked directory."""
     locked_directory_global_object.run_in(directory)
     try:

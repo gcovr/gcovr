@@ -27,13 +27,16 @@ import sys
 from contextlib import contextmanager
 from hashlib import md5
 from pathlib import Path
-from typing import Any, BinaryIO, Callable, Generator, Iterator, TextIO
+from typing import TYPE_CHECKING, Any, BinaryIO, Callable, Generator, Iterator, TextIO
 
-from lxml import etree  # nosec # We only write XML files
+from lxml import etree
 
 from .exceptions import SanityCheckError
 from .logging import LOGGER
 from .version import __version__
+
+if TYPE_CHECKING:
+    from .filter import Filter
 
 REGEX_VERSION_POSTFIX = re.compile(r"(.+?)(?:\.post\d+)?\.dev.+$")
 PRETTY_JSON_INDENT = 4
@@ -48,9 +51,9 @@ class LoopChecker:
         """Initialize the loop checker."""
         self._seen = set[tuple[int, int]]()
 
-    def already_visited(self, path: str) -> bool:
+    def already_visited(self, path: Path) -> bool:
         """Check if the path was already checked."""
-        st = os.stat(path)
+        st = path.stat()
         key = (st.st_dev, st.st_ino)
         if key in self._seen:
             return True
@@ -62,15 +65,17 @@ class LoopChecker:
 @functools.lru_cache(maxsize=1)
 def is_fs_case_insensitive() -> bool:
     """Check if the file system is case insensitive."""
-    cwd = os.getcwd()
+    cwd = Path.cwd()
+    cwd_upper = Path(str(cwd).upper())
+    cwd_lower = Path(str(cwd).lower())
     # Guessing if file system is case insensitive.
     # The working directory is not the root and accessible in upper and lower case
     # and pointing to same file.
     ret = (
-        (cwd != os.path.sep)
-        and os.path.exists(cwd.upper())
-        and os.path.exists(cwd.lower())
-        and os.path.samefile(cwd.upper(), cwd.lower())
+        (str(cwd) != os.path.sep)
+        and cwd_upper.exists()
+        and cwd_lower.exists()
+        and cwd_upper.samefile(cwd_lower)
     )
     LOGGER.debug("File system is case %s.", "insensitive" if ret else "sensitive")
 
@@ -78,28 +83,29 @@ def is_fs_case_insensitive() -> bool:
 
 
 @functools.cache
-def fix_case_of_path(path: str) -> str:
+def fix_case_of_path(path: Path) -> Path:
     """Fix casing of filenames for case insensitive file systems."""
-    rest, cur = os.path.split(path)
+    rest = path.parent
+    cur = path.name
     # e.g path = ".." happens if original path is like "../dir/subdir/file.cpp"
     if not rest:
-        return cur
+        return Path(cur)
     if not cur:  # e.g path = "C:/"
-        return rest.upper()  # Always use uppercase drive letter
+        return rest
 
     try:
         cur_lower = cur.lower()
-        matched_filename = [f for f in os.listdir(rest) if f.lower() == cur_lower]
+        matched_filename = [f for f in rest.glob("*") if str(f).lower() == cur_lower]
         if len(matched_filename) > 1:
             msg = "Seems that we have a case sensitive filesystem, cannot fix file case"
             raise SanityCheckError(msg)
 
         if len(matched_filename) == 1:
-            path = os.path.join(fix_case_of_path(rest), matched_filename[0])
+            path = fix_case_of_path(rest) / matched_filename[0]
     except FileNotFoundError:
         LOGGER.warning("Cannot fix case of path because %s not found.", rest)
 
-    return path.replace("\\", "/")
+    return path
 
 
 def get_version_for_report() -> str:
@@ -111,64 +117,59 @@ def get_version_for_report() -> str:
 
 
 def search_file(
-    predicate: Callable[[str], bool],
-    path: str,
-    exclude_directory: list[re.Pattern[str]],
-) -> Iterator[str]:
+    predicate: Callable[[Path], bool],
+    path: Path,
+    exclude_directory: "tuple[Filter, ...]",
+) -> Iterator[Path]:
     """Recursively descend path to find files that satisfy a predicate."""
-    if path is None or path == ".":
-        path = os.getcwd()
-    elif not os.path.exists(path):
-        raise OSError("Unknown directory '" + path + "'")
+    if str(path) == ".":
+        path = Path.cwd()
+    elif not path.exists():
+        msg = f"Unknown directory '{path}'"
+        raise OSError(msg)
 
     loop_checker = LoopChecker()
-    for root, dirs, files in os.walk(os.path.abspath(path), followlinks=True):
+    for root, dirs, files in os.walk(path, followlinks=True):
         # Check if we've already visited 'root' through the magic of symlinks
-        if loop_checker.already_visited(root):
+        if loop_checker.already_visited(Path(root)):
             dirs[:] = []
             continue
 
         dirs[:] = [
             d
             for d in sorted(dirs)
-            if not any(exc.match(os.path.join(root, d)) for exc in exclude_directory)
+            if not any(exc.match(Path(root) / d) for exc in exclude_directory)
         ]
-        abs_root = os.path.abspath(root)
 
-        for name in sorted(files):
-            if predicate(name):
-                yield os.path.abspath(os.path.join(abs_root, name))
+        for filename in [(Path(root) / f) for f in sorted(files)]:
+            if predicate(filename):
+                yield filename.absolute()
 
 
-def commonpath(files: list[str]) -> str:
+def commonpath(files: list[Path]) -> Path:
     r"""
     Find the common prefix of all files.
 
     This differs from the standard library os.path.commonpath():
-     - We first normalize all paths to a realpath.
-     - We return a path with a trailing path separator.
+    - We first normalize all paths to a realpath.
 
     No common path exists under the following circumstances:
-     - on Windows when the paths have different drives.
-       E.g.: commonpath([r'C:\foo', r'D:\foo']) == ''
-     - when the `files` are empty.
+    - on Windows when the paths have different drives.
+      E.g.: commonpath([r'C:\foo', r'D:\foo']) == ''
+    - when the `files` are empty.
 
     Arguments:
         files (list): the input paths, may be relative or absolute.
 
-    Returns: str
+    Returns: Path | None
         The common prefix directory as a relative path.
-        Always ends with a path separator.
-        Returns the empty string if no common path exists.
+        Returns None if no common path exists.
 
     """
-    if not files:
-        return ""
-
     if len(files) == 1:
-        prefix_path = str(os.path.dirname(os.path.realpath(files[0])))
+        prefix_path = files[0].resolve().parent
     else:
-        split_paths = [os.path.realpath(path).split(os.path.sep) for path in files]
+        split_paths = [file.resolve().parts for file in files]
         # We only have to compare the lexicographically minimum and maximum
         # paths to find the common prefix of all, e.g.:
         #   /a/b/c/d  <- min
@@ -184,39 +185,60 @@ def commonpath(files: list[str]) -> str:
             if min_path[i] != max_path[i]:
                 common = min_path[:i]  # disproven, slice for actual prefix
                 break
-        prefix_path = os.path.sep.join(common)
+        prefix_path = Path(*common)
 
-    LOGGER.debug("Common prefix path is %r.", prefix_path)
+    LOGGER.debug("Common prefix path is '%s'.", prefix_path)
 
-    # make the path relative and add a trailing slash
+    # make the path relative
     if prefix_path:
-        prefix_path = os.path.join(
-            os.path.relpath(prefix_path, os.path.realpath(os.getcwd())), ""
-        )
-        LOGGER.debug("Common relative prefix path is %r.", prefix_path)
+        prefix_path = Path(os.path.relpath(prefix_path, Path.cwd()))
+        LOGGER.debug("Common relative prefix path is '%s'.", prefix_path)
     return prefix_path
+
+
+def normpath(path: Path) -> Path:
+    """
+    Normalize the given path.
+
+    This differs from the standard library os.path.normpath():
+    - We only normalize a .. if the parent is not a symbolic link.
+    """
+    path_parts = Path(path).absolute().parts
+    path_normalized = Path(path_parts[0])
+    if len(path_parts) > 1:
+        for part in path_parts[1:]:
+            if part == ".." and not path_normalized.is_symlink():
+                path_normalized = path_normalized.parent
+            else:
+                path_normalized /= part
+    return path_normalized
+
+
+def relpath(path: Path, start: Path) -> Path:
+    """Get the relative path with os.path.relpath."""
+    return Path(os.path.relpath(path, start))
 
 
 @contextmanager
 def open_text_for_writing(
-    filename: str | None, default_filename: str | None = None, **kwargs: Any
+    filename: Path | None, default_filename: str | None = None, **kwargs: Any
 ) -> Generator[TextIO | Any, None, None]:
     """
     Context manager to open and close a file for text writing.
 
     Stdout is used if `filename` is None or '-'.
     """
-    if filename is not None and filename.endswith(os.sep):
+    if filename is not None and filename.is_dir():
         if default_filename is None:
             msg = "If filename is a directory a default filename is mandatory."
             raise AssertionError(msg)
-        filename += default_filename
+        filename /= default_filename
 
-    if filename is not None and filename != "-":
-        if filename.endswith(GZIP_SUFFIX):
+    if filename is not None and str(filename) != "-":
+        if filename.suffix == GZIP_SUFFIX:
             with gzip.open(filename, "wt", **kwargs) as fh_out:
                 yield fh_out
-        elif filename.endswith(LZMA_SUFFIX):
+        elif filename.suffix == LZMA_SUFFIX:
             with lzma.open(filename, "wt", **kwargs) as fh_out:
                 yield fh_out
         else:
@@ -236,7 +258,7 @@ def open_text_for_writing(
 
 @contextmanager
 def open_binary_for_writing(
-    filename: str | None,
+    filename: Path | None,
     default_filename: str,
     **kwargs: Any,
 ) -> Generator[BinaryIO | Any, None, None]:
@@ -245,14 +267,14 @@ def open_binary_for_writing(
 
     Stdout is used if `filename` is None or '-'.
     """
-    if filename is not None and filename.endswith(os.sep):
-        filename += default_filename
+    if filename is not None and filename.is_dir():
+        filename /= default_filename
 
-    if filename is not None and filename != "-":
-        if filename.endswith(GZIP_SUFFIX):
+    if filename is not None and str(filename) != "-":
+        if filename.name.endswith(GZIP_SUFFIX):
             with gzip.open(filename, "wb", **kwargs) as fh_out:
                 yield fh_out
-        elif filename.endswith(LZMA_SUFFIX):
+        elif filename.name.endswith(LZMA_SUFFIX):
             with lzma.open(filename, "wb", **kwargs) as fh_out:
                 yield fh_out
         else:
@@ -267,7 +289,7 @@ def write_json_output(
     json_dict: dict[str, Any],
     *,
     pretty: bool,
-    filename: str | None,
+    filename: Path | None,
     default_filename: str,
     **kwargs: Any,
 ) -> None:
@@ -285,7 +307,7 @@ def write_xml_output(
     *,
     doctype: str | None = None,
     pretty: bool,
-    filename: str | None,
+    filename: Path | None,
     default_filename: str,
     **kwargs: Any,
 ) -> None:
@@ -303,19 +325,14 @@ def write_xml_output(
 
 
 @contextmanager
-def chdir(directory: str) -> Generator[None, None, None]:
+def chdir(directory: Path) -> Generator[None, None, None]:
     """Context for doing something in a locked directory."""
     current_dir = Path.cwd()
     os.chdir(directory)
     try:
         yield
     finally:
-        os.chdir(str(current_dir))
-
-
-def force_unix_separator(path: str) -> str:
-    """Get the filename with / independent from OS."""
-    return path.replace("\\", "/")
+        os.chdir(current_dir)
 
 
 def get_md5_hexdigest(data: bytes) -> str:
@@ -324,13 +341,12 @@ def get_md5_hexdigest(data: bytes) -> str:
 
 
 def read_source_file(
-    source_encoding: str, filename: str, max_line_number: int
+    source_encoding: str, filename: Path, max_line_number: int
 ) -> list[str]:
     """Read in the source file and fill up lines if needed."""
     source_lines: list[bytes] = []
     try:
-        with Path(filename).open("rb") as fh_in:
-            source_lines = fh_in.read().splitlines()
+        source_lines = Path(filename).read_bytes().splitlines()
         lines = len(source_lines)
         if lines < max_line_number:
             LOGGER.warning(
@@ -343,7 +359,7 @@ def read_source_file(
             # used the same.
             source_lines += [b"/*EOF*/"] * (max_line_number - lines)
     except OSError as e:
-        if filename.endswith("<stdin>"):
+        if filename.name == "<stdin>":
             message = (
                 f"Got unreadable source file '{filename}', replacing with empty lines."
             )

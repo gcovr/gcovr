@@ -86,6 +86,7 @@ class GcovHandler(BaseHandler):
                 ),
                 type=relative_path,
                 action="append",
+                default=[],
             ),
             GcovrConfigOption(
                 "gcov_use_existing_files",
@@ -223,8 +224,8 @@ class GcovHandler(BaseHandler):
 
     def validate_options(self) -> None:
         """Validate options."""
-        if self.options.gcov_objdir is not None and not os.path.exists(
-            self.options.gcov_objdir
+        if self.options.gcov_objdir is not None and not (
+            self.options.gcov_objdir.exists()
         ):
             msg = (
                 "Bad --gcov-object-directory option.\n"
