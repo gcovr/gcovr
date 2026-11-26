@@ -9,6 +9,22 @@ Known bugs
 This list contains bugs for version 6.0 and newer, always check the latest
 version of this file available `here <https://gcovr.com/en/latest/known_bugs.html>`_.
 
+.. _fix_1342:
+
+Relative filters for ``--gcov-filter`` only work with cwd as root
+-----------------------------------------------------------------
+
+.. list-table::
+
+   * - Introduced
+     - :ref:`release_4_0`
+
+   * - Fixed
+     - :ref:`next_release`, :issue:`1342`
+
+When checking the filter the filename is resolved to current
+working directory instead of the root directory.
+
 .. _fix_1339:
 
 In detailed HTML report the link to parent does't work

@@ -1052,6 +1052,7 @@ def remove_duplicate_references(session: nox.Session) -> None:
                                 for e in compiler_reference_directory.glob("*.*")
                             )
                         else:
+                            html_file_present = False
                             for file in compiler_reference_directory.glob("*.*"):
                                 if file.suffix not in (".js", ".css"):
                                     content = file.read_bytes()
@@ -1064,5 +1065,12 @@ def remove_duplicate_references(session: nox.Session) -> None:
                                         file.unlink()
                                     else:
                                         data_by_test[key][file.name] = content
+                                        html_file_present |= file.suffix == ".html"
+                            if not html_file_present:
+                                for file in compiler_reference_directory.glob("*.*"):
+                                    if file.suffix in (".js", ".css"):
+                                        session.log("   Remove %s", file)
+                                        file.unlink()
+
                             if not list(compiler_reference_directory.glob("*.*")):
                                 compiler_reference_directory.rmdir()
