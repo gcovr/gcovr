@@ -1068,13 +1068,14 @@ def select_gcov_files_from_stdout(
             continue
 
         fname = found.group(1)
-        full = os.path.join(chdir, fname)
-        all_files.add(full)
+        if not os.path.isabs(fname):
+            fname = os.path.join(chdir, fname)
+        all_files.add(fname)
 
         if is_file_excluded("gcov file", fname, include_filter, exclude_filter):
             continue
 
-        active_files.add(full)
+        active_files.add(fname)
 
     return active_files, all_files
 

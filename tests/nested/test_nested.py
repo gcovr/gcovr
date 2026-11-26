@@ -25,7 +25,11 @@ from unittest import mock
 import pytest
 from pytest_check import check
 
-from tests.conftest import GCOVR_ISOLATED_TEST, USE_PROFDATA_POSSIBLE
+from tests.conftest import (
+    GCOVR_ISOLATED_TEST,
+    USE_GCC_JSON_INTERMEDIATE_FORMAT,
+    USE_PROFDATA_POSSIBLE,
+)
 
 if typing.TYPE_CHECKING:
     from tests.conftest import GcovrExecFixture
@@ -69,7 +73,7 @@ def test_standard(gcovr_exec: "GcovrExecFixture") -> None:
 
     gcovr_exec.gcovr(
         "--keep-intermediate-files",
-        "--gcov-filter=(?:subdir#|(?i:main|file\\d)).*",
+        f"--gcov-filter={'subdir/' if USE_GCC_JSON_INTERMEDIATE_FORMAT else ''}(?:subdir#|(?i:main|file\\d)).*",
         "--trace-include=.*",
         "--root=subdir",
         "--json-pretty",

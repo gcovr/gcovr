@@ -35,6 +35,8 @@ Bug fixes and small improvements:
 - Change link color in GitHub theme from fixed color to accent color. (:issue:`1335`)
 - Ignore negative and suspicious counters also for call and function coverage. (:issue:`1336`)
 - Fix :option:`--coveralls` failing outside of a git work tree. (:issue:`1338`)
+- Fix relative filters for :option:`--gcov-filter` if :option:`--root` isn't
+  current working directory. (:issue:`1342`)
 
 Documentation:
 
@@ -50,6 +52,7 @@ Internal changes:
 Known bgs:
 
 - :ref:`fix_1339`
+- :ref:`fix_1342`
 
 New features and notable changes:
 
@@ -75,6 +78,7 @@ Internal changes:
 Known bugs:
 
 - :ref:`fix_1320`
+- :ref:`fix_1342`
 
 Breaking changes:
 
@@ -151,6 +155,7 @@ Known bugs:
 - :ref:`fix_1284`
 - :ref:`fix_1285`
 - :ref:`fix_1290`
+- :ref:`fix_1342`
 
 Breaking changes:
 
@@ -180,6 +185,7 @@ Known bugs:
 - :ref:`fix_1284`
 - :ref:`fix_1285`
 - :ref:`fix_1290`
+- :ref:`fix_1342`
 
 Breaking changes:
 
@@ -285,6 +291,7 @@ Known bugs:
 - :ref:`fix_1206_1`
 - :ref:`fix_1206_2`
 - :ref:`fix_1270`
+- :ref:`fix_1342`
 
 Breaking changes:
 
@@ -398,6 +405,7 @@ Known bugs:
 - :ref:`fix_1171_1`
 - :ref:`fix_1176`
 - :ref:`fix_1197`
+- :ref:`fix_1342`
 
 Breaking changes:
 
@@ -462,6 +470,7 @@ Known bugs:
 - :ref:`fix_1138`
 - :ref:`fix_1171_1`
 - :ref:`fix_1197`
+- :ref:`fix_1342`
 
 Breaking changes:
 
@@ -491,6 +500,7 @@ Known bugs:
 - :ref:`fix_1138`
 - :ref:`fix_1171_1`
 - :ref:`fix_1197`
+- :ref:`fix_1342`
 
 Breaking changes:
 
@@ -524,6 +534,7 @@ Known bugs:
 - :ref:`fix_1138`
 - :ref:`fix_1171_1`
 - :ref:`fix_1197`
+- :ref:`fix_1342`
 
 Breaking changes:
 
@@ -605,6 +616,7 @@ Known bugs:
 - :ref:`fix_1089`.
 - :ref:`fix_1138`
 - :ref:`fix_1197`
+- :ref:`fix_1342`
 
 New features and notable changes:
 
@@ -640,6 +652,7 @@ Known bugs:
 - :ref:`fix_1037`
 - :ref:`fix_1089`
 - :ref:`fix_1197`
+- :ref:`fix_1342`
 
 Breaking changes:
 
@@ -742,6 +755,8 @@ Known bugs:
 
 - :ref:`fix_1037`
 - :ref:`fix_1197`
+- :ref:`fix_1342`
+
 
 Breaking changes:
 
@@ -804,6 +819,8 @@ Internal changes:
 - Split HTML templates into one file for each part of the page. (:issue:`735`)
 - Change docker image to be able to use it like the ``nox`` command itself. (:issue:`734`)
 
+.. _release_5_2:
+
 5.2 (06 August 2022)
 --------------------
 
@@ -840,8 +857,14 @@ Internal changes:
 - Use pretty print for cobertura and Coveralls in test suite. (:issue:`606`)
 - Forward nox options `--reuse-existing-virtualenvs` and `--no-install` to call inside docker. (:issue:`616`)
 
+.. _release_5_1:
+
 5.1 (26 March 2022)
 -------------------
+
+Known bugs:
+
+- :ref:`fix_1342`
 
 Breaking changes:
 
@@ -921,9 +944,14 @@ Internal changes:
 - Improvements and fixes to the release process (:issue:`494`, :issue:`537`)
 - Normalize shell scripts to Unix line endings (:issue:`538`, :issue:`547`)
 
+.. _release_5_0:
 
 5.0 (11 June 2021)
 ------------------
+
+Known bugs:
+
+- :ref:`fix_1342`
 
 Breaking changes:
 
@@ -991,8 +1019,14 @@ Internal changes:
   - Add support for ``gcc-8`` to test suite and docker tests. (:issue:`423`)
   - Run as limited user inside docker container and add test with read only directory. (:issue:`445`)
 
+.. _release_4_2:
+
 4.2 (6 November 2019)
 ---------------------
+
+Known bugs:
+
+- :ref:`fix_1342`
 
 Breaking changes:
 
@@ -1062,14 +1096,28 @@ Internal changes:
 - Refactoring and removal of dead code. (:issue:`280`)
 - New internal data model.
 
+.. _release_4_1:
+
 4.1 (2 July 2018)
 -----------------
+
+Known bugs:
+
+- :ref:`fix_1342`
+
+Changes:
 
 - Fixed/improved --exclude-directories option. (:issue:`266`)
 - New "Cookbook" section in the documentation. (:issue:`265`)
 
+.. _release_4_0:
+
 4.0 (17 June 2018)
 ------------------
+
+Known bugs:
+
+- :ref:`fix_1342`
 
 Breaking changes:
 
